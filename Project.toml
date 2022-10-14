@@ -1,0 +1,13 @@
+name = "Pokemon"
+uuid = "d0fb5ee5-294d-4dd6-ae43-9e1c0c90f589"
+authors = ["VoidArchon", "void.archon@gmx.de"]
+version = "0.1.0"
+
+[compat]
+julia = "1.8"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

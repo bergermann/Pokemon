@@ -3,6 +3,16 @@ uuid = "d0fb5ee5-294d-4dd6-ae43-9e1c0c90f589"
 authors = ["VoidArchon", "void.archon@gmx.de"]
 version = "0.1.0"
 
+[deps]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+ImageIO = "82e4d734-157c-48bb-816b-45c225c6df19"
+ImageShow = "4e3cecfd-b093-5904-9786-8bbb286a6a31"
+Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+LightXML = "9c8b4983-aa76-5018-a973-4c85ecc9e179"
+MiniFB = "cc649173-1898-4bb8-8a16-ca5f88bd87d9"
+
 [compat]
 julia = "1.8"
 

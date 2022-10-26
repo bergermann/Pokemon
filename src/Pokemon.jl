@@ -17,9 +17,10 @@ function main()
     game = GameState(
         Trainer("Void",0x0000,0x02,Vector{Pkmn}([]),[],[],falses(151),
             getSpriteMain("sprite"; s=settings)),
-        Position(0x0000a,0x00000c),
+        Position(0x00000e,0x000013),
         :walk,
         :down,
+        0x01,
         Map(0x00,(0x001a,0x0024)),
         false,
         false,
@@ -28,13 +29,14 @@ function main()
         Menu(),
         MenuInv(0x00,0x00),
         MenuPkmn(0x00,0x00),
-        0x00
+        UInt(0),
+        :null,
+        Position(0x000000,0x000000)
     )
 
     w,b = startWindow(settings)
     
     mfb_set_mouse_button_callback(w, onpress)
-    #mfb_set_char_input_callback(w, onpress)
     mfb_set_keyboard_callback(w, onpress)
 
 
@@ -42,34 +44,33 @@ function main()
     layers = Layers(; s=settings)
 
     t = getTiles("tiles_exterior")
-    tm = getTileMap("0",[:background,:foreground,:collision]; s=settings)
+    tm = getTileMap("0",[:background1,:background2,:foreground1,:foreground2,:collision]; s=settings)
     
     game.map.tiles = t
     game.map.tilemap = tm
     
-    drawLayers!(layers,[:background,:foreground],game; s=settings)
+    drawLayers!(layers,[:background1,:background2,:foreground1,:foreground2],game; s=settings)
 
 
-    n_frames = 0x0000
+    n_frames = UInt(0)
     
     while true
-        n_frames += 0x0001
+        n_frames += 0x00000001
 
-        if n_frames%0x0078 == 0x0000
-            game.pos.h += 0x01
-            updateLayers!(layers,[:background,:foreground],game,
-                (h=Int8(1),w=Int8(0)); s=Settings())
-        elseif n_frames%0x0078 == 0x003c
-            game.pos.h -= 0x01
-            updateLayers!(layers,[:background,:foreground],game,
-                (h=Int8(-1),w=Int8(0)); s=Settings())
-        end
+        updateGame!(game,input,n_frames; s=settings)
 
+        drawLayers!(layers,[:background1,:background2,:foreground1,:foreground2],game; s=settings)
         drawSpriteMain!(layers,game; s=settings)
 
-        L = combineLayers(layers,[:background,:spriteslow,:spriteshigh,:foreground]; s=settings)
 
-        b .= permutedims(L[24+1:end-24,16+1:end-16,1],(2,1))
+        L = combineLayers(layers,[:background1,:background2,:spriteslow,:spriteshigh,:foreground1,:foreground2];
+            s=settings)
+
+        b .= permutedims(L[24+1+game.screenoffset.h:end-24+game.screenoffset.h,
+            16+1+game.screenoffset.w:end-16+game.screenoffset.w],(2,1))
+
+        input = Input()
+
 
         state = mfb_update(w, b)
 
@@ -78,7 +79,7 @@ function main()
         end
     end
 
-    println(input)
+
 end
 
 main()

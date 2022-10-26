@@ -27,10 +27,12 @@ end
 
 mutable struct Layers
     water::Matrix{UInt32}
-    background::Matrix{UInt32}
+    background1::Matrix{UInt32}
+    background2::Matrix{UInt32}
     spriteslow::Matrix{UInt32}
     spriteshigh::Matrix{UInt32}
-    foreground::Matrix{UInt32}
+    foreground1::Matrix{UInt32}
+    foreground2::Matrix{UInt32}
     weather::Matrix{UInt32}
 
     textbox::Matrix{UInt32}
@@ -154,45 +156,65 @@ end
 function getSpriteMain(set::String; s=Settings())
     spriteset = mfb_rgb.(load("sprites/$set.png"))
 
-    key::Vector{Tuple{Int,Int,Int,Int,String}} = [
-        (1,1,16,6,"walkdown"),
-        (1,17,16,6,"walkup"),
-        (1,33,16,6,"walkleft"),
-        (1,49,32,9,"bikedown"),
-        (1,81,32,9,"bikeup"),
-        (1,113,32,9,"bikeleft"),
-        (1,145,32,2,"sitdown"),
-        (1,177,32,2,"situp"),
-        (1,209,32,2,"sitleft"),
-        (97,145,32,2,"waterdown"),
-        (97,177,32,2,"waterup"),
-        (97,209,32,2,"waterleft"),
-        (1,241,32,5,"pokeball"),
-        (1,273,32,4,"fishdown"),
-        (1,305,32,4,"fishup"),
-        (1,337,32,4,"fishleft"),
-        (1,369,32,1,"surfdown"),
-        (1,401,32,1,"surfup"),
-        (1,433,32,1,"surfleft"),
-        (33,369,32,1,"divedown"),
-        (33,401,32,1,"diveup"),
-        (33,433,32,1,"diveleft"),
-        (1,465,32,1,"flypkmn"),
-        (1,497,64,4,"battlesprites"),
-        (97,401,64,1,"battler")
+    key::Vector{Tuple{Int,Int,Int,Int,Int,String}} = [
+        (1,1,32,16,3,"walkdown"),
+        (1,17,32,16,3,"walkup"),
+        (1,33,32,16,3,"walkleft"),
+
+        (97,1,32,16,3,"rundown"),
+        (97,17,32,16,3,"runup"),
+        (97,33,32,16,3,"runleft"),
+
+        (1,49,32,32,9,"bikedown"),
+        (1,81,32,32,9,"bikeup"),
+        (1,113,32,32,9,"bikeleft"),
+
+        (1,145,32,32,2,"sitdown"),
+        (1,177,32,32,2,"situp"),
+        (1,209,32,32,2,"sitleft"),
+
+        (97,145,32,32,2,"waterdown"),
+        (97,177,32,32,2,"waterup"),
+        (97,209,32,32,2,"waterleft"),
+
+        (1,241,32,32,5,"pokeball"),
+    
+        (1,273,32,32,4,"fishdown"),
+        (1,305,32,32,4,"fishup"),
+        (1,337,32,32,4,"fishleft"),
+
+        (1,369,32,32,1,"surfdown"),
+        (1,401,32,32,1,"surfup"),
+        (1,433,32,32,1,"surfleft"),
+
+        (33,369,32,32,1,"divedown"),
+        (33,401,32,32,1,"diveup"),
+        (33,433,32,32,1,"diveleft"),
+
+        (1,465,32,32,1,"flypkmn"),
+        (1,497,64,64,4,"battlesprites"),
+        (97,401,64,64,1,"battler")
     ]
 
-    d = Dict{String,Vector{Matrix{UInt32}}}(zip([key[i][5] for i in eachindex(key)],
+    d =  Dict{String,Vector{Matrix{UInt32}}}(zip([key[i][6] for i in eachindex(key)],
         [[spriteset[key[i][1]+(j-1)*key[i][3]:key[i][1]+j*key[i][3]-1,
-            key[i][2]:key[i][2]+key[i][3]-1] for j in 1:key[i][4]] for i in eachindex(key)]))
+            key[i][2]:key[i][2]+key[i][4]-1] for j in 1:key[i][5]] for i in eachindex(key)]))
     
+    d["walkright"] = reverse.(d["walkleft"]; dims=2)
+    d["runright"] = reverse.(d["runleft"]; dims=2)
+    d["bikeright"] = reverse.(d["bikeleft"]; dims=2)
+    d["sitright"] = reverse.(d["sitleft"]; dims=2)
+    d["waterright"] = reverse.(d["waterleft"]; dims=2)
+    d["fishright"] = reverse.(d["fishleft"]; dims=2)
+    d["surfright"] = reverse.(d["surfleft"]; dims=2)
+    d["diveright"] = reverse.(d["diveleft"]; dims=2)
+
     return d
 end
     
 function drawSpriteMain!(layers::Layers,game::GameState; s=Settings())
     #fix typestability
-    S = game.trainer.sprite[string(game.transport,game.direction)][1:2]
-    S = vcat(S...)
+    S = game.trainer.sprite[string(game.transport,game.direction)][game.spritecycle]
 
     height,width = size(S)./s.tilesize
     dh,dw = Int((s.Nh-1)/2),Int((s.Nw-1)/2)

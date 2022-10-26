@@ -162,10 +162,12 @@ end
 
 mutable struct TileMap
     water::Matrix{UInt16}
-    background::Matrix{UInt16}
+    background1::Matrix{UInt16}
+    background2::Matrix{UInt16}
     spriteslow::Matrix{UInt16}
     spriteshigh::Matrix{UInt16}
-    foreground::Matrix{UInt16}
+    foreground1::Matrix{UInt16}
+    foreground2::Matrix{UInt16}
     
     collision::Matrix{UInt16}
 
@@ -189,7 +191,7 @@ mutable struct Map
 
     function Map(id::UInt8,size::Tuple{UInt16,UInt16})
         new(id,0,"$id",size,[],getTiles("tiles_exterior"),
-            getTileMap("$id",[:background,:foreground,:collision]),
+            getTileMap("$id",[:background1,:background2,:foreground1,:foreground2,:collision]),
             [],[])
     end
 end
@@ -200,11 +202,12 @@ mutable struct GameState
     pos::Position
     transport::Symbol
     direction::Symbol
+    spritecycle::UInt8
     map::Map
 
     movelock::Bool
     textlock::Bool
-    inputlock::Bool #?
+    inputlock::Bool
 
     battle::Battle
 
@@ -212,5 +215,9 @@ mutable struct GameState
     menuinv::MenuInv
     menupkmn::MenuPkmn
 
-    n_anim::UInt8
+    n_anim::UInt64
+    anim::Symbol
+
+    screenoffset::Position
 end
+

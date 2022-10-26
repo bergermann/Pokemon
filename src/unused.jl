@@ -8,6 +8,19 @@ function test()
         updateSurroundings!(g,game,(h=Int8(-1),w=Int8(0)); s=settings)
         s = drawSurroundings(g,game)
     end
+
+    
+        #=
+        if n_frames%0x0078 == 0x0000
+            game.pos.h += 0x01
+            updateLayers!(layers,[:background,:foreground],game,
+                (h=Int8(1),w=Int8(0)); s=Settings())
+        elseif n_frames%0x0078 == 0x003c
+            game.pos.h -= 0x01
+            updateLayers!(layers,[:background,:foreground],game,
+                (h=Int8(-1),w=Int8(0)); s=Settings())
+        end
+        =#
 end
 
 

@@ -96,10 +96,26 @@ mutable struct Inventory
     cash::UInt32
 end
 
+
+
 mutable struct Position
     h::Int32
     w::Int32
 end
+
+function posAdd(a::Position,b::Position)
+    return Position(a.h+b.h,a.w+b.w)
+end
+
+function posSub(a::Position,b::Position)
+    return Position(a.h-b.h,a.w-b.w)
+end
+
+function posMult(n::Int32,a::Position)
+    return Position(n*a.h,n*a.w)
+end
+
+
 
 mutable struct Menu
     menu::Bool
@@ -203,6 +219,7 @@ mutable struct GameState
     transport::Symbol
     direction::Symbol
     spritecycle::UInt8
+    spriteoffset::Position
     map::Map
 
     movelock::Bool
@@ -216,7 +233,7 @@ mutable struct GameState
     menupkmn::MenuPkmn
 
     n_anim::UInt64
-    anim::Symbol
+    moveFunc::Function
 
     screenoffset::Position
 end

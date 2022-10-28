@@ -2,12 +2,12 @@ module Pokemon
 
 include("core.jl")
 include("rendering.jl")
-include("parser.jl")
+#include("parser.jl")
 include("controls.jl")
 
 function main()
 
-    d1,d2,d3 = getFont()
+    #d1,d2,d3 = getFont()
 
     settings = Settings()
     #settings = Settings(UInt16(480),UInt16(320),Float16(60))
@@ -21,6 +21,7 @@ function main()
         :walk,
         :down,
         0x01,
+        Position(0,0),
         Map(0x00,(0x001a,0x0024)),
         false,
         false,
@@ -30,13 +31,12 @@ function main()
         MenuInv(0x00,0x00),
         MenuPkmn(0x00,0x00),
         UInt(0),
-        :null,
+        moveDont!,
         Position(0x000000,0x000000)
     )
 
     w,b = startWindow(settings)
     
-    mfb_set_mouse_button_callback(w, onpress)
     mfb_set_keyboard_callback(w, onpress)
 
 
@@ -69,14 +69,19 @@ function main()
         b .= permutedims(L[24+1+game.screenoffset.h:end-24+game.screenoffset.h,
             16+1+game.screenoffset.w:end-16+game.screenoffset.w],(2,1))
 
-        input = Input()
+        #input = Input()
 
+        
+        #println(mfb_get_key_buffer(w))
 
         state = mfb_update(w, b)
 
         if state != MiniFB.STATE_OK
             break
         end
+
+        #println(input.up)
+
     end
 
 

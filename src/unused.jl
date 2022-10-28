@@ -168,3 +168,253 @@ function updateDrawSurroundings!(b,g,grid::Array{UInt16,3},game::GameState; s=Se
 
     return layers
 end
+
+
+
+
+
+function inputManager!(game::GameState,input::Input,n_frame::UInt)
+    if input.up && !input.B
+        game.n_anim = n_frame
+
+        if game.direction != :up
+            game.movelock = true
+            game.direction = :up
+            game.anim = :walkturnup
+        elseif game.map.tilemap.collision[game.pos.h-Int32(1),game.pos.w] == 0x0000
+            game.movelock = true
+            game.anim = :walkup
+        end
+    elseif input.down && !input.B
+        game.n_anim = n_frame
+
+        if game.direction != :down
+            game.movelock = true
+            game.direction = :down
+            game.anim = :walkturndown
+        elseif game.map.tilemap.collision[game.pos.h+Int32(1),game.pos.w] == 0x0000
+            game.movelock = true
+            game.anim = :walkdown
+        end
+    elseif input.left && !input.B
+        game.n_anim = n_frame
+
+        if game.direction != :left
+            game.movelock = true
+            game.direction = :left
+            game.anim = :walkturnleft
+        elseif game.map.tilemap.collision[game.pos.h,game.pos.w-Int32(1)] == 0x0000
+            game.movelock = true
+            game.anim = :walkleft
+        end
+    elseif input.right && !input.B
+        game.n_anim = n_frame
+        
+        if game.direction != :right
+            game.movelock = true
+            game.direction = :right
+            game.anim = :walkturnright
+        elseif game.map.tilemap.collision[game.pos.h,game.pos.w+Int32(1)] == 0x0000
+            game.movelock = true
+            game.anim = :walkright
+        end
+    end
+
+    if input.up && input.B
+        game.n_anim = n_frame
+
+        if game.direction != :up
+            game.movelock = true
+            game.direction = :up
+            game.anim = :runturnup
+        elseif game.map.tilemap.collision[game.pos.h-Int32(1),game.pos.w] == 0x0000
+            game.movelock = true
+            game.anim = :runup
+        end
+    elseif false
+        0
+    end
+end
+
+
+function moveManager!(game::GameState,n_frame::UInt)
+    if game.anim == :walkturnup
+        if n_frame-game.n_anim < 0x04
+            game.spritecycle = 0x02
+        elseif n_frame-game.n_anim < 0x08
+            game.spritecycle = 0x01
+        elseif n_frame-game.n_anim >= 0x08
+            game.anim = :null
+            game.movelock = false
+        end
+    end
+
+    if game.anim == :walkup
+        n = n_frame-game.n_anim
+
+        game.screenoffset.h = -Int32(n)
+        game.spriteoffset.h = -Int32(n)
+
+        if n < 0x08
+            if game.pos.h%2 == 0
+                game.spritecycle = 0x02
+            else
+                game.spritecycle = 0x03
+            end
+        elseif n < 0x10
+            game.spritecycle = 0x01
+        elseif n >= 0x10
+            game.anim = :null
+            game.movelock = false
+            game.screenoffset.h = 0x00
+            game.spriteoffset.h = 0x00
+            game.pos.h -= Int32(1)
+        end
+    end
+
+
+    
+    if game.anim == :walkturndown
+        if n_frame-game.n_anim < 0x04
+            game.spritecycle = 0x02
+        elseif n_frame-game.n_anim < 0x08
+            game.spritecycle = 0x01
+        elseif n_frame-game.n_anim >= 0x8
+            game.anim = :null
+            game.movelock = false
+        end
+    end
+
+    if game.anim == :walkdown
+        n = n_frame-game.n_anim
+
+        game.screenoffset.h = +Int32(n)
+        game.spriteoffset.h = +Int32(n)
+
+        if n < 0x08
+            if game.pos.h%2 == 0
+                game.spritecycle = 0x02
+            else
+                game.spritecycle = 0x03
+            end
+        elseif n < 0x10
+            game.spritecycle = 0x01
+        elseif n >= 0x10
+            game.anim = :null
+            game.movelock = false
+            game.screenoffset.h = 0x00
+            game.spriteoffset.h = 0x00
+            game.pos.h += Int32(1)
+        end
+    end
+
+
+    
+    if game.anim == :walkturnleft
+        if n_frame-game.n_anim < 0x04
+            game.spritecycle = 0x02
+        elseif n_frame-game.n_anim < 0x08
+            game.spritecycle = 0x01
+        elseif n_frame-game.n_anim >= 0x08
+            game.anim = :null
+            game.movelock = false
+        end
+    end
+
+    if game.anim == :walkleft
+        n = n_frame-game.n_anim
+
+        game.screenoffset.w = -Int32(n)
+        game.spriteoffset.w = -Int32(n)
+
+        if n < 0x08
+            if game.pos.w%2 == 0
+                game.spritecycle = 0x02
+            else
+                game.spritecycle = 0x03
+            end
+        elseif n < 0x10
+            game.spritecycle = 0x01
+        elseif n >= 0x10
+            game.anim = :null
+            game.movelock = false
+            game.screenoffset.w = 0x00
+            game.spriteoffset.w = 0x00
+            game.pos.w -= Int32(1)
+        end
+    end
+
+    
+
+    if game.anim == :walkturnright
+        if n_frame-game.n_anim < 0x04
+            game.spritecycle = 0x02
+        elseif n_frame-game.n_anim < 0x08
+            game.spritecycle = 0x01
+        elseif n_frame-game.n_anim >= 0x08
+            game.anim = :null
+            game.movelock = false
+        end
+    end
+
+    if game.anim == :walkright
+        n = n_frame-game.n_anim
+
+        game.screenoffset.w = +Int32(n)
+        game.spriteoffset.w = +Int32(n)
+
+        if n < 0x08
+            if game.pos.w%2 == 0
+                game.spritecycle = 0x02
+            else
+                game.spritecycle = 0x03
+            end
+        elseif n < 0x10
+            game.spritecycle = 0x01
+        elseif n >= 0x10
+            game.anim = :null
+            game.movelock = false
+            game.screenoffset.w = 0x00
+            game.spriteoffset.w = 0x00
+            game.pos.w += Int32(1)
+        end
+    end
+
+
+
+    if game.anim == :runturnup
+        if n_frame-game.n_anim < 0x04
+            game.spritecycle = 0x02
+        elseif n_frame-game.n_anim < 0x08
+            game.spritecycle = 0x01
+        elseif n_frame-game.n_anim >= 0x08
+            game.anim = :null
+            game.movelock = false
+        end
+    end
+
+    if game.anim == :runup
+        n = n_frame-game.n_anim
+        game.transport = :run
+
+        game.screenoffset.h = -Int32(2*n)
+        game.spriteoffset.h = -Int32(2*n)
+
+        if n < 0x04
+            if game.pos.h%2 == 0
+                game.spritecycle = 0x02
+            else
+                game.spritecycle = 0x03
+            end
+        elseif n < 0x08
+            game.spritecycle = 0x01
+        elseif n >= 0x08
+            game.anim = :null
+            game.movelock = false
+            game.screenoffset.h = 0x00
+            game.spriteoffset.h = 0x00
+            game.transport = :walk
+            game.pos.h -= Int32(1)
+        end
+    end
+end

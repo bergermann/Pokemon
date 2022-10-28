@@ -219,12 +219,15 @@ function drawSpriteMain!(layers::Layers,game::GameState; s=Settings())
     height,width = size(S)./s.tilesize
     dh,dw = Int((s.Nh-1)/2),Int((s.Nw-1)/2)
 
-    layers.spriteshigh[(dh-1)*s.tilesize+1:dh*s.tilesize,
-        Int(dw-0.5+width/2)*s.tilesize+1:Int(dw-0.5+width/2+1)*s.tilesize] =
+    layers.spriteshigh .*= 0x00000
+    layers.spriteslow .*= 0x00000
+
+    layers.spriteshigh[(dh-1)*s.tilesize+1+game.spriteoffset.h:dh*s.tilesize+game.spriteoffset.h,
+        Int(dw-0.5+width/2)*s.tilesize+1+game.spriteoffset.w:Int(dw-0.5+width/2+1)*s.tilesize+game.spriteoffset.w] =
         S[1:Int(s.tilesize*height/2),:]
 
-    layers.spriteshigh[dh*s.tilesize+1:(dh+1)*s.tilesize,
-        Int(dw-0.5+width/2)*s.tilesize+1:Int(dw-0.5+width/2+1)*s.tilesize] =
+    layers.spriteshigh[dh*s.tilesize+1+game.spriteoffset.h:(dh+1)*s.tilesize+game.spriteoffset.h,
+        Int(dw-0.5+width/2)*s.tilesize+1+game.spriteoffset.w:Int(dw-0.5+width/2+1)*s.tilesize+game.spriteoffset.w] =
         S[Int(s.tilesize*height/2+1):end,:]
 end
 

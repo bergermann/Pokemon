@@ -197,18 +197,25 @@ mutable struct Map
     environment::UInt8
     path::String
 
-    size::Tuple{UInt16,UInt16}
     areas::Vector
+    exits::Vector{Tuple{UInt8,Position}}  #(id,transform)
     tiles::Dict{UInt16,Matrix{UInt32}}
     tilemap::TileMap
 
     npcs::Vector
     trainers::Vector
 
-    function Map(id::UInt8,size::Tuple{UInt16,UInt16})
-        new(id,0,"$id",size,[],getTiles("tiles_exterior"),
+    function Map(id::UInt8)
+        new(id,0,"$id",[],getTiles("tiles_exterior"),
             getTileMap("$id",[:background1,:background2,:foreground1,:foreground2,:collision]),
             [],[])
+    end
+
+    function Map(id::UInt8,environment::UInt8,path::String,areas::Vector,
+            exits::Vector{Tuple{UInt8,Position}},tiles::Dict{UInt16,Matrix{UInt32}},
+            tilemap::TileMap,npcs::Vector,trainers::Vector)
+
+        new(id,environment,path,areas,exits,tiles,tilemap,npcs,trainers)
     end
 end
 

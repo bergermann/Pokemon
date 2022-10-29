@@ -2,8 +2,9 @@ module Pokemon
 
 include("core.jl")
 include("rendering.jl")
-#include("parser.jl")
+include("parser.jl")
 include("controls.jl")
+#include("maps.jl")
 
 function main()
 
@@ -22,7 +23,7 @@ function main()
         :down,
         0x01,
         Position(0,0),
-        Map(0x00,(0x001a,0x0024)),
+        map0,
         false,
         false,
         false,
@@ -57,24 +58,26 @@ function main()
     while true
         n_frames += 0x00000001
 
-        updateGame!(game,input,n_frames; s=settings)
+        begin
+            updateGame!(game,input,n_frames; s=settings)
 
-        drawLayers!(layers,[:background1,:background2,:foreground1,:foreground2],game; s=settings)
-        drawSpriteMain!(layers,game; s=settings)
+            drawLayers!(layers,[:background1,:background2,:foreground1,:foreground2],game; s=settings)
+            drawSpriteMain!(layers,game; s=settings)
 
 
-        L = combineLayers(layers,[:background1,:background2,:spriteslow,:spriteshigh,:foreground1,:foreground2];
-            s=settings)
+            L = combineLayers(layers,[:background1,:background2,:spriteslow,:spriteshigh,:foreground1,:foreground2];
+                s=settings)
 
-        b .= permutedims(L[24+1+game.screenoffset.h:end-24+game.screenoffset.h,
-            16+1+game.screenoffset.w:end-16+game.screenoffset.w],(2,1))
+            b .= permutedims(L[24+1+game.screenoffset.h:end-24+game.screenoffset.h,
+                16+1+game.screenoffset.w:end-16+game.screenoffset.w],(2,1))
 
-        #input = Input()
+            #input = Input()
 
-        
-        #println(mfb_get_key_buffer(w))
+            
+            #println(mfb_get_key_buffer(w))
+        end
 
-        state = mfb_update(w, b)
+        @time state = mfb_update(w, b)
 
         if state != MiniFB.STATE_OK
             break

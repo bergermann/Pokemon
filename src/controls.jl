@@ -1,5 +1,6 @@
 using MiniFB
 
+include("maps.jl")
 
 
 mutable struct Input
@@ -59,6 +60,11 @@ dirs = Base.ImmutableDict(
     :left => Position(0,-1),
     :right => Position(0,1),
     :null => Position(0,0)
+)
+
+mapid = Base.ImmutableDict(
+    0x00 => map0,
+    0x01 => map1
 )
 
 
@@ -192,19 +198,22 @@ function inputManager!(game::GameState,input::Input,n_frame::UInt)
         game.movelock = true
         game.n_anim = n_frame
 
-        if game.direction != inputdir
-            game.direction = inputdir
-            game.moveFunc = moveTurn!
-        elseif !input.B && (game.transport == :walk || game.transport == :run)
+        if !input.B && (game.transport == :walk || game.transport == :run)
             game.transport = :walk
-            if game.map.tilemap.collision[movepos.h,movepos.w] == 0x0000
+            
+            if game.direction != inputdir
+                game.direction = inputdir
+                game.moveFunc = moveTurn!
+            elseif game.map.tilemap.collision[movepos.h,movepos.w] != 0x0001
                 game.moveFunc = moveWalk!
             else
                 game.moveFunc = moveWalkWall!
             end
         elseif input.B && (game.transport == :walk || game.transport == :run)
             game.transport = :run
-            if game.map.tilemap.collision[movepos.h,movepos.w] == 0x0000
+            game.direction = inputdir
+
+            if game.map.tilemap.collision[movepos.h,movepos.w] != 0x0001
                 game.moveFunc = moveRun!
             else
                 game.moveFunc = moveTurn!
@@ -218,10 +227,21 @@ end
 
 
 
+function changeMap!(game::GameState,exit::Tuple{UInt8,Position})
+    game.map = mapid[exit[1]]
+    game.pos = posAdd(game.pos,exit[2])
+end
+
+
+
 function updateGame!(game::GameState,input::Input,n_frame::UInt; s=settings())
     inputManager!(game,input,n_frame)
 
     if game.moveFunc != moveDont!
         game.moveFunc(game,n_frame)
+    end
+
+    if game.map.tilemap.collision[game.pos.h,game.pos.w] != 0x0000
+        changeMap!(game,game.map.exits[game.map.tilemap.collision[game.pos.h,game.pos.w]-7])
     end
 end

@@ -1,4 +1,4 @@
-#
+#include("rendering.jl")
 
 mutable struct Stats
     bv::Vector{UInt8}
@@ -126,9 +126,10 @@ mutable struct Menu
     self::Bool
     save::Bool
     optn::Bool
+    select::UInt8
 
     function Menu()
-        new(falses(8)...)
+        new(falses(8)...,0x01)
     end
 end
 
@@ -176,6 +177,14 @@ struct Settings
     end
 end
 
+struct Options
+    frame::UInt8
+
+    function Options()
+        new(0x01)
+    end
+end
+
 mutable struct TileMap
     water::Matrix{UInt16}
     background1::Matrix{UInt16}
@@ -219,7 +228,54 @@ mutable struct Map
     end
 end
 
+
+mutable struct Layers
+    water::Matrix{UInt32}
+    background1::Matrix{UInt32}
+    background2::Matrix{UInt32}
+    spriteslow::Matrix{UInt32}
+    spriteshigh::Matrix{UInt32}
+    foreground1::Matrix{UInt32}
+    foreground2::Matrix{UInt32}
+    weather::Matrix{UInt32}
+
+    textbox::Matrix{UInt32}
+    text::Matrix{UInt32}
+    
+    menu::Matrix{UInt32}
+
+    function Layers(; s::Settings=Settings())
+        new([zeros(UInt32,UInt16(s.Nh)*UInt16(s.tilesize),
+            UInt16(s.Nw)*UInt16(s.tilesize)) for _ in eachindex(fieldnames(Layers))]...)
+    end
+end
+
+mutable struct Im
+    font::Vector{Dict}
+    frames::Dict
+    diabox::Dict
+
+    spritesmain::Vector{Dict}
+    sprites::Dict
+    tilesext::Dict
+    tilesint::Dict
+
+    layers::Layers
+    layer::Matrix{UInt32}
+    draw::Vector{Symbol}
+
+    function Im()
+        new([getFont()...],getFrames("frames"),getDialogueBox("dialogue"),
+            [getSpriteMain("sprite"),],Dict(),getTiles("tiles_exterior"),Dict(),
+            Layers(),copy(Layers().background1),[:background1,:background2,
+                :spriteslow,:spriteshigh,:foreground1,:foreground2]
+        )
+    end
+end
+
 mutable struct GameState
+    im::Im
+
     trainer::Trainer
 
     pos::Position
@@ -243,5 +299,7 @@ mutable struct GameState
     moveFunc::Function
 
     screenoffset::Position
+
+    options::Options
 end
 

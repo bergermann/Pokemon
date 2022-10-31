@@ -223,6 +223,18 @@ function inputManager!(game::GameState,input::Input,n_frame::UInt)
         game.transport = :walk
     end
 
+    if !game.battle.active && !game.menu.menu && input.start
+        game.movelock = true
+        game.menu.menu = true
+
+        drawFrame!(game,UInt(20),UInt(10),Position(24,176))
+        push!(game.im.draw,:menu)
+    elseif !game.battle.active && game.menu.menu && (input.start || input.B)
+        game.movelock = false
+        game.menu.menu = false
+
+        filter!(x->x!=:menu,game.im.draw)
+    end
 end
 
 
@@ -234,7 +246,7 @@ end
 
 
 
-function updateGame!(game::GameState,input::Input,n_frame::UInt; s=settings())
+function updateGame!(game::GameState,input::Input,n_frame::UInt; s=Settings())
     inputManager!(game,input,n_frame)
 
     if game.moveFunc != moveDont!
@@ -244,4 +256,11 @@ function updateGame!(game::GameState,input::Input,n_frame::UInt; s=settings())
     if game.map.tilemap.collision[game.pos.h,game.pos.w] != 0x0000
         changeMap!(game,game.map.exits[game.map.tilemap.collision[game.pos.h,game.pos.w]-7])
     end
+end
+
+function drawGame!(game::GameState,n_frame::UInt; s=Settings())
+    drawLayers!(game,n_frame; s=s)
+    drawSpriteMain!(game; s=s)
+
+    combineLayers!(game; s=s)
 end

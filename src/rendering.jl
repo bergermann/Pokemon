@@ -46,27 +46,19 @@ mutable struct Layers
     end
 end
 
-function combineLayers(layers::Layers,key::Vector{Symbol};
-        s::Settings=Settings())
-    L = zeros(UInt32,UInt16(s.Nh)*UInt16(s.tilesize),
-        UInt16(s.Nw)*UInt16(s.tilesize))
 
-    for k in key
-        ind = getfield(layers,k) .!= 0x000000
-        L[ind] = getfield(layers,k)[ind]
-    end
 
-    return L
-end
-
-function drawLayers!(layers::Layers,key::Vector{Symbol},game::GameState;
-    s=Settings())
-
+function drawLayers!(game::GameState,n_frame::UInt; s=Settings())
     dh,dw = div(s.Nh-0x01,0x02),div(s.Nw-0x01,0x02)
 
-    for k in key
+    for k in game.im.draw
+        if !(k == :water || k == :background1 || k == :background2 ||
+                k == :foreground1 || k == :foreground2)
+            continue
+        end
+
         for i in 1:s.Nh, j in 1:s.Nw
-            getfield(layers,k)[1+(i-1)*s.tilesize:i*s.tilesize,
+            getfield(game.im.layers,k)[1+(i-1)*s.tilesize:i*s.tilesize,
                 1+(j-1)*s.tilesize:j*s.tilesize] = game.map.tiles[
                     getfield(game.map.tilemap,k)[game.pos.h+i-dh-1,
                     game.pos.w+j-dw-1]]
@@ -74,37 +66,14 @@ function drawLayers!(layers::Layers,key::Vector{Symbol},game::GameState;
     end
 end
 
-function updateLayers!(layers::Layers,key::Vector{Symbol},game::GameState,
-        direction::NamedTuple{(:h,:w),Tuple{Int8,Int8}}; s=Settings())
+function combineLayers!(game::GameState; s::Settings=Settings())
+    for k in game.im.draw
+        ind = getfield(game.im.layers,k) .!= 0x000000
 
-    dh,dw = div(s.Nh-0x01,0x02),div(s.Nw-0x01,0x02)
-
-    for k in key
-        if direction.h == 1
-            getfield(layers,k)[1:end-s.tilesize,:] = getfield(layers,k)[1+s.tilesize:end,:]
-
-            for i in 1:s.Nw
-                getfield(layers,k)[end-s.tilesize+1:end,1+(i-1)*s.tilesize:i*s.tilesize] = 
-                    game.map.tiles[getfield(game.map.tilemap,k)[game.pos.h+dh,
-                    game.pos.w+i-dw-1]]
-            end
-        elseif direction.h == -1
-            getfield(layers,k)[1+s.tilesize:end,:] = getfield(layers,k)[1:end-s.tilesize,:]
-            
-            for i in 1:s.Nw
-                getfield(layers,k)[1:s.tilesize,1+(i-1)*s.tilesize:i*s.tilesize] = 
-                    game.map.tiles[getfield(game.map.tilemap,k)[game.pos.h-dh,
-                    game.pos.w+i-dw-1]]
-            end
-        end
-
-        if direction.w == 1
-            return
-        elseif direction.w == -1
-            return
-        end
+        game.im.layer[ind] = getfield(game.im.layers,k)[ind]
     end
 end
+
 
 
 
@@ -219,8 +188,8 @@ function drawSpriteMain!(layers::Layers,game::GameState; s=Settings())
     height,width = size(S)./s.tilesize
     dh,dw = Int((s.Nh-1)/2),Int((s.Nw-1)/2)
 
-    layers.spriteshigh .*= 0x00000
-    layers.spriteslow .*= 0x00000
+    layers.spriteshigh .*= 0x000000
+    layers.spriteslow .*= 0x000000
 
     layers.spriteshigh[(dh-1)*s.tilesize+1+game.spriteoffset.h:dh*s.tilesize+game.spriteoffset.h,
         Int(dw-0.5+width/2)*s.tilesize+1+game.spriteoffset.w:Int(dw-0.5+width/2+1)*s.tilesize+game.spriteoffset.w] =
@@ -231,6 +200,105 @@ function drawSpriteMain!(layers::Layers,game::GameState; s=Settings())
         S[Int(s.tilesize*height/2+1):end,:]
 end
 
+function drawSpriteMain!(game::GameState; s=Settings())
+    #fix typestability
+    S = game.trainer.sprite[string(game.transport,game.direction)][game.spritecycle]
+
+    height,width = size(S)./s.tilesize
+    dh,dw = Int((s.Nh-1)/2),Int((s.Nw-1)/2)
+
+    game.im.layers.spriteshigh .*= 0x000000
+    game.im.layers.spriteslow .*= 0x000000
+
+    game.im.layers.spriteshigh[(dh-1)*s.tilesize+1+game.spriteoffset.h:dh*s.tilesize+game.spriteoffset.h,
+        Int(dw-0.5+width/2)*s.tilesize+1+game.spriteoffset.w:Int(dw-0.5+width/2+1)*s.tilesize+game.spriteoffset.w] =
+        S[1:Int(s.tilesize*height/2),:]
+
+    game.im.layers.spriteshigh[dh*s.tilesize+1+game.spriteoffset.h:(dh+1)*s.tilesize+game.spriteoffset.h,
+        Int(dw-0.5+width/2)*s.tilesize+1+game.spriteoffset.w:Int(dw-0.5+width/2+1)*s.tilesize+game.spriteoffset.w] =
+        S[Int(s.tilesize*height/2+1):end,:]
+end
+
+
+
+
+
+
+
+function getDialogueBox(set::String; s=Settings())
+    boxes = mfb_rgb.(load("im/$set.png"))
+
+    key::Vector{Tuple{Int,Int,String}} = [
+        (1,48,"dialogue"),
+        (49,48,"battle")
+    ]
+
+    return Dict{String,Matrix{UInt32}}(
+        zip([k[3] for k in key],[boxes[k[1]:k[1]+k[2]-1,:] for k in key])
+    )
+end
+
+
+
+
+
+
+
+function getFrames(set::String)
+    frames = mfb_rgb.(load("im/$set.png"))
+
+    return Dict{Int64,Vector{Matrix{UInt32}}}(
+        zip(collect(1:30),[[frames[1+(i-1)*8+(rows-1)*8:i*8+(rows-1)*8,
+            1+(j-1)*8+(cols-1)*8:j*8+(cols-1)*8] for j in 1:3, i in 1:3][:] for cols in 1:10, rows in 1:3])
+    )
+end
+
+function constructFrame(game::GameState,height::UInt,width::UInt)
+    #frame = fill(game.im.frames[1][5][1],height*8,width*8)
+    println(game.im.frames[1][5][1])
+    frame = ones(UInt32,height*8,width*8)*game.im.frames[1][5][1]
+
+    if height == 1 || width == 1
+        return error("Frame is too small.")
+    end
+
+    for i in 1:height, j in 1:width
+        if i != 1 && i != height && j != 1 && j != width
+            f = 5
+        elseif i == 1 && j == 1
+            f = 1
+        elseif i == 1 && j != 1 && j != width
+            f = 2
+        elseif i == 1 && j == width
+            f = 3
+        elseif i != 1 && i != height && j == 1
+            f = 4
+        elseif i != 1 && i != height && j == width
+            f = 6
+        elseif i == height && j == 1
+            f = 7
+        elseif i == height && j != 1 && j != width
+            f = 8
+        else
+            f = 9
+        end
+
+        frame[1+(i-1)*8:i*8,1+(j-1)*8:j*8] = game.im.frames[game.options.frame][f]
+    end
+
+    println(size(frame))
+
+    return frame
+end
+
+function drawFrame!(game::GameState,height::UInt,width::UInt,offset::Position)
+    println(size(game.im.layers.menu))
+
+    game.im.layers.menu[1+offset.h:height*8+offset.h,
+        1+offset.w:width*8+offset.w] = constructFrame(game,height,width)
+
+    println(size(game.im.layers.menu))
+end
 
 
 

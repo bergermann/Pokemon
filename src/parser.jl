@@ -132,9 +132,9 @@ function getFont()
         k = key1[i]
 
         for j in Array{UInt16}(1:size(k)[1])
-            push!(f1,permutedims(
-                    mfb_rgb.(fontimg)[0x01+0x10*(UInt16(i)-0x01):0x10*UInt16(i),
-                    k[j,1]+0x01:k[j,1]+k[j,2]+0x01],(2,1)))
+            push!(f1,
+                    mfb_rgb.(fontimg[0x01+0x10*(UInt16(i)-0x01):0x10*UInt16(i),
+                    k[j,1]+0x01:k[j,1]+k[j,2]+0x01]))
         end
     end
 
@@ -142,9 +142,8 @@ function getFont()
         k = key2[i]
 
         for j in Array{UInt16}(1:size(k)[1])
-            push!(f2,permutedims(
-                    mfb_rgb.(fontimg)[0x01+0x10*(UInt16(i)-0x01):0x10*UInt16(i),
-                    k[j,1]+0x01:k[j,1]+k[j,2]+0x01],(2,1)))
+            push!(f2,mfb_rgb.(fontimg[0x01+0x10*(UInt16(i)-0x01):0x10*UInt16(i),
+                    k[j,1]+0x01:k[j,1]+k[j,2]+0x01]))
         end
     end
 
@@ -152,34 +151,29 @@ function getFont()
         k = key3[i]
 
         for j in Array{UInt16}(1:size(k)[1])
-            push!(f3,permutedims(
-                    mfb_rgb.(fontimg)[0x01+0x10*(UInt16(i)-0x01):0x10*UInt16(i),
-                    k[j,1]+0x01:k[j,1]+k[j,2]+0x01],(2,1)))
+            push!(f3,mfb_rgb.(fontimg[0x01+0x10*(UInt16(i)-0x01):0x10*UInt16(i),
+                    k[j,1]+0x01:k[j,1]+k[j,2]+0x01]))
         end
     end
     
     return Dict(zip(symbols1,f1)),Dict(zip(symbols2,f2)),Dict(zip(symbols3,f3))
 end
 
-function textBuffer(str::String,area::Tuple{UInt16,UInt16},dict::Dict)
-    height = size(dict[str[1]])[2]
+function drawText!(game::GameState,str::String,style::UInt; lineoffset=0)
+    height = [13,16,17][style]
 
     S = split(str,"\n")
 
-    tb = permutedims(zeros(UInt32,area),(2,1))
     for i in eachindex(S)
-        vert::UInt16 = 0x0001
+        vert = 1
         for c in collect(S[i])
             char = dict[c]
-            width = UInt16(size(char)[1])
             
-            tb[vert:vert+width-0x01,
-                        UInt16(1+height*(i-1)):UInt16(height*i)] = char
-            vert += width - 0x01
+            game.im.layers.text[1+height*(i-1):i*height,vert:vert+size(char)[1]] = char
+            
+            vert += width - 1
         end
     end
-    
-    return tb
 end
 
 ;

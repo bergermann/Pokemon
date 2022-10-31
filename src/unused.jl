@@ -418,3 +418,103 @@ function moveManager!(game::GameState,n_frame::UInt)
         end
     end
 end
+
+
+
+function combineLayers(layers::Layers,key::Vector{Symbol};
+    s::Settings=Settings())
+    L = zeros(UInt32,UInt16(s.Nh)*UInt16(s.tilesize),
+        UInt16(s.Nw)*UInt16(s.tilesize))
+
+    for k in key
+        ind = getfield(layers,k) .!= 0x000000
+        L[ind] = getfield(layers,k)[ind]
+    end
+
+    return L
+    end
+
+    function combineLayers(game::GameState; s::Settings=Settings())
+    L = zeros(UInt32,UInt16(s.Nh)*UInt16(s.tilesize),
+        UInt16(s.Nw)*UInt16(s.tilesize))
+
+    for k in game.im.draw
+        ind = getfield(game.im.layers,k) .!= 0x000000
+        L[ind] = getfield(game.im.layers,k)[ind]
+    end
+
+    return L
+end
+
+
+
+function drawLayers!(layers::Layers,key::Vector{Symbol},game::GameState;
+    s=Settings())
+
+    dh,dw = div(s.Nh-0x01,0x02),div(s.Nw-0x01,0x02)
+
+    for k in key
+        for i in 1:s.Nh, j in 1:s.Nw
+            getfield(layers,k)[1+(i-1)*s.tilesize:i*s.tilesize,
+                1+(j-1)*s.tilesize:j*s.tilesize] = game.map.tiles[
+                    getfield(game.map.tilemap,k)[game.pos.h+i-dh-1,
+                    game.pos.w+j-dw-1]]
+        end
+    end
+end
+
+function updateLayers!(layers::Layers,key::Vector{Symbol},game::GameState,
+    direction::NamedTuple{(:h,:w),Tuple{Int8,Int8}}; s=Settings())
+
+    dh,dw = div(s.Nh-0x01,0x02),div(s.Nw-0x01,0x02)
+
+    for k in key
+        if direction.h == 1
+            getfield(layers,k)[1:end-s.tilesize,:] = getfield(layers,k)[1+s.tilesize:end,:]
+
+            for i in 1:s.Nw
+                getfield(layers,k)[end-s.tilesize+1:end,1+(i-1)*s.tilesize:i*s.tilesize] = 
+                    game.map.tiles[getfield(game.map.tilemap,k)[game.pos.h+dh,
+                    game.pos.w+i-dw-1]]
+            end
+        elseif direction.h == -1
+            getfield(layers,k)[1+s.tilesize:end,:] = getfield(layers,k)[1:end-s.tilesize,:]
+            
+            for i in 1:s.Nw
+                getfield(layers,k)[1:s.tilesize,1+(i-1)*s.tilesize:i*s.tilesize] = 
+                    game.map.tiles[getfield(game.map.tilemap,k)[game.pos.h-dh,
+                    game.pos.w+i-dw-1]]
+            end
+        end
+
+        if direction.w == 1
+            return
+        elseif direction.w == -1
+            return
+        end
+    end
+end
+
+
+
+
+function textBuffer(str::String,area::Tuple{UInt16,UInt16},dict::Dict)
+    height = size(dict[str[1]])[2]
+
+    S = split(str,"\n")
+
+    tb = permutedims(zeros(UInt32,area),(2,1))
+    for i in eachindex(S)
+        vert::UInt16 = 0x0001
+        for c in collect(S[i])
+            char = dict[c]
+            width = UInt16(size(char)[1])
+            
+            tb[vert:vert+width-0x01,
+                        UInt16(1+height*(i-1)):UInt16(height*i)] = char
+            vert += width - 0x01
+        end
+    end
+    
+    return tb
+end

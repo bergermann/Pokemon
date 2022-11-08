@@ -36,9 +36,15 @@ mutable struct Layers
     weather::Matrix{UInt32}
 
     textbox::Matrix{UInt32}
-    text::Matrix{UInt32}
-    
+
     menu::Matrix{UInt32}
+
+    menu1::Matrix{UInt32}
+    menu2::Matrix{UInt32}
+    menu3::Matrix{UInt32}
+    
+    #text::Matrix{UInt32}
+    
 
     function Layers(; s::Settings=Settings())
         new([zeros(UInt32,UInt16(s.Nh)*UInt16(s.tilesize),
@@ -228,14 +234,19 @@ end
 function getDialogueBox(set::String; s=Settings())
     boxes = mfb_rgb.(load("im/$set.png"))
 
-    key::Vector{Tuple{Int,Int,String}} = [
-        (1,48,"dialogue"),
-        (49,48,"battle")
+    key::Vector{Tuple{Int,Int,UInt8}} = [
+        (1,48,0x01),
+        (49,48,0x02)
     ]
 
-    return Dict{String,Matrix{UInt32}}(
+    return Dict{UInt8,Matrix{UInt32}}(
         zip([k[3] for k in key],[boxes[k[1]:k[1]+k[2]-1,:] for k in key])
     )
+end
+
+function drawDialogue!(game::GameState,str::String)
+    game.im.layers.textbox[end-48-24+1:end-24,16+1:end-16] = game.im.diabox[game.options.diabox]
+    drawText!(game,:textbox,str,UInt(2),Position(144,32))
 end
 
 
@@ -247,15 +258,15 @@ end
 function getFrames(set::String)
     frames = mfb_rgb.(load("im/$set.png"))
 
-    return Dict{Int64,Vector{Matrix{UInt32}}}(
-        zip(collect(1:30),[[frames[1+(i-1)*8+(rows-1)*8:i*8+(rows-1)*8,
-            1+(j-1)*8+(cols-1)*8:j*8+(cols-1)*8] for j in 1:3, i in 1:3][:] for cols in 1:10, rows in 1:3])
+    return Dict{Int64,Vector{Matrix{UInt32}}}(zip(collect(1:30),[
+        [frames[1+(i-1)*8+(rows-1)*8:i*8+(rows-1)*8,
+        1+(j-1)*8+(cols-1)*8:j*8+(cols-1)*8] for j in 1:3, i in 1:3][:]
+            for cols in 1:10, rows in 1:3
+        ])
     )
 end
 
 function constructFrame(game::GameState,height::UInt,width::UInt)
-    #frame = fill(game.im.frames[1][5][1],height*8,width*8)
-    println(game.im.frames[1][5][1])
     frame = ones(UInt32,height*8,width*8)*game.im.frames[1][5][1]
 
     if height == 1 || width == 1
@@ -286,18 +297,21 @@ function constructFrame(game::GameState,height::UInt,width::UInt)
         frame[1+(i-1)*8:i*8,1+(j-1)*8:j*8] = game.im.frames[game.options.frame][f]
     end
 
-    println(size(frame))
-
     return frame
 end
 
 function drawFrame!(game::GameState,height::UInt,width::UInt,offset::Position)
-    println(size(game.im.layers.menu))
-
     game.im.layers.menu[1+offset.h:height*8+offset.h,
         1+offset.w:width*8+offset.w] = constructFrame(game,height,width)
+end
 
-    println(size(game.im.layers.menu))
+function drawMenu!(game::GameState)
+    drawFrame!(game,UInt(20),UInt(10),Position(24,176))
+    drawText!(game,:menu,"POKEDEX\nPOKEMON\nBEUTEL\nPOKENAV\
+        \n$(game.trainer.name)\nSICHERN\nOPTION\nBEENDEN",
+        UInt(2),Position(38,194); lineoffset=2)
+        
+    drawText!(game,:menu,"▷",UInt(2),Position(38+(game.menu.select)*17,186))
 end
 
 

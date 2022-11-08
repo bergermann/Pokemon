@@ -16,12 +16,18 @@ mutable struct Attack
 
     power::UInt8
     accuracy::UInt8
+
+    effect::Function
 end
 
 mutable struct Item
     name::String
     description::String
     type::UInt8
+
+    function Item()
+        new("","",0x00)
+    end
 end
 
 struct Pokeball
@@ -117,30 +123,81 @@ end
 
 
 
-mutable struct Menu
-    menu::Bool
-    pkdx::Bool
-    pkmn::Bool
-    pnav::Bool
-    bags::Bool
-    self::Bool
-    save::Bool
-    optn::Bool
-    select::UInt8
 
-    function Menu()
-        new(falses(8)...,0x01)
+
+mutable struct Dialogue
+    d::Bool
+    str::Vector{String}
+    n::UInt8
+
+    function Dialogue()
+        new(false,[""],0x01)
+    end
+end
+
+
+
+mutable struct MenuDex
+    open::Bool
+
+    function MenuDex()
+        new(false)
+    end
+end
+
+mutable struct MenuPkmn
+    open::Bool
+    optn::Bool
+    slot::UInt8
+    choice::UInt8
+
+    function MenuPkmn()
+        new(false,false,0x00,0x00)
+    end
+end
+
+mutable struct MenuNav
+    open::Bool
+
+    function MenuNav()
+        new(false)
     end
 end
 
 mutable struct MenuInv
+    open::Bool
+    optn::Bool
     bag::UInt8
     slot::UInt8
+    choice::UInt8
+
+    function MenuInv()
+        new(false,false,0x00,0x00,0x00)
+    end
 end
 
-mutable struct MenuPkmn
-    slot::UInt8
-    optn::UInt8
+mutable struct MenuSelf
+    open::Bool
+
+    function MenuSelf()
+        new(false)
+    end
+end
+
+mutable struct MenuSave
+    open::Bool
+
+    function MenuSave()
+        new(false)
+    end
+end
+
+mutable struct MenuOpt
+    open::Bool
+
+    function MenuOpt()
+        new(false)
+    end
 end
 
 mutable struct MenuBattle
@@ -148,12 +205,35 @@ mutable struct MenuBattle
     col::UInt8
 end
 
+mutable struct Menu
+    ow::Bool
+    menu::Bool
+    select::UInt8
+
+    pdex::MenuDex
+    pkmn::MenuPkmn
+    pnav::MenuNav
+    bags::MenuInv
+    self::MenuSelf
+    save::MenuSave
+    optn::MenuOpt
+
+    function Menu()
+        new(true,false,0x00,MenuDex(),MenuPkmn(),MenuNav(),MenuInv(),MenuSelf(),
+            MenuSave(),MenuOpt())
+    end
+end
+
+
+
 mutable struct Battle
     active::Bool
 
     turn::UInt8
     menu::MenuBattle
 end
+
+
 
 struct Settings
     width::UInt16
@@ -179,11 +259,14 @@ end
 
 struct Options
     frame::UInt8
+    diabox::UInt8
 
     function Options()
-        new(0x01)
+        new(0x01,0x01)
     end
 end
+
+
 
 mutable struct TileMap
     water::Matrix{UInt16}
@@ -211,20 +294,23 @@ mutable struct Map
     tiles::Dict{UInt16,Matrix{UInt32}}
     tilemap::TileMap
 
+    signs::Vector{Vector{String}}
+
     npcs::Vector
     trainers::Vector
 
     function Map(id::UInt8)
         new(id,0,"$id",[],getTiles("tiles_exterior"),
             getTileMap("$id",[:background1,:background2,:foreground1,:foreground2,:collision]),
-            [],[])
+            [],[],[])
     end
 
     function Map(id::UInt8,environment::UInt8,path::String,areas::Vector,
             exits::Vector{Tuple{UInt8,Position}},tiles::Dict{UInt16,Matrix{UInt32}},
-            tilemap::TileMap,npcs::Vector,trainers::Vector)
+            tilemap::TileMap,signs::Vector{Vector{String}},npcs::Vector,
+            trainers::Vector)
 
-        new(id,environment,path,areas,exits,tiles,tilemap,npcs,trainers)
+        new(id,environment,path,areas,exits,tiles,tilemap,signs,npcs,trainers)
     end
 end
 
@@ -240,9 +326,13 @@ mutable struct Layers
     weather::Matrix{UInt32}
 
     textbox::Matrix{UInt32}
-    text::Matrix{UInt32}
-    
     menu::Matrix{UInt32}
+    menu1::Matrix{UInt32}
+    menu2::Matrix{UInt32}
+    menu3::Matrix{UInt32}
+    
+    #text::Matrix{UInt32}
+    
 
     function Layers(; s::Settings=Settings())
         new([zeros(UInt32,UInt16(s.Nh)*UInt16(s.tilesize),
@@ -291,9 +381,9 @@ mutable struct GameState
 
     battle::Battle
 
+    dialogue::Dialogue
+
     menu::Menu
-    menuinv::MenuInv
-    menupkmn::MenuPkmn
 
     n_anim::UInt64
     moveFunc::Function

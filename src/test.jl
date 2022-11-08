@@ -23,6 +23,7 @@ game = GameState(
     false,
     false,
     Battle(false,0x00,MenuBattle(0x00,0x00)),
+    Dialogue(),
     Menu(),
     MenuInv(0x00,0x00),
     MenuPkmn(0x00,0x00),
@@ -43,5 +44,4 @@ game = GameState(
 #drawSpriteMain!(layers,game; s=settings)
 
 #F = getFrames("frames")
-
-F = constructFrame(game,UInt(10),UInt(7))
+;

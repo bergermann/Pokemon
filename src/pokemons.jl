@@ -51,12 +51,19 @@ p001 = Pkmn(
     pokeball,
     [false,false,false,false,false],
 
+
     Stats(Vector{UInt8}([45,49,49,65,65,45]),   #bv
             Vector{UInt8}([0,0,0,0,0,0]),       #dv
             Vector{UInt8}([0,0,0,0,0,0]),       #ev
-            UInt8(0),                           #level
+
+            UInt8(1),                           #level
             UInt32(0),                          #xp
-            UInt8(0)),                          #nature
+
+            UInt8(0),                           #nature
+            
+            0x000b,                             #maxhp
+            0x0005,                             #hp
+            ),
     UInt8(0),
     Item(),
     
@@ -65,3 +72,4 @@ p001 = Pkmn(
     Vector{UInt8}([]),
     Vector{Attack}([])
 )
+

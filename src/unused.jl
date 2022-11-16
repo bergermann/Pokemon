@@ -945,3 +945,80 @@ function drawText!(game::GameState,layer::Symbol,str::String,style::UInt,pos::Po
         end
     end
 end
+
+function combineLayers!(game::GameState; s::Settings=Settings())
+    for k in game.im.draw
+        ind = getfield(game.im.layers,k) .!= 0x000000
+
+        game.im.layer[ind] = getfield(game.im.layers,k)[ind]
+    end
+end
+
+#=
+function drawText!(game::GameState,layer::Symbol,str::String,style::UInt,pos::Position;
+        lineoffset=0)
+    height = [12,15,14][style]
+
+    S = split(str,"\n")
+
+    for i in eachindex(S)
+        vert = 0
+
+        for c in collect(S[i])
+            char = game.im.font[style][c]
+            ind = char .== 0x000000
+            char[ind] = getproperty(game.im.layers,layer)[
+                1+(height+lineoffset)*(i-1)+pos.h:i*(height)+pos.h+lineoffset*(i-1),
+                vert+1+pos.w:vert+size(char)[2]+pos.w
+            ][ind]
+            
+            getproperty(game.im.layers,layer)[
+                1+(height+lineoffset)*(i-1)+pos.h:i*(height)+pos.h+lineoffset*(i-1),
+                vert+1+pos.w:vert+size(char)[2]+pos.w
+            ] = char
+            
+            vert += size(char)[2]
+        end
+    end
+end
+=#
+
+function constructFrame(game::GameState,height::UInt,width::UInt)
+    frame = ones(UInt32,height*8,width*8)*game.im.frames[1][5][1]
+
+    if height == 1 || width == 1
+        return error("Frame is too small.")
+    end
+
+    for i in 1:height, j in 1:width
+        if i != 1 && i != height && j != 1 && j != width
+            f = 5
+        elseif i == 1 && j == 1
+            f = 1
+        elseif i == 1 && j != 1 && j != width
+            f = 2
+        elseif i == 1 && j == width
+            f = 3
+        elseif i != 1 && i != height && j == 1
+            f = 4
+        elseif i != 1 && i != height && j == width
+            f = 6
+        elseif i == height && j == 1
+            f = 7
+        elseif i == height && j != 1 && j != width
+            f = 8
+        else
+            f = 9
+        end
+
+        frame[1+(i-1)*8:i*8,1+(j-1)*8:j*8] = game.im.frames[game.options.frame][f]
+    end
+
+    return frame
+end
+
+function drawFrame!(game::GameState,layer::Symbol,height::UInt,width::UInt,
+        offset::Position)
+    getfield(game.im.layers,layer)[1+offset.h:height*8+offset.h,
+        1+offset.w:width*8+offset.w] = constructFrame(game,height,width)
+end

@@ -8,6 +8,9 @@ mutable struct Stats
     xp::UInt32
 
     nature::UInt8
+    
+    maxhp::UInt16
+    hp::UInt16
 end
 
 mutable struct Attack
@@ -58,6 +61,10 @@ mutable struct Pkmn
     learnableup::Vector{Tuple{Attack,UInt8}}
     learnabletm::Vector{UInt8}
     learnableun::Vector{Attack}
+end
+
+function getHealthBar(pokemon::Pkmn)
+    return ceil(Int,48*pokemon.stats.hp/pokemon.stats.maxhp)
 end
 
 mutable struct Trainer
@@ -148,7 +155,7 @@ end
 mutable struct MenuPkmn
     open::Bool
     optn::Bool
-    slot::UInt8
+    select::UInt8
     choice::UInt8
 
     function MenuPkmn()
@@ -219,7 +226,7 @@ mutable struct Menu
     optn::MenuOpt
 
     function Menu()
-        new(true,false,0x00,MenuDex(),MenuPkmn(),MenuNav(),MenuInv(),MenuSelf(),
+        new(true,false,0x01,MenuDex(),MenuPkmn(),MenuNav(),MenuInv(),MenuSelf(),
             MenuSave(),MenuOpt())
     end
 end
@@ -344,6 +351,8 @@ mutable struct Im
     font::Vector{Dict}
     frames::Dict
     diabox::Dict
+    menupkmn::Dict
+    inv::Dict
 
     spritesmain::Vector{Dict}
     sprites::Dict
@@ -352,13 +361,11 @@ mutable struct Im
 
     layers::Layers
     layer::Matrix{UInt32}
-    draw::Vector{Symbol}
 
     function Im()
         new([getFont()...],getFrames("frames"),getDialogueBox("dialogue"),
-            [getSpriteMain("sprite"),],Dict(),getTiles("tiles_exterior"),Dict(),
-            Layers(),copy(Layers().background1),[:background1,:background2,
-                :spriteslow,:spriteshigh,:foreground1,:foreground2]
+            getMenuPkmn(),getInventory(),[getSpriteMain("sprite"),],Dict(),
+            getTiles("tiles_exterior"),Dict(),Layers(),copy(Layers().background1)
         )
     end
 end

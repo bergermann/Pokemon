@@ -4,6 +4,7 @@ include("core.jl")
 include("rendering.jl")
 include("parser.jl")
 include("controls.jl")
+include("pokemons.jl")
 #include("maps.jl")
 
 function main()
@@ -13,8 +14,8 @@ function main()
 
     game = GameState(
         Im(),
-        Trainer("Void",0x0000,0x02,Vector{Pkmn}([]),[],[],falses(151),
-            getSpriteMain("sprite"; s=settings)),
+        Trainer("Void",0x0000,0x02,Vector{Pkmn}([p001,p001,p001,p001]),[],[],
+            falses(151),getSpriteMain("sprite"; s=settings)),
         Position(0x00000e,0x000013),
         :walk,
         :down,
@@ -34,6 +35,7 @@ function main()
     )
 
     w,b = startWindow(settings)
+    mfb_set_resize_callback(w, resizer)
     mfb_set_keyboard_callback(w, onpress)
 
     n_frames = UInt(0)

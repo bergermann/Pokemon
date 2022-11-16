@@ -5,7 +5,10 @@ using MiniFB: mfb_rgb
 function getFont()
     img = mfb_rgb.(load("im/font.png"))
 
-    symbols1 = "0"
+    symbols1 = "0123456789!?.-⋅~“”‘’♂♀€,×/® \
+            ABCDEFGHIJKLMNOPQRSTUVWXYZ\
+            abcdefghijklmnopqrstuvwxyz\
+            "
     symbols2 = "0123456789!?.-⋅~“”‘’♂♀€,×/®\
             ABCDEFGHIJKLMNOPQRSTUVWXYZ\
             abcdefghijklmnopqrstuvwxyz\
@@ -25,8 +28,9 @@ function getFont()
 
     key1 = Vector{Vector{UInt16}}(
         [
-            [5],
-            [5]
+            [5,4,5,5,5,5,5,5,5,5,2,5,3,5,3,5,5,5,3,3,5,5,5,3,6,5,8,3],
+            [5,5,5,5,5,5,5,5,4,5,5,5,5,5,5,5,5,5,5,4,5,5,5,5,4,5],
+            [5,5,5,5,5,4,5,5,2,4,5,2,5,5,5,5,5,5,5,5,5,5,5,5,5,5]
         ]
     )
     key2 = Vector{Vector{UInt16}}(
@@ -36,7 +40,7 @@ function getFont()
             [5,5,5,5,5,5,5,5,2,5,5,2,5,5,5,5,5,5,5,5,5,5,5,5,5,5],
             [6,3,5,5,5,5,5,5,10,10,9,9,6,8,10,7,10,9,3],
             [10,10,10,10,10,10,10,10,10,4,4,8,8,8],
-            [5,5,5,5,5,5,5,5,4,4,4,4,5,5,5,8,5,5,5,5,6],
+            [5,5,5,5,5,5,5,4,4,4,5,5,5,8,5,5,5,5,6],
             [5,5,5,5,5,5,5,5,3,3,4,4,5,5,5,8,5,5,5,5],
             [5,6,5,9,6,6,8,6,3,5,5,2,6,3,3,6,6],
             [16,15,20]
@@ -92,35 +96,8 @@ function getFont()
 end
 
 function drawText!(game::GameState,layer::Symbol,str::String,style::UInt,pos::Position;
-        lineoffset=0)
-    height = [12,15,14][style]
-
-    S = split(str,"\n")
-
-    for i in eachindex(S)
-        vert = 0
-
-        for c in collect(S[i])
-            char = game.im.font[style][c]
-            ind = char .!= 0x000000
-            char[(!).(ind)] = getproperty(game.im.layers,layer)[
-                1+(height+lineoffset)*(i-1)+pos.h:i*(height)+pos.h+lineoffset*(i-1),
-                vert+1+pos.w:vert+size(char)[2]+pos.w
-            ][(!).(ind)]
-            
-            getproperty(game.im.layers,layer)[
-                1+(height+lineoffset)*(i-1)+pos.h:i*(height)+pos.h+lineoffset*(i-1),
-                vert+1+pos.w:vert+size(char)[2]+pos.w
-            ] = char
-            
-            vert += size(char)[2]
-        end
-    end
-end
-
-#=
-function drawText!(game::GameState,layer::Symbol,str::String,style::UInt,pos::Position;
     lineoffset=0)
+
     height = [12,15,14][style]
 
     S = split(str,"\n")
@@ -131,18 +108,15 @@ function drawText!(game::GameState,layer::Symbol,str::String,style::UInt,pos::Po
         for c in collect(S[i])
             char = game.im.font[style][c]
             ind = char .!= 0x000000
-            #println(ind)
             
-            getproperty(game.im.layers,layer)[
-                1+(height+lineoffset)*(i-1)+pos.h:i*(height)+pos.h+lineoffset*(i-1),
-                vert+1+pos.w:vert+size(char)[2]+pos.w
-            #] = char
-            ][ind] .= char[ind]
+            getproperty(game.im.layers,layer)[CartesianIndices(
+                (1+(height+lineoffset)*(i-1)+pos.h:i*(height)+pos.h+lineoffset*(i-1),
+                vert+1+pos.w:vert+size(char)[2]+pos.w)
+            )[ind]] = char[ind]
             
             vert += size(char)[2]
         end
     end
 end
-=#
 
 ;

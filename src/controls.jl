@@ -303,9 +303,9 @@ function inputManager!(game::GameState,input::Input,n_frame::UInt)
         return nothing
     end
 
-    if !game.battle.active  #movement
+    if !game.battle.active
         if !game.menu.menu && !game.movelock &&
-                (input.up || input.down || input.left || input.right)
+                (input.up || input.down || input.left || input.right)   #movement
             
             inputdir = [:up,:down,:left,:right][[input.up,input.down,input.left,input.right]][1]
             movepos = posAdd(game.pos,dirs[inputdir])
@@ -338,63 +338,76 @@ function inputManager!(game::GameState,input::Input,n_frame::UInt)
             game.transport = :walk
         end
 
-        if !game.menu.menu && !game.dialogue.d && input.start_  #menu opener
+        if !game.menu.menu && !game.dialogue.d && input._start  #menu opener
             game.movelock = true
             game.menu.menu = true
-
-            push!(game.im.draw,:menu)
-        elseif game.menu.menu && (input.start_ || input.B_)
-            game.movelock = false
-            game.menu.menu = false
-
-            filter!(x->x!=:menu,game.im.draw)
-        end
-    
-        if game.menu.menu   #menu navigator
-            if input._down
-                #game.im.layers.textbox[38+(game.menu.select)*17:38+(game.menu.select+1)*17,
-                #    186:192] .*= UInt32(0)
-                game.menu.select = (game.menu.select+0x01)%0x08
-            elseif input._up
-                #game.im.layers.textbox[38+(game.menu.select)*17:38+(game.menu.select+1)*17,
-                #    186:192] .*= UInt32(0)
-                game.menu.select = (game.menu.select-0x01)%0x08
-            end
-
-            drawMenu!(game)
-
-            if input._A
-                if game.menu.select == 0x00
-                    0
-                elseif game.menu.select == 0x01
-                    game.menu.pkmn.open = true
-
-                    game.im.draw = [:menu1,:menu2,:menu3]
-                elseif game.menu.select == 0x02
-                    0
-                elseif game.menu.select == 0x03
-                    0
-                elseif game.menu.select == 0x04
-                    0
-                elseif game.menu.select == 0x05
-                    0
-                elseif game.menu.select == 0x06
-                    0
-                else
+        elseif game.menu.menu   #menu navigator
+            if game.menu.ow
+                if input._down
+                    game.menu.select = (game.menu.select+0x01)%0x08
+                elseif input._up
+                    game.menu.select = (game.menu.select-0x01)%0x08
+                elseif input._A
+                    if game.menu.select == 0x00
+                        0
+                    elseif game.menu.select == 0x01
+                        game.menu.pkmn.open = true
+                        game.menu.ow = false
+                    elseif game.menu.select == 0x02
+                        0
+                    elseif game.menu.select == 0x03
+                        0
+                    elseif game.menu.select == 0x04
+                        0
+                    elseif game.menu.select == 0x05
+                        0
+                    elseif game.menu.select == 0x06
+                        0
+                    else
+                        game.movelock = false
+                        game.menu.menu = false
+                        game.menu.select = 0x01
+                    end
+                elseif (input._start || input._B) && !game.menu.pkmn.open
                     game.movelock = false
                     game.menu.menu = false
-        
-                    filter!(x->x!=:menu,game.im.draw)
+                    game.menu.select = 0x01
                 end
             end
-        end
 
-        if game.menu.pdex.open  #pkmn menu manager
-            0
-        end
-
-        if game.menu.pkmn.open  #pkmn menu manager
-            0
+            if game.menu.pdex.open  #pdex menu manager
+                0
+            elseif game.menu.pkmn.open  #pkmn menu manager
+                if input._A
+                    if game.menu.pkmn.select == length(game.trainer.pokemon)
+                        game.menu.pkmn.open = false
+                        game.menu.pkmn.select = 0x00
+                        game.menu.ow = true
+                    end
+                elseif input._B
+                    game.menu.pkmn.open = false
+                    game.menu.pkmn.select = 0x00
+                    game.menu.ow = true
+                elseif input._down
+                    if game.menu.pkmn.select == length(game.trainer.pokemon)
+                        game.menu.pkmn.select = 0x00
+                    else
+                        game.menu.pkmn.select += 0x01
+                    end
+                elseif input._up
+                    if game.menu.pkmn.select == 0x00
+                        game.menu.pkmn.select = length(game.trainer.pokemon)
+                    else
+                        game.menu.pkmn.select -= 0x01
+                    end
+                elseif input._left || input._right
+                    if game.menu.pkmn.select == 0x00
+                        game.menu.pkmn.select = 0x01
+                    else
+                        game.menu.pkmn.select = 0x00
+                    end
+                end
+            end
         end
 
         if !game.menu.menu && !game.movelock && input._A    #dialogue
@@ -402,8 +415,6 @@ function inputManager!(game::GameState,input::Input,n_frame::UInt)
         elseif game.dialogue.d && (input._A || input._B || input._down)
             game.dialogue.d = false
             game.movelock = false
-
-            filter!(x->x!=:textbox,game.im.draw)
         end
     else
         0
@@ -426,9 +437,7 @@ function mapAction!(game::GameState)
     elseif tile >= 0x003c && tile <= 0x004f
         game.movelock = true
         game.dialogue.d = true
-        drawDialogue!(game,game.map.signs[tile-0x003b][1])
-
-        push!(game.im.draw,:textbox)
+        game.dialogue.str = game.map.signs[tile-0x003b][1]
     end
 end
 
@@ -445,13 +454,4 @@ function updateGame!(game::GameState,input::Input,n_frame::UInt; s=Settings())
     if game.map.tilemap.collision[game.pos.h,game.pos.w] != 0x0000
         changeMap!(game,game.map.exits[game.map.tilemap.collision[game.pos.h,game.pos.w]-19])
     end
-end
-
-function drawGame!(game::GameState,n_frame::UInt; s=Settings())
-    if game.menu.ow
-        drawLayers!(game,n_frame; s=s)
-        drawSpriteMain!(game; s=s)
-    end
-
-    combineLayers!(game; s=s)
 end

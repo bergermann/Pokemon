@@ -1,6 +1,6 @@
 #list of pokemons
 
-include("core.jl")
+#include("core.jl")
 include("pokeballs.jl")
 
 #=

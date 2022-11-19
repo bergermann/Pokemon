@@ -54,38 +54,6 @@ end
 
 
 
-function drawMap!(game::GameState,n_frame::UInt; s=Settings())
-    dh,dw = div(s.Nh-0x01,0x02),div(s.Nw-0x01,0x02)
-
-    for k in [:background1,:background2,:foreground1,:foreground2]  #:water,
-        for i in 1:s.Nh, j in 1:s.Nw
-            getfield(game.im.layers,k)[1+(i-1)*s.tilesize:i*s.tilesize,
-                1+(j-1)*s.tilesize:j*s.tilesize] = game.map.tiles[
-                    getfield(game.map.tilemap,k)[game.pos.h+i-dh-1,
-                    game.pos.w+j-dw-1]]
-        end
-    end
-end
-
-function combineLayers!(game::GameState,layers::Vector{Symbol};
-        s::Settings=Settings())
-    
-    for k in layers
-        ind = getfield(game.im.layers,k) .!= 0x000000
-
-        game.im.layer[ind] = getfield(game.im.layers,k)[ind]
-    end
-end
-
-
-
-
-
-
-
-
-
-
 function getTiles(tileset::String; s=Settings())
     tileset = mfb_rgb.(load(string("maps/",tileset,".png")))
 
@@ -119,6 +87,38 @@ end
 
 
 
+
+
+function drawMap!(game::GameState; s=Settings())
+    dh,dw = div(s.Nh-0x01,0x02),div(s.Nw-0x01,0x02)
+
+    for k in game.map.environment
+        @inbounds for i in 1:s.Nh, j in 1:s.Nw
+            getfield(game.im.layers,k)[1+(i-1)*s.tilesize:i*s.tilesize,
+                1+(j-1)*s.tilesize:j*s.tilesize] = game.map.tiles[
+                    getfield(game.map.tilemap,k)[game.pos.h+i-dh-1,
+                    game.pos.w+j-dw-1]]
+        end
+    end
+end
+
+function combineLayers!(game::GameState,layers::Vector{Symbol};
+    s::Settings=Settings())
+
+    l = game.im.layer
+
+    @inbounds for k in layers
+        ls = getproperty(game.im.layers,k)
+
+        @inbounds for i in eachindex(l)
+            @views if ls[i] != 0x000000
+                l[i] = ls[i]
+            end
+        end
+    end
+
+    return
+end
 
 
 
@@ -191,8 +191,8 @@ function drawSpriteMain!(layers::Layers,game::GameState; s=Settings())
     height,width = size(S)./s.tilesize
     dh,dw = Int((s.Nh-1)/2),Int((s.Nw-1)/2)
 
-    layers.spriteshigh .*= 0x000000
-    layers.spriteslow .*= 0x000000
+    layers.spriteshigh .= 0x000000
+    layers.spriteslow .= 0x000000
 
     layers.spriteshigh[(dh-1)*s.tilesize+1+game.spriteoffset.h:dh*s.tilesize+game.spriteoffset.h,
         Int(dw-0.5+width/2)*s.tilesize+1+game.spriteoffset.w:Int(dw-0.5+width/2+1)*s.tilesize+game.spriteoffset.w] =
@@ -210,8 +210,8 @@ function drawSpriteMain!(game::GameState; s=Settings())
     height,width = size(S)./s.tilesize
     dh,dw = Int((s.Nh-1)/2),Int((s.Nw-1)/2)
 
-    game.im.layers.spriteshigh .*= 0x000000
-    game.im.layers.spriteslow .*= 0x000000
+    game.im.layers.spriteshigh .= 0x000000
+    game.im.layers.spriteslow .= 0x000000
 
     game.im.layers.spriteshigh[(dh-1)*s.tilesize+1+game.spriteoffset.h:dh*s.tilesize+game.spriteoffset.h,
         Int(dw-0.5+width/2)*s.tilesize+1+game.spriteoffset.w:Int(dw-0.5+width/2+1)*s.tilesize+game.spriteoffset.w] =
@@ -266,11 +266,7 @@ end
 function drawFrame!(game::GameState,layer::Symbol,height::UInt,width::UInt,
         pos::Position)
     
-    if height == 1 || width == 1
-        return error("Frame is too small.")
-    end
-
-    for i in 1:height, j in 1:width
+    @inbounds for i in 1:height, j in 1:width
         if i != 1 && i != height && j != 1 && j != width
             getfield(game.im.layers,layer)[1+pos.h+(i-1)*8:pos.h+i*8,
                 1+pos.w+(j-1)*8:pos.w+j*8] = game.im.frames[game.options.frame][5]
@@ -302,12 +298,85 @@ function drawFrame!(game::GameState,layer::Symbol,height::UInt,width::UInt,
     end
 end
 
+function drawFrame1!(game::GameState,layer::Symbol,height::UInt,width::UInt,
+        pos::Position)
+    
+    @inbounds for h in 1:height, w in 1:width
+        if h != 1 && h != height && w != 1 && w != width
+            @inbounds for i in eachindex(game.im.frames[game.options.frame][5])
+                getfield(game.im.layers,layer)[
+                        1+pos.h+(w-1)*8+(i-1)%8,
+                        1+pos.w+(w-1)*8+div(i-1,8)
+                    ] = game.im.frames[game.options.frame][5][i]
+            end
+        elseif h == 1 && w == 1
+            @inbounds for i in eachindex(game.im.frames[game.options.frame][1])
+                getfield(game.im.layers,layer)[
+                        1+pos.h+(w-1)*8+(i-1)%8,
+                        1+pos.w+(w-1)*8+div(i-1,8)
+                    ] = game.im.frames[game.options.frame][1][i]
+            end
+        elseif h == 1 && w != 1 && w != width
+            @inbounds for i in eachindex(game.im.frames[game.options.frame][2])
+                getfield(game.im.layers,layer)[
+                        1+pos.h+(w-1)*8+(i-1)%8,
+                        1+pos.w+(w-1)*8+div(i-1,8)
+                    ] = game.im.frames[game.options.frame][2][i]
+            end
+        elseif h == 1 && w == width
+            @inbounds for i in eachindex(game.im.frames[game.options.frame][3])
+                getfield(game.im.layers,layer)[
+                        1+pos.h+(w-1)*8+(i-1)%8,
+                        1+pos.w+(w-1)*8+div(i-1,8)
+                    ] = game.im.frames[game.options.frame][3][i]
+            end
+        elseif h != 1 && h != height && w == 1
+            @inbounds for i in eachindex(game.im.frames[game.options.frame][4])
+                getfield(game.im.layers,layer)[
+                        1+pos.h+(w-1)*8+(i-1)%8,
+                        1+pos.w+(w-1)*8+div(i-1,8)
+                    ] = game.im.frames[game.options.frame][4][i]
+            end
+        elseif h != 1 && h != height && w == width
+            @inbounds for i in eachindex(game.im.frames[game.options.frame][6])
+                getfield(game.im.layers,layer)[
+                        1+pos.h+(w-1)*8+(i-1)%8,
+                        1+pos.w+(w-1)*8+div(i-1,8)
+                    ] = game.im.frames[game.options.frame][6][i]
+            end
+        elseif h == height && w == 1
+            @inbounds for i in eachindex(game.im.frames[game.options.frame][7])
+                getfield(game.im.layers,layer)[
+                        1+pos.h+(w-1)*8+(i-1)%8,
+                        1+pos.w+(w-1)*8+div(i-1,8)
+                    ] = game.im.frames[game.options.frame][7][i]
+            end
+        elseif h == height && w != 1 && w != width
+            @inbounds for i in eachindex(game.im.frames[game.options.frame][8])
+                getfield(game.im.layers,layer)[
+                        1+pos.h+(w-1)*8+(i-1)%8,
+                        1+pos.w+(w-1)*8+div(i-1,8)
+                    ] = game.im.frames[game.options.frame][8][i]
+            end
+        else
+            @inbounds for i in eachindex(game.im.frames[game.options.frame][9])
+                getfield(game.im.layers,layer)[
+                        1+pos.h+(w-1)*8+(i-1)%8,
+                        1+pos.w+(w-1)*8+div(i-1,8)
+                    ] = game.im.frames[game.options.frame][9][i]
+            end
+        end
+    end
+end
+
 function drawMenu!(game::GameState)
-    drawFrame!(game,:menu,UInt(20),UInt(10),Position(24,176))
-    drawText!(game,:menu,"POKEDEX\nPOKEMON\nBEUTEL\nPOKENAV\
-        \n$(game.trainer.name)\nSICHERN\nOPTION\nBEENDEN",
+    print("frame: ")
+    @time drawFrame!(game,:menu,UInt(20),UInt(10),Position(24,176))
+
+    drawText!(game,:menu,"POKEDEX\\POKEMON\\BEUTEL\\POKENAV\
+        \\$(game.trainer.name)\\SICHERN\\OPTION\\BEENDEN",
         UInt(2),Position(38,194); lineoffset=2)
-        
+
     drawText!(game,:menu,"▷",UInt(2),Position(38+(game.menu.select)*17,186))
 end
 
@@ -375,7 +444,7 @@ function drawMenuPkmn!(game::GameState)
                     16+2+1:16+2+20] = game.im.menupkmn["ball0"]
             end
             
-            drawText!(game,:menu1,game.trainer.pokemon[1].name*"\n  Lv."*
+            drawText!(game,:menu1,game.trainer.pokemon[1].name*"\\  Lv."*
                 string(game.trainer.pokemon[1].stats.level),UInt(1),
                 Position(24+34,16+34); lineoffset = -3)
             
@@ -400,7 +469,7 @@ function drawMenuPkmn!(game::GameState)
                     16+88+1:16+88+20] = game.im.menupkmn["ball0"]
             end
             
-            drawText!(game,:menu1,game.trainer.pokemon[i].name*"\n  Lv."*
+            drawText!(game,:menu1,game.trainer.pokemon[i].name*"\\  Lv."*
                 string(game.trainer.pokemon[i].stats.level),UInt(1),
                 Position(24+11+(i-2)*24,16+121); lineoffset = -3)
             
@@ -450,7 +519,7 @@ end
 
 
 function getInventory()
-    img = mfb_rgb.(load("im/menupkmn.png"))
+    img = mfb_rgb.(load("im/inventory.png"))
 
     parts::Vector{String} = [
         "bgblue","bgred","items","balls","machines","berries","key","marker1","marker0","`?",
@@ -493,6 +562,49 @@ function getInventory()
 end
 
 function drawInventory!(game::GameState)
+    game.im.layers.menu1[24+1:24+160,16+1:16+240] = game.im.inv["bgblue"]
+
+    for i in 0:4
+        game.im.layers.menu2[24+24+1:24+24+8,16+40+1+i*8:16+40+8+i*8] .= 0x000000
+    end
+
+    game.im.layers.menu2[24+24+1:24+24+8,
+        16+40+1+game.menu.bags.slot*8:16+40+8+game.menu.bags.slot*8] = game.im.inv["slotred"]
+
+    if game.menu.bags.slot == 0x00
+        game.im.layers.menu1[24+8+1:24+8+16,16+24+1:16+24+80] = game.im.inv["items"]
+        game.im.layers.menu2[24+36+1:24+36+64,16+40+1:16+40+64] = game.im.inv["bag1"]
+    elseif game.menu.bags.slot == 0x01
+        game.im.layers.menu1[24+8+1:24+8+16,16+24+1:16+24+80] = game.im.inv["balls"]
+        game.im.layers.menu2[24+36+1:24+36+64,16+40+1:16+40+64] = game.im.inv["bag2"]
+    elseif game.menu.bags.slot == 0x02
+        game.im.layers.menu1[24+8+1:24+8+16,16+24+1:16+24+80] = game.im.inv["machines"]
+        game.im.layers.menu2[24+36+1:24+36+64,16+40+1:16+40+64] = game.im.inv["bag3"]
+    elseif game.menu.bags.slot == 0x03
+        game.im.layers.menu1[24+8+1:24+8+16,16+24+1:16+24+80] = game.im.inv["berries"]
+        game.im.layers.menu2[24+36+1:24+36+64,16+40+1:16+40+64] = game.im.inv["bag4"]
+    elseif game.menu.bags.slot == 0x04
+        game.im.layers.menu1[24+8+1:24+8+16,16+24+1:16+24+80] = game.im.inv["key"]
+        game.im.layers.menu2[24+36+1:24+36+64,16+40+1:16+40+64] = game.im.inv["bag5"]
+    end
+
+    if game.n.frame%0x1e < 0x0f
+        game.im.layers.menu2[
+            24+8+1:24+8+16,16+22+1-div(game.n.frame%0x1e,0x05):16+22+16-div(game.n.frame%0x1e,0x05)
+        ] = game.im.inv["left"]
+        
+        game.im.layers.menu2[
+            24+8+1:24+8+16,16+90+1+div(game.n.frame%0x1e,0x05):16+90+16+div(game.n.frame%0x1e,0x05)
+        ] = game.im.inv["right"]
+    else
+        game.im.layers.menu2[
+            24+8+1:24+8+16,16+19+1+div(game.n.frame%0x1e,0x05):16+19+16+div(game.n.frame%0x1e,0x05)
+        ] = game.im.inv["left"]
+        
+        game.im.layers.menu2[
+            24+8+1:24+8+16,16+93+1-div(game.n.frame%0x1e,0x05):16+93+16-div(game.n.frame%0x1e,0x05)
+        ] = game.im.inv["right"]
+    end
 
 end
 
@@ -503,18 +615,25 @@ end
 
 
 
-
 function drawGame!(game::GameState,n_frame::UInt; s=Settings())
     if game.menu.ow && !game.menu.menu
-        drawMap!(game,n_frame; s=s)
+        #print("map: ")
+        #@time
+        drawMap!(game; s=s)
+        #print("sprite: ")
+        #@time
         drawSpriteMain!(game; s=s)
 
         if game.dialogue.d
             drawDialogue!(game,game.dialogue.str)
 
+            #print("combine:")
+            #@time 
             combineLayers!(game,[:background1,:background2,:spriteslow,:spriteshigh,
                 :foreground1,:foreground2,:textbox]; s=s)
         else
+            #print("combine:")
+            #@time 
             combineLayers!(game,[:background1,:background2,:spriteslow,
                 :spriteshigh,:foreground1,:foreground2]; s=s)
         end
@@ -523,13 +642,17 @@ function drawGame!(game::GameState,n_frame::UInt; s=Settings())
     end
 
     if game.menu.menu && game.menu.ow
-        drawMap!(game,n_frame; s=s)
+        #print("map: ")
+        drawMap!(game; s=s)
+        #@time 
         drawSpriteMain!(game; s=s)
         drawMenu!(game)
 
+        #print("combine:")
+        #@time 
         combineLayers!(game,[:background1,:background2,:spriteslow,:spriteshigh,
             :foreground1,:foreground2,:menu]; s=s)
-        
+    
         return
     end
 
@@ -537,9 +660,11 @@ function drawGame!(game::GameState,n_frame::UInt; s=Settings())
         if game.menu.pdex.open
             return
         elseif game.menu.pkmn.open
-            drawMenuPkmn!(game)
+            print("menu pkmn: ")
+            @time drawMenuPkmn!(game)
         elseif game.menu.bags.open
-            return
+            print("menu bags: ")
+            @time drawInventory!(game)
         elseif game.menu.pnav.open
             return
         elseif game.menu.self.open
@@ -548,6 +673,8 @@ function drawGame!(game::GameState,n_frame::UInt; s=Settings())
             return
         end
 
+        #print("combine:")
+        #@time
         combineLayers!(game,[:menu1,:menu2,:menu3]; s=s)
 
         return
@@ -575,5 +702,14 @@ function resizer(window,w,h)
     mfb_set_viewport(window,0,0,round(Int,240*s),round(Int,160*s))
 
     return nothing
+end
+
+function writeToBuffer!(buffer::Matrix{UInt32},game::GameState; s=Settings())
+    @inbounds for i in eachindex(buffer)
+        buffer[i] = game.im.layer[
+            24+1+div(i-1,s.width)+game.screenoffset.h,
+            16+1+(i-1)%s.width+game.screenoffset.w
+        ]
+    end
 end
 ;

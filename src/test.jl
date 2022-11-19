@@ -1,44 +1,57 @@
 using BenchmarkTools
 
 include("core.jl")
-include("controls.jl")
 include("rendering.jl")
-include("maps.jl")
+include("controls.jl")
+#include("maps.jl")
 
-settings = Settings()
+function test()
+    settings = Settings()
 
-spritemain = getSpriteMain("sprite")
+    spritemain = getSpriteMain("sprite")
 
-game = GameState(
-        Im(),
-        Trainer("Void",0x0000,0x02,Vector{Pkmn}([]),[],[],falses(151),
-            getSpriteMain("sprite"; s=settings)),
-        Position(0x00000e,0x000013),
-        :walk,
-        :down,
-        0x01,
-        Position(0,0),
-        map0,
-        false,
-        false,
-        false,
-        Battle(false,0x00,MenuBattle(0x00,0x00)),
-        Dialogue(),
-        Menu(),
-        UInt(0),
-        moveDont!,
-        Position(0x000000,0x000000),
-        Options()
-    )
-#drawLayers!(layers,[:background,:foreground],game; s=settings)
+    game = GameState(
+            Im(),
+            Trainer("Void",0x0000,0x02,Vector{Pkmn}([]),[],[],falses(151),
+                getSpriteMain("sprite"; s=settings)),
+            Position(0x00000e,0x000013),
+            :walk,
+            :down,
+            0x01,
+            Position(0,0),
+            map0,
+            false,
+            false,
+            false,
+            Battle(false,0x00,MenuBattle(0x00,0x00)),
+            Dialogue(),
+            Menu(),
+            UInt(0),
+            Counters(),
+            moveDont!,
+            Position(0x000000,0x000000),
+            Options()
+        )
 
 
-#updateLayers!(layers,[:background,:foreground],game,(h=Int8(1),w=Int8(0)); 
-#        s=settings)
+    #@btime drawText!(game,:menu,"abcd\\efgh\\ijkl",UInt(2),Position(100,50))
+    #@btime drawFrame!(game,:menu,UInt(20),UInt(10),Position(24,176))
+    #@btime drawFrame1!(game,:menu,UInt(20),UInt(10),Position(24,176))
 
-#L = combineLayers(layers,[:background,:foreground]; s=settings)
+    drawMap!(game)
+    #@btime drawMap2!(game)
+    l = [:background1,:background2,:spriteslow,:spriteshigh,
+    :foreground1,:foreground2,:menu]
+    
+    @btime combineLayers!($game,$l)
+    #@btime combineLayers2!($game,[:background1,:background2,:spriteslow,:spriteshigh,
+    #    :foreground1,:foreground2,:menu])
+    #@btime combineLayers3!($game,[:background1,:background2,:spriteslow,:spriteshigh,
+    #    :foreground1,:foreground2,:menu])
 
-#drawSpriteMain!(layers,game; s=settings)
+    return
+end
 
-#F = getFrames("frames")
+test()
+
 ;

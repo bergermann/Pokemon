@@ -353,8 +353,11 @@ function inputManager!(game::GameState,input::Input,n_frame::UInt)
                     elseif game.menu.select == 0x01
                         game.menu.pkmn.open = true
                         game.menu.ow = false
+                        game.im.layers.menu2 .= 0x000000
                     elseif game.menu.select == 0x02
-                        0
+                        game.menu.bags.open = true
+                        game.menu.ow = false
+                        game.im.layers.menu2 .= 0x000000
                     elseif game.menu.select == 0x03
                         0
                     elseif game.menu.select == 0x04
@@ -368,7 +371,8 @@ function inputManager!(game::GameState,input::Input,n_frame::UInt)
                         game.menu.menu = false
                         game.menu.select = 0x01
                     end
-                elseif (input._start || input._B) && !game.menu.pkmn.open
+                elseif (input._start || input._B) && !game.menu.pkmn.open &&
+                        !game.menu.bags.open
                     game.movelock = false
                     game.menu.menu = false
                     game.menu.select = 0x01
@@ -405,6 +409,38 @@ function inputManager!(game::GameState,input::Input,n_frame::UInt)
                         game.menu.pkmn.select = 0x01
                     else
                         game.menu.pkmn.select = 0x00
+                    end
+                end
+            elseif game.menu.bags.open
+                if input._A
+                    0
+                elseif input._B
+                    game.menu.bags.open = false
+                    game.menu.bags.select = 0x00
+                    game.menu.ow = true
+                elseif input._down
+                    if game.menu.bags.select == 0x06
+                        game.menu.bags.select = 0x00
+                    else
+                        game.menu.bags.select += 0x01
+                    end
+                elseif input._up
+                    if game.menu.bags.select == 0x00
+                        game.menu.bags.select = 0x06
+                    else
+                        game.menu.bags.select -= 0x01
+                    end
+                elseif input._left
+                    if game.menu.bags.slot == 0x00
+                        game.menu.bags.slot = 0x04
+                    else
+                        game.menu.bags.slot -= 0x01
+                    end
+                elseif input._right
+                    if game.menu.bags.slot == 0x04
+                        game.menu.bags.slot = 0x00
+                    else
+                        game.menu.bags.slot += 0x01
                     end
                 end
             end

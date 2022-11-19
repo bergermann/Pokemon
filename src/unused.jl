@@ -1022,3 +1022,108 @@ function drawFrame!(game::GameState,layer::Symbol,height::UInt,width::UInt,
     getfield(game.im.layers,layer)[1+offset.h:height*8+offset.h,
         1+offset.w:width*8+offset.w] = constructFrame(game,height,width)
 end
+
+
+function drawText!(game::GameState,layer::Symbol,str::String,style::UInt,pos::Position;
+    lineoffset=0)
+
+    height = [12,15,14][style]
+
+    S = split(str,"\n")
+
+    for i in eachindex(S)
+        vert = 0
+
+        for c in collect(S[i])
+            char = game.im.font[style][c]
+            ind = char .!= 0x000000
+            
+            getproperty(game.im.layers,layer)[CartesianIndices(
+                (1+(height+lineoffset)*(i-1)+pos.h:i*(height)+pos.h+lineoffset*(i-1),
+                vert+1+pos.w:vert+size(char)[2]+pos.w)
+            )[ind]] = char[ind]
+            
+            vert += size(char)[2]
+        end
+    end
+end
+
+
+function drawMap!(game::GameState,n_frame::UInt; s=Settings())
+    dh,dw = div(s.Nh-0x01,0x02),div(s.Nw-0x01,0x02)
+
+    for k in game.map.environment  #:water,
+        for i in 1:s.Nh, j in 1:s.Nw
+            getfield(game.im.layers,k)[1+(i-1)*s.tilesize:i*s.tilesize,
+                1+(j-1)*s.tilesize:j*s.tilesize] = game.map.tiles[
+                    getfield(game.map.tilemap,k)[game.pos.h+i-dh-1,
+                    game.pos.w+j-dw-1]]
+        end
+    end
+end
+
+function drawMap2!(game::GameState; s=Settings())
+    dh,dw = div(s.Nh-0x01,0x02),div(s.Nw-0x01,0x02)
+
+    for k in game.map.environment
+        for n in 1:(s.Nh*s.Nw)
+            game.im.tile = game.map.tiles[getfield(game.map.tilemap,k)[
+                game.pos.h+(n-1)%s.Nh-dh,game.pos.w+div(n-1,s.Nw)-dw
+            ]]
+            for i in 1:(s.tilesize*s.tilesize)
+                getfield(game.im.layers,k)[
+                    (h-1)*s.tilesize+(i-1)%s.tilesize+1,
+                    (w-1)*s.tilesize+div(j-1,s.tilesize)+1
+                ] = game.im.tile[i,j]
+            end
+        end
+    end
+end
+
+
+function drawMap1!(game::GameState; s=Settings())
+    dh,dw = div(s.Nh-0x01,0x02),div(s.Nw-0x01,0x02)
+
+    @inbounds for k in game.map.environment
+        @inbounds for n in 1:(s.Nh*s.Nw)
+            game.im.tile = game.map.tiles[getfield(game.map.tilemap,k)[
+                game.pos.h+(n-1)%s.Nh-dh,game.pos.w+div(n-1,s.Nw)-dw
+            ]]
+            @inbounds for i in eachindex(game.im.tile)
+                getfield(game.im.layers,k)[
+                    ((n-1)%s.Nh-1)*s.tilesize+(i-1)%s.tilesize+1,
+                    (div(n-1,s.Nw)-1)*s.tilesize+div(i-1,s.tilesize)+1
+                ] = game.im.tile[i]
+            end
+        end
+    end
+
+    return nothing
+end
+
+function combineLayers1!(game::GameState,layers::Vector{Symbol}; s::Settings=Settings())
+    for k in layers
+        ind = getfield(game.im.layers,k) .!= 0x000000
+
+        game.im.layer[ind] = getfield(game.im.layers,k)[ind]
+    end
+end
+
+
+
+function combineLayers2!(game::GameState,layers::Vector{Symbol};
+    s::Settings=Settings())
+
+    ls = game.im.l
+    l = game.im.layer
+
+    @inbounds for k in 1:size(l,3)
+        @inbounds for i in eachindex(l)
+            @views if ls[:,:,k][i] != 0x000000
+                l[i] = ls[:,:,k][i]
+            end
+        end
+    end
+
+    return
+end

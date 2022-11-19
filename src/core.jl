@@ -1,4 +1,4 @@
-#include("rendering.jl")
+
 
 mutable struct Stats
     bv::Vector{UInt8}
@@ -174,8 +174,8 @@ end
 mutable struct MenuInv
     open::Bool
     optn::Bool
-    bag::UInt8
     slot::UInt8
+    select::UInt8
     choice::UInt8
 
     function MenuInv()
@@ -293,7 +293,7 @@ end
 
 mutable struct Map
     id::UInt8
-    environment::UInt8
+    environment::Vector{Symbol}
     path::String
 
     areas::Vector
@@ -312,7 +312,7 @@ mutable struct Map
             [],[],[])
     end
 
-    function Map(id::UInt8,environment::UInt8,path::String,areas::Vector,
+    function Map(id::UInt8,environment::Vector{Symbol},path::String,areas::Vector,
             exits::Vector{Tuple{UInt8,Position}},tiles::Dict{UInt16,Matrix{UInt32}},
             tilemap::TileMap,signs::Vector{Vector{String}},npcs::Vector,
             trainers::Vector)
@@ -347,8 +347,26 @@ mutable struct Layers
     end
 end
 
+mutable struct Font
+    fonts::Tuple{Dict,Dict,Dict}
+    heights::Tuple{UInt,UInt,UInt}
+    h_::UInt
+    w_::UInt
+    h::UInt
+    w::UInt
+    char::Matrix{UInt32}
+
+    function Font()
+        new(getFont(),(12,15,14),12,5,0,0,zeros(UInt32,15,5))
+    end
+end
+
+mutable struct Frame
+    frame::Dict
+end
+
 mutable struct Im
-    font::Vector{Dict}
+    font::Font
     frames::Dict
     diabox::Dict
     menupkmn::Dict
@@ -358,15 +376,29 @@ mutable struct Im
     sprites::Dict
     tilesext::Dict
     tilesint::Dict
+    tile::Matrix{UInt32}
 
     layers::Layers
     layer::Matrix{UInt32}
+    bitmap::BitMatrix
 
     function Im()
-        new([getFont()...],getFrames("frames"),getDialogueBox("dialogue"),
+        new(
+            Font(),getFrames("frames"),getDialogueBox("dialogue"),
             getMenuPkmn(),getInventory(),[getSpriteMain("sprite"),],Dict(),
-            getTiles("tiles_exterior"),Dict(),Layers(),copy(Layers().background1)
+            getTiles("tiles_exterior"),Dict(),zeros(UInt32,16,16),Layers(),
+            copy(Layers().background1),BitMatrix(undef,size(Layers().background1))
         )
+    end
+end
+
+mutable struct Counters
+    frame::UInt
+    anim::UInt
+    idle::UInt
+
+    function Counters()
+        new(0,0,0)
     end
 end
 
@@ -392,7 +424,8 @@ mutable struct GameState
 
     menu::Menu
 
-    n_anim::UInt64
+    n_anim::UInt
+    n::Counters
     moveFunc::Function
 
     screenoffset::Position

@@ -1,66 +1,14 @@
 
+include("pokemons.jl")
 
-mutable struct Stats
-    bv::Vector{UInt8}
-    dv::Vector{UInt8}   #HP, At, Def, SpAt, SpDef, Init
-    ev::Vector{UInt8}
-    level::UInt8
-    xp::UInt32
+mutable struct PkmnData
+    base::Matrix{UInt16}
+    name::Vector{String}
+    dex::Vector{String}
 
-    nature::UInt8
-    
-    maxhp::UInt16
-    hp::UInt16
-end
-
-mutable struct Attack
-    name::String
-    description::String
-
-    power::UInt8
-    accuracy::UInt8
-
-    effect::Function
-end
-
-mutable struct Item
-    name::String
-    description::String
-    type::UInt8
-
-    function Item()
-        new("","",0x00)
+    function PkmnData()
+        new(getStatsBase(),[],[])
     end
-end
-
-struct Pokeball
-    name::String
-    description::String
-    catchrate::Float64
-    sprite
-end
-
-mutable struct Pkmn
-    id::UInt16
-    name::String
-    gender::UInt8
-    genderweight::Vector{UInt8} #sample(x,aweigths(w))
-    shiny::Bool
-
-    otrainer::String
-    otrainerid::UInt16
-    location::String
-    ball::Pokeball
-    markers::Vector{Bool}
-
-    stats::Stats
-    status::UInt8
-    item::Item
-
-    attacks::Vector{Attack}
-    learnableup::Vector{Tuple{Attack,UInt8}}
-    learnabletm::Vector{UInt8}
-    learnableun::Vector{Attack}
 end
 
 function getHealthBar(pokemon::Pkmn)
@@ -404,6 +352,7 @@ end
 
 mutable struct GameState
     im::Im
+    pkmndata::PkmnData
 
     trainer::Trainer
 

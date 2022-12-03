@@ -1,6 +1,6 @@
 #
-using Images: load
-using MiniFB: mfb_rgb
+#using Images: load
+#using MiniFB: mfb_rgb
 
 function getFont()
     img = mfb_rgb.(load("im/font.png"))

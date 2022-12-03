@@ -1127,3 +1127,14 @@ function combineLayers2!(game::GameState,layers::Vector{Symbol};
 
     return
 end
+
+function getFrames(set::String)
+    frames = mfb_rgb.(load("im/$set.png"))
+
+    return Dict{Int64,Array{UInt32,3}}(zip(collect(1:30),[
+        cat([frames[1+(i-1)*8+(rows-1)*8:i*8+(rows-1)*8,
+        1+(j-1)*8+(cols-1)*8:j*8+(cols-1)*8] for j in 1:3, i in 1:3][:]...; dims=3)
+            for cols in 1:10, rows in 1:3
+        ])
+    )
+end

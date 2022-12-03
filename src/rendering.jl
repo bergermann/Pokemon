@@ -255,10 +255,9 @@ end
 function getFrames(set::String)
     frames = mfb_rgb.(load("im/$set.png"))
 
-    return Dict{Int64,Vector{Matrix{UInt32}}}(zip(collect(1:30),[
-        [frames[1+(i-1)*8+(rows-1)*8:i*8+(rows-1)*8,
-        1+(j-1)*8+(cols-1)*8:j*8+(cols-1)*8] for j in 1:3, i in 1:3][:]
-            for cols in 1:10, rows in 1:3
+    return Dict{Int64,Matrix{UInt32}}(zip(collect(1:30),[
+            frames[1+(rows-1)*24:rows*24,1+(cols-1)*24:cols*24]
+                for cols in 1:10, rows in 1:3
         ])
     )
 end
@@ -266,104 +265,72 @@ end
 function drawFrame!(game::GameState,layer::Symbol,height::UInt,width::UInt,
         pos::Position)
     
+    l = getfield(game.im.layers,layer)
+    f = game.im.frames[game.options.frame]
+    
     @inbounds for i in 1:height, j in 1:width
         if i != 1 && i != height && j != 1 && j != width
-            getfield(game.im.layers,layer)[1+pos.h+(i-1)*8:pos.h+i*8,
-                1+pos.w+(j-1)*8:pos.w+j*8] = game.im.frames[game.options.frame][5]
+            l[1+pos.h+(i-1)*8:pos.h+i*8,
+                1+pos.w+(j-1)*8:pos.w+j*8] = f[5]
         elseif i == 1 && j == 1
-            getfield(game.im.layers,layer)[1+pos.h+(i-1)*8:pos.h+i*8,
-                1+pos.w+(j-1)*8:pos.w+j*8] = game.im.frames[game.options.frame][1]
+            l[1+pos.h+(i-1)*8:pos.h+i*8,
+                1+pos.w+(j-1)*8:pos.w+j*8] = f[1]
         elseif i == 1 && j != 1 && j != width
-            getfield(game.im.layers,layer)[1+pos.h+(i-1)*8:pos.h+i*8,
-                1+pos.w+(j-1)*8:pos.w+j*8] = game.im.frames[game.options.frame][2]
+            l[1+pos.h+(i-1)*8:pos.h+i*8,
+                1+pos.w+(j-1)*8:pos.w+j*8] = f[2]
         elseif i == 1 && j == width
-            getfield(game.im.layers,layer)[1+pos.h+(i-1)*8:pos.h+i*8,
-                1+pos.w+(j-1)*8:pos.w+j*8] = game.im.frames[game.options.frame][3]
+            l[1+pos.h+(i-1)*8:pos.h+i*8,
+                1+pos.w+(j-1)*8:pos.w+j*8] = f[3]
         elseif i != 1 && i != height && j == 1
-            getfield(game.im.layers,layer)[1+pos.h+(i-1)*8:pos.h+i*8,
-                1+pos.w+(j-1)*8:pos.w+j*8] = game.im.frames[game.options.frame][4]
+            l[1+pos.h+(i-1)*8:pos.h+i*8,
+                1+pos.w+(j-1)*8:pos.w+j*8] = f[4]
         elseif i != 1 && i != height && j == width
-            getfield(game.im.layers,layer)[1+pos.h+(i-1)*8:pos.h+i*8,
-                1+pos.w+(j-1)*8:pos.w+j*8] = game.im.frames[game.options.frame][6]
+            l[1+pos.h+(i-1)*8:pos.h+i*8,
+                1+pos.w+(j-1)*8:pos.w+j*8] = f[6]
         elseif i == height && j == 1
-            getfield(game.im.layers,layer)[1+pos.h+(i-1)*8:pos.h+i*8,
-                1+pos.w+(j-1)*8:pos.w+j*8] = game.im.frames[game.options.frame][7]
+            l[1+pos.h+(i-1)*8:pos.h+i*8,
+                1+pos.w+(j-1)*8:pos.w+j*8] = f[7]
         elseif i == height && j != 1 && j != width
-            getfield(game.im.layers,layer)[1+pos.h+(i-1)*8:pos.h+i*8,
-                1+pos.w+(j-1)*8:pos.w+j*8] = game.im.frames[game.options.frame][8]
+            l[1+pos.h+(i-1)*8:pos.h+i*8,
+                1+pos.w+(j-1)*8:pos.w+j*8] = f[8]
         else
-            getfield(game.im.layers,layer)[1+pos.h+(i-1)*8:pos.h+i*8,
-                1+pos.w+(j-1)*8:pos.w+j*8] = game.im.frames[game.options.frame][9]
+            l[1+pos.h+(i-1)*8:pos.h+i*8,
+                1+pos.w+(j-1)*8:pos.w+j*8] = f[9]
         end
     end
 end
 
-function drawFrame1!(game::GameState,layer::Symbol,height::UInt,width::UInt,
+function drawFrame1!(game::GameState,layer::Symbol,height::Int,width::Int,
         pos::Position)
     
-    @inbounds for h in 1:height, w in 1:width
-        if h != 1 && h != height && w != 1 && w != width
-            @inbounds for i in eachindex(game.im.frames[game.options.frame][5])
-                getfield(game.im.layers,layer)[
-                        1+pos.h+(w-1)*8+(i-1)%8,
-                        1+pos.w+(w-1)*8+div(i-1,8)
-                    ] = game.im.frames[game.options.frame][5][i]
+    l = getproperty(game.im.layers,layer)
+    f = game.im.frames[game.options.frame]
+    
+    @time @inbounds for i in 1:height, j in 1:width
+        @views l_ = l[1+pos.h+(i-1)*8:pos.h+i*8,1+pos.w+(j-1)*8:pos.w+j*8]
+        if i == 1
+            if j == 1
+                @views l_ = f[1:8,1:8]
+            elseif j == width
+                @views l_ = f[1:8,1:8]
+            else
+                @views l_ = f[1:8,1:8]
             end
-        elseif h == 1 && w == 1
-            @inbounds for i in eachindex(game.im.frames[game.options.frame][1])
-                getfield(game.im.layers,layer)[
-                        1+pos.h+(w-1)*8+(i-1)%8,
-                        1+pos.w+(w-1)*8+div(i-1,8)
-                    ] = game.im.frames[game.options.frame][1][i]
-            end
-        elseif h == 1 && w != 1 && w != width
-            @inbounds for i in eachindex(game.im.frames[game.options.frame][2])
-                getfield(game.im.layers,layer)[
-                        1+pos.h+(w-1)*8+(i-1)%8,
-                        1+pos.w+(w-1)*8+div(i-1,8)
-                    ] = game.im.frames[game.options.frame][2][i]
-            end
-        elseif h == 1 && w == width
-            @inbounds for i in eachindex(game.im.frames[game.options.frame][3])
-                getfield(game.im.layers,layer)[
-                        1+pos.h+(w-1)*8+(i-1)%8,
-                        1+pos.w+(w-1)*8+div(i-1,8)
-                    ] = game.im.frames[game.options.frame][3][i]
-            end
-        elseif h != 1 && h != height && w == 1
-            @inbounds for i in eachindex(game.im.frames[game.options.frame][4])
-                getfield(game.im.layers,layer)[
-                        1+pos.h+(w-1)*8+(i-1)%8,
-                        1+pos.w+(w-1)*8+div(i-1,8)
-                    ] = game.im.frames[game.options.frame][4][i]
-            end
-        elseif h != 1 && h != height && w == width
-            @inbounds for i in eachindex(game.im.frames[game.options.frame][6])
-                getfield(game.im.layers,layer)[
-                        1+pos.h+(w-1)*8+(i-1)%8,
-                        1+pos.w+(w-1)*8+div(i-1,8)
-                    ] = game.im.frames[game.options.frame][6][i]
-            end
-        elseif h == height && w == 1
-            @inbounds for i in eachindex(game.im.frames[game.options.frame][7])
-                getfield(game.im.layers,layer)[
-                        1+pos.h+(w-1)*8+(i-1)%8,
-                        1+pos.w+(w-1)*8+div(i-1,8)
-                    ] = game.im.frames[game.options.frame][7][i]
-            end
-        elseif h == height && w != 1 && w != width
-            @inbounds for i in eachindex(game.im.frames[game.options.frame][8])
-                getfield(game.im.layers,layer)[
-                        1+pos.h+(w-1)*8+(i-1)%8,
-                        1+pos.w+(w-1)*8+div(i-1,8)
-                    ] = game.im.frames[game.options.frame][8][i]
+        elseif i == height
+            if j == 1
+                @views l_ = f[1:8,1:8]
+            elseif j == width
+                @views l_ = f[1:8,1:8]
+            else
+                @views l_ = f[1:8,1:8]
             end
         else
-            @inbounds for i in eachindex(game.im.frames[game.options.frame][9])
-                getfield(game.im.layers,layer)[
-                        1+pos.h+(w-1)*8+(i-1)%8,
-                        1+pos.w+(w-1)*8+div(i-1,8)
-                    ] = game.im.frames[game.options.frame][9][i]
+            if j == 1
+                @views l_ = f[1:8,1:8]
+            elseif j == width
+                @views l_ = f[1:8,1:8]
+            else
+                @views l_ = f[1:8,1:8]
             end
         end
     end
@@ -607,6 +574,32 @@ function drawInventory!(game::GameState)
     end
 
 end
+
+
+
+
+
+
+
+
+
+function getBattlers()
+    img = mfb_rgb.(load("im/battlers gen1.png"))
+
+    d1 = Dict{UInt,Matrix{UInt32}}(
+        zip(Vector{UInt}(1:151),[img[
+            1+64*div(i,10):64+64*div(i,10),1+64*i%10:64+64*i%10
+        ] for i in 0:150])
+    )
+
+    return merge(d1,)
+end
+
+
+
+
+
+
 
 
 

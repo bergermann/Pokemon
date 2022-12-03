@@ -1,4 +1,4 @@
-using MiniFB
+#using MiniFB
 
 include("maps.jl")
 

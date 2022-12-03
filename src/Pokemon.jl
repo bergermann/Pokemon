@@ -2,9 +2,8 @@ module Pokemon
 
 include("core.jl")
 include("rendering.jl")
-#include("parser.jl")
 include("controls.jl")
-include("pokemons.jl")
+#include("pokemons.jl")
 #include("maps.jl")
 
 
@@ -15,7 +14,8 @@ function main()
 
     game = GameState(
         Im(),
-        Trainer("Void",0x0000,0x02,Vector{Pkmn}([p001,p001,p001,p001]),[],[],
+        PkmnData(),
+        Trainer("Void",0x0000,0x02,Vector{Pkmn}([]),[],[],
             falses(151),getSpriteMain("sprite"; s=settings)),
         Position(0x00000e,0x000013),
         :walk,
@@ -36,6 +36,8 @@ function main()
         Options()
     )
 
+    push!(game.trainer.pokemon,Pkmn(game,0x01,0x01))
+
     w,b = startWindow(settings)
     
     mfb_set_resize_callback(w, resizer)
@@ -46,8 +48,8 @@ function main()
     n_frames = UInt(0)
     
     while true
-        begin
-        #@time begin
+        #begin
+        @time begin
             n_frames += UInt(1)
             game.n.frame += 0x01
 
@@ -58,9 +60,12 @@ function main()
                 break
             end
 
-            updateGame!(game,input,n_frames; s=settings)
-            drawGame!(game,n_frames; s=settings)
+            print("update:")
+            @time updateGame!(game,input,n_frames; s=settings)
+            print("draw:")
+            @time drawGame!(game,n_frames; s=settings)
             resetInput!()
+            print("loop:")
         end
     end
 end

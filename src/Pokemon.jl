@@ -48,8 +48,8 @@ function main()
     n_frames = UInt(0)
     
     while true
-        #begin
-        @time begin
+        begin
+        #@time begin
             n_frames += UInt(1)
             game.n.frame += 0x01
 
@@ -60,12 +60,14 @@ function main()
                 break
             end
 
-            print("update:")
-            @time updateGame!(game,input,n_frames; s=settings)
-            print("draw:")
-            @time drawGame!(game,n_frames; s=settings)
+            #print("update:")
+            #@time 
+            updateGame!(game,input,n_frames; s=settings)
+            #print("draw:")
+            #@time 
+            drawGame!(game,n_frames; s=settings)
             resetInput!()
-            print("loop:")
+            #print("loop:")
         end
     end
 end

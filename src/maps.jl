@@ -11,8 +11,8 @@ map0 = Map(0x00,[:background1,:background2,:foreground1,:foreground2],"0",[],[
     getTiles("tiles_exterior"),
     getTileMap("0",[:background1,:background2,:foreground1,:foreground2,:collision]),
     [
-        ["Wer das liest\\ist doof."],["Test 1 2 3...","Test 4 5 6"],
-        ["Labor oder so\\Bitch nugget"],["▷:ÄÖÜäöü↑↓←→","+ⓁⒶⒾⓃ_ "]
+        ["Wer das liest\\ist doof.","Aaron ist ein Eierkopf."],["Test 1 2 3...","Test 4 5 6"],
+        ["Labor oder so\\Bitch nugget"],["▷:ÄÖÜäöü↑↓←→\\+ⓁⒶⒾⓃ_ "]
     ],[],[])
 
 map1 = Map(0x01,[:background1,:background2,:foreground1,:foreground2],"1",[],[

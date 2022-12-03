@@ -449,8 +449,13 @@ function inputManager!(game::GameState,input::Input,n_frame::UInt)
         if !game.menu.menu && !game.movelock && input._A    #dialogue
             mapAction!(game)
         elseif game.dialogue.d && (input._A || input._B || input._down)
-            game.dialogue.d = false
-            game.movelock = false
+            if game.dialogue.n < length(game.dialogue.str)
+                game.dialogue.n += 0x01
+            else
+                game.dialogue.d = false
+                game.movelock = false
+                game.dialogue.n = 0x01
+            end
         end
     else
         0
@@ -473,7 +478,7 @@ function mapAction!(game::GameState)
     elseif tile >= 0x003c && tile <= 0x004f
         game.movelock = true
         game.dialogue.d = true
-        game.dialogue.str = game.map.signs[tile-0x003b][1]
+        game.dialogue.str = game.map.signs[tile-0x003b]
     end
 end
 

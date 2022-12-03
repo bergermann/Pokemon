@@ -241,9 +241,9 @@ function getDialogueBox(set::String; s=Settings())
     )
 end
 
-function drawDialogue!(game::GameState,str::String)
+function drawDialogue!(game::GameState)
     game.im.layers.textbox[end-48-24+1:end-24,16+1:end-16] = game.im.diabox[game.options.diabox]
-    drawText!(game,:textbox,str,UInt(2),Position(144,32))
+    drawText!(game,:textbox,game.dialogue.str[game.dialogue.n],UInt(2),Position(144,32))
 end
 
 
@@ -255,10 +255,20 @@ end
 function getFrames(set::String)
     frames = mfb_rgb.(load("im/$set.png"))
 
-    return Dict{Int64,Matrix{UInt32}}(zip(collect(1:30),[
-            frames[1+(rows-1)*24:rows*24,1+(cols-1)*24:cols*24]
-                for cols in 1:10, rows in 1:3
-        ])
+    return Dict{Int,Dict{Int,Matrix{UInt32}}}(
+        zip(
+            collect(1:30),
+            [
+                Dict{Int,Matrix{UInt32}}(
+                    zip(collect(1:9),
+                    [frames[
+                            1+(i-1)*8+rows*24:i*8+rows*24,
+                            1+(j-1)*8+cols*24:j*8+cols*24
+                        ] for j in 1:3, i in 1:3
+                    ])
+                ) for cols in 0:9, rows in 0:2
+            ]
+        )
     )
 end
 
@@ -337,8 +347,8 @@ function drawFrame1!(game::GameState,layer::Symbol,height::Int,width::Int,
 end
 
 function drawMenu!(game::GameState)
-    print("frame: ")
-    @time drawFrame!(game,:menu,UInt(20),UInt(10),Position(24,176))
+    #print("frame: ")
+    drawFrame!(game,:menu,UInt(20),UInt(10),Position(24,176))
 
     drawText!(game,:menu,"POKEDEX\\POKEMON\\BEUTEL\\POKENAV\
         \\$(game.trainer.name)\\SICHERN\\OPTION\\BEENDEN",
@@ -618,7 +628,7 @@ function drawGame!(game::GameState,n_frame::UInt; s=Settings())
         drawSpriteMain!(game; s=s)
 
         if game.dialogue.d
-            drawDialogue!(game,game.dialogue.str)
+            drawDialogue!(game)
 
             #print("combine:")
             #@time 

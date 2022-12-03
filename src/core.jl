@@ -310,7 +310,7 @@ mutable struct Font
 end
 
 mutable struct Frame
-    frame::Dict
+    frame::Dict{Int,Dict{Int,Matrix{UInt32}}}
 end
 
 mutable struct Im

@@ -1,26 +1,15 @@
 using BenchmarkTools
 
-function combLayers!(l::Matrix{UInt32},ls::Array{UInt32})
-    @inbounds for k in 1:size(ls,3)
-        @inbounds for i in eachindex(l)
-            @views if ls[:,:,k][i] != 0x000000
-                l[i] = ls[:,:,k][i]
-            end
-        end
+str = readlines(open("str/pkmn_list.csv"))
+
+for i in 2:650
+    s_ = split(str[i],",")
+
+    open("str/names_ger.txt","a") do io
+        write(io,s_[3]*"\n")
     end
 
-    return
+    open("str/names_eng.txt","a") do io
+        write(io,s_[4]*"\n")
+    end
 end
-
-function test2()
-    layers = rand(UInt32,204,272,7)
-    layer = zeros(UInt32,204,272)
-
-    @btime combLayers!($layer,$layers)
-
-    println(all(layer .== 0x000000))
-
-    return
-end
-
-test2()

@@ -426,7 +426,7 @@ function drawMenuPkmn!(game::GameState)
                 Position(24+34,16+34); lineoffset = -3)
             
             drawText!(game,:menu1,string(game.trainer.pokemon[1].stats.hp)*"/"*
-                string(game.trainer.pokemon[1].stats.maxhp),UInt(1),
+                string(game.trainer.pokemon[1].stats.rv[1]),UInt(1),
                 Position(24+60,16+58))
             
             drawHealthBar!(game,:menu1,getHealthBar(game.trainer.pokemon[1]),

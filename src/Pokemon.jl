@@ -36,7 +36,8 @@ function main()
         Options()
     )
 
-    push!(game.trainer.pokemon,Pkmn(game,0x01,0x01))
+    push!(game.trainer.pokemon,generatePkmn(game,0x01,0x09))
+    push!(game.trainer.pokemon,generatePkmn(game,0x02,0x03))
 
     w,b = startWindow(settings)
     

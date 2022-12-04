@@ -77,9 +77,18 @@ mutable struct Pkmn
     attacks::Vector{Attack}
 end
 
+
+
+
+
 function getStatsBase()
     return readdlm("pkmn_data.csv",',',UInt16,'\n'; skipstart=1)
 end
+
+function getNames(lang::String)
+    return readlines("str/names_"*lang*".txt")
+end
+
 
 function getGender(genderweight::Vector{UInt16})
     s = sum(genderweight)
@@ -93,6 +102,10 @@ function getGender(genderweight::Vector{UInt16})
         return 0x02
     end
 end
+
+
+
+
 
 function updateStats!(pkmn::Pkmn)
     N = natureMod(pkmn.stats.nature)
@@ -120,14 +133,77 @@ function natureMod(nature::UInt8)
 end
 
 function generatePkmn(game,id::UInt8,level::UInt8)
+    data = game.pkmndata.base[id,:]
     
+    p =  Pkmn(
+        id,                             #id
+        "",                             #name
+        getGender(data[14:end]),        #gender from weight
+        rand(UInt16) < 0x0010,          #shiny
+        0x00,                           #form
+        data[13],                       #xptype
+        game.trainer.name,              #OTrainer
+        game.trainer.id,                #OTrainer id
+        "",                             #location
+        0x00,                           #ball id
+        falses(5),                      #markers
+        Tuple{UInt8,UInt8}(data[2:3]),  #types
+        Stats(data[4:9],level),         #stats
+        0x00,                           #status
+        Item(),                         #item
+        []                              #attacks
+    )
 
-    function Pkmn(game,id::UInt8,level::UInt8)
-        data = game.pkmndata.base[id,:]
-        
-        new(
-            id,"",getGender(data[14:end]),rand(UInt16) < 0x0010,0x00,data[13],
-            game.trainer.name,game.trainer.id,"",0x00,falses(5),
-            Tuple{UInt8,UInt8}(data[2:3]),Stats(data[4:9],level),0x00,Item(),[]
-        )
+    updateStats!(p)
+
+    p.stats.hp = p.stats.rv[1]
+    p.stats.xp = xpFormulas(level,data[13])
+
+    return p
+end
+
+function getHealthBar(pokemon::Pkmn)
+    return ceil(Int,48*pokemon.stats.hp/pokemon.stats.rv[1])
+end
+
+function xpFormulas(level::UInt8,xptype::UInt8)
+    n = UInt(level)
+
+    if n == 1
+        return 0
+    elseif xptype == 1
+        if n <= 50
+            return floor(UInt32,n^3*(100-n)/50)
+        elseif n <= 68
+            return floor(UInt32,n^3*(150-n)/100)
+        elseif n <= 98
+            return floor(UInt32,n^3*floor(UInt,(1911-10*n)/3)/500)
+        else
+            return floor(UInt32,n^3*(160-n)/100)
+        end
+    elseif xptype == 0x02
+        return floor(UInt32,4n^3/5)
+    elseif xptype == 0x03
+        return UInt32(n^3)
+    elseif xptype == 0x04
+        return floor(UInt32,6n^3/5-15n^2+100n-140)
+    elseif xptype == 0x05
+        return floor(UInt32,5n^3/4)
+    else
+        if n <= 15
+            return floor(UInt32,n^3*(24+floor(UInt32,(n+1/3)))/50)
+        elseif n <= 36
+            return floor(UInt32,n^3*(14+n)/50)
+        else
+            return floor(UInt32,n^3*(32+floor(UInt,n/2))/50)
+        end
     end
+end
+
+function pkmnName(game,pkmn::Pkmn)
+    if pkmn.name == ""
+        return game.pkmndata.name[pkmn.id]
+    else
+        return pkmn.name
+    end
+end

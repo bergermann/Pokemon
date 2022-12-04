@@ -7,12 +7,8 @@ mutable struct PkmnData
     dex::Vector{String}
 
     function PkmnData()
-        new(getStatsBase(),[],[])
+        new(getStatsBase(),getNames("ger"),[])
     end
-end
-
-function getHealthBar(pokemon::Pkmn)
-    return ceil(Int,48*pokemon.stats.hp/pokemon.stats.maxhp)
 end
 
 mutable struct Trainer

@@ -89,7 +89,6 @@ function getNames(lang::String)
     return readlines("str/names_"*lang*".txt")
 end
 
-
 function getGender(genderweight::Vector{UInt16})
     s = sum(genderweight)
     r = rand()
@@ -157,7 +156,7 @@ function generatePkmn(game,id::UInt8,level::UInt8)
     updateStats!(p)
 
     p.stats.hp = p.stats.rv[1]
-    p.stats.xp = xpFormulas(level,data[13])
+    p.stats.xp = xpFormulas(level,p.xptype)
 
     return p
 end

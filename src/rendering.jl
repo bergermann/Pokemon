@@ -421,7 +421,7 @@ function drawMenuPkmn!(game::GameState)
                     16+2+1:16+2+20] = game.im.menupkmn["ball0"]
             end
             
-            drawText!(game,:menu1,game.trainer.pokemon[1].name*"\\  Lv."*
+            drawText!(game,:menu1,pkmnName(game,game.trainer.pokemon[1])*"\\  Lv."*
                 string(game.trainer.pokemon[1].stats.level),UInt(1),
                 Position(24+34,16+34); lineoffset = -3)
             
@@ -446,15 +446,15 @@ function drawMenuPkmn!(game::GameState)
                     16+88+1:16+88+20] = game.im.menupkmn["ball0"]
             end
             
-            drawText!(game,:menu1,game.trainer.pokemon[i].name*"\\  Lv."*
+            drawText!(game,:menu1,pkmnName(game,game.trainer.pokemon[i])*"\\  Lv."*
                 string(game.trainer.pokemon[i].stats.level),UInt(1),
                 Position(24+11+(i-2)*24,16+121); lineoffset = -3)
             
             drawText!(game,:menu1,string(game.trainer.pokemon[i].stats.hp)*"/"*
-                string(game.trainer.pokemon[i].stats.maxhp),UInt(1),
+                string(game.trainer.pokemon[i].stats.rv[1]),UInt(1),
                 Position(24+21+(i-2)*24,16+211))
 
-            drawHealthBar!(game,:menu1,getHealthBar(game.trainer.pokemon[1]),
+            drawHealthBar!(game,:menu1,getHealthBar(game.trainer.pokemon[i]),
                 Position(24+19+(i-2)*24,16+185))
         end
     end

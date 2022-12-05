@@ -206,3 +206,9 @@ function pkmnName(game,pkmn::Pkmn)
         return pkmn.name
     end
 end
+
+function activePkmn(game)
+    return game.trainer.pokemon[
+        findfirst(x->x.stats.hp!=0x0000,game.trainer.pokemon)
+    ]
+end

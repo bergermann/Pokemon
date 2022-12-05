@@ -35,12 +35,9 @@ function test()
     )
 
     
-    push!(game.trainer.pokemon,Pkmn(game,0x01,0x01))
-
-    updateStats!(game.trainer.pokemon[1])
-
-    println(Int.(game.trainer.pokemon[1].stats.rv))
-
+    push!(game.trainer.pokemon,generatePkmn(game,0x01,0x09))
+    push!(game.trainer.pokemon,generatePkmn(game,0x02,0x03))
+    
     return game
 end
 

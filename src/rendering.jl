@@ -611,6 +611,12 @@ end
 
 
 
+function drawBattle()
+    0
+end
+
+
+
 
 
 

@@ -319,7 +319,9 @@ function inputManager!(game::GameState,input::Input,n_frame::UInt)
                 if game.direction != inputdir
                     game.direction = inputdir
                     game.moveFunc = moveTurn!
-                elseif game.map.tilemap.collision[movepos.h,movepos.w] ∈ walkable
+                elseif game.map.tilemap.collision[movepos.h,movepos.w] ∈ walkable ||
+                        (game.map.tilemap.collision[movepos.h,movepos.w] >= 0x14 &&
+                        game.map.tilemap.collision[movepos.h,movepos.w] <= 0x3b)
                     game.moveFunc = moveWalk!
                 else
                     game.moveFunc = moveWalkWall!
@@ -328,7 +330,9 @@ function inputManager!(game::GameState,input::Input,n_frame::UInt)
                 game.transport = :run
                 game.direction = inputdir
 
-                if game.map.tilemap.collision[movepos.h,movepos.w] ∈ walkable
+                if game.map.tilemap.collision[movepos.h,movepos.w] ∈ walkable ||
+                        (game.map.tilemap.collision[movepos.h,movepos.w] >= 0x14 &&
+                        game.map.tilemap.collision[movepos.h,movepos.w] <= 0x3b)
                     game.moveFunc = moveRun!
                 else
                     game.moveFunc = moveTurn!

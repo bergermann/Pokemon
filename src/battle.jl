@@ -1,3 +1,8 @@
+#battle manager stuff
+include("core.jl")
+
+
+
 
 
 mutable struct SecStatus
@@ -45,6 +50,7 @@ mutable struct SecStatus
             false,
             false       #telekinesis
         )
+    end
 end
 
 mutable struct PkmnBattle
@@ -74,7 +80,7 @@ mutable struct PkmnBattle
             false,          #dig
             false,          #shadow
             false,          #bounce
-            0x00            #attackchoice
+            0x00,           #attackchoice
         )
     end
 end
@@ -89,11 +95,59 @@ mutable struct BattleCounters
     end
 end
 
-mutable struct BattleEnvironment
-    weather::UInt8
+mutable struct EntryHazards
+    spikes::UInt8
+    toxspikes::UInt8
+    rocks::Bool
+    sticky::Bool
+
+    function EntryHazards()
+        new(0,0,false,false)
+    end
 end
 
-mutable struct BattleState
+mutable struct BattleRoom
+    trick::Bool
+    trickc::UInt8
+
+    magic::Bool
+    magicc::UInt8
+
+    wonder::Bool
+    wonderc::UInt8
+
+    function BattleRoom()
+        new(false,0,false,0,false,0)
+    end
+end
+
+mutable struct BattleEnvironment
+    weather::UInt8
+    weatherc::UInt8
+
+    enthaz1::EntryHazards
+    enthaz2::EntryHazards
+
+    room::BattleRoom
+
+    function BattleEnvironment()
+        new(
+            0,
+            0,
+            EntryHazards(),
+            EntryHazards(),
+            BattleRoom()
+        )
+    end
+end
+
+
+
+
+
+abstract type BattleState end
+
+mutable struct BattleStateWild <: BattleState
     counters::BattleCounters
     turn::UInt
 
@@ -102,17 +156,73 @@ mutable struct BattleState
     pkmn1::PkmnBattle
     pkmn2::PkmnBattle
 
+    attackanim::Function
 
+    function BattleState(counters,turn,env,pkmn1,pkmn2,nothing)
+        new(counters,turn,env,pkmn1,pkmn2)
+    end
 end
 
-function battleLoop(game::GameState)
+mutable struct BattleStateTrainerSolo <: BattleState
+    counters::BattleCounters
+    turn::UInt
+
+    env::BattleEnvironment
+
+    pkmn1::PkmnBattle
+    pkmn2::PkmnBattle
+
+    attackanim::Function
+
+    function BattleState(counters,turn,env,pkmn1,pkmn2,nothing)
+        new(counters,turn,env,pkmn1,pkmn2)
+    end
+end
+
+mutable struct BattleStateTrainerDouble <: BattleState
+    counters::BattleCounters
+    turn::UInt
+
+    env::BattleEnvironment
+
+    pkmn11::PkmnBattle
+    pkmn12::PkmnBattle
+    pkmn21::PkmnBattle
+    pkmn22::PkmnBattle
+
+    attackanim::Function
+
+    function BattleState(counters,turn,env,pkmn1,pkmn2,nothing)
+        new(counters,turn,env,pkmn1,pkmn2)
+    end
+end
+
+
+
+
+
+function setupBattle(game::GameState)
     0
+end
+
+function loopBattleWild(game::GameState)
+    0
+
 end
 
 function initBattleWild(game::GameState)
     pb1 = PkmnBattle(activePkmn(game))
     pb2 = PkmnBattle(generatePkmn(game,rand(0x0001:0x0289),rand(0x01:0x64)))
 
-    return BattleState(BattleCounters,0,pb1,pb2)
+    return BattleStateWild(BattleCounters(),0,BattleEnvironment(),pb1,pb2,Nothing)
 end
+
+function initBattleWild(game::GameState,ids::Vector{UInt16},levels::Vector{UInt8})
+    pb1 = PkmnBattle(activePkmn(game))
+    pb2 = PkmnBattle(generatePkmn(game,rand(ids),rand(levels)))
+
+    return BattleStateWild(BattleCounters(),0,BattleEnvironment(),pb1,pb2,Nothing)
+end
+
+
 

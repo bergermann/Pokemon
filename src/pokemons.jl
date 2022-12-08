@@ -31,9 +31,11 @@ end
 mutable struct Attack
     name::String
     description::String
+    ap::UInt8
 
     power::UInt8
     accuracy::UInt8
+    priority::Int8
 
     effect::Function
 end

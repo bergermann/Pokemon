@@ -1,13 +1,58 @@
 
 
+mutable struct SecStatus
+    confused::Bool
+    flinch::Bool
+    charmed::Bool
+    seeded::Bool
+    attackblock::Vector{Bool}
+    trapped::Bool
+    trappedc::UInt8
+    trappeddmg::UInt8
+    cursed::Bool
+    nightmare::Bool
+    perish::Bool
+    perishc::UInt8
+    spotted::UInt8
+    escapeblock::Bool
+    encore::Bool
+    torment::Bool
+    taunt::Bool
+    healblock::Bool
+    itemblock::Bool
+    telekinesis::Bool
+
+    function SecStatus()
+        new(
+            false,      #confused
+            false,      #flinch
+            false,
+            false,
+            falses(4),  #attackblock
+            false,
+            0,
+            0,
+            false,      #cursed
+            false,
+            false,
+            0,
+            0,          #spotted
+            false,
+            false,
+            false,
+            false,      #taunt
+            false,
+            false,
+            false       #telekinesis
+        )
+end
 
 mutable struct PkmnBattle
     pkmn::Pkmn
     
-    buffs::Vector{Int8}
-    confused::Bool
-    flinch::Bool
-    charmed::Bool
+    buffs::Vector{Int8}     #at,spat,def,spdef,init,acc,eva
+
+    secstatus::SecStatus
 
     sight::Bool
 
@@ -20,11 +65,17 @@ mutable struct PkmnBattle
     attackchoice::UInt8
 
     function PkmnBattle(pkmn::Pkmn)
-        new(pkmn,zeros(Int8,6),false,false,0x00)
-    end
-    
-    function PkmnBattle()
-        new()
+        new(
+            pkmn,           #pkmn
+            zeros(Int8,7),  #buffs
+            SecStatus(),    #secstatus
+            false,          #sight
+            false,          #fly
+            false,          #dig
+            false,          #shadow
+            false,          #bounce
+            0x00            #attackchoice
+        )
     end
 end
 

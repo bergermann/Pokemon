@@ -1,0 +1,184 @@
+#image transformation algorithms
+
+function xShear(im::Matrix{UInt32},α::Real)
+    h,w = size(im)
+
+    im_ = zeros(UInt32,h,w)
+
+    for i in 1:h
+        δ = floor(Int,sin(α)*((h+1)/2-i)+1)
+
+        for j in max(1,δ):min(w,w+δ-1)
+            im_[i,j] = im[i,j-δ+1]
+        end
+    end
+
+    return im_
+end
+
+function xShear!(im::Matrix{UInt32},α::Real)
+    h,w = size(im)
+
+    for i in 1:h
+        δ = floor(Int,sin(α)*((h+1)/2-i)+1)
+
+        if δ <= 0
+            for j in max(1,δ):min(w,w+δ-1)
+                im[i,j] = im[i,j-δ+1]
+            end
+        else
+            for j in min(w,w+δ-1):-1:max(1,δ)
+                im[i,j] = im[i,j-δ+1]
+            end
+        end
+    end
+end
+
+function yShear(im::Matrix{UInt32},α::Real)
+    h,w = size(im)
+
+    im_ = zeros(UInt32,h,w)
+
+    for j in 1:w
+        δ = floor(Int,sin(α)*((w+1)/2-j)+1)
+
+        for i in max(1,δ):min(h,h+δ-1)
+            im_[i,j] = im[i-δ+1,j]
+        end
+    end
+
+    return im_
+end
+
+function yShear!(im::Matrix{UInt32},α::Real)
+    h,w = size(im)
+
+    for j in 1:w
+        δ = floor(Int,sin(α)*((w+1)/2-j)+1)
+
+        if δ <= 0
+            for i in max(1,δ):min(h,h+δ-1)
+                im[i,j] = im[i-δ+1,j]
+            end
+        else
+            for i in min(h,h+δ-1):-1:max(1,δ)
+                im[i,j] = im[i-δ+1,j]
+            end
+        end
+    end
+end
+
+function rotate(im::Matrix{UInt32},θ::Real)
+    im_ = xShear(im,tand(θ/2))
+    yShear!(im_,-sind(θ))
+    xShear!(im_,tand(θ/2))
+
+    return im_
+end
+
+function rotate!(im::Matrix{UInt32},θ::Real)
+    xShear!(im,tand(θ/2))
+    yShear!(im,-sind(θ))
+    xShear!(im,tand(θ/2))
+end
+
+function channels(i::UInt32)
+    r = i & 0xff0000
+    g = i & 0x00ff00
+    b = i & 0x0000ff
+
+    return r,g,b
+end
+
+function scaleChannels(i::UInt32,denom::UInt8,num::UInt8)
+    r = div(i & 0xff0000,denom)*num & 0xff0000
+    g = div(i & 0x00ff00,denom)*num & 0x00ff00
+    b = div(i & 0x0000ff,denom)*num
+
+    return |(r,g,b)
+end
+
+function scaleChannels!(im::Matrix{UInt32},denom::UInt8,num::UInt8)
+    @inbounds for i in eachindex(A)
+        im[i] = |(
+            div(im[i] & 0xff0000,denom)*num & 0xff0000,
+            div(im[i] & 0x00ff00,denom)*num & 0x00ff00,
+            div(im[i] & 0x0000ff,denom)*num
+        )
+    end
+end
+
+function combine(imbase::Matrix{UInt32},imover::Matrix{UInt32},
+        denom::UInt8,num::UInt8)
+
+    if denom < num
+        return error("ArgumentError: Fraction must be between 0 and 1.")
+    end
+
+    im_ = copy(imbase)
+
+    @inbounds for i in eachindex(imbase)
+        im_[i] += scaleChannels(imover[i],denom,num)
+        im_[i] -= scaleChannels(imbase[i],denom,num)
+    end
+
+    return im_
+end
+
+function combine!(imbase::Matrix{UInt32},imover::Matrix{UInt32},
+        denom::UInt8,num::UInt8)
+
+    if denom < num
+        return error("ArgumentError: Fraction must be between 0 and 1.")
+    end
+
+    @inbounds for i in eachindex(imbase)
+        imbase[i] -= scaleChannels(imbase[i],denom,num)
+        imbase[i] += scaleChannels(imover[i],denom,num)
+    end
+end
+
+function combine(imbase::Matrix{UInt32},color::UInt32,
+        denom::UInt8,num::UInt8)
+
+    if denom < num
+        return error("ArgumentError: Fraction must be between 0 and 1.")
+    end
+
+    color_ = div(color,demon)*num
+
+    im_ = copy(imbase)
+
+    for i in eachindex(imbase)
+        im_[i] += scaleChannels(imover[i],denom,num)
+        im_[i] -= color_
+    end
+
+    return im_
+end
+
+function scaleColor!(imbase::Matrix{UInt32},color::UInt32,
+        denom::UInt8,num::UInt8)
+
+    if denom < num
+        return error("ArgumentError: Fraction must be between 0 and 1.")
+    end
+
+    color_ = div(color,demon)*num
+
+    @inbounds for i in eachindex(imbase)
+        imbase[i] -= scaleChannels(imbase[i],denom,num)
+        imbase[i] += color_
+    end
+end
+
+function fadeLinear!(im::Matrix{UInt32},denom::UInt8,num::UInt8,frame::UInt8)
+    
+    if denom < num
+        return error("ArgumentError: Fraction must be between 0 and 1.")
+    end
+
+    @inbounds for i in eachindex(im)
+        im[i] -= div(im[i],denom)*num*frame
+    end
+end

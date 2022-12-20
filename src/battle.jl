@@ -27,6 +27,9 @@ mutable struct SecStatus
     itemblock::Bool
     telekinesis::Bool
 
+    righthand::Bool
+    charge::Bool
+
     function SecStatus()
         new(
             false,      #confused
@@ -125,6 +128,9 @@ mutable struct BattleEnvironment
     weather::UInt8
     weatherc::UInt8
 
+    mud::Bool
+    wet::Bool
+
     enthaz1::EntryHazards
     enthaz2::EntryHazards
 
@@ -134,6 +140,8 @@ mutable struct BattleEnvironment
         new(
             0,
             0,
+            false,
+            false,
             EntryHazards(),
             EntryHazards(),
             BattleRoom()
@@ -224,5 +232,34 @@ function initBattleWild(game::GameState,ids::Vector{UInt16},levels::Vector{UInt8
     return BattleStateWild(BattleCounters(),0,BattleEnvironment(),pb1,pb2,Nothing)
 end
 
+function damage(game::GameState)
+    0
+end
 
+function itemfactor(attacker::PkmnBattle,defender::PkmnBattle)
+    return 1
+end
 
+function abilityfactor(attacker::PkmnBattle,defender::PkmnBattle)
+    return 1
+end
+
+function basedamage(game::GameState,attacker::PkmnBattle,defender::PkmnBattle)
+    (1+0.5*attacker.secstatus.righthand)*
+    attack.strength*
+    itemfactor(attacker,defender)*
+    (1+1*attacker.secstatus.charge)*
+    (1-0.5*game.battle.env.mud)*
+    (1-0.5*game.battle.env.wet)*
+    abilityfactor(attacker,defender)
+
+    return ceil(UInt16,
+        (1+0.5*attacker.secstatus.righthand)*
+        attack.strength*
+        itemfactor(attacker,defender)*
+        (1+1*attacker.secstatus.charge)*
+        (1-0.5*game.battle.env.mud)*
+        (1-0.5*game.battle.env.wet)*
+        abilityfactor(attacker,defender)
+    )
+end

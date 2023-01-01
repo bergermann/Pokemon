@@ -2,6 +2,7 @@
 using MiniFB, Images, DelimitedFiles
 
 include("parser.jl")
+include("animations.jl")
 
 struct Settings
     width::UInt16
@@ -221,6 +222,11 @@ function drawSpriteMain!(game::GameState; s=Settings())
         Int(dw-0.5+width/2)*s.tilesize+1+game.spriteoffset.w:Int(dw-0.5+width/2+1)*s.tilesize+game.spriteoffset.w] =
         S[Int(s.tilesize*height/2+1):end,:]
 end
+
+function drawSprites!(game::GameState; s=Settings())
+    
+
+
 
 
 
@@ -624,7 +630,7 @@ end
 
 
 
-function drawGame!(game::GameState,n_frame::UInt; s=Settings())
+function drawGame!(game::GameState; s=Settings())
     if game.menu.ow && !game.menu.menu
         #print("map: ")
         #@time
@@ -687,6 +693,10 @@ function drawGame!(game::GameState,n_frame::UInt; s=Settings())
         combineLayers!(game,[:menu1,:menu2,:menu3]; s=s)
 
         return
+    end
+
+    if game.animFunc != animEmpty!
+        game.animFunc(game)
     end
 end
 

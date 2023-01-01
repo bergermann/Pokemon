@@ -3,6 +3,26 @@ include("core.jl")
 
 
 
+abstract type BattleCommand end
+
+mutable struct CommandAttack <: BattleCommand
+    n::UInt
+end
+
+mutable struct CommandSwitch <: BattleCommand
+    n::UInt
+end
+
+mutable struct CommandItem <: BattleCommand
+    target::UInt
+    #item::Item
+end
+
+mutable struct CommandFlee <: BattleCommand end
+
+mutable struct CommandChoose <: BattleCommand end
+
+
 
 
 mutable struct SecStatus
@@ -56,6 +76,22 @@ mutable struct SecStatus
     end
 end
 
+mutable struct DoubleMoves
+    sight::Bool
+    sightc::UInt
+
+    fly::Bool
+    dive::Bool
+    dig::Bool
+    shadow::Bool
+    bounce::Bool
+
+    function DoubleMoves()
+        new(false,0x00,false,false,false,false,false)
+    end
+end
+    
+
 mutable struct PkmnBattle
     pkmn::Pkmn
     
@@ -63,27 +99,17 @@ mutable struct PkmnBattle
 
     secstatus::SecStatus
 
-    sight::Bool
-
-    fly::Bool
-    dive::Bool
-    dig::Bool
-    shadow::Bool
-    bounce::Bool
+    dmoves::DoubleMoves
     
-    attackchoice::UInt8
+    command::BattleCommand
 
     function PkmnBattle(pkmn::Pkmn)
         new(
             pkmn,           #pkmn
             zeros(Int8,7),  #buffs
             SecStatus(),    #secstatus
-            false,          #sight
-            false,          #fly
-            false,          #dig
-            false,          #shadow
-            false,          #bounce
-            0x00,           #attackchoice
+            DoubleMoves(),  #dmoves
+            CommandChoose()           #attackchoice
         )
     end
 end
@@ -215,7 +241,6 @@ end
 
 function loopBattleWild(game::GameState)
     0
-
 end
 
 function initBattleWild(game::GameState)
@@ -245,21 +270,13 @@ function abilityfactor(attacker::PkmnBattle,defender::PkmnBattle)
 end
 
 function basedamage(game::GameState,attacker::PkmnBattle,defender::PkmnBattle)
-    (1+0.5*attacker.secstatus.righthand)*
-    attack.strength*
-    itemfactor(attacker,defender)*
-    (1+1*attacker.secstatus.charge)*
-    (1-0.5*game.battle.env.mud)*
-    (1-0.5*game.battle.env.wet)*
-    abilityfactor(attacker,defender)
-
     return ceil(UInt16,
-        (1+0.5*attacker.secstatus.righthand)*
-        attack.strength*
-        itemfactor(attacker,defender)*
-        (1+1*attacker.secstatus.charge)*
-        (1-0.5*game.battle.env.mud)*
-        (1-0.5*game.battle.env.wet)*
-        abilityfactor(attacker,defender)
+        *(1+0.5*attacker.secstatus.righthand,
+        attack.strength,
+        itemfactor(attacker,defender),
+        1+1*attacker.secstatus.charge,
+        1-0.5*game.battle.env.mud,
+        1-0.5*game.battle.env.wet,
+        abilityfactor(attacker,defender))
     )
 end

@@ -1,6 +1,182 @@
 
 include("pokemons.jl")
 
+
+
+mutable struct Position
+    h::Int32
+    w::Int32
+end
+
+function posAdd(a::Position,b::Position)
+    return Position(a.h+b.h,a.w+b.w)
+end
+
+function posSub(a::Position,b::Position)
+    return Position(a.h-b.h,a.w-b.w)
+end
+
+function posMult(n::Int32,a::Position)
+    return Position(n*a.h,n*a.w)
+end
+
+
+
+
+mutable struct Sprite
+    id::Symbol
+
+    layer::Symbol
+    pos::Position
+    size::Position
+
+    frame::Symbol
+
+    im::Dict{Symbol,Matrix{UInt32}}
+
+    function Sprite()
+        new(
+            Symbol(),
+
+            Symbol(),
+            Position(0,0),
+            Position(0,0),
+
+            Symbol(),
+
+            Dict{Symbol,Matrix{UInt32}}()
+        )
+    end
+
+    function Sprite(id,pos,size,im)
+        new(id,pos,size,im)
+    end
+
+    function Sprite(id,pos,im)
+        new(id,pos,Position(size(im)...),im)
+    end
+end
+
+mutable struct ArrayList{T}
+    data::Vector{T}
+    idx::Int
+
+    function ArrayList(T,n::Int)
+        new{T}(Vector{T}(undef,n),0)
+    end
+end
+
+function Base.push!(a::ArrayList, x)
+    if a.idx >= length(a.data)           
+        error("ArrayList is full, can't push new element.")
+    else
+         a.idx += 1
+         a.data[a.idx] = x
+    end
+end
+
+function Base.pop!(a::ArrayList{Sprite})
+    if a.idx == 0
+        error("ArrayList is empty, can't pop element.")
+        return
+    end
+
+    a.data[a.idx] = Sprite()
+    a.idx -= 1
+end
+
+function Base.popat!(a::ArrayList{Sprite},i::Int)
+    if a.idx == 0
+        error("ArrayList is empty, can't pop element.")
+        return
+    elseif i < 1 || i > a.idx
+        error("Invalid index, can't pop element.")
+    end
+
+    if i != a.idx
+        a.data[i], a.data[a.idx] = a.data[a.idx], a.data[i]
+    end
+
+    a.data[a.idx] = Sprite()
+    a.idx -= 1
+end
+
+
+
+
+
+function quicksort!(A::Vector,lo::Int,hi::Int)
+    if lo >= hi || lo < 0
+        return
+    end
+
+    p = partition!(A,lo,hi)
+
+    quicksort!(A,lo,p-1)
+    quicksort!(A,p+1,hi)
+end
+
+function quicksort!(A::Vector,lo::Int,hi::Int,mask::Function)
+    if lo >= hi || lo < 0
+        return
+    end
+
+    p = partition!(A,lo,hi,mask)
+
+    quicksort!(A,lo,p-1,mask)
+    quicksort!(A,p+1,hi,mask)
+end
+
+function partition!(A::Vector,lo::Int,hi::Int)
+    pivot = A[hi]
+
+    i = lo-1
+
+    @inbounds for j in lo:hi-1
+        if A[j] <= pivot
+            i += 1
+            
+            A[i], A[j] = A[j], A[i]
+        end
+    end
+
+    i += 1
+
+    A[i], A[hi] = A[hi], A[i]
+
+    return i
+end
+
+function partition!(A::Vector,lo::Int,hi::Int,mask::Function)
+    pivot = mask(A[hi])
+
+    i = lo-1
+
+    @inbounds for j in lo:hi-1
+        if mask(A[j]) <= pivot
+            i += 1
+            
+            A[i], A[j] = A[j], A[i]
+        end
+    end
+
+    i += 1
+
+    A[i], A[hi] = A[hi], A[i]
+
+    return i
+end
+
+function sortHorizontal!(A::ArrayList{Sprite})
+    quicksort!(A.data,1,A.idx,a->a.pos.h)
+end
+
+function sortVertical!(A::ArrayList{Sprite})
+    quicksort!(A.data,1,A.idx,a->a.pos.w)
+end
+
+
+
 mutable struct PkmnData
     base::Matrix{UInt16}
     name::Vector{String}
@@ -53,24 +229,6 @@ mutable struct Inventory
     cash::UInt32
 end
 
-
-
-mutable struct Position
-    h::Int32
-    w::Int32
-end
-
-function posAdd(a::Position,b::Position)
-    return Position(a.h+b.h,a.w+b.w)
-end
-
-function posSub(a::Position,b::Position)
-    return Position(a.h-b.h,a.w-b.w)
-end
-
-function posMult(n::Int32,a::Position)
-    return Position(n*a.h,n*a.w)
-end
 
 
 
@@ -317,10 +475,12 @@ mutable struct Im
     inv::Dict
 
     spritesmain::Vector{Dict}
-    sprites::Dict
+    spriteart::Dict
     tilesext::Dict
     tilesint::Dict
     tile::Matrix{UInt32}
+
+    sprites::ArrayList{Sprite}
 
     layers::Layers
     layer::Matrix{UInt32}
@@ -328,10 +488,23 @@ mutable struct Im
 
     function Im()
         new(
-            Font(),getFrames("frames"),getDialogueBox("dialogue"),
-            getMenuPkmn(),getInventory(),[getSpriteMain("sprite"),],Dict(),
-            getTiles("tiles_exterior"),Dict(),zeros(UInt32,16,16),Layers(),
-            copy(Layers().background1),BitMatrix(undef,size(Layers().background1))
+            Font(),
+            getFrames("frames"),
+            getDialogueBox("dialogue"),
+            getMenuPkmn(),
+            getInventory(),
+            
+            [getSpriteMain("sprite"),],
+            Dict(),
+            getTiles("tiles_exterior"),
+            Dict(),
+            zeros(UInt32,16,16),
+
+            ArrayList(Sprite,128),
+
+            Layers(),
+            copy(Layers().background1),
+            BitMatrix(undef,size(Layers().background1))
         )
     end
 end
@@ -369,9 +542,9 @@ mutable struct GameState
 
     menu::Menu
 
-    n_anim::UInt
     n::Counters
     moveFunc::Function
+    animFunc::Function
 
     screenoffset::Position
 

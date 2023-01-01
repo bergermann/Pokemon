@@ -213,92 +213,111 @@ walkable::Vector{UInt16} = [0x0000,0x0005,0x00006,0x00007]
 bikeable::Vector{UInt16} = [0x0000,0x0005,0x00006]
 swimmable::Vector{UInt16} = [0x0002,0x0003]
 
+function checkEncounter(game::GameState)
+    if !(game.map.tilemap.collision[game.pos.h,game.pos.w] ∈ 0xc8:0xdb)
+        return
+    elseif rand(0x00:0xff) > 0x20e
+        return
+    end
+
+    initBattleWild(game)
+
+    game.animFunc = animBattleEntry(game)
+end
 
 
-function moveDont!(game::GameState,n_frame::UInt)
+function moveDont!(game::GameState)
     return
 end
 
-function moveTurn!(game::GameState,n_frame::UInt)
-    n = n_frame-game.n_anim
-
-    if n < 0x04
+function moveTurn!(game::GameState)
+    if game.n.anim < 0x04
         game.spritecycle = 0x02
-    elseif n < 0x08
+    elseif game.n.anim < 0x08
         game.spritecycle = 0x01
-    elseif n == 0x08
+    elseif game.n.anim == 0x08
         game.movelock = false
-    elseif n > 0x08
+    elseif game.n.anim > 0x08
         game.moveFunc = moveDont!
+        
+        checkEncounter(game)
     end
+
+    game.n.anim += 0x01
 end
 
-function moveWalk!(game::GameState,n_frame::UInt)
-    n = n_frame-game.n_anim
+function moveWalk!(game::GameState)
 
-    game.screenoffset = posMult(Int32(n),dirs[game.direction])
-    game.spriteoffset = posMult(Int32(n),dirs[game.direction])
+    game.screenoffset = posMult(Int32(game.n.anim),dirs[game.direction])
+    game.spriteoffset = posMult(Int32(game.n.anim),dirs[game.direction])
 
-    if n < 0x08
+    if game.n.anim < 0x08
         if (game.pos.h%2 == 0 && game.pos.w%2 == 0) || (game.pos.h%2 == 1 && game.pos.w%2 == 1)
             game.spritecycle = 0x02
         else
             game.spritecycle = 0x03
         end
-    elseif n < 0x10
+    elseif game.n.anim < 0x10
         game.spritecycle = 0x01
-    elseif n == 0x10
-        game.movelock = false
+    elseif game.n.anim >= 0x10
         game.screenoffset = dirs[:null]
         game.spriteoffset = dirs[:null]
         game.pos = posAdd(game.pos,dirs[game.direction])
         game.moveFunc = moveDont!
-    elseif n > 0x10
-        0
+
+        checkEncounter(game)
+
+        game.movelock = false
     end
+
+    game.n.anim += 0x01
 end
 
-function moveWalkWall!(game::GameState,n_frame::UInt)
-    n = n_frame-game.n_anim
-
-    if n < 0x10
+function moveWalkWall!(game::GameState)
+    if game.n.anim < 0x10
         if (game.pos.h%2 == 0 && game.pos.w%2 == 0) || (game.pos.h%2 == 1 && game.pos.w%2 == 1)
             game.spritecycle = 0x02
         else
             game.spritecycle = 0x03
         end
-    elseif n < 0x20
+    elseif game.n.anim < 0x20
         game.movelock = false
         game.spritecycle = 0x01
-    elseif n == 0x20
+    elseif game.n.anim == 0x20
         game.moveFunc = moveDont!
     end
+
+    game.n.anim += 0x01
 end
 
-function moveRun!(game::GameState,n_frame::UInt)
-    n = n_frame-game.n_anim
+function moveRun!(game::GameState)
 
-    game.screenoffset = posMult(Int32(2*n),dirs[game.direction])
-    game.spriteoffset = posMult(Int32(2*n),dirs[game.direction])
+    game.screenoffset = posMult(Int32(2*game.n.anim),dirs[game.direction])
+    game.spriteoffset = posMult(Int32(2*game.n.anim),dirs[game.direction])
 
-    if n < 0x04
+    if game.n.anim < 0x04
         if game.pos.h%2 == 0
             game.spritecycle = 0x02
         else
             game.spritecycle = 0x03
         end
-    elseif n < 0x08
+    elseif game.n.anim < 0x08
         game.spritecycle = 0x01
-    elseif n == 0x08
-        game.movelock = false
+    elseif game.n.anim >= 0x08
         game.screenoffset = dirs[:null]
         game.spriteoffset = dirs[:null]
         game.pos = posAdd(game.pos,dirs[game.direction])
         game.moveFunc = moveDont!
+
+        checkEncounter(game)
+
+        game.movelock = false
     end
+
+    game.n.anim += 0x01
 end
 
-function inputManager!(game::GameState,input::Input,n_frame::UInt)
+function inputManager!(game::GameState,input::Input)
     if game.inputlock
         return nothing
     end
@@ -311,7 +330,7 @@ function inputManager!(game::GameState,input::Input,n_frame::UInt)
             movepos = posAdd(game.pos,dirs[inputdir])
             
             game.movelock = true
-            game.n_anim = n_frame
+            game.n.anim = 0
 
             if !input.B && (game.transport == :walk || game.transport == :run)
                 game.transport = :walk
@@ -489,11 +508,11 @@ end
 
 
 
-function updateGame!(game::GameState,input::Input,n_frame::UInt; s=Settings())
-    inputManager!(game,input,n_frame)
+function updateGame!(game::GameState,input::Input; s=Settings())
+    inputManager!(game,input)
 
     if game.moveFunc != moveDont!
-        game.moveFunc(game,n_frame)
+        game.moveFunc(game)
     end
 
     if game.map.tilemap.collision[game.pos.h,game.pos.w] != 0x0000

@@ -3,7 +3,7 @@ module Pokemon
 include("core.jl")
 include("rendering.jl")
 include("controls.jl")
-#include("pokemons.jl")
+include("pokemons.jl")
 #include("maps.jl")
 
 
@@ -29,9 +29,9 @@ function main()
         Battle(false,0x00,MenuBattle(0x00,0x00)),
         Dialogue(),
         Menu(),
-        UInt(0),
         Counters(),
         moveDont!,
+        animEmpty!,
         Position(0x000000,0x000000),
         Options()
     )
@@ -41,17 +41,14 @@ function main()
 
     w,b = startWindow(settings)
     
-    mfb_set_resize_callback(w, resizer)
-    mfb_set_keyboard_callback(w, onpress)
+    mfb_set_resize_callback(w,resizer)
+    mfb_set_keyboard_callback(w,onpress)
 
     state = mfb_update(w, b)
-
-    n_frames = UInt(0)
     
     while true
-        begin
-        #@time begin
-            n_frames += UInt(1)
+        #begin
+        @time begin
             game.n.frame += 0x01
 
             writeToBuffer!(b,game)
@@ -63,10 +60,10 @@ function main()
 
             #print("update:")
             #@time 
-            updateGame!(game,input,n_frames; s=settings)
+            updateGame!(game,input; s=settings)
             #print("draw:")
             #@time 
-            drawGame!(game,n_frames; s=settings)
+            drawGame!(game; s=settings)
             resetInput!()
             #print("loop:")
         end

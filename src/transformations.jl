@@ -182,3 +182,30 @@ function fadeLinear!(im::Matrix{UInt32},denom::UInt8,num::UInt8,frame::UInt8)
         im[i] -= div(im[i],denom)*num*frame
     end
 end
+
+function scaleUp(im::Matrix{UInt32},factor::UInt)
+    if factor < 2
+        error("Factor needs to at least 2.")
+    end
+
+    im_ = zeros(UInt32,size(im).*factor)
+
+    for i in 1:size(im)[1], j in 1:size(im)[2]
+        im_[1+(i-1)*factor:factor+(i-1)*factor,
+            1+(j-1)*factor:factor+(j-1)*factor] .= im[i,j]
+    end
+
+    return im_
+end
+
+function zoomIn!(im::Matrix{UInt32},factor::UInt,pos::Position,size::Position)
+    if factor < 2
+        error("Factor needs to be at least 2.")
+    end
+
+    v = view(im,pos.h+1:pos.h+size.h,pos.w+1:pos.w+size.w)
+
+    for i in size.h:-1:1, j in size.w:-1:1
+        im[i]
+    end
+end

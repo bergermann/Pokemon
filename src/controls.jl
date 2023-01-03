@@ -4,6 +4,8 @@ include("maps.jl")
 
 
 
+
+
 mutable struct Input
     input::Bool
     _input::Bool
@@ -136,17 +138,19 @@ ctrls_ = Base.ImmutableDict(
 )
 
 dirs = Base.ImmutableDict(
-    :up => Position(-1,0),
-    :down => Position(1,0),
-    :left => Position(0,-1),
-    :right => Position(0,1),
-    :null => Position(0,0)
+    1 => Position(-1,0),    #up
+    2 => Position(1,0),     #down
+    3 => Position(0,-1),    #left
+    4 => Position(0,1),     #right
+    0 => Position(0,0)      #null
 )
 
 mapid = Base.ImmutableDict(
     0x00 => map0,
     0x01 => map1
 )
+
+
 
 
 
@@ -209,11 +213,19 @@ end
 
 
 
+
+
 walkable::Vector{UInt16} = [0x0000,0x0005,0x00006,0x00007]
 bikeable::Vector{UInt16} = [0x0000,0x0005,0x00006]
 swimmable::Vector{UInt16} = [0x0002,0x0003]
 
-function checkEncounter(game::GameState)
+function checkWalkable(game::GameState,movepos::Position)
+    return game.map.tilemap.collision[movepos.h,movepos.w] ∈ walkable ||
+        (game.map.tilemap.collision[movepos.h,movepos.w] >= 0x14 &&
+        game.map.tilemap.collision[movepos.h,movepos.w] <= 0x3b)
+end
+
+function checkEncounter!(game::GameState)
     if !(game.map.tilemap.collision[game.pos.h,game.pos.w] ∈ 0xc8:0xdb)
         return
     elseif rand(0x00:0xff) > 0x20e
@@ -226,264 +238,184 @@ function checkEncounter(game::GameState)
 end
 
 
+
+
+
 function moveDont!(game::GameState)
     return
 end
 
-function moveTurn!(game::GameState)
-    if game.n.anim < 0x04
-        game.spritecycle = 0x02
-    elseif game.n.anim < 0x08
-        game.spritecycle = 0x01
-    elseif game.n.anim == 0x08
+function moveTurn!(game::GameState,dir::Int)
+    if game.n.c[:spritemain].c == 0x00
+        updateSprite!(game.im.sprites[:main],(dir-1)*10+1)
+    elseif game.n.c[:spritemain].c == 0x04
+        updateSprite!(game.im.sprites[:main],(dir-1)*10+2)
+    elseif game.n.c[:spritemain].c == 0x08
+        updateSprite!(game.im.sprites[:main],(dir-1)*10+1)
         game.movelock = false
-    elseif game.n.anim > 0x08
-        game.moveFunc = moveDont!
+
+        killCallback!(game,:move)
+
+        game.n.c[:spritemain].c = 0
         
-        checkEncounter(game)
+        checkEncounter!(game)
+
+        return
     end
 
-    game.n.anim += 0x01
+    game.n.c[:spritemain].c += 0x01
 end
 
-function moveWalk!(game::GameState)
+function moveWalk!(game::GameState,dir::Int)
+    game.screenoffset = posMult(Int32(game.n.c[:spritemain].c+1),dirs[dir])
 
-    game.screenoffset = posMult(Int32(game.n.anim),dirs[game.direction])
-    game.spriteoffset = posMult(Int32(game.n.anim),dirs[game.direction])
+    posAdd!(game.im.sprites[:main].pos,dirs[dir])
 
-    if game.n.anim < 0x08
+    if game.n.c[:spritemain].c == 0
         if (game.pos.h%2 == 0 && game.pos.w%2 == 0) || (game.pos.h%2 == 1 && game.pos.w%2 == 1)
-            game.spritecycle = 0x02
+            updateSprite!(game.im.sprites[:main],(dir-1)*10+2)
         else
-            game.spritecycle = 0x03
+            updateSprite!(game.im.sprites[:main],(dir-1)*10+3)
         end
-    elseif game.n.anim < 0x10
-        game.spritecycle = 0x01
-    elseif game.n.anim >= 0x10
-        game.screenoffset = dirs[:null]
-        game.spriteoffset = dirs[:null]
-        game.pos = posAdd(game.pos,dirs[game.direction])
-        game.moveFunc = moveDont!
+    elseif game.n.c[:spritemain].c == 8
+        updateSprite!(game.im.sprites[:main],(dir-1)*10+1)
+    elseif game.n.c[:spritemain].c == 15
+        game.screenoffset = dirs[0]
+        posAdd!(game.im.sprites[:main].pos,posMult(-16,dirs[dir]))
 
-        checkEncounter(game)
+        posAdd!(game.pos,dirs[dir])
 
         game.movelock = false
+
+        killCallback!(game,:move)
+
+        game.n.c[:spritemain].c = 0
+
+        checkEncounter!(game)
+
+        return
     end
 
-    game.n.anim += 0x01
+    game.n.c[:spritemain].c += 1
 end
 
-function moveWalkWall!(game::GameState)
-    if game.n.anim < 0x10
+function moveWall!(game::GameState,dir::Int,input::Input)
+    if !(input.up || input.down || input.left || input.right)
+        updateSprite!(game.im.sprites[:main],(dir-1)*10+1)
+
+        killCallback!(game,:move)
+        
+        game.n.c[:spritemain].c = 0
+
+        return
+    end    
+
+    if game.n.c[:spritemain].c%32 == 0
+        if div(game.n.c[:spritemain].c,32)%2 == 0
+            updateSprite!(game.im.sprites[:main],(dir-1)*10+2)
+        else
+            updateSprite!(game.im.sprites[:main],(dir-1)*10+3)
+        end
+    elseif game.n.c[:spritemain].c%32 == 15
+        updateSprite!(game.im.sprites[:main],(dir-1)*10+1)
+    end
+
+    game.n.c[:spritemain].c += 1
+end
+
+function moveRun!(game::GameState,dir::Int,input::Input)
+    game.screenoffset = posMult(Int32(2*(game.n.c[:spritemain].c+1)),dirs[dir])
+
+    posAdd!(game.im.sprites[:main].pos,posMult(2,dirs[dir]))
+
+    if game.n.c[:spritemain].c == 0
         if (game.pos.h%2 == 0 && game.pos.w%2 == 0) || (game.pos.h%2 == 1 && game.pos.w%2 == 1)
-            game.spritecycle = 0x02
+            updateSprite!(game.im.sprites[:main],(dir+3)*10+2)
         else
-            game.spritecycle = 0x03
+            updateSprite!(game.im.sprites[:main],(dir+3)*10+3)
         end
-    elseif game.n.anim < 0x20
-        game.movelock = false
-        game.spritecycle = 0x01
-    elseif game.n.anim == 0x20
-        game.moveFunc = moveDont!
-    end
+    elseif game.n.c[:spritemain].c == 4
+        updateSprite!(game.im.sprites[:main],(dir+3)*10+1)
+    elseif game.n.c[:spritemain].c == 7
 
-    game.n.anim += 0x01
-end
+        game.screenoffset = dirs[0]
+        posAdd!(game.im.sprites[:main].pos,posMult(-16,dirs[dir]))
 
-function moveRun!(game::GameState)
-
-    game.screenoffset = posMult(Int32(2*game.n.anim),dirs[game.direction])
-    game.spriteoffset = posMult(Int32(2*game.n.anim),dirs[game.direction])
-
-    if game.n.anim < 0x04
-        if game.pos.h%2 == 0
-            game.spritecycle = 0x02
-        else
-            game.spritecycle = 0x03
-        end
-    elseif game.n.anim < 0x08
-        game.spritecycle = 0x01
-    elseif game.n.anim >= 0x08
-        game.screenoffset = dirs[:null]
-        game.spriteoffset = dirs[:null]
-        game.pos = posAdd(game.pos,dirs[game.direction])
-        game.moveFunc = moveDont!
-
-        checkEncounter(game)
+        posAdd!(game.pos,dirs[dir])
 
         game.movelock = false
+
+        killCallback!(game,:move)
+
+        game.n.c[:spritemain].c = 0
+
+        checkEncounter!(game)
+
+        return
     end
 
-    game.n.anim += 0x01
+    game.n.c[:spritemain].c += 1
 end
+
+
+
+
 
 function inputManager!(game::GameState,input::Input)
     if game.inputlock
-        return nothing
+        return
     end
 
     if !game.battle.active
-        if !game.menu.menu && !game.movelock &&
-                (input.up || input.down || input.left || input.right)   #movement
-            
-            inputdir = [:up,:down,:left,:right][[input.up,input.down,input.left,input.right]][1]
-            movepos = posAdd(game.pos,dirs[inputdir])
-            
-            game.movelock = true
-            game.n.anim = 0
-
-            if !input.B && (game.transport == :walk || game.transport == :run)
-                game.transport = :walk
-                
-                if game.direction != inputdir
-                    game.direction = inputdir
-                    game.moveFunc = moveTurn!
-                elseif game.map.tilemap.collision[movepos.h,movepos.w] ∈ walkable ||
-                        (game.map.tilemap.collision[movepos.h,movepos.w] >= 0x14 &&
-                        game.map.tilemap.collision[movepos.h,movepos.w] <= 0x3b)
-                    game.moveFunc = moveWalk!
-                else
-                    game.moveFunc = moveWalkWall!
-                end
-            elseif input.B && (game.transport == :walk || game.transport == :run)
-                game.transport = :run
-                game.direction = inputdir
-
-                if game.map.tilemap.collision[movepos.h,movepos.w] ∈ walkable ||
-                        (game.map.tilemap.collision[movepos.h,movepos.w] >= 0x14 &&
-                        game.map.tilemap.collision[movepos.h,movepos.w] <= 0x3b)
-                    game.moveFunc = moveRun!
-                else
-                    game.moveFunc = moveTurn!
-                end
-            end
-        elseif !game.menu.menu && !game.movelock 
-            game.transport = :walk
-        end
-
-        if !game.menu.menu && !game.dialogue.d && input._start  #menu opener
-            game.movelock = true
-            game.menu.menu = true
-        elseif game.menu.menu   #menu navigator
-            if game.menu.ow
-                if input._down
-                    game.menu.select = (game.menu.select+0x01)%0x08
-                elseif input._up
-                    game.menu.select = (game.menu.select-0x01)%0x08
-                elseif input._A
-                    if game.menu.select == 0x00
-                        0
-                    elseif game.menu.select == 0x01
-                        game.menu.pkmn.open = true
-                        game.menu.ow = false
-                        game.im.layers.menu2 .= 0x000000
-                    elseif game.menu.select == 0x02
-                        game.menu.bags.open = true
-                        game.menu.ow = false
-                        game.im.layers.menu2 .= 0x000000
-                    elseif game.menu.select == 0x03
-                        0
-                    elseif game.menu.select == 0x04
-                        0
-                    elseif game.menu.select == 0x05
-                        0
-                    elseif game.menu.select == 0x06
-                        0
-                    else
-                        game.movelock = false
-                        game.menu.menu = false
-                        game.menu.select = 0x01
-                    end
-                elseif (input._start || input._B) && !game.menu.pkmn.open &&
-                        !game.menu.bags.open
-                    game.movelock = false
-                    game.menu.menu = false
-                    game.menu.select = 0x01
-                end
-            end
-
-            if game.menu.pdex.open  #pdex menu manager
-                0
-            elseif game.menu.pkmn.open  #pkmn menu manager
-                if input._A
-                    if game.menu.pkmn.select == length(game.trainer.pokemon)
-                        game.menu.pkmn.open = false
-                        game.menu.pkmn.select = 0x00
-                        game.menu.ow = true
-                    end
-                elseif input._B
-                    game.menu.pkmn.open = false
-                    game.menu.pkmn.select = 0x00
-                    game.menu.ow = true
-                elseif input._down
-                    if game.menu.pkmn.select == length(game.trainer.pokemon)
-                        game.menu.pkmn.select = 0x00
-                    else
-                        game.menu.pkmn.select += 0x01
-                    end
-                elseif input._up
-                    if game.menu.pkmn.select == 0x00
-                        game.menu.pkmn.select = length(game.trainer.pokemon)
-                    else
-                        game.menu.pkmn.select -= 0x01
-                    end
-                elseif input._left || input._right
-                    if game.menu.pkmn.select == 0x00
-                        game.menu.pkmn.select = 0x01
-                    else
-                        game.menu.pkmn.select = 0x00
-                    end
-                end
-            elseif game.menu.bags.open
-                if input._A
-                    0
-                elseif input._B
-                    game.menu.bags.open = false
-                    game.menu.bags.select = 0x00
-                    game.menu.ow = true
-                elseif input._down
-                    if game.menu.bags.select == 0x06
-                        game.menu.bags.select = 0x00
-                    else
-                        game.menu.bags.select += 0x01
-                    end
-                elseif input._up
-                    if game.menu.bags.select == 0x00
-                        game.menu.bags.select = 0x06
-                    else
-                        game.menu.bags.select -= 0x01
-                    end
-                elseif input._left
-                    if game.menu.bags.slot == 0x00
-                        game.menu.bags.slot = 0x04
-                    else
-                        game.menu.bags.slot -= 0x01
-                    end
-                elseif input._right
-                    if game.menu.bags.slot == 0x04
-                        game.menu.bags.slot = 0x00
-                    else
-                        game.menu.bags.slot += 0x01
-                    end
-                end
-            end
-        end
-
-        if !game.menu.menu && !game.movelock && input._A    #dialogue
-            mapAction!(game)
-        elseif game.dialogue.d && (input._A || input._B || input._down)
-            if game.dialogue.n < length(game.dialogue.str)
-                game.dialogue.n += 0x01
-            else
-                game.dialogue.d = false
-                game.movelock = false
-                game.dialogue.n = 0x01
-            end
-        end
+        inputMap!(game,input)
     else
-        0
+        return
     end
 end
+
+function inputMap!(game::GameState,input::Input)
+    if !game.movelock && !game.menu.menu
+        inputMove!(game::GameState,input::Input)
+    end
+end
+
+function inputMove!(game::GameState,input::Input)
+    if !(input.up || input.down || input.left || input.right)
+        return
+    end
+
+    dir = findfirst([input.up,input.down,input.left,input.right])
+    movepos = posAdd(game.pos,dirs[dir])
+
+    if !checkWalkable(game,movepos)
+        if game.n.c[:spritemain].c == 0
+            createCallback!(game,:move,moveWall!,(dir,input))
+        end
+
+        return
+    end
+
+    if game.n.c[:spritemain].c != 0
+        killCallback!(game,:move)
+        game.n.c[:spritemain].c = 0
+    end
+
+    game.movelock = true
+
+    if !input.B
+        if game.direction == dir
+            createCallback!(game,:move,moveWalk!,(dir,))
+        else
+            game.direction = dir
+            createCallback!(game,:move,moveTurn!,(dir,))
+        end
+    else
+        game.direction = dir
+        createCallback!(game,:move,moveRun!,(dir,input))
+    end
+end
+        
+
 
 
 
@@ -508,11 +440,12 @@ end
 
 
 
+
 function updateGame!(game::GameState,input::Input; s=Settings())
     inputManager!(game,input)
 
-    if game.moveFunc != moveDont!
-        game.moveFunc(game)
+    for i in 1:game.callbacks.idx
+        game.callbacks[i].func(game,game.callbacks[i].args...)
     end
 
     if game.map.tilemap.collision[game.pos.h,game.pos.w] != 0x0000

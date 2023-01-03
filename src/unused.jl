@@ -1140,6 +1140,273 @@ function getFrames(set::String)
 end
 
 
+#=
+function getSpriteMain(set::String; s=Settings())
+    spriteset = mfb_rgb.(load("sprites/$set.png"))
+
+    key::Vector{Tuple{Int,Int,Int,Int,Int,Symbol}} = [
+        (1,1,32,16,3,:walkdown),
+        (1,17,32,16,3,:walkup),
+        (1,33,32,16,3,:walkleft),
+
+        (97,1,32,16,3,:rundown),
+        (97,17,32,16,3,:runup),
+        (97,33,32,16,3,:runleft),
+
+        (1,49,32,32,9,:bikedown),
+        (1,81,32,32,9,:bikeup),
+        (1,113,32,32,9,:bikeleft),
+
+        (1,145,32,32,2,:sitdown),
+        (1,177,32,32,2,:situp),
+        (1,209,32,32,2,:sitleft),
+
+        (97,145,32,32,2,:waterdown),
+        (97,177,32,32,2,:waterup),
+        (97,209,32,32,2,:waterleft),
+
+        (1,241,32,32,5,:pokeball),
+    
+        (1,273,32,32,4,:fishdown),
+        (1,305,32,32,4,:fishup),
+        (1,337,32,32,4,:fishleft),
+
+        (1,369,32,32,1,:surfdown),
+        (1,401,32,32,1,:surfup),
+        (1,433,32,32,1,:surfleft),
+
+        (33,369,32,32,1,:divedown),
+        (33,401,32,32,1,:diveup),
+        (33,433,32,32,1,:diveleft),
+
+        (1,465,32,32,1,:flypkmn),
+        (1,497,64,64,4,:battlesprites),
+        (97,401,64,64,1,:battler)
+    ]
+
+    d =  Dict{Symbol,Vector{Matrix{UInt32}}}(zip([key[i][6] for i in eachindex(key)],
+        [[spriteset[key[i][1]+(j-1)*key[i][3]:key[i][1]+j*key[i][3]-1,
+            key[i][2]:key[i][2]+key[i][4]-1] for j in 1:key[i][5]] for i in eachindex(key)]))
+    
+    d[:walkright] = reverse.(d[:walkleft]; dims=2)
+    d[:runright] = reverse.(d[:runleft]; dims=2)
+    d[:bikeright] = reverse.(d[:bikeleft]; dims=2)
+    d[:sitright] = reverse.(d[:sitleft]; dims=2)
+    d[:waterright] = reverse.(d[:waterleft]; dims=2)
+    d[:fishright] = reverse.(d[:fishleft]; dims=2)
+    d[:surfright] = reverse.(d[:surfleft]; dims=2)
+    d[:diveright] = reverse.(d[:diveleft]; dims=2)
+
+    return d
+end
+=#
+
+
+    
+function drawSpriteMain!(layers::Layers,game::GameState; s=Settings())
+    #fix typestability
+    S = game.trainer.sprite[string(game.transport,game.direction)][game.spritecycle]
+
+    height,width = size(S)./s.tilesize
+    dh,dw = Int((s.Nh-1)/2),Int((s.Nw-1)/2)
+
+    layers.spriteshigh .= 0x000000
+    layers.spriteslow .= 0x000000
+
+    layers.spriteshigh[(dh-1)*s.tilesize+1+game.spriteoffset.h:dh*s.tilesize+game.spriteoffset.h,
+        Int(dw-0.5+width/2)*s.tilesize+1+game.spriteoffset.w:Int(dw-0.5+width/2+1)*s.tilesize+game.spriteoffset.w] =
+        S[1:Int(s.tilesize*height/2),:]
+
+    layers.spriteshigh[dh*s.tilesize+1+game.spriteoffset.h:(dh+1)*s.tilesize+game.spriteoffset.h,
+        Int(dw-0.5+width/2)*s.tilesize+1+game.spriteoffset.w:Int(dw-0.5+width/2+1)*s.tilesize+game.spriteoffset.w] =
+        S[Int(s.tilesize*height/2+1):end,:]
+end
+
+function drawSpriteMain!(game::GameState; s=Settings())
+    #fix typestability
+    S = game.trainer.sprite[string(game.transport,game.direction)][game.spritecycle]
+
+    height,width = size(S)./s.tilesize
+    dh,dw = Int((s.Nh-1)/2),Int((s.Nw-1)/2)
+
+    game.im.layers.spriteshigh .= 0x000000
+    game.im.layers.spriteslow .= 0x000000
+
+    game.im.layers.spriteshigh[(dh-1)*s.tilesize+1+game.spriteoffset.h:dh*s.tilesize+game.spriteoffset.h,
+        Int(dw-0.5+width/2)*s.tilesize+1+game.spriteoffset.w:Int(dw-0.5+width/2+1)*s.tilesize+game.spriteoffset.w] =
+        S[1:Int(s.tilesize*height/2),:]
+
+    game.im.layers.spriteshigh[dh*s.tilesize+1+game.spriteoffset.h:(dh+1)*s.tilesize+game.spriteoffset.h,
+        Int(dw-0.5+width/2)*s.tilesize+1+game.spriteoffset.w:Int(dw-0.5+width/2+1)*s.tilesize+game.spriteoffset.w] =
+        S[Int(s.tilesize*height/2+1):end,:]
+end
 
 
 
+function inputManager_!(game::GameState,input::Input)
+    if game.inputlock
+        return
+    end
+
+    if !game.battle.active
+        if !game.menu.menu && !game.movelock &&
+                (input.up || input.down || input.left || input.right)   #movement
+            
+            inputdir = [:up,:down,:left,:right][[input.up,input.down,input.left,input.right]][1]
+            movepos = posAdd(game.pos,dirs[inputdir])
+            
+            game.movelock = true
+            game.n.anim = 0
+
+            if !input.B && (game.transport == :walk || game.transport == :run)
+                game.transport = :walk
+                
+                if game.direction != inputdir
+                    game.direction = inputdir
+                    game.moveFunc = moveTurn!
+                elseif game.map.tilemap.collision[movepos.h,movepos.w] ∈ walkable ||
+                        (game.map.tilemap.collision[movepos.h,movepos.w] >= 0x14 &&
+                        game.map.tilemap.collision[movepos.h,movepos.w] <= 0x3b)
+                    game.moveFunc = moveWalk!
+                else
+                    game.moveFunc = moveWalkWall!
+                end
+            elseif input.B && (game.transport == :walk || game.transport == :run)
+                game.transport = :run
+                game.direction = inputdir
+
+                if game.map.tilemap.collision[movepos.h,movepos.w] ∈ walkable ||
+                        (game.map.tilemap.collision[movepos.h,movepos.w] >= 0x14 &&
+                        game.map.tilemap.collision[movepos.h,movepos.w] <= 0x3b)
+                    game.moveFunc = moveRun!
+                else
+                    game.moveFunc = moveTurn!
+                end
+            end
+        elseif !game.menu.menu && !game.movelock 
+            game.transport = :walk
+        end
+
+        if !game.menu.menu && !game.dialogue.d && input._start  #menu opener
+            game.movelock = true
+            game.menu.menu = true
+        elseif game.menu.menu   #menu navigator
+            if game.menu.ow
+                if input._down
+                    game.menu.select = (game.menu.select+0x01)%0x08
+                elseif input._up
+                    game.menu.select = (game.menu.select-0x01)%0x08
+                elseif input._A
+                    if game.menu.select == 0x00
+                        0
+                    elseif game.menu.select == 0x01
+                        game.menu.pkmn.open = true
+                        game.menu.ow = false
+                        game.im.layers.menu2 .= 0x000000
+                    elseif game.menu.select == 0x02
+                        game.menu.bags.open = true
+                        game.menu.ow = false
+                        game.im.layers.menu2 .= 0x000000
+                    elseif game.menu.select == 0x03
+                        0
+                    elseif game.menu.select == 0x04
+                        0
+                    elseif game.menu.select == 0x05
+                        0
+                    elseif game.menu.select == 0x06
+                        0
+                    else
+                        game.movelock = false
+                        game.menu.menu = false
+                        game.menu.select = 0x01
+                    end
+                elseif (input._start || input._B) && !game.menu.pkmn.open &&
+                        !game.menu.bags.open
+                    game.movelock = false
+                    game.menu.menu = false
+                    game.menu.select = 0x01
+                end
+            end
+
+            if game.menu.pdex.open  #pdex menu manager
+                0
+            elseif game.menu.pkmn.open  #pkmn menu manager
+                if input._A
+                    if game.menu.pkmn.select == length(game.trainer.pokemon)
+                        game.menu.pkmn.open = false
+                        game.menu.pkmn.select = 0x00
+                        game.menu.ow = true
+                    end
+                elseif input._B
+                    game.menu.pkmn.open = false
+                    game.menu.pkmn.select = 0x00
+                    game.menu.ow = true
+                elseif input._down
+                    if game.menu.pkmn.select == length(game.trainer.pokemon)
+                        game.menu.pkmn.select = 0x00
+                    else
+                        game.menu.pkmn.select += 0x01
+                    end
+                elseif input._up
+                    if game.menu.pkmn.select == 0x00
+                        game.menu.pkmn.select = length(game.trainer.pokemon)
+                    else
+                        game.menu.pkmn.select -= 0x01
+                    end
+                elseif input._left || input._right
+                    if game.menu.pkmn.select == 0x00
+                        game.menu.pkmn.select = 0x01
+                    else
+                        game.menu.pkmn.select = 0x00
+                    end
+                end
+            elseif game.menu.bags.open
+                if input._A
+                    0
+                elseif input._B
+                    game.menu.bags.open = false
+                    game.menu.bags.select = 0x00
+                    game.menu.ow = true
+                elseif input._down
+                    if game.menu.bags.select == 0x06
+                        game.menu.bags.select = 0x00
+                    else
+                        game.menu.bags.select += 0x01
+                    end
+                elseif input._up
+                    if game.menu.bags.select == 0x00
+                        game.menu.bags.select = 0x06
+                    else
+                        game.menu.bags.select -= 0x01
+                    end
+                elseif input._left
+                    if game.menu.bags.slot == 0x00
+                        game.menu.bags.slot = 0x04
+                    else
+                        game.menu.bags.slot -= 0x01
+                    end
+                elseif input._right
+                    if game.menu.bags.slot == 0x04
+                        game.menu.bags.slot = 0x00
+                    else
+                        game.menu.bags.slot += 0x01
+                    end
+                end
+            end
+        end
+
+        if !game.menu.menu && !game.movelock && input._A    #dialogue
+            mapAction!(game)
+        elseif game.dialogue.d && (input._A || input._B || input._down)
+            if game.dialogue.n < length(game.dialogue.str)
+                game.dialogue.n += 0x01
+            else
+                game.dialogue.d = false
+                game.movelock = false
+                game.dialogue.n = 0x01
+            end
+        end
+    else
+        0
+    end
+end

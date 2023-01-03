@@ -3,24 +3,23 @@ using BenchmarkTools
 include("core.jl")
 include("rendering.jl")
 
-function f()
-    A = ArrayList(Sprite,128)
-    #show(A)
+function test(s::Symbol)
+    Symbol(s,"1")
+end
 
-    for i in 1:128
-        push!(A,Sprite(Symbol("rand$i"),Position(rand(Int32,2)...),rand(UInt32,100,100)))
-        #print(A.idx,", ")
+function f()
+    S = Sprites(128)
+
+    ss = getSpriteMain("sprite")
+
+    for i in 1:100
+        m = Sprite(Symbol(i),:background2,Position(104,72),Position(32,16),1,
+            ss,ss[1])
+
+        push!(S,m)
     end
 
-    sortHorizontal!(A)
-    #println([x.id for x in A.data[1:A.idx]])
-
-    @btime sortHorizontal!($A)
-
-    #a = rand(100)
-
-    #@btime quicksort!($a,1,90,sqrt)
-    #show(a)
+    print(S[Symbol(50)].id)
 end
 
 f()

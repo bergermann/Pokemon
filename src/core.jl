@@ -12,16 +12,49 @@ function posAdd(a::Position,b::Position)
     return Position(a.h+b.h,a.w+b.w)
 end
 
+function posAdd!(a::Position,b::Position)
+    a.h += b.h; a.w += b.w
+    return
+end
+
 function posSub(a::Position,b::Position)
     return Position(a.h-b.h,a.w-b.w)
 end
 
-function posMult(n::Int32,a::Position)
+function posMult(n::Signed,a::Position)
     return Position(n*a.h,n*a.w)
 end
 
+mutable struct CallbackFunction
+    id::Symbol
+    func::Function
+    args::Tuple
 
+    function CallbackFunction()
+        new(Symbol(),emptyCallback,())
+    end
 
+    function CallbackFunction(id,func,args)
+        new(id,func,args)
+    end
+end
+
+mutable struct Counter
+    id::Symbol
+    c::Int
+
+    function Counter(id::Symbol)
+        new(id,0)
+    end
+
+    function Counter(id::Symbol,n::Int)
+        new(id,n)
+    end
+
+    function Counter()
+        new(Symbol(),0)
+    end
+end
 
 mutable struct Sprite
     id::Symbol
@@ -30,9 +63,10 @@ mutable struct Sprite
     pos::Position
     size::Position
 
-    frame::Symbol
+    frame::Int
+    dict::Dict{Int,Matrix{UInt32}}
 
-    im::Dict{Symbol,Matrix{UInt32}}
+    im::Matrix{UInt32}
 
     function Sprite()
         new(
@@ -42,18 +76,19 @@ mutable struct Sprite
             Position(0,0),
             Position(0,0),
 
-            Symbol(),
+            0,
+            Dict{Int,Matrix{UInt32}}(),
 
-            Dict{Symbol,Matrix{UInt32}}()
+            zeros(UInt32,0,0)
         )
     end
 
-    function Sprite(id,pos,size,im)
-        new(id,pos,size,im)
+    function Sprite(id,layer,pos,size,frame,dict,im)
+        new(id,layer,pos,size,frame,dict,im)
     end
 
-    function Sprite(id,pos,im)
-        new(id,pos,Position(size(im)...),im)
+    function Sprite(id,layer,pos,dict)
+        new(id,layer,pos,Position(0,0),0,dict,zeros(UInt32,0,0))
     end
 end
 
@@ -61,34 +96,68 @@ mutable struct ArrayList{T}
     data::Vector{T}
     idx::Int
 
-    function ArrayList(T,n::Int)
+    function ArrayList(T::Type,n::Int)
         new{T}(Vector{T}(undef,n),0)
     end
+end
+
+function Base.getindex(A::ArrayList, inds...)
+    return getindex(A.data, inds...)
+end
+
+function Base.setindex!(A::ArrayList, X, inds...)
+    setindex!(A.data,X,inds...)
+end
+
+function Base.getindex(A::ArrayList,id::Symbol)
+    return getindex(A.data, findfirst(x -> x.id==id, A.data))
+end
+
+function Base.setindex!(A::ArrayList, X, id::Symbol)
+    return setindex!(A.data,X,findfirst(x -> x.id==id, A.data))
 end
 
 function Base.push!(a::ArrayList, x)
     if a.idx >= length(a.data)           
         error("ArrayList is full, can't push new element.")
-    else
-         a.idx += 1
-         a.data[a.idx] = x
     end
+
+    a.idx += 1
+    a.data[a.idx] = x
 end
 
 function Base.pop!(a::ArrayList{Sprite})
     if a.idx == 0
         error("ArrayList is empty, can't pop element.")
-        return
     end
 
     a.data[a.idx] = Sprite()
     a.idx -= 1
 end
 
+function Base.pop!(a::ArrayList{Counter})
+    if a.idx == 0
+        error("ArrayList is empty, can't pop element.")
+    end
+
+    a.data[a.idx] = Counter()
+    a.idx -= 1
+end
+
+function Base.pop!(A::ArrayList{CallbackFunction})
+    if a.idx == 0
+        error("ArrayList is empty, can't pop element.")
+    end
+
+    a.data[a.idx] = CallbackFunction()
+    a.idx -= 1
+end
+
+
+
 function Base.popat!(a::ArrayList{Sprite},i::Int)
     if a.idx == 0
         error("ArrayList is empty, can't pop element.")
-        return
     elseif i < 1 || i > a.idx
         error("Invalid index, can't pop element.")
     end
@@ -101,6 +170,34 @@ function Base.popat!(a::ArrayList{Sprite},i::Int)
     a.idx -= 1
 end
 
+function Base.popat!(a::ArrayList{Counter},i::Int)
+    if a.idx == 0
+        error("ArrayList is empty, can't pop element.")
+    elseif i < 1 || i > a.idx
+        error("Invalid index, can't pop element.")
+    end
+
+    if i != a.idx
+        a.data[i], a.data[a.idx] = a.data[a.idx], a.data[i]
+    end
+
+    a.data[a.idx] = Counter()
+    a.idx -= 1
+end
+
+function Base.popat!(A::ArrayList{Counter},id::Symbol)
+    A[id], A[A.idx] = A[A.idx], A[id]
+
+    A[A.idx] = Counter()
+    A.idx -= 1
+end
+
+function Base.popat!(A::ArrayList{CallbackFunction},id::Symbol)
+    A[id], A[A.idx] = A[A.idx], A[id]
+
+    A[A.idx] = CallbackFunction()
+    A.idx -= 1
+end
 
 
 
@@ -177,6 +274,8 @@ end
 
 
 
+
+
 mutable struct PkmnData
     base::Matrix{UInt16}
     name::Vector{String}
@@ -198,7 +297,7 @@ mutable struct Trainer
     badges::Vector{UInt8}
     pokedex::Vector{Bool}
 
-    sprite::Dict{String,Vector{Matrix{UInt32}}}
+    sprite::Dict{Int,Matrix{UInt32}}
 end
 
 mutable struct MItem
@@ -511,11 +610,10 @@ end
 
 mutable struct Counters
     frame::UInt
-    anim::UInt
-    idle::UInt
+    c::ArrayList{Counter}
 
-    function Counters()
-        new(0,0,0)
+    function Counters(n::Int)
+        new(0,ArrayList(Counter,n))
     end
 end
 
@@ -526,10 +624,11 @@ mutable struct GameState
     trainer::Trainer
 
     pos::Position
-    transport::Symbol
-    direction::Symbol
-    spritecycle::UInt8
+    transport::Int
+    direction::Int
+
     spriteoffset::Position
+
     map::Map
 
     movelock::Bool
@@ -543,11 +642,33 @@ mutable struct GameState
     menu::Menu
 
     n::Counters
-    moveFunc::Function
-    animFunc::Function
+    callbacks::ArrayList{CallbackFunction}
 
     screenoffset::Position
 
     options::Options
 end
 
+function createCounter!(game::GameState,id::Symbol)
+    push!(game.n.c,Counter(id))
+end
+
+function createCounter!(game::GameState,id::Symbol,n::Int)
+    push!(game.n.c,Counter(id,n))
+end
+
+function killCounter!(game::GameState,id::Symbol)
+    popat!(game.n.c,id)
+end
+
+function createCallback!(game::GameState,id::Symbol,func::Function,args::Tuple)
+    push!(game.callbacks,CallbackFunction(id,func,args))
+end
+
+function killCallback!(game::GameState,id::Symbol)
+    popat!(game.callbacks,id)
+end
+
+function emptyCallback(game::GameState)
+    return
+end

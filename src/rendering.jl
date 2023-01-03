@@ -125,111 +125,135 @@ end
 
 
 
+function Sprites(n::Int)
+    S = ArrayList(Sprite,n)
+
+    for i in 1:n
+        push!(S,Sprite())
+    end
+
+    S.idx = 0
+
+    return S
+end
 
 function getSpriteMain(set::String; s=Settings())
     spriteset = mfb_rgb.(load("sprites/$set.png"))
 
-    key::Vector{Tuple{Int,Int,Int,Int,Int,String}} = [
-        (1,1,32,16,3,"walkdown"),
-        (1,17,32,16,3,"walkup"),
-        (1,33,32,16,3,"walkleft"),
+    key::Vector{Tuple{Int,Int,Int,Int,Int,Int}} = [
+        (1,1,32,16,3,10),    #walk
+        (1,17,32,16,3,0),
+        (1,33,32,16,3,20),
 
-        (97,1,32,16,3,"rundown"),
-        (97,17,32,16,3,"runup"),
-        (97,33,32,16,3,"runleft"),
+        (97,1,32,16,3,50),  #run
+        (97,17,32,16,3,40),
+        (97,33,32,16,3,60),
 
-        (1,49,32,32,9,"bikedown"),
-        (1,81,32,32,9,"bikeup"),
-        (1,113,32,32,9,"bikeleft"),
+        (1,49,32,32,9,90),  #bike
+        (1,81,32,32,9,80),
+        (1,113,32,32,9,100),
 
-        (1,145,32,32,2,"sitdown"),
-        (1,177,32,32,2,"situp"),
-        (1,209,32,32,2,"sitleft"),
+        (1,145,32,32,2,120),
+        (1,177,32,32,2,130),
+        (1,209,32,32,2,140),
 
-        (97,145,32,32,2,"waterdown"),
-        (97,177,32,32,2,"waterup"),
-        (97,209,32,32,2,"waterleft"),
+        (97,145,32,32,2,120),
+        (97,177,32,32,2,130),
+        (97,209,32,32,2,140),
 
-        (1,241,32,32,5,"pokeball"),
+        (1,241,32,32,5,150),
     
-        (1,273,32,32,4,"fishdown"),
-        (1,305,32,32,4,"fishup"),
-        (1,337,32,32,4,"fishleft"),
+        (1,273,32,32,4,160),
+        (1,305,32,32,4,170),
+        (1,337,32,32,4,180),
 
-        (1,369,32,32,1,"surfdown"),
-        (1,401,32,32,1,"surfup"),
-        (1,433,32,32,1,"surfleft"),
+        (1,369,32,32,1,190),
+        (1,401,32,32,1,200),
+        (1,433,32,32,1,210),
 
-        (33,369,32,32,1,"divedown"),
-        (33,401,32,32,1,"diveup"),
-        (33,433,32,32,1,"diveleft"),
+        (33,369,32,32,1,220),
+        (33,401,32,32,1,230),
+        (33,433,32,32,1,240),
 
-        (1,465,32,32,1,"flypkmn"),
-        (1,497,64,64,4,"battlesprites"),
-        (97,401,64,64,1,"battler")
+        (1,465,32,32,1,250),
+        (1,497,64,64,4,260),
+        (97,401,64,64,1,270)
     ]
 
-    d =  Dict{String,Vector{Matrix{UInt32}}}(zip([key[i][6] for i in eachindex(key)],
-        [[spriteset[key[i][1]+(j-1)*key[i][3]:key[i][1]+j*key[i][3]-1,
-            key[i][2]:key[i][2]+key[i][4]-1] for j in 1:key[i][5]] for i in eachindex(key)]))
+    d = Dict{Int,Matrix{UInt32}}()
+
+    for k in key
+        if k[5] > 1
+            for i in 1:k[5]
+                s = k[6]+i
+
+                d[s] = spriteset[k[1]+(i-1)*k[3]:k[1]+i*k[3]-1,
+                    k[2]:k[2]+k[4]-1]
+            end
+        else
+            d[k[6]] = spriteset[k[1]:k[1]+k[3]-1,k[2]:k[2]+k[4]-1]
+        end
+    end
+
+    d[31] = reverse(d[21]; dims=2)
+    d[32] = reverse(d[22]; dims=2)
+    d[33] = reverse(d[23]; dims=2)
     
-    d["walkright"] = reverse.(d["walkleft"]; dims=2)
-    d["runright"] = reverse.(d["runleft"]; dims=2)
-    d["bikeright"] = reverse.(d["bikeleft"]; dims=2)
-    d["sitright"] = reverse.(d["sitleft"]; dims=2)
-    d["waterright"] = reverse.(d["waterleft"]; dims=2)
-    d["fishright"] = reverse.(d["fishleft"]; dims=2)
-    d["surfright"] = reverse.(d["surfleft"]; dims=2)
-    d["diveright"] = reverse.(d["diveleft"]; dims=2)
+    d[71] = reverse(d[61]; dims=2)
+    d[72] = reverse(d[62]; dims=2)
+    d[73] = reverse(d[63]; dims=2)
+    
+    #=
+    d[:walkright] = reverse.(d[:walkleft]; dims=2)
+    d[:runright] = reverse.(d[:runleft]; dims=2)
+    d[:bikeright] = reverse.(d[:bikeleft]; dims=2)
+    d[:sitright] = reverse.(d[:sitleft]; dims=2)
+    d[:waterright] = reverse.(d[:waterleft]; dims=2)
+    d[:fishright] = reverse.(d[:fishleft]; dims=2)
+    d[:surfright] = reverse.(d[:surfleft]; dims=2)
+    d[:diveright] = reverse.(d[:diveleft]; dims=2)
+    =#
 
     return d
 end
-    
-function drawSpriteMain!(layers::Layers,game::GameState; s=Settings())
-    #fix typestability
-    S = game.trainer.sprite[string(game.transport,game.direction)][game.spritecycle]
 
-    height,width = size(S)./s.tilesize
-    dh,dw = Int((s.Nh-1)/2),Int((s.Nw-1)/2)
-
-    layers.spriteshigh .= 0x000000
-    layers.spriteslow .= 0x000000
-
-    layers.spriteshigh[(dh-1)*s.tilesize+1+game.spriteoffset.h:dh*s.tilesize+game.spriteoffset.h,
-        Int(dw-0.5+width/2)*s.tilesize+1+game.spriteoffset.w:Int(dw-0.5+width/2+1)*s.tilesize+game.spriteoffset.w] =
-        S[1:Int(s.tilesize*height/2),:]
-
-    layers.spriteshigh[dh*s.tilesize+1+game.spriteoffset.h:(dh+1)*s.tilesize+game.spriteoffset.h,
-        Int(dw-0.5+width/2)*s.tilesize+1+game.spriteoffset.w:Int(dw-0.5+width/2+1)*s.tilesize+game.spriteoffset.w] =
-        S[Int(s.tilesize*height/2+1):end,:]
+function updateSprite!(sprite::Sprite,frame::Int)
+    sprite.frame = frame
+    sprite.im = sprite.dict[frame]
 end
 
-function drawSpriteMain!(game::GameState; s=Settings())
-    #fix typestability
-    S = game.trainer.sprite[string(game.transport,game.direction)][game.spritecycle]
-
-    height,width = size(S)./s.tilesize
-    dh,dw = Int((s.Nh-1)/2),Int((s.Nw-1)/2)
-
-    game.im.layers.spriteshigh .= 0x000000
-    game.im.layers.spriteslow .= 0x000000
-
-    game.im.layers.spriteshigh[(dh-1)*s.tilesize+1+game.spriteoffset.h:dh*s.tilesize+game.spriteoffset.h,
-        Int(dw-0.5+width/2)*s.tilesize+1+game.spriteoffset.w:Int(dw-0.5+width/2+1)*s.tilesize+game.spriteoffset.w] =
-        S[1:Int(s.tilesize*height/2),:]
-
-    game.im.layers.spriteshigh[dh*s.tilesize+1+game.spriteoffset.h:(dh+1)*s.tilesize+game.spriteoffset.h,
-        Int(dw-0.5+width/2)*s.tilesize+1+game.spriteoffset.w:Int(dw-0.5+width/2+1)*s.tilesize+game.spriteoffset.w] =
-        S[Int(s.tilesize*height/2+1):end,:]
+function updateSprite!(sprite::Sprite)
+    sprite.im = sprite.dict[sprite.frame]
 end
 
 function drawSprites!(game::GameState; s=Settings())
-    
+    @inbounds for i in 1:game.im.sprites.idx
+        sprite = game.im.sprites.data[i]
+        l = getfield(game.im.layers,sprite.layer)
 
+        v = view(l, sprite.pos.h+1:sprite.pos.h+sprite.size.h,
+            sprite.pos.w+1:sprite.pos.w+sprite.size.w)
 
+        @inbounds for i in eachindex(v)
+            if sprite.im[i] != 0x000000
+                v[i] = sprite.im[i]
+            end
+        end
+    end
 
+    #=
+    id::Symbol
 
+    layer::Symbol
+    pos::Position
+    size::Position
 
+    frame::Symbol
+    dict::Dict{Symbol,Matrix{UInt32}}
+
+    im::Matrix{UInt32}
+    =#
+end
 
 
 
@@ -632,23 +656,17 @@ end
 
 function drawGame!(game::GameState; s=Settings())
     if game.menu.ow && !game.menu.menu
-        #print("map: ")
-        #@time
         drawMap!(game; s=s)
-        #print("sprite: ")
-        #@time
-        drawSpriteMain!(game; s=s)
+        
+        sortHorizontal!(game.im.sprites)
+        drawSprites!(game; s=s)
 
         if game.dialogue.d
             drawDialogue!(game)
 
-            #print("combine:")
-            #@time 
             combineLayers!(game,[:background1,:background2,:spriteslow,:spriteshigh,
                 :foreground1,:foreground2,:textbox]; s=s)
         else
-            #print("combine:")
-            #@time 
             combineLayers!(game,[:background1,:background2,:spriteslow,
                 :spriteshigh,:foreground1,:foreground2]; s=s)
         end
@@ -660,7 +678,9 @@ function drawGame!(game::GameState; s=Settings())
         #print("map: ")
         drawMap!(game; s=s)
         #@time 
-        drawSpriteMain!(game; s=s)
+        #drawSpriteMain!(game; s=s)
+        sortHorizontal!(game.im.sprites)
+        drawSprites!(game; s=s)
         drawMenu!(game)
 
         #print("combine:")

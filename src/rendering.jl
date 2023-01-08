@@ -2,7 +2,7 @@
 using MiniFB, Images, DelimitedFiles
 
 include("parser.jl")
-include("animations.jl")
+#include("animations.jl")
 
 struct Settings
     width::UInt16
@@ -30,11 +30,8 @@ mutable struct Layers
     water::Matrix{UInt32}
     background1::Matrix{UInt32}
     background2::Matrix{UInt32}
-    spriteslow::Matrix{UInt32}
-    spriteshigh::Matrix{UInt32}
     foreground1::Matrix{UInt32}
     foreground2::Matrix{UInt32}
-    weather::Matrix{UInt32}
 
     textbox::Matrix{UInt32}
 
@@ -52,6 +49,8 @@ mutable struct Layers
             UInt16(s.Nw)*UInt16(s.tilesize)) for _ in eachindex(fieldnames(Layers))]...)
     end
 end
+
+
 
 
 
@@ -84,7 +83,6 @@ function getTileMap(dir::String,key::Vector{Symbol}; s=Settings())
 
     return tm
 end
-
 
 
 
@@ -228,6 +226,10 @@ end
 
 function drawSprites!(game::GameState; s=Settings())
     @inbounds for i in 1:game.im.sprites.idx
+        if !game.im.sprites[idx].active
+            continue
+        end
+        
         sprite = game.im.sprites.data[i]
         l = getfield(game.im.layers,sprite.layer)
 
@@ -258,6 +260,7 @@ end
 
 
 
+
 function getDialogueBox(set::String; s=Settings())
     boxes = mfb_rgb.(load("im/$set.png"))
 
@@ -275,8 +278,6 @@ function drawDialogue!(game::GameState)
     game.im.layers.textbox[end-48-24+1:end-24,16+1:end-16] = game.im.diabox[game.options.diabox]
     drawText!(game,:textbox,game.dialogue.str[game.dialogue.n],UInt(2),Position(144,32))
 end
-
-
 
 
 
@@ -523,8 +524,6 @@ end
 
 
 
-
-
 function getInventory()
     img = mfb_rgb.(load("im/inventory.png"))
 
@@ -619,10 +618,6 @@ end
 
 
 
-
-
-
-
 function getBattlers()
     img = mfb_rgb.(load("im/battlers gen1.png"))
 
@@ -635,20 +630,18 @@ function getBattlers()
     return merge(d1,)
 end
 
+function getBattler(id::Int)
+    img = mfb_rgb.(load("im/gen1/$id.png"))
 
-
-
-
-
-
-function drawBattle()
-    0
+    return Dict{UInt,Matrix{UInt32}}(1=>img[:,1:64],2=>img[:,65:128])
 end
 
 
 
 
-
+function drawBattle!(game::GameState; s=Settings())
+    return
+end
 
 
 
@@ -664,14 +657,12 @@ function drawGame!(game::GameState; s=Settings())
         if game.dialogue.d
             drawDialogue!(game)
 
-            combineLayers!(game,[:background1,:background2,:spriteslow,:spriteshigh,
-                :foreground1,:foreground2,:textbox]; s=s)
+            combineLayers!(game,[:background1,:background2,:foreground1,
+                :foreground2,:textbox]; s=s)
         else
-            combineLayers!(game,[:background1,:background2,:spriteslow,
-                :spriteshigh,:foreground1,:foreground2]; s=s)
+            combineLayers!(game,[:background1,:background2,:foreground1,
+                :foreground2]; s=s)
         end
-
-        return
     end
 
     if game.menu.menu && game.menu.ow
@@ -685,10 +676,8 @@ function drawGame!(game::GameState; s=Settings())
 
         #print("combine:")
         #@time 
-        combineLayers!(game,[:background1,:background2,:spriteslow,:spriteshigh,
+        combineLayers!(game,[:background1,:background2,
             :foreground1,:foreground2,:menu]; s=s)
-    
-        return
     end
 
     if game.menu.menu && !game.menu.ow
@@ -715,11 +704,15 @@ function drawGame!(game::GameState; s=Settings())
         return
     end
 
-    if game.animFunc != animEmpty!
-        game.animFunc(game)
+    if game.battle.active
+        drawBattle!(game; s=s)
+    end
+
+    if game.im.postprocess.func != emptyCallback
+        #println("pp")
+        game.im.postprocess.func(game.im.layer,game.im.postprocess.args...)
     end
 end
-
 
 
 

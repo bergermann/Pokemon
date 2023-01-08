@@ -3,23 +3,29 @@ using BenchmarkTools
 include("core.jl")
 include("rendering.jl")
 
-function test(s::Symbol)
-    Symbol(s,"1")
+function getBattler(id::Int)
+    img = mfb_rgb.(load("im/gen1/$id.png"))
+
+    return Dict{UInt,Matrix{UInt32}}(1=>img[:,1:64],2=>img[:,65:128])
+end
+
+function getBattler_(id::Int)
+    img = mfb_rgb.(load("im/gen1/$id.png"))
+
+    d = Dict{UInt,Matrix{UInt32}}(
+        1=>mfb_rgb.(load("im/gen1/$(id)a.png")),
+        2=>mfb_rgb.(load("im/gen1/$(id)b.png"))
+    )
+
+    return d
 end
 
 function f()
-    S = Sprites(128)
+    id = 1
 
-    ss = getSpriteMain("sprite")
-
-    for i in 1:100
-        m = Sprite(Symbol(i),:background2,Position(104,72),Position(32,16),1,
-            ss,ss[1])
-
-        push!(S,m)
-    end
-
-    print(S[Symbol(50)].id)
+    str = "im/gen1/$id.bmp"
+    
+    @btime getBattler($id)
 end
 
 f()

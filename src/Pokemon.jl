@@ -1,9 +1,13 @@
+__precompile__(true)
+
 module Pokemon
 
 include("core.jl")
 include("rendering.jl")
 include("controls.jl")
-include("pokemons.jl")
+#include("pokemons.jl")
+include("animations.jl")
+include("battle.jl")
 #include("maps.jl")
 
 
@@ -19,19 +23,17 @@ function main()
         Trainer("Void",0x0000,0x02,Vector{Pkmn}([]),[],[],
             falses(151),getSpriteMain("sprite"; s=settings)),
 
-        Position(0x00000e,0x000013),
-        0,
+        map1,
+        Position(0x00006e,0x000013),
         2,
 
         Position(0,0),
 
-        map0,
-
         false,
         false,
         false,
 
-        Battle(false,0x00,MenuBattle(0x00,0x00)),
+        Battle(),
 
         Dialogue(),
 
@@ -44,20 +46,25 @@ function main()
         Options()
     )
 
-    push!(game.trainer.pokemon,generatePkmn(game,0x01,0x09))
-    push!(game.trainer.pokemon,generatePkmn(game,0x02,0x03))
+    push!(game.trainer.pokemon,generatePkmn(game,0x0001,0x09))
+    push!(game.trainer.pokemon,generatePkmn(game,0x0002,0x03))
 
-    m = Sprite(:main,:background2,Position(80,128),Position(32,16),:1,
-        game.im.spritesmain[1],game.im.spritesmain[1][1])
+    m = Sprite(:main,true,false,false,:background2,Position(80,128),
+        Position(32,16),:1,game.im.spritesmain[1],game.im.spritesmain[1][1])
 
+    updateSprite!(m,21)
     push!(game.im.sprites,m)
 
-    createCounter!(game,:spritemain)
+    createCounter!(game,:movemain,0)
+    createCallback!(game,:movemain,false,moveMain!,(game.direction,-1))
+
+
 
     w,b = startWindow(settings)
     
     mfb_set_resize_callback(w,resizer)
     mfb_set_keyboard_callback(w,onpress)
+    mfb_set_target_fps(settings.fps)
 
     state = mfb_update(w, b)
     
@@ -74,7 +81,7 @@ function main()
             end
 
             #print("update:")
-            #@time 
+            #@time updateGame!(game,input; s=settings)
             updateGame!(game,input; s=settings)
             #print("draw:")
             #@time 

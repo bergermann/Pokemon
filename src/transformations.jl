@@ -108,6 +108,10 @@ function scaleChannels!(im::Matrix{UInt32},denom::UInt8,num::UInt8)
     end
 end
 
+
+
+
+
 function combine(imbase::Matrix{UInt32},imover::Matrix{UInt32},
         denom::UInt8,num::UInt8)
 
@@ -145,17 +149,44 @@ function combine(imbase::Matrix{UInt32},color::UInt32,
         return error("ArgumentError: Fraction must be between 0 and 1.")
     end
 
-    color_ = div(color,demon)*num
+    if num == 0
+        return copy(imbase)
+    end
+
+    color_ = scaleChannels(color,denom,num)
 
     im_ = copy(imbase)
 
     for i in eachindex(imbase)
-        im_[i] += scaleChannels(imover[i],denom,num)
-        im_[i] -= color_
+        im_[i] -= scaleChannels(imbase[i],denom,num)
+        im_[i] += color_
     end
 
     return im_
 end
+
+function combine!(imbase::Matrix{UInt32},color::UInt32,
+        denom::UInt8,num::UInt8)
+
+    if denom < num
+        return error("ArgumentError: Fraction must be between 0 and 1.")
+    end
+
+    if num == 0
+        return
+    end
+
+    color_ = scaleChannels(color,denom,num)
+
+    for i in eachindex(imbase)
+        imbase[i] -= scaleChannels(imbase[i],denom,num)
+        imbase[i] += color_
+    end
+end
+
+
+
+
 
 function scaleColor!(imbase::Matrix{UInt32},color::UInt32,
         denom::UInt8,num::UInt8)
@@ -198,6 +229,7 @@ function scaleUp(im::Matrix{UInt32},factor::UInt)
     return im_
 end
 
+#=
 function zoomIn!(im::Matrix{UInt32},factor::UInt,pos::Position,size::Position)
     if factor < 2
         error("Factor needs to be at least 2.")
@@ -208,4 +240,46 @@ function zoomIn!(im::Matrix{UInt32},factor::UInt,pos::Position,size::Position)
     for i in size.h:-1:1, j in size.w:-1:1
         im[i]
     end
+end
+=#
+
+function horizontalShifts!(im::Matrix{UInt32},nshift::Int,nrows::Int)
+    if nshift == 0
+        return
+    end
+
+    for nh in 0:size(im)[1]-1
+        if nh%nrows == 0
+            horizontalShiftRowRight!(im,nshift,nh+1)
+        else
+            horizontalShiftRowLeft!(im,nshift,nh+1)
+        end
+    end
+end
+
+        
+function horizontalShiftRowRight!(im::Matrix{UInt32},nshift::Int,row::Int)
+    for i in size(im)[2]:-1:1
+        if i > nshift
+            im[row,i] = im[row,i-nshift]
+        else
+            im[row,i] = 0x000001
+        end
+    end
+end
+
+function horizontalShiftRowLeft!(im::Matrix{UInt32},nshift::Int,row::Int)
+    w = size(im)[2]
+
+    for i in 1:w
+        if i < w-nshift
+            im[row,i] = im[row,i+nshift]
+        else
+            im[row,i] = 0x000001
+        end
+    end
+end
+
+function empty(im::Matrix{UInt32})
+    return
 end

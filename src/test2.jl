@@ -49,13 +49,11 @@ function f()
 
     
     showIm(A)
-    showIm(B)
+    #showIm(B)
 
-    C = combine(A,B,0x0a,0x01)
-    combine!(A,B,0x0a,0x01)
+    combine!(A,0xbfbfbf,0x10,0x10)
 
     showIm(A)
-    showIm(C)
     
 
     #@btime combine!($A,$B,0x0a,0x01)

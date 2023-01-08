@@ -222,141 +222,39 @@ swimmable::Vector{UInt16} = [0x0002,0x0003]
 function checkWalkable(game::GameState,movepos::Position)
     return game.map.tilemap.collision[movepos.h,movepos.w] ∈ walkable ||
         (game.map.tilemap.collision[movepos.h,movepos.w] >= 0x14 &&
-        game.map.tilemap.collision[movepos.h,movepos.w] <= 0x3b)
+        game.map.tilemap.collision[movepos.h,movepos.w] <= 0x3b) ||
+        (game.map.tilemap.collision[movepos.h,movepos.w] >= 0xc8 &&
+        game.map.tilemap.collision[movepos.h,movepos.w] <= 0xdb)
 end
 
 function checkEncounter!(game::GameState)
     if !(game.map.tilemap.collision[game.pos.h,game.pos.w] ∈ 0xc8:0xdb)
         return
-    elseif rand(0x00:0xff) > 0x20e
+    end
+
+    if rand(0x00:0xff) > 0x10
         return
     end
 
-    initBattleWild(game)
+    game.callbacks[:movemain].active = true
+    game.callbacks[:movemain].args = (game.direction,-1)
 
-    game.animFunc = animBattleEntry(game)
+    initBattleWild!(game)
 end
 
-
-
-
-
-function moveDont!(game::GameState)
-    return
-end
-
-function moveTurn!(game::GameState,dir::Int)
-    if game.n.c[:spritemain].c == 0x00
-        updateSprite!(game.im.sprites[:main],(dir-1)*10+1)
-    elseif game.n.c[:spritemain].c == 0x04
-        updateSprite!(game.im.sprites[:main],(dir-1)*10+2)
-    elseif game.n.c[:spritemain].c == 0x08
-        updateSprite!(game.im.sprites[:main],(dir-1)*10+1)
-        game.movelock = false
-
-        killCallback!(game,:move)
-
-        game.n.c[:spritemain].c = 0
-        
-        checkEncounter!(game)
-
-        return
+function moveMain!(game::GameState,dir::Int,type::Int)
+    if type == -1
+        moveStop!(game,dir)
+    elseif type == 0
+        moveTurn!(game,dir)
+    elseif type == 1
+        moveWalk!(game,dir)
+    elseif type == 2
+        moveRun!(game,dir)
+    elseif type == 3
+        moveWalkWall!(game,dir)
     end
-
-    game.n.c[:spritemain].c += 0x01
 end
-
-function moveWalk!(game::GameState,dir::Int)
-    game.screenoffset = posMult(Int32(game.n.c[:spritemain].c+1),dirs[dir])
-
-    posAdd!(game.im.sprites[:main].pos,dirs[dir])
-
-    if game.n.c[:spritemain].c == 0
-        if (game.pos.h%2 == 0 && game.pos.w%2 == 0) || (game.pos.h%2 == 1 && game.pos.w%2 == 1)
-            updateSprite!(game.im.sprites[:main],(dir-1)*10+2)
-        else
-            updateSprite!(game.im.sprites[:main],(dir-1)*10+3)
-        end
-    elseif game.n.c[:spritemain].c == 8
-        updateSprite!(game.im.sprites[:main],(dir-1)*10+1)
-    elseif game.n.c[:spritemain].c == 15
-        game.screenoffset = dirs[0]
-        posAdd!(game.im.sprites[:main].pos,posMult(-16,dirs[dir]))
-
-        posAdd!(game.pos,dirs[dir])
-
-        game.movelock = false
-
-        killCallback!(game,:move)
-
-        game.n.c[:spritemain].c = 0
-
-        checkEncounter!(game)
-
-        return
-    end
-
-    game.n.c[:spritemain].c += 1
-end
-
-function moveWall!(game::GameState,dir::Int,input::Input)
-    if !(input.up || input.down || input.left || input.right)
-        updateSprite!(game.im.sprites[:main],(dir-1)*10+1)
-
-        killCallback!(game,:move)
-        
-        game.n.c[:spritemain].c = 0
-
-        return
-    end    
-
-    if game.n.c[:spritemain].c%32 == 0
-        if div(game.n.c[:spritemain].c,32)%2 == 0
-            updateSprite!(game.im.sprites[:main],(dir-1)*10+2)
-        else
-            updateSprite!(game.im.sprites[:main],(dir-1)*10+3)
-        end
-    elseif game.n.c[:spritemain].c%32 == 15
-        updateSprite!(game.im.sprites[:main],(dir-1)*10+1)
-    end
-
-    game.n.c[:spritemain].c += 1
-end
-
-function moveRun!(game::GameState,dir::Int,input::Input)
-    game.screenoffset = posMult(Int32(2*(game.n.c[:spritemain].c+1)),dirs[dir])
-
-    posAdd!(game.im.sprites[:main].pos,posMult(2,dirs[dir]))
-
-    if game.n.c[:spritemain].c == 0
-        if (game.pos.h%2 == 0 && game.pos.w%2 == 0) || (game.pos.h%2 == 1 && game.pos.w%2 == 1)
-            updateSprite!(game.im.sprites[:main],(dir+3)*10+2)
-        else
-            updateSprite!(game.im.sprites[:main],(dir+3)*10+3)
-        end
-    elseif game.n.c[:spritemain].c == 4
-        updateSprite!(game.im.sprites[:main],(dir+3)*10+1)
-    elseif game.n.c[:spritemain].c == 7
-
-        game.screenoffset = dirs[0]
-        posAdd!(game.im.sprites[:main].pos,posMult(-16,dirs[dir]))
-
-        posAdd!(game.pos,dirs[dir])
-
-        game.movelock = false
-
-        killCallback!(game,:move)
-
-        game.n.c[:spritemain].c = 0
-
-        checkEncounter!(game)
-
-        return
-    end
-
-    game.n.c[:spritemain].c += 1
-end
-
 
 
 
@@ -369,7 +267,7 @@ function inputManager!(game::GameState,input::Input)
     if !game.battle.active
         inputMap!(game,input)
     else
-        return
+        inputBattle!(game,input)
     end
 end
 
@@ -377,10 +275,30 @@ function inputMap!(game::GameState,input::Input)
     if !game.movelock && !game.menu.menu
         inputMove!(game::GameState,input::Input)
     end
+
+    if !game.menu.menu && !game.dialogue.d && input._start
+        game.movelock = true
+        game.menu.menu = true
+    elseif game.menu.menu
+        inputMenu!(game::GameState,input::Input)
+    end
+
+    if !game.menu.menu && !game.movelock && input._A    #dialogue
+        mapAction!(game)
+    elseif game.dialogue.d
+        if !(input._A || input._B || input._down)
+            inputDialogue!(game,input)
+        end
+    end
 end
 
 function inputMove!(game::GameState,input::Input)
     if !(input.up || input.down || input.left || input.right)
+        if game.n.c[:movemain].c != 0
+            game.callbacks[:movemain].active = true
+            game.callbacks[:movemain].args = (game.direction,-1)
+        end
+
         return
     end
 
@@ -388,33 +306,169 @@ function inputMove!(game::GameState,input::Input)
     movepos = posAdd(game.pos,dirs[dir])
 
     if !checkWalkable(game,movepos)
-        if game.n.c[:spritemain].c == 0
-            createCallback!(game,:move,moveWall!,(dir,input))
+        if game.n.c[:movemain].c == 0
+            game.callbacks[:movemain].active = true
+            game.callbacks[:movemain].args = (game.direction,3)
         end
 
         return
     end
 
-    if game.n.c[:spritemain].c != 0
-        killCallback!(game,:move)
-        game.n.c[:spritemain].c = 0
+    if game.n.c[:movemain].c != 0
+        game.n.c[:movemain].c = 0
     end
 
+    game.callbacks[:movemain].active = true
     game.movelock = true
 
     if !input.B
         if game.direction == dir
-            createCallback!(game,:move,moveWalk!,(dir,))
+            game.callbacks[:movemain].args = (game.direction,1)
         else
             game.direction = dir
-            createCallback!(game,:move,moveTurn!,(dir,))
+            game.callbacks[:movemain].args = (game.direction,0)
         end
     else
         game.direction = dir
-        createCallback!(game,:move,moveRun!,(dir,input))
+        game.callbacks[:movemain].args = (game.direction,2)
     end
 end
-        
+
+function inputMenu!(game::GameState,input::Input)
+    if !input._input
+        return
+    end
+
+    if game.menu.ow
+        if input._down
+            game.menu.select = (game.menu.select+0x01)%0x08
+        elseif input._up
+            game.menu.select = (game.menu.select-0x01)%0x08
+        elseif input._A
+            inputMenuSelector!(game)
+        elseif (input._start || input._B) && !game.menu.pkmn.open &&
+                !game.menu.bags.open
+            
+            game.movelock = false
+            game.menu.menu = false
+            game.menu.select = 0x01
+        end
+    elseif game.menu.pdex.open
+        return
+    elseif game.menu.pkmn.open
+        inputMenuPkmn!(game::GameState,input::Input)
+    elseif game.menu.bags.open
+        inputMenuBags!(game::GameState,input::Input)
+    end
+end
+
+function inputMenuSelector!(game::GameState)
+    if game.menu.select == 0x00
+        return
+    elseif game.menu.select == 0x01
+        game.menu.pkmn.open = true
+        game.menu.ow = false
+        game.im.layers.menu2 .= 0x000000
+    elseif game.menu.select == 0x02
+        game.menu.bags.open = true
+        game.menu.ow = false
+        game.im.layers.menu2 .= 0x000000
+    elseif game.menu.select == 0x03
+        return
+    elseif game.menu.select == 0x04
+        return
+    elseif game.menu.select == 0x05
+        return
+    elseif game.menu.select == 0x06
+        return
+    else
+        game.movelock = false
+        game.menu.menu = false
+        game.menu.select = 0x01
+    end
+end
+
+function inputMenuPkmn!(game::GameState,input::Input)
+    if input._A
+        if game.menu.pkmn.select == length(game.trainer.pokemon)
+            game.menu.pkmn.open = false
+            game.menu.pkmn.select = 0x00
+            game.menu.ow = true
+        end
+    elseif input._B
+        game.menu.pkmn.open = false
+        game.menu.pkmn.select = 0x00
+        game.menu.ow = true
+    elseif input._down
+        if game.menu.pkmn.select == length(game.trainer.pokemon)
+            game.menu.pkmn.select = 0x00
+        else
+            game.menu.pkmn.select += 0x01
+        end
+    elseif input._up
+        if game.menu.pkmn.select == 0x00
+            game.menu.pkmn.select = length(game.trainer.pokemon)
+        else
+            game.menu.pkmn.select -= 0x01
+        end
+    elseif input._left || input._right
+        if game.menu.pkmn.select == 0x00
+            game.menu.pkmn.select = 0x01
+        else
+            game.menu.pkmn.select = 0x00
+        end
+    end
+end
+
+function inputMenuBags!(game::GameState,input::Input)
+    if input._A
+        0
+    elseif input._B
+        game.menu.bags.open = false
+        game.menu.bags.select = 0x00
+        game.menu.ow = true
+    elseif input._down
+        if game.menu.bags.select == 0x06
+            game.menu.bags.select = 0x00
+        else
+            game.menu.bags.select += 0x01
+        end
+    elseif input._up
+        if game.menu.bags.select == 0x00
+            game.menu.bags.select = 0x06
+        else
+            game.menu.bags.select -= 0x01
+        end
+    elseif input._left
+        if game.menu.bags.slot == 0x00
+            game.menu.bags.slot = 0x04
+        else
+            game.menu.bags.slot -= 0x01
+        end
+    elseif input._right
+        if game.menu.bags.slot == 0x04
+            game.menu.bags.slot = 0x00
+        else
+            game.menu.bags.slot += 0x01
+        end
+    end
+end
+
+function inputDialogue!(game::GameState,input::Input)
+    if game.dialogue.n < length(game.dialogue.str)
+        game.dialogue.n += 0x01
+    else
+        game.dialogue.d = false
+        game.movelock = false
+        game.dialogue.n = 0x01
+    end
+end
+
+function inputBattle!(game::GameState,input::Input)
+    game.battle.active = false
+    game.movelock = false
+    game.inputlock = false
+end
 
 
 
@@ -442,13 +496,16 @@ end
 
 
 function updateGame!(game::GameState,input::Input; s=Settings())
+    #@time
     inputManager!(game,input)
 
     for i in 1:game.callbacks.idx
-        game.callbacks[i].func(game,game.callbacks[i].args...)
+        if game.callbacks[i].active
+            game.callbacks[i].func(game,game.callbacks[i].args...)
+        end
     end
 
-    if game.map.tilemap.collision[game.pos.h,game.pos.w] != 0x0000
+    if game.map.tilemap.collision[game.pos.h,game.pos.w] ∈ 0x14:0x3b
         changeMap!(game,game.map.exits[game.map.tilemap.collision[game.pos.h,game.pos.w]-19])
     end
 end

@@ -1,5 +1,5 @@
 #battle manager stuff
-include("core.jl")
+#include("core.jl")
 
 
 
@@ -179,7 +179,9 @@ end
 
 
 
-abstract type BattleState end
+#abstract type BattleState end
+
+mutable struct BattleStateNone <: BattleState end
 
 mutable struct BattleStateWild <: BattleState
     counters::BattleCounters
@@ -190,9 +192,7 @@ mutable struct BattleStateWild <: BattleState
     pkmn1::PkmnBattle
     pkmn2::PkmnBattle
 
-    attackanim::Function
-
-    function BattleState(counters,turn,env,pkmn1,pkmn2,nothing)
+    function BattleStateWild(counters,turn,env,pkmn1,pkmn2)
         new(counters,turn,env,pkmn1,pkmn2)
     end
 end
@@ -243,18 +243,25 @@ function loopBattleWild(game::GameState)
     0
 end
 
-function initBattleWild(game::GameState)
-    pb1 = PkmnBattle(activePkmn(game))
-    pb2 = PkmnBattle(generatePkmn(game,rand(0x0001:0x0289),rand(0x01:0x64)))
+function initBattleWild!(game::GameState)
+    game.inputlock = true
 
-    return BattleStateWild(BattleCounters(),0,BattleEnvironment(),pb1,pb2,Nothing)
+    pb1 = PkmnBattle(activePkmn(game))
+    pb2 = PkmnBattle(generatePkmn(game,rand(0x0001:0x0097),rand(0x01:0x64)))
+
+    game.battle.state = BattleStateWild(BattleCounters(),0,BattleEnvironment(),pb1,pb2)
+
+    createCounter!(game,:battleintro)
+    createCallback!(game,:battleintro,true,animBattleEntry1!,())
 end
 
 function initBattleWild(game::GameState,ids::Vector{UInt16},levels::Vector{UInt8})
+    game.battle.active = true
+
     pb1 = PkmnBattle(activePkmn(game))
     pb2 = PkmnBattle(generatePkmn(game,rand(ids),rand(levels)))
 
-    return BattleStateWild(BattleCounters(),0,BattleEnvironment(),pb1,pb2,Nothing)
+    game.battle.state = BattleStateWild(BattleCounters(),0,BattleEnvironment(),pb1,pb2)
 end
 
 function damage(game::GameState)

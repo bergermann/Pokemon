@@ -14,6 +14,7 @@ end
 
 function posAdd!(a::Position,b::Position)
     a.h += b.h; a.w += b.w
+
     return
 end
 
@@ -21,21 +22,47 @@ function posSub(a::Position,b::Position)
     return Position(a.h-b.h,a.w-b.w)
 end
 
-function posMult(n::Signed,a::Position)
-    return Position(n*a.h,n*a.w)
+function posSub(a::Position,b::Position)
+    a.h -= b.h; a.w -= b.w
+
+    return
 end
+
+function posMult(p::Position,n::Signed)
+    return Position(n*p.h,n*p.w)
+end
+
+function posMult!(p::Position,n::Signed)
+    p.h *= n; p.w *= n
+
+    return
+end
+
+function posAddMult!(a::Position,b::Position,n::Signed)
+    a.h += b.h*n; a.w += b.w*n
+
+    return
+end
+
 
 mutable struct CallbackFunction
     id::Symbol
+
+    active::Bool
+
     func::Function
     args::Tuple
 
     function CallbackFunction()
-        new(Symbol(),emptyCallback,())
+        new(Symbol(),false,emptyCallback,())
     end
 
     function CallbackFunction(id,func,args)
-        new(id,func,args)
+        new(id,true,func,args)
+    end
+
+    function CallbackFunction(id,active,func,args)
+        new(id,active,func,args)
     end
 end
 
@@ -59,6 +86,11 @@ end
 mutable struct Sprite
     id::Symbol
 
+    active::Bool
+
+    hreverse::Bool
+    vreverse::Bool
+
     layer::Symbol
     pos::Position
     size::Position
@@ -72,6 +104,11 @@ mutable struct Sprite
         new(
             Symbol(),
 
+            false,
+
+            false,
+            false,
+
             Symbol(),
             Position(0,0),
             Position(0,0),
@@ -83,12 +120,12 @@ mutable struct Sprite
         )
     end
 
-    function Sprite(id,layer,pos,size,frame,dict,im)
-        new(id,layer,pos,size,frame,dict,im)
+    function Sprite(id,active,hreverse,vreverse,layer,pos,size,frame,dict,im)
+        new(id,active,hreverse,vreverse,layer,pos,size,frame,dict,im)
     end
 
     function Sprite(id,layer,pos,dict)
-        new(id,layer,pos,Position(0,0),0,dict,zeros(UInt32,0,0))
+        new(id,true,false,false,layer,pos,Position(0,0),0,dict,zeros(UInt32,0,0))
     end
 end
 
@@ -155,6 +192,8 @@ end
 
 
 
+
+
 function Base.popat!(a::ArrayList{Sprite},i::Int)
     if a.idx == 0
         error("ArrayList is empty, can't pop element.")
@@ -198,6 +237,7 @@ function Base.popat!(A::ArrayList{CallbackFunction},id::Symbol)
     A[A.idx] = CallbackFunction()
     A.idx -= 1
 end
+
 
 
 
@@ -332,7 +372,6 @@ end
 
 
 
-
 mutable struct Dialogue
     d::Bool
     str::Vector{String}
@@ -342,6 +381,8 @@ mutable struct Dialogue
         new(false,[""],0x01)
     end
 end
+
+
 
 
 
@@ -411,6 +452,10 @@ end
 mutable struct MenuBattle
     row::UInt8
     col::UInt8
+
+    function MenuBattle()
+        new(0,0)
+    end
 end
 
 mutable struct Menu
@@ -434,12 +479,21 @@ end
 
 
 
+abstract type BattleState end
+
 mutable struct Battle
     active::Bool
 
-    turn::UInt8
+    state::BattleState
+
     menu::MenuBattle
+
+    function Battle()
+        new(false,BattleStateNone(),MenuBattle())
+    end
 end
+
+
 
 
 
@@ -473,6 +527,8 @@ struct Options
         new(0x01,0x01)
     end
 end
+
+
 
 
 
@@ -523,15 +579,15 @@ mutable struct Map
 end
 
 
+
+
+
 mutable struct Layers
     water::Matrix{UInt32}
     background1::Matrix{UInt32}
     background2::Matrix{UInt32}
-    spriteslow::Matrix{UInt32}
-    spriteshigh::Matrix{UInt32}
     foreground1::Matrix{UInt32}
     foreground2::Matrix{UInt32}
-    weather::Matrix{UInt32}
 
     textbox::Matrix{UInt32}
     menu::Matrix{UInt32}
@@ -585,6 +641,8 @@ mutable struct Im
     layer::Matrix{UInt32}
     bitmap::BitMatrix
 
+    postprocess::CallbackFunction
+
     function Im()
         new(
             Font(),
@@ -603,7 +661,8 @@ mutable struct Im
 
             Layers(),
             copy(Layers().background1),
-            BitMatrix(undef,size(Layers().background1))
+            BitMatrix(undef,size(Layers().background1)),
+            CallbackFunction(:pp,empty,())
         )
     end
 end
@@ -617,19 +676,28 @@ mutable struct Counters
     end
 end
 
+mutable struct Locks
+    move::Bool
+    input::Bool
+    dialoge::Bool
+    movenpc::Bool
+
+    function Locks()
+        new(false,false,false,false)
+    end
+end
+
 mutable struct GameState
     im::Im
     pkmndata::PkmnData
 
     trainer::Trainer
 
+    map::Map
     pos::Position
-    transport::Int
     direction::Int
 
     spriteoffset::Position
-
-    map::Map
 
     movelock::Bool
     textlock::Bool
@@ -649,6 +717,10 @@ mutable struct GameState
     options::Options
 end
 
+
+
+
+
 function createCounter!(game::GameState,id::Symbol)
     push!(game.n.c,Counter(id))
 end
@@ -662,7 +734,11 @@ function killCounter!(game::GameState,id::Symbol)
 end
 
 function createCallback!(game::GameState,id::Symbol,func::Function,args::Tuple)
-    push!(game.callbacks,CallbackFunction(id,func,args))
+    push!(game.callbacks,CallbackFunction(id,false,func,args))
+end
+
+function createCallback!(game::GameState,id::Symbol,active::Bool,func::Function,args::Tuple)
+    push!(game.callbacks,CallbackFunction(id,active,func,args))
 end
 
 function killCallback!(game::GameState,id::Symbol)

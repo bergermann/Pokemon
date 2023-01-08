@@ -1,6 +1,5 @@
 #pokemon stuff
 
-
 mutable struct Stats
     bv::Vector{UInt8}
     dv::Vector{UInt8}   #HP, At, Def, SpAt, SpDef, Init
@@ -111,12 +110,12 @@ end
 function updateStats!(pkmn::Pkmn)
     N = natureMod(pkmn.stats.nature)
 
-    pkmn.stats.rv[1] = UInt16(floor(UInt8,
+    pkmn.stats.rv[1] = UInt16(floor(UInt16,
         (2*pkmn.stats.bv[1]+pkmn.stats.dv[1]+floor(pkmn.stats.ev[1]/4))*pkmn.stats.level/100)
         +pkmn.stats.level+10)
     
     for i in 2:6
-        pkmn.stats.rv[i] = floor(UInt16,floor(UInt8,
+        pkmn.stats.rv[i] = floor(UInt16,floor(UInt16,
             (2*pkmn.stats.bv[i]+pkmn.stats.dv[i]+floor(pkmn.stats.ev[i]/4))*pkmn.stats.level/100+5)
             *(1+0.1*N[i-1]))
     end
@@ -133,7 +132,7 @@ function natureMod(nature::UInt8)
     return a
 end
 
-function generatePkmn(game,id::UInt8,level::UInt8)
+function generatePkmn(game,id::UInt16,level::UInt8)
     data = game.pkmndata.base[id,:]
     
     p =  Pkmn(

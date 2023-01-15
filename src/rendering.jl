@@ -4,6 +4,7 @@ using MiniFB, Images, DelimitedFiles
 include("parser.jl")
 #include("animations.jl")
 
+#=
 struct Settings
     width::UInt16
     height::UInt16
@@ -48,6 +49,15 @@ mutable struct Layers
         new([zeros(UInt32,UInt16(s.Nh)*UInt16(s.tilesize),
             UInt16(s.Nw)*UInt16(s.tilesize)) for _ in eachindex(fieldnames(Layers))]...)
     end
+end
+=#
+
+function flushLayer!(game::GameState,layer::Symbol)
+    getfield(game.im.layers,layer) .= 0x000000
+end
+
+function flushLayer!(game::GameState)
+    game.im.layer .= 0x000000
 end
 
 
@@ -226,7 +236,7 @@ end
 
 function drawSprites!(game::GameState; s=Settings())
     @inbounds for i in 1:game.im.sprites.idx
-        if !game.im.sprites[idx].active
+        if !game.im.sprites[i].active
             continue
         end
         
@@ -272,6 +282,10 @@ function getDialogueBox(set::String; s=Settings())
     return Dict{UInt8,Matrix{UInt32}}(
         zip([k[3] for k in key],[boxes[k[1]:k[1]+k[2]-1,:] for k in key])
     )
+end
+
+function getDialogue(str::String; s=Settings())
+    return mfb_rgb.(load("im/dialogue/$str.png"))
 end
 
 function drawDialogue!(game::GameState)
@@ -636,80 +650,153 @@ function getBattler(id::Int)
     return Dict{UInt,Matrix{UInt32}}(1=>img[:,1:64],2=>img[:,65:128])
 end
 
+function getBattleBack(str::String)
+    return mfb_rgb.(load("im/battlebacks/$str.png"))
+end
 
-
-
-function drawBattle!(game::GameState; s=Settings())
-    return
+function getBattleIntro(str::String)
+    return mfb_rgb.(load("im/battleintro/$str.png"))
 end
 
 
 
 
 
-function drawGame!(game::GameState; s=Settings())
-    if game.menu.ow && !game.menu.menu
-        drawMap!(game; s=s)
+function drawBattleIntro!(game::GameState; s=Settings())
+    if game.n.c[:battleintro].c == 0
+        flushLayer!(game)
+        flushLayer!(game,:background1)
+        flushLayer!(game,:background2)
+        flushLayer!(game,:foreground1)
+        flushLayer!(game,:foreground2)
+        game.im.sprites[:main].active = false
+
+        game.im.postprocess.active = true
+        game.im.postprocess.func = shutterHorizontal!
+        game.im.postprocess.args = (24+80,0)
+
+        game.im.layers.background1[24+1:24+112,16+1:16+240] = getBattleBack("grass1")
+        game.im.layers.background1[24+1+112:24+160,16+1:16+240] = getDialogue("battle")
+    elseif game.n.c[:battleintro].c <= 32
+        game.im.postprocess.args = (24+80,game.n.c[:battleintro].c)
+    elseif game.n.c[:battleintro].c <= 56
+        game.im.postprocess.args = (24+80,2*game.n.c[:battleintro].c-32)
+    elseif game.n.c[:battleintro].c == 80
+        game.im.postprocess.active = false
+
+        killCounter!(game,:battleintro)
+
+        game.im.postprocess.active = false
+
+        game.input.inputlock = false
+        game.input.move = true
+        game.input.map = true
+
+        game.battle.active = false
+        game.battle.intro = false
+
+        game.draw.battleintro = false
+        game.draw.battle = true
+
+        initDrawMap!(game)
         
-        sortHorizontal!(game.im.sprites)
-        drawSprites!(game; s=s)
-
-        if game.dialogue.d
-            drawDialogue!(game)
-
-            combineLayers!(game,[:background1,:background2,:foreground1,
-                :foreground2,:textbox]; s=s)
-        else
-            combineLayers!(game,[:background1,:background2,:foreground1,
-                :foreground2]; s=s)
-        end
-    end
-
-    if game.menu.menu && game.menu.ow
-        #print("map: ")
-        drawMap!(game; s=s)
-        #@time 
-        #drawSpriteMain!(game; s=s)
-        sortHorizontal!(game.im.sprites)
-        drawSprites!(game; s=s)
-        drawMenu!(game)
-
-        #print("combine:")
-        #@time 
-        combineLayers!(game,[:background1,:background2,
-            :foreground1,:foreground2,:menu]; s=s)
-    end
-
-    if game.menu.menu && !game.menu.ow
-        if game.menu.pdex.open
-            return
-        elseif game.menu.pkmn.open
-            print("menu pkmn: ")
-            @time drawMenuPkmn!(game)
-        elseif game.menu.bags.open
-            print("menu bags: ")
-            @time drawInventory!(game)
-        elseif game.menu.pnav.open
-            return
-        elseif game.menu.self.open
-            return
-        elseif game.menu.optn.open
-            return
-        end
-
-        #print("combine:")
-        #@time
-        combineLayers!(game,[:menu1,:menu2,:menu3]; s=s)
+        game.im.sprites[:main].active = true
 
         return
     end
 
-    if game.battle.active
+    game.n.c[:battleintro].c += 1
+end
+
+function drawBattleExit!(game::GameState; s=Settings())
+    game.im.postprocess.active = true
+    game.im.postprocess.func = fadeLinear!
+    game.im.postprocess.args = (0,)
+end
+
+
+
+
+
+function drawBattle!(game::GameState; s=Settings())
+    initDrawMap!(game)
+end
+
+
+
+
+
+function initDrawMap!(game::GameState)
+    for i in eachindex(fieldnames(DrawState))
+        setfield!(game.draw,i,false)
+    end
+
+    game.draw.map = true
+    game.draw.sprites = true
+end
+
+function initDrawBattle!(game::GameState)
+    for i in eachindex(fieldnames(DrawState))
+        setfield!(game.draw,i,false)
+    end
+
+    game.draw.battleintro = true
+    game.draw.sprites = true
+end
+
+function drawGame!(game::GameState; s=Settings())
+    if game.draw.map
+        drawMap!(game; s=s)
+        
+        sortHorizontal!(game.im.sprites)
+    end
+
+    if game.draw.dialogue
+        drawDialogue!(game)
+    end
+
+    if game.draw.menu1
+        drawMenu!(game)
+    end
+
+    if game.draw.pdex
+        0
+    elseif game.draw.pkmn
+        drawMenuPkmn!(game)
+    elseif game.draw.bags
+        drawInventory!(game)
+    elseif game.draw.pnav
+        0
+    elseif game.draw.self
+        0
+    elseif game.draw.save
+        0
+    elseif game.draw.optn
+        0
+    end
+
+    if game.draw.battleintro
+        drawBattleIntro!(game; s=s)
+    end
+
+    if game.draw.battle
         drawBattle!(game; s=s)
     end
 
-    if game.im.postprocess.func != emptyCallback
-        #println("pp")
+    if game.draw.sprites
+        drawSprites!(game; s=s)
+    end
+    
+    #combineLayers!(game,[:menu1,:menu2,:menu3]; s=s)
+    
+    combineLayers!(game,[:background1,:background2,:foreground1,
+            :foreground2]; s=s)
+
+    if game.im.weather.active
+        game.im.weather.func(game.im.layer,game.im.weather.args...)
+    end
+
+    if game.im.postprocess.active
         game.im.postprocess.func(game.im.layer,game.im.postprocess.args...)
     end
 end

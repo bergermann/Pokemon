@@ -214,6 +214,14 @@ function fadeLinear!(im::Matrix{UInt32},denom::UInt8,num::UInt8,frame::UInt8)
     end
 end
 
+function shutterHorizontal!(im::Matrix{UInt32},center::Int,n::Int)
+    for i in eachindex(view(im,:,1))
+        if !(center-n < i < center+n)
+            im[i,:] .= 0x000001
+        end
+    end
+end
+
 function scaleUp(im::Matrix{UInt32},factor::UInt)
     if factor < 2
         error("Factor needs to at least 2.")

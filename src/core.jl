@@ -22,7 +22,7 @@ function posSub(a::Position,b::Position)
     return Position(a.h-b.h,a.w-b.w)
 end
 
-function posSub(a::Position,b::Position)
+function posSub!(a::Position,b::Position)
     a.h -= b.h; a.w -= b.w
 
     return
@@ -43,6 +43,9 @@ function posAddMult!(a::Position,b::Position,n::Signed)
 
     return
 end
+
+
+
 
 
 mutable struct CallbackFunction
@@ -147,7 +150,7 @@ function Base.setindex!(A::ArrayList, X, inds...)
 end
 
 function Base.getindex(A::ArrayList,id::Symbol)
-    return getindex(A.data, findfirst(x -> x.id==id, A.data))
+    return getindex(A.data, findfirst(x -> x.id==id, A.data[1:A.idx]))
 end
 
 function Base.setindex!(A::ArrayList, X, id::Symbol)
@@ -387,95 +390,162 @@ end
 
 
 mutable struct MenuDex
-    open::Bool
+    select::Int
 
     function MenuDex()
-        new(false)
+        new(1)
     end
 end
 
 mutable struct MenuPkmn
-    open::Bool
-    optn::Bool
-    select::UInt8
-    choice::UInt8
+    select::Int
+    choice::Int
 
     function MenuPkmn()
-        new(false,false,0x00,0x00)
-    end
-end
-
-mutable struct MenuNav
-    open::Bool
-
-    function MenuNav()
-        new(false)
-    end
-end
-
-mutable struct MenuInv
-    open::Bool
-    optn::Bool
-    slot::UInt8
-    select::UInt8
-    choice::UInt8
-
-    function MenuInv()
-        new(false,false,0x00,0x00,0x00)
-    end
-end
-
-mutable struct MenuSelf
-    open::Bool
-
-    function MenuSelf()
-        new(false)
-    end
-end
-
-mutable struct MenuSave
-    open::Bool
-
-    function MenuSave()
-        new(false)
-    end
-end
-
-mutable struct MenuOpt
-    open::Bool
-
-    function MenuOpt()
-        new(false)
-    end
-end
-
-mutable struct MenuBattle
-    row::UInt8
-    col::UInt8
-
-    function MenuBattle()
         new(0,0)
     end
 end
 
-mutable struct Menu
-    ow::Bool
-    menu::Bool
-    select::UInt8
+mutable struct MenuNav
+    select::Int
 
-    pdex::MenuDex
-    pkmn::MenuPkmn
-    pnav::MenuNav
-    bags::MenuInv
-    self::MenuSelf
-    save::MenuSave
-    optn::MenuOpt
-
-    function Menu()
-        new(true,false,0x01,MenuDex(),MenuPkmn(),MenuNav(),MenuInv(),MenuSelf(),
-            MenuSave(),MenuOpt())
+    function MenuNav()
+        new(0)
     end
 end
+
+mutable struct MenuBags
+    bag::Int
+    select::Int
+
+    function MenuBags()
+        new(0,0)
+    end
+end
+
+mutable struct MenuSelf
+    select::Int
+
+    function MenuSelf()
+        new(0)
+    end
+end
+
+mutable struct MenuSave
+    select::Int
+
+    function MenuSave()
+        new(0)
+    end
+end
+
+mutable struct MenuOpt
+    select::Int
+
+    function MenuOpt()
+        new(0)
+    end
+end
+
+mutable struct MenuBattle
+    select::Int
+
+    function MenuBattle()
+        new(0)
+    end
+end
+
+mutable struct Menu
+    main::Bool
+    select::Int
+
+    pdex::Bool
+    menupdex::MenuDex
+    pkmn::Bool
+    menupkmn::MenuPkmn
+    bags::Bool
+    menubags::MenuBags
+    pnav::Bool
+    menupnav::MenuNav
+    self::Bool
+    menuself::MenuSelf
+    save::Bool
+    menusave::MenuSave
+    optn::Bool
+    menuoptn::MenuOpt
+
+    function Menu()
+        new(
+            false,
+            1,
+
+            false,
+            MenuDex(),
+            false,
+            MenuPkmn(),
+            false,
+            MenuBags(),
+            false,
+            MenuNav(),
+            false,
+            MenuSelf(),
+            false,
+            MenuSave(),
+            false,
+            MenuOpt()
+        )
+    end
+end
+
+mutable struct InputState
+    inputlock::Bool
+    textlock::Bool
+
+    map::Bool
+    move::Bool
+
+    menu::Menu
+
+    choice::Bool
+    choicesel::Int
+
+    dialogue::Bool
+
+    battle::Bool
+    battle1::Bool
+    battle1menu::MenuBattle
+    battle2::Bool
+    battle2menu::MenuBattle
+
+    worldmap::Bool
+
+    function InputState()
+        new(
+            false,
+            false,
+
+            false,
+            false,
+
+            Menu(),
+
+            false,
+            1,
+
+            false,
+
+            false,
+            false,
+            MenuBattle(),
+            false,
+            MenuBattle(),
+
+            false
+        )
+    end
+end
+
+
 
 
 
@@ -483,13 +553,14 @@ abstract type BattleState end
 
 mutable struct Battle
     active::Bool
+    intro::Bool
 
     state::BattleState
 
     menu::MenuBattle
 
     function Battle()
-        new(false,BattleStateNone(),MenuBattle())
+        new(false,false,BattleStateNone(),MenuBattle())
     end
 end
 
@@ -580,7 +651,43 @@ end
 
 
 
+mutable struct DrawState
+    map::Bool
 
+    menu1::Bool
+
+    pdex::Bool
+    dexinfo::Bool
+
+    pkmn::Bool
+    pkmninfo::Bool
+
+    bags::Bool
+
+    pnav::Bool
+    pnavinfo::Bool
+
+    self::Bool
+
+    save::Bool
+
+    optn::Bool
+
+    dialogue::Bool
+
+    battleintro::Bool
+    battle::Bool
+    battle1::Bool
+    battle2::Bool
+
+    worldmap::Bool
+
+    sprites::Bool
+
+    function DrawState()
+        new([false for _ in eachindex(fieldnames(DrawState))]...)
+    end
+end
 
 mutable struct Layers
     water::Matrix{UInt32}
@@ -629,8 +736,6 @@ mutable struct Im
     menupkmn::Dict
     inv::Dict
 
-    spritesmain::Vector{Dict}
-    spriteart::Dict
     tilesext::Dict
     tilesint::Dict
     tile::Matrix{UInt32}
@@ -639,8 +744,8 @@ mutable struct Im
 
     layers::Layers
     layer::Matrix{UInt32}
-    bitmap::BitMatrix
 
+    weather::CallbackFunction
     postprocess::CallbackFunction
 
     function Im()
@@ -651,8 +756,6 @@ mutable struct Im
             getMenuPkmn(),
             getInventory(),
             
-            [getSpriteMain("sprite"),],
-            Dict(),
             getTiles("tiles_exterior"),
             Dict(),
             zeros(UInt32,16,16),
@@ -661,7 +764,8 @@ mutable struct Im
 
             Layers(),
             copy(Layers().background1),
-            BitMatrix(undef,size(Layers().background1)),
+
+            CallbackFunction(:pp,empty,()),
             CallbackFunction(:pp,empty,())
         )
     end
@@ -695,24 +799,21 @@ mutable struct GameState
 
     map::Map
     pos::Position
+    movepos::Position
     direction::Int
 
     spriteoffset::Position
-
-    movelock::Bool
-    textlock::Bool
-    inputlock::Bool
-
-    battle::Battle
-
-    dialogue::Dialogue
-
-    menu::Menu
+    screenoffset::Position
 
     n::Counters
     callbacks::ArrayList{CallbackFunction}
 
-    screenoffset::Position
+    dialogue::Dialogue
+
+    battle::Battle
+    
+    input::InputState
+    draw::DrawState
 
     options::Options
 end

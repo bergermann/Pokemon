@@ -5,7 +5,7 @@ module Pokemon
 include("core.jl")
 include("rendering.jl")
 include("controls.jl")
-#include("pokemons.jl")
+include("pokemons.jl")
 include("animations.jl")
 include("battle.jl")
 #include("maps.jl")
@@ -25,24 +25,22 @@ function main()
 
         map1,
         Position(0x00006e,0x000013),
+        Position(0x00006f,0x000013),
         2,
 
         Position(0,0),
-
-        false,
-        false,
-        false,
-
-        Battle(),
-
-        Dialogue(),
-
-        Menu(),
+        Position(0,0),
 
         Counters(128),
         ArrayList(CallbackFunction,128),
 
-        Position(0x000000,0x000000),
+        Dialogue(),
+
+        Battle(),
+
+        InputState(),
+        DrawState(),
+
         Options()
     )
 
@@ -50,15 +48,20 @@ function main()
     push!(game.trainer.pokemon,generatePkmn(game,0x0002,0x03))
 
     m = Sprite(:main,true,false,false,:background2,Position(80,128),
-        Position(32,16),:1,game.im.spritesmain[1],game.im.spritesmain[1][1])
+        Position(32,16),11,getSpriteMain("sprite"),getSpriteMain("sprite")[11])
 
-    updateSprite!(m,21)
+    updateSprite!(m,11)
     push!(game.im.sprites,m)
 
     createCounter!(game,:movemain,0)
     createCallback!(game,:movemain,false,moveMain!,(game.direction,-1))
 
+    game.input.map = true
+    game.input.move = true
 
+    resetMovePos!(game)
+    
+    initDrawMap!(game)
 
     w,b = startWindow(settings)
     
@@ -83,6 +86,7 @@ function main()
             #print("update:")
             #@time updateGame!(game,input; s=settings)
             updateGame!(game,input; s=settings)
+
             #print("draw:")
             #@time 
             drawGame!(game; s=settings)

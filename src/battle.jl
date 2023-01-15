@@ -244,7 +244,9 @@ function loopBattleWild(game::GameState)
 end
 
 function initBattleWild!(game::GameState)
-    game.inputlock = true
+    game.input.inputlock = true
+    game.input.map = false
+    game.input.move = false
 
     pb1 = PkmnBattle(activePkmn(game))
     pb2 = PkmnBattle(generatePkmn(game,rand(0x0001:0x0097),rand(0x01:0x64)))

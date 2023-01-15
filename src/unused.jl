@@ -1410,3 +1410,35 @@ function inputManager_!(game::GameState,input::Input)
         0
     end
 end
+
+
+function resetInput!()
+    global input
+
+    input._input = false
+    input.input_ = false
+
+    input._A = false
+    input.A_ = false
+    input._B = false
+    input.B_ = false
+
+    input._L = false
+    input.L_ = false
+    input._R = false
+    input.R_ = false
+
+    input._up = false
+    input.up_ = false
+    input._down = false
+    input.down_ = false
+    input._left = false
+    input.left_ = false
+    input._right = false
+    input.right_ = false
+
+    input._start = false
+    input.start_ = false
+    input._select = false
+    input.select_ = false
+end

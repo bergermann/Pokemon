@@ -183,32 +183,13 @@ end
 function resetInput!()
     global input
 
-    input._input = false
-    input.input_ = false
-
-    input._A = false
-    input.A_ = false
-    input._B = false
-    input.B_ = false
-
-    input._L = false
-    input.L_ = false
-    input._R = false
-    input.R_ = false
-
-    input._up = false
-    input.up_ = false
-    input._down = false
-    input.down_ = false
-    input._left = false
-    input.left_ = false
-    input._right = false
-    input.right_ = false
-
-    input._start = false
-    input.start_ = false
-    input._select = false
-    input.select_ = false
+    for i in eachindex(fieldnames(Input))
+        if i%3 == 1
+            continue
+        end
+        
+        setfield!(input,i,false)
+    end
 end
 
 
@@ -227,12 +208,30 @@ function checkWalkable(game::GameState,movepos::Position)
         game.map.tilemap.collision[movepos.h,movepos.w] <= 0xdb)
 end
 
+function updateMovePos!(game::GameState,dir::Int)
+    game.movepos.h = game.pos.h+dirs[dir].h
+    game.movepos.w = game.pos.w+dirs[dir].w
+
+    #=
+    if game.direction == dir
+        posAdd!(game.movepos,dirs[dir])
+    else
+        posSub!(game.movepos,dirs[game.direction])
+        posAdd!(game.movepos,dirs[dir])
+    end
+    =#
+end
+
+function resetMovePos!(game::GameState)
+    game.movepos = posAdd(game.pos,dirs[game.direction])
+end
+
 function checkEncounter!(game::GameState)
     if !(game.map.tilemap.collision[game.pos.h,game.pos.w] ∈ 0xc8:0xdb)
         return
     end
 
-    if rand(0x00:0xff) > 0x10
+    if rand(0x00:0xff) > 0x80
         return
     end
 
@@ -260,35 +259,75 @@ end
 
 
 function inputManager!(game::GameState,input::Input)
-    if game.inputlock
+    if game.input.inputlock
         return
     end
 
-    if !game.battle.active
+    if game.input.map
         inputMap!(game,input)
-    else
+        return
+    end
+
+    if game.input.dialogue
+        inputDialogue!(game,input)
+        return
+    end
+
+    if game.input.menu.main
+        inputMenu!(game,input)
+        return
+    end
+
+    if game.input.menu.pdex
+        return
+    end
+
+    if game.input.menu.pkmn
+        inputMenuPkmn!(game::GameState,input::Input)
+        return
+    end
+
+    if game.input.menu.bags
+        inputMenuBags!(game::GameState,input::Input)
+        return
+    end
+
+    if game.input.menu.pnav
+        return
+    end
+
+    if game.input.menu.self
+        return
+    end
+
+    if game.input.menu.save
+        return
+    end
+
+    if game.input.menu.optn
+        return
+    end
+
+    if game.input.battle
         inputBattle!(game,input)
+        return
     end
 end
 
 function inputMap!(game::GameState,input::Input)
-    if !game.movelock && !game.menu.menu
+    if game.input.move
         inputMove!(game::GameState,input::Input)
     end
 
-    if !game.menu.menu && !game.dialogue.d && input._start
-        game.movelock = true
-        game.menu.menu = true
-    elseif game.menu.menu
-        inputMenu!(game::GameState,input::Input)
+    if game.input.move && input._start
+        game.input.move = false
+        game.input.menu.main = true
+
+        return
     end
 
-    if !game.menu.menu && !game.movelock && input._A    #dialogue
+    if game.input.move && input._A
         mapAction!(game)
-    elseif game.dialogue.d
-        if !(input._A || input._B || input._down)
-            inputDialogue!(game,input)
-        end
     end
 end
 
@@ -303,9 +342,12 @@ function inputMove!(game::GameState,input::Input)
     end
 
     dir = findfirst([input.up,input.down,input.left,input.right])
-    movepos = posAdd(game.pos,dirs[dir])
+    #game.movepos = game.pos
+    #posAdd!(game.movepos,dirs[dir])
+    #resetMovePos!(game)
+    updateMovePos!(game,dir)
 
-    if !checkWalkable(game,movepos)
+    if !checkWalkable(game,game.movepos)
         if game.n.c[:movemain].c == 0
             game.callbacks[:movemain].active = true
             game.callbacks[:movemain].args = (game.direction,3)
@@ -314,12 +356,10 @@ function inputMove!(game::GameState,input::Input)
         return
     end
 
-    if game.n.c[:movemain].c != 0
-        game.n.c[:movemain].c = 0
-    end
+    game.n.c[:movemain].c = 0
 
     game.callbacks[:movemain].active = true
-    game.movelock = true
+    game.input.move = false
 
     if !input.B
         if game.direction == dir
@@ -339,117 +379,111 @@ function inputMenu!(game::GameState,input::Input)
         return
     end
 
-    if game.menu.ow
-        if input._down
-            game.menu.select = (game.menu.select+0x01)%0x08
-        elseif input._up
-            game.menu.select = (game.menu.select-0x01)%0x08
-        elseif input._A
-            inputMenuSelector!(game)
-        elseif (input._start || input._B) && !game.menu.pkmn.open &&
-                !game.menu.bags.open
-            
-            game.movelock = false
-            game.menu.menu = false
-            game.menu.select = 0x01
-        end
-    elseif game.menu.pdex.open
-        return
-    elseif game.menu.pkmn.open
-        inputMenuPkmn!(game::GameState,input::Input)
-    elseif game.menu.bags.open
-        inputMenuBags!(game::GameState,input::Input)
+    if input._down
+        game.input.menu.select = (game.input.menu.select+0x01)%0x08
+    elseif input._up
+        game.input.menu.select = (game.input.menu.select-0x01)%0x08
+    elseif input._A
+        inputMenuSelector!(game)
+    elseif (input._start || input._B)
+        
+        game.input.move = true
+        game.input.menu.main = false
+        game.input.menu.select = 0x01
     end
 end
 
 function inputMenuSelector!(game::GameState)
-    if game.menu.select == 0x00
-        return
-    elseif game.menu.select == 0x01
-        game.menu.pkmn.open = true
-        game.menu.ow = false
-        game.im.layers.menu2 .= 0x000000
-    elseif game.menu.select == 0x02
-        game.menu.bags.open = true
-        game.menu.ow = false
-        game.im.layers.menu2 .= 0x000000
-    elseif game.menu.select == 0x03
-        return
-    elseif game.menu.select == 0x04
-        return
-    elseif game.menu.select == 0x05
-        return
-    elseif game.menu.select == 0x06
-        return
+    if game.input.menu.select == 0x00
+        game.input.menu.pdex = true
+        game.input.map = false
+    elseif game.input.menu.select == 0x01
+        game.input.menu.pkmn = true
+        game.input.map = false
+    elseif game.input.menu.select == 0x02
+        game.input.menu.bags = true
+        game.input.map = false
+    elseif game.input.menu.select == 0x03
+        game.input.menu.pnav = true
+        game.input.map = false
+    elseif game.input.menu.select == 0x04
+        game.input.menu.self = true
+        game.input.map = false
+    elseif game.input.menu.select == 0x05
+        game.input.menu.save = true
+        game.input.map = false
+    elseif game.input.menu.select == 0x06
+        game.input.menu.optn = true
+        game.input.map = false
     else
-        game.movelock = false
-        game.menu.menu = false
-        game.menu.select = 0x01
+        game.input.move = true
+        game.input.menu.main = false
+        game.input.menu.select = 0x01
     end
 end
 
 function inputMenuPkmn!(game::GameState,input::Input)
     if input._A
-        if game.menu.pkmn.select == length(game.trainer.pokemon)
-            game.menu.pkmn.open = false
-            game.menu.pkmn.select = 0x00
-            game.menu.ow = true
+        if game.input.menu.pkmn.select == length(game.trainer.pokemon)
+            game.input.menu.pkmn = false
+            game.input.menu.menupkmn.select = 0x00
+            game.input.map = true
         end
     elseif input._B
-        game.menu.pkmn.open = false
-        game.menu.pkmn.select = 0x00
-        game.menu.ow = true
+        game.input.menu.pkmn = false
+        game.input.menu.menupkmn.select = 0x00
+        game.input.map = true
     elseif input._down
         if game.menu.pkmn.select == length(game.trainer.pokemon)
-            game.menu.pkmn.select = 0x00
+            game.input.menu.menupkmn.select = 0x00
         else
-            game.menu.pkmn.select += 0x01
+            game.input.menu.menupkmn.select += 0x01
         end
     elseif input._up
-        if game.menu.pkmn.select == 0x00
-            game.menu.pkmn.select = length(game.trainer.pokemon)
+        if game.input.menu.pkmn.select == 0x00
+            game.input.menu.pkmn.select = length(game.trainer.pokemon)
         else
-            game.menu.pkmn.select -= 0x01
+            game.input.menu.pkmn.select -= 0x01
         end
     elseif input._left || input._right
-        if game.menu.pkmn.select == 0x00
-            game.menu.pkmn.select = 0x01
+        if game.input.menu.pkmn.select == 0x00
+            game.input.menu.pkmn.select = 0x01
         else
-            game.menu.pkmn.select = 0x00
+            game.input.menu.pkmn.select = 0x00
         end
     end
 end
 
 function inputMenuBags!(game::GameState,input::Input)
     if input._A
-        0
+        return
     elseif input._B
-        game.menu.bags.open = false
-        game.menu.bags.select = 0x00
-        game.menu.ow = true
+        game.input.menu.menubags = false
+        game.input.menu.menubags.select = 0x00
+        game.input.map = true
     elseif input._down
-        if game.menu.bags.select == 0x06
-            game.menu.bags.select = 0x00
+        if game.input.menu.menubags.select == 0x06
+            game.input.menu.menubags.select = 0x00
         else
-            game.menu.bags.select += 0x01
+            game.input.menu.menubags.select += 0x01
         end
     elseif input._up
-        if game.menu.bags.select == 0x00
-            game.menu.bags.select = 0x06
+        if game.input.menu.menubags.select == 0x00
+            game.input.menu.menubags.select = 0x06
         else
-            game.menu.bags.select -= 0x01
+            game.input.menu.menubags.select -= 0x01
         end
     elseif input._left
-        if game.menu.bags.slot == 0x00
-            game.menu.bags.slot = 0x04
+        if game.input.menu.menubags.slot == 0x00
+            game.input.menu.menubags.slot = 0x04
         else
-            game.menu.bags.slot -= 0x01
+            game.input.menu.menubags.slot -= 0x01
         end
     elseif input._right
-        if game.menu.bags.slot == 0x04
-            game.menu.bags.slot = 0x00
+        if game.input.menu.menubags.slot == 0x04
+            game.input.menu.menubags.slot = 0x00
         else
-            game.menu.bags.slot += 0x01
+            game.input.menu.menubags.slot += 0x01
         end
     end
 end
@@ -459,15 +493,15 @@ function inputDialogue!(game::GameState,input::Input)
         game.dialogue.n += 0x01
     else
         game.dialogue.d = false
-        game.movelock = false
         game.dialogue.n = 0x01
+        game.input.move = true
     end
 end
 
 function inputBattle!(game::GameState,input::Input)
-    game.battle.active = false
-    game.movelock = false
-    game.inputlock = false
+    game.input.battle.active = false
+    game.input.move = true
+    game.input.inputlock = false
 end
 
 
@@ -479,13 +513,12 @@ function changeMap!(game::GameState,exit::Tuple{UInt8,Position})
 end
 
 function mapAction!(game::GameState)
-    t = posAdd(game.pos,dirs[game.direction])
-    tile = game.map.tilemap.collision[t.h,t.w]
+    tile = game.map.tilemap.collision[game.movepos.h,game.movepos.w]
 
     if tile ∈ [0x0000,0x0001,0x0005,0x0006,0x0007]
         return
     elseif tile >= 0x003c && tile <= 0x004f
-        game.movelock = true
+        game.input.move
         game.dialogue.d = true
         game.dialogue.str = game.map.signs[tile-0x003b]
     end

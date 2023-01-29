@@ -29,10 +29,10 @@ end
 
 mutable struct Layers
     water::Matrix{UInt32}
-    background1::Matrix{UInt32}
-    background2::Matrix{UInt32}
-    foreground1::Matrix{UInt32}
-    foreground2::Matrix{UInt32}
+    layer1::Matrix{UInt32}
+    layer2::Matrix{UInt32}
+    layer3::Matrix{UInt32}
+    layer4::Matrix{UInt32}
 
     textbox::Matrix{UInt32}
 
@@ -54,6 +54,13 @@ end
 
 function flushLayer!(game::GameState,layer::Symbol)
     getfield(game.im.layers,layer) .= 0x000000
+end
+
+function flushLayer!(game::GameState,layer::Symbol,pos::Position,size::Position)
+    v = view(getfield(game.im.layers,layer),
+        pos.h+1:pos.h+size.h,pos.w+1:pos.w+size.w)
+    
+    v .= 0x000000
 end
 
 function flushLayer!(game::GameState)
@@ -101,12 +108,19 @@ end
 function drawMap!(game::GameState; s=Settings())
     dh,dw = div(s.Nh-0x01,0x02),div(s.Nw-0x01,0x02)
 
-    for k in game.map.environment
+    @inbounds for k in game.map.environment
         @inbounds for i in 1:s.Nh, j in 1:s.Nw
-            getfield(game.im.layers,k)[1+(i-1)*s.tilesize:i*s.tilesize,
-                1+(j-1)*s.tilesize:j*s.tilesize] = game.map.tiles[
-                    getfield(game.map.tilemap,k)[game.pos.h+i-dh-1,
-                    game.pos.w+j-dw-1]]
+            tile = game.map.tiles[
+                getfield(game.map.tilemap,k)[game.pos.h+i-dh-1,
+                game.pos.w+j-dw-1]]
+
+            v = view(getfield(game.im.layers,k),
+                1+(i-1)*s.tilesize:i*s.tilesize,
+                1+(j-1)*s.tilesize:j*s.tilesize)
+            
+            @inbounds for t in eachindex(v)
+                v[t] = tile[t]
+            end
         end
     end
 end
@@ -122,6 +136,27 @@ function combineLayers!(game::GameState,layers::Vector{Symbol};
         @inbounds for i in eachindex(l)
             @views if ls[i] != 0x000000
                 l[i] = ls[i]
+            end
+        end
+    end
+
+    return
+end
+
+function combineLayers!(game::GameState; s::Settings=Settings())
+
+    l = game.im.layer
+
+    @inbounds for k in fieldnames(Layers)
+        ls = getproperty(game.im.layers,k)
+
+        if !ls.active
+            continue
+        end
+
+        @inbounds for i in eachindex(l)
+            @views if ls.layer[i] != 0x000000
+                l[i] = ls.layer[i]
             end
         end
     end
@@ -392,14 +427,13 @@ function drawFrame1!(game::GameState,layer::Symbol,height::Int,width::Int,
 end
 
 function drawMenu!(game::GameState)
-    #print("frame: ")
     drawFrame!(game,:menu,UInt(20),UInt(10),Position(24,176))
 
     drawText!(game,:menu,"POKEDEX\\POKEMON\\BEUTEL\\POKENAV\
         \\$(game.trainer.name)\\SICHERN\\OPTION\\BEENDEN",
         UInt(2),Position(38,194); lineoffset=2)
 
-    drawText!(game,:menu,"▷",UInt(2),Position(38+(game.menu.select)*17,186))
+    drawText!(game,:menu,"▷",UInt(2),Position(38+(game.input.menu.select)*17,186))
 end
 
 
@@ -665,42 +699,32 @@ end
 function drawBattleIntro!(game::GameState; s=Settings())
     if game.n.c[:battleintro].c == 0
         flushLayer!(game)
-        flushLayer!(game,:background1)
-        flushLayer!(game,:background2)
-        flushLayer!(game,:foreground1)
-        flushLayer!(game,:foreground2)
+        flushLayer!(game,:layer1)
+        flushLayer!(game,:layer2)
+        flushLayer!(game,:layer3)
+        flushLayer!(game,:layer4)
         game.im.sprites[:main].active = false
 
         game.im.postprocess.active = true
         game.im.postprocess.func = shutterHorizontal!
         game.im.postprocess.args = (24+80,0)
 
-        game.im.layers.background1[24+1:24+112,16+1:16+240] = getBattleBack("grass1")
-        game.im.layers.background1[24+1+112:24+160,16+1:16+240] = getDialogue("battle")
+        game.im.layers.layer1[24+1:24+112,16+1:16+240] = getBattleBack("grass1")
+        game.im.layers.layer1[24+1+112:24+160,16+1:16+240] = getDialogue("battle")
     elseif game.n.c[:battleintro].c <= 32
         game.im.postprocess.args = (24+80,game.n.c[:battleintro].c)
     elseif game.n.c[:battleintro].c <= 56
         game.im.postprocess.args = (24+80,2*game.n.c[:battleintro].c-32)
-    elseif game.n.c[:battleintro].c == 80
-        game.im.postprocess.active = false
-
+    elseif game.n.c[:battleintro].c == 81
         killCounter!(game,:battleintro)
 
         game.im.postprocess.active = false
 
-        game.input.inputlock = false
-        game.input.move = true
-        game.input.map = true
-
-        game.battle.active = false
+        game.battle.active = true
         game.battle.intro = false
 
         game.draw.battleintro = false
         game.draw.battle = true
-
-        initDrawMap!(game)
-        
-        game.im.sprites[:main].active = true
 
         return
     end
@@ -709,9 +733,29 @@ function drawBattleIntro!(game::GameState; s=Settings())
 end
 
 function drawBattleExit!(game::GameState; s=Settings())
-    game.im.postprocess.active = true
-    game.im.postprocess.func = fadeLinear!
-    game.im.postprocess.args = (0,)
+    if game.n.c[:battleoutro].c == 0
+        game.im.postprocess.active = true
+        game.im.postprocess.func = fadeLinear!
+        game.im.postprocess.args = (60,0)
+    elseif game.n.c[:battleoutro].c <= 60
+        game.im.postprocess.args = (game.n.c[:battleoutro].c)
+    elseif game.n.c[:battleoutro] == 61
+        killCounter!(game,:battleoutro)
+
+        game.im.postprocess.active = false
+
+        game.battle.active = false
+        game.battle.outro = false
+
+        game.draw.battleoutro = false
+        game.draw.battle = false
+        
+        game.im.sprites[:main].active = true
+    
+        return
+    end
+
+    game.n.c[:battleoutro].c += 1
 end
 
 
@@ -719,7 +763,8 @@ end
 
 
 function drawBattle!(game::GameState; s=Settings())
-    initDrawMap!(game)
+    #initDrawMap!(game)
+    return
 end
 
 
@@ -755,6 +800,7 @@ function drawGame!(game::GameState; s=Settings())
         drawDialogue!(game)
     end
 
+    println(game.draw.menu1)
     if game.draw.menu1
         drawMenu!(game)
     end
@@ -789,8 +835,7 @@ function drawGame!(game::GameState; s=Settings())
     
     #combineLayers!(game,[:menu1,:menu2,:menu3]; s=s)
     
-    combineLayers!(game,[:background1,:background2,:foreground1,
-            :foreground2]; s=s)
+    combineLayers!(game,[:layer1,:layer2,:layer3,:layer4,:menu]; s=s)
 
     if game.im.weather.active
         game.im.weather.func(game.im.layer,game.im.weather.args...)

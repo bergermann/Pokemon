@@ -235,8 +235,23 @@ end
 
 
 
-function setupBattle(game::GameState)
-    0
+function setupBattle!(game::GameState)
+    game.input.inputlock = true
+    game.input.map = false
+    game.input.move = false
+
+    createCounter!(game,:battleanim)
+    createCounter!(game,:battledelay)
+    createCounter!(game,:battleintro)
+    createCallback!(game,:battleintro,true,animBattleEntry1!,())
+end
+
+function closeBattle!(game::GameState)
+    game.input.inputlock = false
+    game.input.move = true
+    game.input.map = true
+    
+    initDrawMap!(game)
 end
 
 function loopBattleWild(game::GameState)
@@ -244,17 +259,12 @@ function loopBattleWild(game::GameState)
 end
 
 function initBattleWild!(game::GameState)
-    game.input.inputlock = true
-    game.input.map = false
-    game.input.move = false
+    setupBattle!(game)
 
     pb1 = PkmnBattle(activePkmn(game))
     pb2 = PkmnBattle(generatePkmn(game,rand(0x0001:0x0097),rand(0x01:0x64)))
 
     game.battle.state = BattleStateWild(BattleCounters(),0,BattleEnvironment(),pb1,pb2)
-
-    createCounter!(game,:battleintro)
-    createCallback!(game,:battleintro,true,animBattleEntry1!,())
 end
 
 function initBattleWild(game::GameState,ids::Vector{UInt16},levels::Vector{UInt8})

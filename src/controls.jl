@@ -211,15 +211,6 @@ end
 function updateMovePos!(game::GameState,dir::Int)
     game.movepos.h = game.pos.h+dirs[dir].h
     game.movepos.w = game.pos.w+dirs[dir].w
-
-    #=
-    if game.direction == dir
-        posAdd!(game.movepos,dirs[dir])
-    else
-        posSub!(game.movepos,dirs[game.direction])
-        posAdd!(game.movepos,dirs[dir])
-    end
-    =#
 end
 
 function resetMovePos!(game::GameState)
@@ -321,7 +312,10 @@ function inputMap!(game::GameState,input::Input)
 
     if game.input.move && input._start
         game.input.move = false
+        game.input.map = false
         game.input.menu.main = true
+
+        game.draw.menu1 = true
 
         return
     end
@@ -386,10 +380,12 @@ function inputMenu!(game::GameState,input::Input)
     elseif input._A
         inputMenuSelector!(game)
     elseif (input._start || input._B)
-        
         game.input.move = true
+        game.input.map = true
         game.input.menu.main = false
         game.input.menu.select = 0x01
+
+        game.draw.menu1 = false
     end
 end
 
@@ -417,8 +413,11 @@ function inputMenuSelector!(game::GameState)
         game.input.map = false
     else
         game.input.move = true
+        game.input.map = true
         game.input.menu.main = false
         game.input.menu.select = 0x01
+
+        game.draw.menu1 = false
     end
 end
 
@@ -489,6 +488,90 @@ function inputMenuBags!(game::GameState,input::Input)
 end
 
 function inputDialogue!(game::GameState,input::Input)
+    if input._A || input._B || input._down
+        if game.dialogue.n < length(game.dialogue.str)
+            game.dialogue.n += 0x01
+        else
+            game.dialogue.d = false
+            game.dialogue.n = 0x01
+            game.input.move = true
+            game.input.dialogue = true
+        end
+    end
+end
+
+function inputBattle!(game::GameState,input::Input)
+    if game.input.battled
+        if input._A || input._B || input._down
+            inputBattleDialogue!(game::GameState,input::Input)
+
+            return
+        end
+    end
+
+    if game.input.battle1
+        if game.input.battle1menu.select < 0
+            game.input.battle1menu.select += 4
+        end
+
+        game.input.battle1menu.select %= 4
+
+        if input._A
+            inputBattleMenuSelector!(game::GameState)
+            return
+        end
+
+        if input._B
+            game.input.battle1menu.select = 3
+            return
+        end
+
+        if input._up
+            game.input.battle1menu.select -= 2
+        elseif input._down
+            game.input.battle1menu.select += 2
+        elseif input._left
+            game.input.battle1menu.select -= 1
+        elseif input._right
+            game.input.battle1menu.select += 1
+        end
+
+        return
+    end
+
+    if game.input.battle2
+        if game.input.battle1menu.select < 0
+            game.input.battle1menu.select += 4
+        end
+
+        game.input.battle1menu.select %= 4
+
+        if input._A
+            inputBattleAttackSelector!(game::GameState)
+            return
+        end
+
+        if input._B
+            game.input.battle1 = true
+            game.input.battle2 = false
+            return
+        end
+
+        if input._up
+            game.input.battle1menu.select -= 2
+        elseif input._down
+            game.input.battle1menu.select += 2
+        elseif input._left
+            game.input.battle1menu.select -= 1
+        elseif input._right
+            game.input.battle1menu.select += 1
+        end
+
+        return
+    end
+end
+
+function inputBattleDialogue!(game::GameState,input::Input)
     if game.dialogue.n < length(game.dialogue.str)
         game.dialogue.n += 0x01
     else
@@ -498,10 +581,31 @@ function inputDialogue!(game::GameState,input::Input)
     end
 end
 
-function inputBattle!(game::GameState,input::Input)
-    game.input.battle.active = false
-    game.input.move = true
-    game.input.inputlock = false
+function inputBattleMenuSelector(game::GameState)
+    if game.input.battle1menu.select == 0
+        game.input.battle1 = false
+        game.input.battle2 = true
+    elseif game.input.battle1menu.select == 1
+        return
+    elseif game.input.battle1menu.select == 2
+        return
+    else
+        game.input.battle.active = false
+        game.input.move = true
+        game.input.inputlock = false
+    end
+end
+
+function inputBattleAttackSelector(game::GameState)
+    if game.input.battle1menu.select == 0
+        return
+    elseif game.input.battle1menu.select == 1
+        return
+    elseif game.input.battle1menu.select == 2
+        return
+    else
+        return
+    end
 end
 
 

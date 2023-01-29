@@ -47,7 +47,7 @@ function main()
     push!(game.trainer.pokemon,generatePkmn(game,0x0001,0x09))
     push!(game.trainer.pokemon,generatePkmn(game,0x0002,0x03))
 
-    m = Sprite(:main,true,false,false,:background2,Position(80,128),
+    m = Sprite(:main,true,false,false,:layer2,Position(80,128),
         Position(32,16),11,getSpriteMain("sprite"),getSpriteMain("sprite")[11])
 
     updateSprite!(m,11)

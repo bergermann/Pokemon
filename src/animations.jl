@@ -18,6 +18,7 @@ function animBattleEntry1!(game::GameState)
     elseif 45 < game.n.c[:battleintro].c < 115
         game.im.postprocess.args = (4*(game.n.c[:battleintro].c-45),2)
     else
+        game.im.postprocess.active = false
         game.im.postprocess.func = empty
         game.im.postprocess.args = ()
 
@@ -25,7 +26,6 @@ function animBattleEntry1!(game::GameState)
         game.battle.intro = true
 
         initDrawBattle!(game)
-        println(game.draw.map)
 
         game.n.c[:battleintro].c = 0
         killCallback!(game,:battleintro)
@@ -140,4 +140,44 @@ function moveRun!(game::GameState,dir::Int)
     end
 
     game.n.c[:movemain].c += 1
+end
+
+function fadeIn!(game::GameState,len::Int)
+    if game.n.c[:fadein].c == 0
+        game.im.postprocess.active = true
+        game.im.postprocess.func = fadeLinear!
+        game.im.postprocess.args = (len,len,)
+    elseif game.n.c[:fadein].c <= len
+        game.im.postprocess.args = (len,len-game.n.c[:fadein].c,)
+    else
+        game.im.postprocess.active = false
+        game.im.postprocess.func = empty
+        game.im.postprocess.args = ()
+        #
+        killCC!(game,fadein)
+
+        return
+    end
+
+    game.n.c[:fadein].c += 1
+end
+
+function fadeOut!(game::GameState,len::Int)
+    if game.n.c[:fadein].c == 0
+        game.im.postprocess.active = true
+        game.im.postprocess.func = fadeLinear!
+        game.im.postprocess.args = (len,0,)
+    elseif game.n.c[:fadein].c <= len
+        game.im.postprocess.args = (len,game.n.c[:fadein].c,)
+    else
+        game.im.postprocess.active = false
+        game.im.postprocess.func = empty
+        game.im.postprocess.args = ()
+        
+        killCC!(game,fadein)
+
+        return
+    end
+
+    game.n.c[:fadein].c += 1
 end

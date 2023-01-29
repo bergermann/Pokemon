@@ -512,6 +512,7 @@ mutable struct InputState
     dialogue::Bool
 
     battle::Bool
+    battled::Bool
     battle1::Bool
     battle1menu::MenuBattle
     battle2::Bool
@@ -553,14 +554,15 @@ abstract type BattleState end
 
 mutable struct Battle
     active::Bool
-    intro::Bool
+    
+    dialogue::Dialogue
 
     state::BattleState
 
     menu::MenuBattle
 
     function Battle()
-        new(false,false,BattleStateNone(),MenuBattle())
+        new(false,Dialogue(),BattleStateNone(),MenuBattle())
     end
 end
 
@@ -605,12 +607,10 @@ end
 
 mutable struct TileMap
     water::Matrix{UInt16}
-    background1::Matrix{UInt16}
-    background2::Matrix{UInt16}
-    spriteslow::Matrix{UInt16}
-    spriteshigh::Matrix{UInt16}
-    foreground1::Matrix{UInt16}
-    foreground2::Matrix{UInt16}
+    layer1::Matrix{UInt16}
+    layer2::Matrix{UInt16}
+    layer3::Matrix{UInt16}
+    layer4::Matrix{UInt16}
     
     collision::Matrix{UInt16}
 
@@ -636,7 +636,7 @@ mutable struct Map
 
     function Map(id::UInt8)
         new(id,0,"$id",[],getTiles("tiles_exterior"),
-            getTileMap("$id",[:background1,:background2,:foreground1,:foreground2,:collision]),
+            getTileMap("$id",[:layer1,:layer2,:layer3,:layer4,:collision]),
             [],[],[])
     end
 
@@ -689,12 +689,27 @@ mutable struct DrawState
     end
 end
 
+mutable struct Layer
+    layer::Matrix{UInt32}
+    active::Bool
+    offset::Position
+
+    function Layer(layer)
+        new(layer,true,Position(0,0))
+    end
+
+    function Layer(layer,active,offset)
+        new(layer,active,offset)
+    end
+end
+
 mutable struct Layers
     water::Matrix{UInt32}
-    background1::Matrix{UInt32}
-    background2::Matrix{UInt32}
-    foreground1::Matrix{UInt32}
-    foreground2::Matrix{UInt32}
+    layer1::Matrix{UInt32}
+    layer2::Matrix{UInt32}
+    layer3::Matrix{UInt32}
+    layer4::Matrix{UInt32}
+    layer5::Matrix{UInt32} #text?
 
     textbox::Matrix{UInt32}
     menu::Matrix{UInt32}
@@ -763,7 +778,7 @@ mutable struct Im
             ArrayList(Sprite,128),
 
             Layers(),
-            copy(Layers().background1),
+            copy(Layers().layer1),
 
             CallbackFunction(:pp,empty,()),
             CallbackFunction(:pp,empty,())
@@ -822,6 +837,10 @@ end
 
 
 
+function emptyCallback(game::GameState)
+    return
+end
+
 function createCounter!(game::GameState,id::Symbol)
     push!(game.n.c,Counter(id))
 end
@@ -846,6 +865,22 @@ function killCallback!(game::GameState,id::Symbol)
     popat!(game.callbacks,id)
 end
 
-function emptyCallback(game::GameState)
-    return
+function createCC!(game::GameState,id::Symbol,func::Function,args::Tuple)
+    createCounter!(game,id::Symbol)
+    createCallback!(game,id,func,args)
+end
+
+function createCC!(game::GameState,idc::Symbol,idcb::Symbol,func::Function,args::Tuple)
+    createCounter!(game,idc::Symbol)
+    createCallback!(game,idcb,func,args)
+end
+
+function killCC!(game::GameState,id::Symbol)
+    killCounter!(game,id)
+    killCallback!(game,id)
+end
+
+function killCC!(game::GameState,idc::Symbol,idcb::Symbol)
+    killCounter!(game,idc)
+    killCallback!(game,idcb)
 end

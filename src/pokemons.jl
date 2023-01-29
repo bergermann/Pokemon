@@ -203,9 +203,9 @@ end
 function pkmnName(game,pkmn::Pkmn)
     if pkmn.name == ""
         return game.pkmndata.name[pkmn.id]
-    else
-        return pkmn.name
     end
+    
+    return pkmn.name
 end
 
 function activePkmn(game)

@@ -1442,3 +1442,40 @@ function resetInput!()
     input._select = false
     input.select_ = false
 end
+
+
+function drawMap!(game::GameState; s=Settings())
+    dh,dw = div(s.Nh-0x01,0x02),div(s.Nw-0x01,0x02)
+
+    for k in game.map.environment
+        @inbounds for i in 1:s.Nh, j in 1:s.Nw
+            getfield(game.im.layers,k)[1+(i-1)*s.tilesize:i*s.tilesize,
+                1+(j-1)*s.tilesize:j*s.tilesize] = game.map.tiles[
+                    getfield(game.map.tilemap,k)[game.pos.h+i-dh-1,
+                    game.pos.w+j-dw-1]]
+        end
+    end
+end
+
+
+
+function drawMap_!(game::GameState; s=Settings())
+    dh,dw = div(s.Nh-0x01,0x02),div(s.Nw-0x01,0x02)
+
+    @inbounds for k in game.map.environment
+        vtm = getfield(game.map.tilemap,k)[
+            game.pos.h-dh:game.pos.h-dh+s.Nh-1,
+            game.pos.w-dw:game.pos.w-dw+s.Nw-1
+        ]
+
+        @inbounds for i in eachindex(vtm)
+            v = view(getfield(game.im.layers,k),
+                1+(i-1)*s.tilesize:i*s.tilesize,
+                1+(j-1)*s.tilesize:j*s.tilesize)
+            
+            @inbounds for t in eachindex(v)
+                v[i] = tile[i]
+            end
+        end
+    end
+end

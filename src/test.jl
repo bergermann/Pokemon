@@ -42,10 +42,15 @@ function testmain()
         Options()
     )
 
-    @btime initDrawBattle!($game)
-
-    println(nfields(game.draw))
-    println(nfields(DrawState))
+    drawMap!(game)
+    l = :layer1
+    p = Position(10,10)
+    s = Position(100,200)
+    
+    @btime flushLayer!($game,$l)
+    @btime flushLayer!($game,$l,$p,$s)
+    @btime flushLayer1!($game,$l,$p,$s)
+    #@btime drawMap_!($game)
 
     return game
 end

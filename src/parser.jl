@@ -113,14 +113,52 @@ function drawText!(game::GameState,layer::Symbol,str::String,style::UInt,pos::Po
             continue
         end
 
-        @inbounds for i in eachindex(game.im.font.char)
+        v = view(getfield(game.im.layers,layer),
+            pos.h+game.im.font.h+1:pos.h+game.im.font.h+game.im.font.h_,
+            pos.w+game.im.font.w+1:pos.w+game.im.font.w+game.im.font.w_)
+
+        @inbounds for i in eachindex(v)
             if game.im.font.char[i] == 0x000000
                 continue
             else
-                getproperty(game.im.layers,layer)[
-                        pos.h+game.im.font.h+1+(i-1)%game.im.font.h_,
-                        pos.w+game.im.font.w+1+div(i-1,game.im.font.h_)
-                    ] = game.im.font.char[i]
+                v[i] = game.im.font.char[i]
+            end
+        end
+
+        game.im.font.w += game.im.font.w_+charoffset
+    end
+end
+
+function drawText!(game::GameState,layer::Symbol,str::String,style::UInt,
+        pos::Position,color1::UInt32,color2::UInt32;
+        lineoffset::Int=0, charoffset::Int=0)
+
+    game.im.font.h_ = game.im.font.heights[style]
+    game.im.font.h = 0
+    game.im.font.w = 0
+
+    @inbounds for c in str
+        if c != '\\'
+            game.im.font.char = game.im.font.fonts[style][c]
+            game.im.font.w_ = size(game.im.font.char,2)
+        else
+            game.im.font.h += game.im.font.h_+lineoffset
+            game.im.font.w = 0
+
+            continue
+        end
+
+        v = view(getfield(game.im.layers,layer),
+            pos.h+game.im.font.h+1:pos.h+game.im.font.h+game.im.font.h_,
+            pos.w+game.im.font.w+1:pos.w+game.im.font.w+game.im.font.w_)
+
+        @inbounds for i in eachindex(v)
+            if game.im.font.char[i] == 0x000000
+                continue
+            elseif game.im.font.char[i] == 0x606060
+                v[i] = color1
+            else
+                v[i] = color2
             end
         end
 

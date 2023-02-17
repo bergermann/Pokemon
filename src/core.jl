@@ -44,6 +44,11 @@ function posAddMult!(a::Position,b::Position,n::Signed)
     return
 end
 
+function setPos!(pos::Position,h::Int,w::Int)
+    pos.h = h
+    pos.w = w
+end
+
 
 
 
@@ -379,9 +384,10 @@ mutable struct Dialogue
     d::Bool
     str::Vector{String}
     n::UInt8
+    callback::CallbackFunction
 
     function Dialogue()
-        new(false,[""],0x01)
+        new(false,[""],0x01,CallbackFunction())
     end
 end
 
@@ -537,6 +543,7 @@ mutable struct InputState
 
             false,
             false,
+            false,
             MenuBattle(),
             false,
             MenuBattle(),
@@ -557,14 +564,45 @@ mutable struct Battle
     
     dialogue::Dialogue
 
+    stage::Int
     state::BattleState
 
     menu::MenuBattle
 
     function Battle()
-        new(false,Dialogue(),BattleStateNone(),MenuBattle())
+        new(false,Dialogue(),0,BattleStateNone(),MenuBattle())
     end
 end
+
+# battlestages:
+# 1 - selection
+# x - attack
+# x - send first pokemon
+# x - swap pokemon
+# x - opponent send pokemon
+# x - faint own
+# x - faint opp
+# x - weather
+# x - damage own
+# x - damage opp
+# x - throw ball
+# x - catch pending
+# x - caught
+# x - naming
+# x - item own
+# x - item opp
+# x - flee
+
+# 100 - intro dialogue
+# 101 - victory dialogue
+# 102 - defeat dialogue
+# 103 - flee dialogue
+# 104 - flee trainer dialogue
+# 105 - flee fail dialogue 
+# 110 - mid dialogue
+# x - caught dialogue
+# x - catch trainer dialogue
+
 
 
 
@@ -676,9 +714,11 @@ mutable struct DrawState
     dialogue::Bool
 
     battleintro::Bool
+    battleoutro::Bool
     battle::Bool
     battle1::Bool
     battle2::Bool
+    battled::Bool
 
     worldmap::Bool
 
@@ -716,8 +756,6 @@ mutable struct Layers
     menu1::Matrix{UInt32}
     menu2::Matrix{UInt32}
     menu3::Matrix{UInt32}
-    
-    #text::Matrix{UInt32}
     
 
     function Layers(; s::Settings=Settings())
@@ -798,7 +836,7 @@ end
 mutable struct Locks
     move::Bool
     input::Bool
-    dialoge::Bool
+    dialogue::Bool
     movenpc::Bool
 
     function Locks()
@@ -883,4 +921,39 @@ end
 function killCC!(game::GameState,idc::Symbol,idcb::Symbol)
     killCounter!(game,idc)
     killCallback!(game,idcb)
+end
+
+function setDialogue!(game::GameState,str::String)
+    game.dialogue.d = true
+    game.dialogue.n = 1
+    game.dialogue.str = str
+end
+
+function setBattleDialogue!(game::GameState,str::String)
+    game.battle.dialogue.d = true
+    game.battle.dialogue.n = 1
+    game.battle.dialogue.str = str
+end
+
+function createSprite!(game::GameState,id::Symbol,layer::Symbol,
+        dict::Dict{Int,Matrix{UInt32}},pos::Position,frame::Int;
+        active=false,hreverse=false,vreverse=false)
+    
+    push!(game.im.sprites,Sprite(
+        id,
+        active,
+        hreverse,
+        vreverse,
+        layer,
+        pos,
+        Position(size(dict[frame])...),
+        frame,
+        dict,
+        dict[frame]
+        )
+    )
+end
+
+function killSprite!(game::GameState,id::Symbol)
+    popat!(game.im.sprites,id)
 end

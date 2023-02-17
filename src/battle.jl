@@ -250,6 +250,9 @@ function closeBattle!(game::GameState)
     game.input.inputlock = false
     game.input.move = true
     game.input.map = true
+
+    killCounter!(game,:battleanim)
+    killCounter!(game,:battledelay)
     
     initDrawMap!(game)
 end
@@ -267,7 +270,7 @@ function initBattleWild!(game::GameState)
     game.battle.state = BattleStateWild(BattleCounters(),0,BattleEnvironment(),pb1,pb2)
 end
 
-function initBattleWild(game::GameState,ids::Vector{UInt16},levels::Vector{UInt8})
+function initBattleWild!(game::GameState,ids::Vector{UInt16},levels::Vector{UInt8})
     game.battle.active = true
 
     pb1 = PkmnBattle(activePkmn(game))

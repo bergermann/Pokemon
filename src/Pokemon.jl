@@ -3,13 +3,12 @@ __precompile__(true)
 module Pokemon
 
 include("core.jl")
+include("statetransitions.jl")
 include("rendering.jl")
 include("controls.jl")
-include("pokemons.jl")
 include("animations.jl")
 include("battle.jl")
 #include("maps.jl")
-
 
 function main()
     settings = Settings()
@@ -47,11 +46,8 @@ function main()
     push!(game.trainer.pokemon,generatePkmn(game,0x0001,0x09))
     push!(game.trainer.pokemon,generatePkmn(game,0x0002,0x03))
 
-    m = Sprite(:main,true,false,false,:layer2,Position(80,128),
-        Position(32,16),11,getSpriteMain("sprite"),getSpriteMain("sprite")[11])
-
-    updateSprite!(m,11)
-    push!(game.im.sprites,m)
+    createSprite!(game,:main,:layer2,getSpriteMain("sprite"),Position(80,128),
+        11; active=true)
 
     createCounter!(game,:movemain,0)
     createCallback!(game,:movemain,false,moveMain!,(game.direction,-1))
@@ -83,6 +79,11 @@ function main()
                 break
             end
 
+            # print(game.input.battle,", ")
+            # print(game.input.battled,", ")
+            # print(game.input.inputlock,", ")
+            # print(game.dialogue.n)
+            # println()
             #print("update:")
             #@time updateGame!(game,input; s=settings)
             updateGame!(game,input; s=settings)

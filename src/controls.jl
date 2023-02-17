@@ -249,6 +249,7 @@ end
 
 
 
+
 function inputManager!(game::GameState,input::Input)
     if game.input.inputlock
         return
@@ -490,12 +491,12 @@ end
 function inputDialogue!(game::GameState,input::Input)
     if input._A || input._B || input._down
         if game.dialogue.n < length(game.dialogue.str)
-            game.dialogue.n += 0x01
+            game.dialogue.n += 1
         else
             game.dialogue.d = false
-            game.dialogue.n = 0x01
+            game.dialogue.n = 1
             game.input.move = true
-            game.input.dialogue = true
+            game.input.dialogue = false
         end
     end
 end
@@ -504,18 +505,12 @@ function inputBattle!(game::GameState,input::Input)
     if game.input.battled
         if input._A || input._B || input._down
             inputBattleDialogue!(game::GameState,input::Input)
-
-            return
         end
+
+        return
     end
 
     if game.input.battle1
-        if game.input.battle1menu.select < 0
-            game.input.battle1menu.select += 4
-        end
-
-        game.input.battle1menu.select %= 4
-
         if input._A
             inputBattleMenuSelector!(game::GameState)
             return
@@ -535,6 +530,15 @@ function inputBattle!(game::GameState,input::Input)
         elseif input._right
             game.input.battle1menu.select += 1
         end
+
+        if game.input.battle1menu.select < 0
+            game.input.battle1menu.select += 4
+        end
+
+        game.input.battle1menu.select %= 4
+
+        game.im.sprites[:cursor].pos.h = 144+div(input.game.battle1menu.select,2)*58
+        game.im.sprites[:cursor].pos.w = 144+(input.game.battle1menu.select%2)*16
 
         return
     end
@@ -572,16 +576,24 @@ function inputBattle!(game::GameState,input::Input)
 end
 
 function inputBattleDialogue!(game::GameState,input::Input)
-    if game.dialogue.n < length(game.dialogue.str)
-        game.dialogue.n += 0x01
-    else
-        game.dialogue.d = false
-        game.dialogue.n = 0x01
-        game.input.move = true
+    if input._A || input._B || input._down
+        if game.dialogue.n < length(game.dialogue.str)
+            game.dialogue.n += 0x01
+        else
+            game.dialogue.d = false
+            game.dialogue.n = 1
+            game.input.battled = false
+            
+            game.draw.battled = false
+
+            game.dialogue.callback.func(game,game.dialogue.callback.args...)
+        end
+        
+        flushLayer!(game,:layer2,Position(24+1+112,16+1),Position(48,240))
     end
 end
 
-function inputBattleMenuSelector(game::GameState)
+function inputBattleMenuSelector!(game::GameState)
     if game.input.battle1menu.select == 0
         game.input.battle1 = false
         game.input.battle2 = true
@@ -596,7 +608,7 @@ function inputBattleMenuSelector(game::GameState)
     end
 end
 
-function inputBattleAttackSelector(game::GameState)
+function inputBattleAttackSelector!(game::GameState)
     if game.input.battle1menu.select == 0
         return
     elseif game.input.battle1menu.select == 1
@@ -633,7 +645,6 @@ end
 
 
 function updateGame!(game::GameState,input::Input; s=Settings())
-    #@time
     inputManager!(game,input)
 
     for i in 1:game.callbacks.idx

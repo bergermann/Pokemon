@@ -67,6 +67,12 @@ function flushLayer!(game::GameState)
     game.im.layer .= 0x000000
 end
 
+function flushLayers!(game::GameState)
+    for f in fieldnames(Layers)
+        flushLayer!(game,f)
+    end
+end
+
 
 
 
@@ -263,10 +269,12 @@ end
 function updateSprite!(sprite::Sprite,frame::Int)
     sprite.frame = frame
     sprite.im = sprite.dict[frame]
+    sprite.size = Position(size(sprite.im)...)
 end
 
 function updateSprite!(sprite::Sprite)
     sprite.im = sprite.dict[sprite.frame]
+    sprite.size = Position(size(sprite.im)...)
 end
 
 function drawSprites!(game::GameState; s=Settings())
@@ -681,7 +689,13 @@ end
 function getBattler(id::Int)
     img = mfb_rgb.(load("im/gen1/$id.png"))
 
-    return Dict{UInt,Matrix{UInt32}}(1=>img[:,1:64],2=>img[:,65:128])
+    return Dict{Int,Matrix{UInt32}}(1=>img[:,1:64],2=>img[:,65:128])
+end
+
+function getBattler(id::UInt16)
+    img = mfb_rgb.(load("im/gen1/$id.png"))
+
+    return Dict{Int,Matrix{UInt32}}(1=>img[:,1:64],2=>img[:,65:128])
 end
 
 function getBattleBack(str::String)
@@ -703,6 +717,7 @@ function drawBattleIntro!(game::GameState; s=Settings())
         flushLayer!(game,:layer2)
         flushLayer!(game,:layer3)
         flushLayer!(game,:layer4)
+        
         game.im.sprites[:main].active = false
 
         game.im.postprocess.active = true
@@ -711,6 +726,13 @@ function drawBattleIntro!(game::GameState; s=Settings())
 
         game.im.layers.layer1[24+1:24+112,16+1:16+240] = getBattleBack("grass1")
         game.im.layers.layer1[24+1+112:24+160,16+1:16+240] = getDialogue("battle")
+
+        createSprite!(game,:pkmn1,:layer2,getBattler(game.battle.state.pkmn1.pkmn.id),
+            Position(64,40),1; active=true)
+        createSprite!(game,:pkmn2,:layer2,getBattler(game.battle.state.pkmn2.pkmn.id),
+            Position(22,160),1; active=true)
+        createSprite!(game,:cursor,:layer3,Dict(1=>game.im.font.fonts[3]['▷']),
+            Position(144,134),1)
     elseif game.n.c[:battleintro].c <= 32
         game.im.postprocess.args = (24+80,game.n.c[:battleintro].c)
     elseif game.n.c[:battleintro].c <= 56
@@ -720,11 +742,19 @@ function drawBattleIntro!(game::GameState; s=Settings())
 
         game.im.postprocess.active = false
 
-        game.battle.active = true
-        game.battle.intro = false
-
         game.draw.battleintro = false
         game.draw.battle = true
+
+        game.dialogue.str = ["Ein wildes $(pkmnName(game,game.battle.state.pkmn2.pkmn)) erscheint!",
+            "Los, $(pkmnName(game,game.battle.state.pkmn1.pkmn))!"]
+        game.dialogue.n = 1
+        game.dialogue.callback.func = stateBattleIntroDialogue!
+
+        game.draw.battled = true
+
+        game.input.inputlock = false
+        game.input.battle = true
+        game.input.battled = true
 
         return
     end
@@ -734,6 +764,10 @@ end
 
 function drawBattleExit!(game::GameState; s=Settings())
     if game.n.c[:battleoutro].c == 0
+        killSprite!(game,:pkmn1)
+        killSprite!(game,:pkmn2)
+        killSprite!(game,:cursor)
+
         game.im.postprocess.active = true
         game.im.postprocess.func = fadeLinear!
         game.im.postprocess.args = (60,0)
@@ -747,8 +781,8 @@ function drawBattleExit!(game::GameState; s=Settings())
         game.battle.active = false
         game.battle.outro = false
 
-        game.draw.battleoutro = false
-        game.draw.battle = false
+        initDrawMap!(game)
+        game.input.map = true
         
         game.im.sprites[:main].active = true
     
@@ -758,11 +792,40 @@ function drawBattleExit!(game::GameState; s=Settings())
     game.n.c[:battleoutro].c += 1
 end
 
+function drawBattleDialogue!(game::GameState)
+    drawText!(game,:layer2,game.dialogue.str[game.dialogue.n],UInt(2),
+        Position(144,32),0xffffff,0x6b5a73)
+end
+
+function drawBattleMenu1!(game::GameState)
+    drawText!(game,:layer3,"Was soll\\$(pkmnName(game,game.battle.state.pkmn1.pkmn)) tun?",UInt(2),
+        Position(144,32),0xffffff,0x6b5a73)
+
+    drawFrame!(game::GameState,:layer3,UInt(6),UInt(16),Position(24+112,16+112))
+
+    drawText!(game::GameState,:layer3,"KAMPF",UInt(3),Position(145,144),0x4a4a4a,0xd6d6ce)
+    drawText!(game::GameState,:layer3,"BEUTEL",UInt(3),Position(145,202),0x4a4a4a,0xd6d6ce)
+    drawText!(game::GameState,:layer3,"POKEMON",UInt(3),Position(161,144),0x4a4a4a,0xd6d6ce)
+    drawText!(game::GameState,:layer3,"FLUCHT",UInt(3),Position(161,202),0x4a4a4a,0xd6d6ce)
+end
+
+
 
 
 
 
 function drawBattle!(game::GameState; s=Settings())
+    if game.draw.battled
+        drawBattleDialogue!(game)
+        return
+    end
+
+    if game.draw.battle1
+        drawBattleMenu1!(game)
+    elseif game.draw.battle2
+        return
+    end
+
     #initDrawMap!(game)
     return
 end
@@ -796,11 +859,10 @@ function drawGame!(game::GameState; s=Settings())
         sortHorizontal!(game.im.sprites)
     end
 
-    if game.draw.dialogue
+    if game.draw.dialogue && !game.draw.battle
         drawDialogue!(game)
     end
 
-    println(game.draw.menu1)
     if game.draw.menu1
         drawMenu!(game)
     end

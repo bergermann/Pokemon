@@ -1,4 +1,4 @@
-using BenchmarkTools
+using BenchmarkTools, Plots
 
 include("core.jl")
 include("rendering.jl")
@@ -8,8 +8,11 @@ include("animations.jl")
 include("battle.jl")
 #include("maps.jl")
 
-function testmain()
+function showIm(im)
+    display(plot(reinterpret(RGB24,im)))
+end
 
+function testmain()
     settings = Settings()
 
     global input = Input()
@@ -41,16 +44,17 @@ function testmain()
 
         Options()
     )
-
-    drawMap!(game)
-    l = :layer1
+    
     p = Position(10,10)
     s = Position(100,200)
+
+    drawMap!(game)
+
+    showIm(game.im.layers.layer1)
     
-    @btime flushLayer!($game,$l)
-    @btime flushLayer!($game,$l,$p,$s)
-    @btime flushLayer1!($game,$l,$p,$s)
-    #@btime drawMap_!($game)
+    flushLayer!(game,:layer1,p,s)
+
+    showIm(game.im.layers.layer1)
 
     return game
 end

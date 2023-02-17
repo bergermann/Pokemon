@@ -302,3 +302,90 @@ end
 function empty(im::Matrix{UInt32})
     return
 end
+
+function shiftV!(A::Matrix,shift::Int)
+    if shift == 0
+        return
+    end
+
+    if shift > 0
+        @views copy!(A[1+shift:end,:],A[1:end-shift,:])
+    else
+        @views copy!(A[1:shift+end,:],A[1-shift:end,:])
+    end
+    
+    return
+end
+
+function shift!(A::Matrix,shift::Tuple{Int,Int})
+    cs = CartesianIndex(shift)
+    for i in eachindex(view(A,
+            1:height(A),
+            1:width(A)))
+        if !checkbounds(Bool,A,i-cs)
+            continue
+        end
+
+        A[i] = A[i-cs]
+    end
+end
+
+function shift1!(A::Matrix,shift::Tuple{Int,Int})
+    for h in (shift[1] >= 0 ? (height(A):-1:1) : (1:height(A))), w in (shift[2] >= 0 ? (width(A):-1:1) : (1:width(A)))
+        if !checkbounds(Bool,A,h-shift[1],w-shift[2])
+            continue
+        end
+
+        A[h,w] = A[h-shift[1],w-shift[2]]
+    end
+end
+
+function shift2!(A::Matrix,shift::Tuple{Int,Int})
+    cs = CartesianIndex(shift)
+
+    if shift[1] <= 0 && shift[2] <= 0
+        for i in eachindex(view(A,1:height(A),1:width(A)))
+            if !checkbounds(Bool,A,i-cs)
+                continue
+            end
+
+            A[i] = A[i-cs]
+        end
+    elseif shift[1] <= 0 && shift[2] > 0
+        c_ = CartesianIndex(0,width(A)+1)
+
+        for i in eachindex(view(A,1:height(A),1:width(A)))
+            i[2] = c_[2] - i[2]
+
+            if !checkbounds(Bool,A,i-cs)
+                continue
+            end
+
+            A[i] = A[i-cs]
+        end
+    elseif shift[1] > 0 && shift[2] <= 0
+        c_ = CartesianIndex(height(A)+1,0)
+
+        for i in eachindex(view(A,1:height(A),1:width(A)))
+            i[1] = c_[1] - i[1]
+
+            if !checkbounds(Bool,A,i-cs)
+                continue
+            end
+
+            A[i] = A[i-cs]
+        end
+    else
+        c_ = CartesianIndex(height(A)+1,width(A)+1)
+
+        for i in eachindex(view(A,1:height(A),1:width(A)))
+            i = c_ - i
+
+            if !checkbounds(Bool,A,i-cs)
+                continue
+            end
+
+            A[i] = A[i-cs]
+        end
+    end
+end

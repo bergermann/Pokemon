@@ -23,7 +23,7 @@ function animBattleEntry1!(game::GameState)
         game.im.postprocess.args = ()
 
         game.battle.active = true
-        game.battle.intro = true
+        game.draw.battleintro = true
 
         initDrawBattle!(game)
 

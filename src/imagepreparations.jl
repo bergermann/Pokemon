@@ -1,6 +1,36 @@
 using Images, ImageIO
 
-p = load("im\\gen1raw.png")
+function fixBG!(img::Matrix{RGBA{N0f8}})
+    bg = img[1]
+
+    if bg == RGBA{N0f8}(0,0,0,0)
+        return
+    end
+
+    for i in eachindex(img)
+        if img[i] == RGBA{N0f8}(0,0,0,0) || img[i] == RGBA{N0f8}(0,0,0,1)
+            img[i] == RGBA{N0f8}(0x01/0xff,0x01/0xff,0x01/0xff,0)
+        elseif img[i] == bg
+            img[i] = RGBA{N0f8}(0,0,0,0)
+        end
+    end
+end
+
+function fixBG!(img::Matrix{RGB{N0f8}})
+    bg = img[1]
+
+    if bg == RGB{N0f8}(0,0,0)
+        return
+    end
+
+    for i in eachindex(img)
+        if img[i] == RGB{N0f8}(0,0,0)
+            img[i] == RGB{N0f8}(0x01/0xff,0x01/0xff,0x01/0xff)
+        elseif img[i] == bg
+            img[i] = RGB{N0f8}(0,0,0,0)
+        end
+    end
+end
 
 key = """1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,\
     28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,\
@@ -10,12 +40,21 @@ key = """1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27
     121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,\
     140,141,142,143,144,145,146,147,148,149,150,151"""
 
+# for id in split(key,',')
+#     println(id)
+#     f1 = load("im/battlers/front/shiny/frame1/"*id*".png")
+#     f2 = load("im/battlers/front/shiny/frame2/"*id*".png")
+
+#     fc = hcat(f1,f2)
+
+#     save("im/battlers/front/shiny/"*id*".png",fc)
+# end
+
 for id in split(key,',')
-    println(id)
-    f1 = load("im/battlers/front/shiny/frame1/"*id*".png")
-    f2 = load("im/battlers/front/shiny/frame2/"*id*".png")
+    print(id,",")
 
-    fc = hcat(f1,f2)
+    img = load("im/battlers/back/normal/"*id*".png")
 
-    save("im/battlers/front/shiny/"*id*".png",fc)
+    fixBG!(img)
+    save("im/battlers/back/normal/"*id*".png",img)
 end

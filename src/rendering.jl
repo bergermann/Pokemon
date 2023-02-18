@@ -686,16 +686,40 @@ function getBattlers()
     return merge(d1,)
 end
 
-function getBattler(id::Int)
-    img = mfb_rgb.(load("im/gen1/$id.png"))
+function getBattlerFront(id::Int)
+    img = mfb_rgb.(load("im/battlers/front/normal/$id.png"))
 
     return Dict{Int,Matrix{UInt32}}(1=>img[:,1:64],2=>img[:,65:128])
 end
 
-function getBattler(id::UInt16)
-    img = mfb_rgb.(load("im/gen1/$id.png"))
+function getBattlerFront(pkmn::Pkmn)
+    if !pkmn.shiny
+        img = mfb_rgb.(load("im/battlers/front/normal/$(pkmn.id).png"))
 
-    return Dict{Int,Matrix{UInt32}}(1=>img[:,1:64],2=>img[:,65:128])
+        return Dict{Int,Matrix{UInt32}}(1=>img[:,1:64],2=>img[:,65:128])
+    else
+        img = mfb_rgb.(load("im/battlers/front/shiny/$(pkmn.id).png"))
+
+        return Dict{Int,Matrix{UInt32}}(1=>img[:,1:64],2=>img[:,65:128])
+    end
+end
+
+function getBattlerBack(id::Int)
+    img = mfb_rgb.(load("im/battlers/back/normal/$id.png"))
+
+    return Dict{Int,Matrix{UInt32}}(1=>img[:,1:64])
+end
+
+function getBattlerBack(pkmn::Pkmn)
+    if !pkmn.shiny
+        img = mfb_rgb.(load("im/battlers/back/normal/$(pkmn.id).png"))
+
+        return Dict{Int,Matrix{UInt32}}(1=>img)
+    else
+        img = mfb_rgb.(load("im/battlers/back/shiny/$(pkmn.id).png"))
+
+        return Dict{Int,Matrix{UInt32}}(1=>img)
+    end
 end
 
 function getBattleBack(str::String)
@@ -725,12 +749,12 @@ function drawBattleIntro!(game::GameState; s=Settings())
         game.im.postprocess.args = (24+80,0)
 
         game.im.layers.layer1[24+1:24+112,16+1:16+240] = getBattleBack("grass1")
-        game.im.layers.layer1[24+1+112:24+160,16+1:16+240] = getDialogue("battle")
+        game.im.layers.layer3[24+1+112:24+160,16+1:16+240] = getDialogue("battle")
 
-        createSprite!(game,:pkmn1,:layer2,getBattler(game.battle.state.pkmn1.pkmn.id),
-            Position(64,40),1; active=true)
-        createSprite!(game,:pkmn2,:layer2,getBattler(game.battle.state.pkmn2.pkmn.id),
-            Position(22,160),1; active=true)
+        createSprite!(game,:pkmn1,:layer2,getBattlerBack(game.battle.state.pkmn1.pkmn),
+            Position(96,40),1; active=true)
+        createSprite!(game,:pkmn2,:layer2,getBattlerFront(game.battle.state.pkmn2.pkmn),
+            Position(32,160),1; active=true)
         createSprite!(game,:cursor,:layer3,Dict(1=>game.im.font.fonts[3]['▷']),
             Position(144,134),1)
     elseif game.n.c[:battleintro].c <= 32
@@ -798,15 +822,15 @@ function drawBattleDialogue!(game::GameState)
 end
 
 function drawBattleMenu1!(game::GameState)
-    drawText!(game,:layer3,"Was soll\\$(pkmnName(game,game.battle.state.pkmn1.pkmn)) tun?",UInt(2),
+    drawText!(game,:layer4,"Was soll\\$(pkmnName(game,game.battle.state.pkmn1.pkmn)) tun?",UInt(2),
         Position(144,32),0xffffff,0x6b5a73)
 
-    drawFrame!(game::GameState,:layer3,UInt(6),UInt(16),Position(24+112,16+112))
+    drawFrame!(game::GameState,:layer4,UInt(6),UInt(16),Position(24+112,16+112))
 
-    drawText!(game::GameState,:layer3,"KAMPF",UInt(3),Position(145,144),0x4a4a4a,0xd6d6ce)
-    drawText!(game::GameState,:layer3,"BEUTEL",UInt(3),Position(145,202),0x4a4a4a,0xd6d6ce)
-    drawText!(game::GameState,:layer3,"POKEMON",UInt(3),Position(161,144),0x4a4a4a,0xd6d6ce)
-    drawText!(game::GameState,:layer3,"FLUCHT",UInt(3),Position(161,202),0x4a4a4a,0xd6d6ce)
+    drawText!(game::GameState,:layer4,"KAMPF",UInt(3),Position(145,144),0x4a4a4a,0xd6d6ce)
+    drawText!(game::GameState,:layer4,"BEUTEL",UInt(3),Position(145,202),0x4a4a4a,0xd6d6ce)
+    drawText!(game::GameState,:layer4,"POKEMON",UInt(3),Position(161,144),0x4a4a4a,0xd6d6ce)
+    drawText!(game::GameState,:layer4,"FLUCHT",UInt(3),Position(161,202),0x4a4a4a,0xd6d6ce)
 end
 
 

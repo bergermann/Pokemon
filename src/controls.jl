@@ -537,8 +537,8 @@ function inputBattle!(game::GameState,input::Input)
 
         game.input.battle1menu.select %= 4
 
-        game.im.sprites[:cursor].pos.h = 144+div(input.game.battle1menu.select,2)*58
-        game.im.sprites[:cursor].pos.w = 144+(input.game.battle1menu.select%2)*16
+        game.im.sprites[:cursor].pos.h = 144+div(game.input.battle1menu.select,2)*58
+        game.im.sprites[:cursor].pos.w = 144+(game.input.battle1menu.select%2)*16
 
         return
     end

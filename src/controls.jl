@@ -526,9 +526,17 @@ function inputBattle!(game::GameState,input::Input)
         elseif input._down
             game.input.battle1menu.select += 2
         elseif input._left
-            game.input.battle1menu.select -= 1
+            if game.input.battle1menu.select%2 == 0
+                game.input.battle1menu.select += 1
+            else
+                game.input.battle1menu.select -= 1
+            end
         elseif input._right
-            game.input.battle1menu.select += 1
+            if game.input.battle1menu.select%2 == 1
+                game.input.battle1menu.select -= 1
+            else
+                game.input.battle1menu.select += 1
+            end
         end
 
         if game.input.battle1menu.select < 0
@@ -537,8 +545,8 @@ function inputBattle!(game::GameState,input::Input)
 
         game.input.battle1menu.select %= 4
 
-        game.im.sprites[:cursor].pos.h = 144+div(game.input.battle1menu.select,2)*58
-        game.im.sprites[:cursor].pos.w = 144+(game.input.battle1menu.select%2)*16
+        game.im.sprites[:cursor1].pos.h = 146+div(game.input.battle1menu.select,2)*16
+        game.im.sprites[:cursor1].pos.w = 136+(game.input.battle1menu.select%2)*58
 
         return
     end
@@ -589,7 +597,7 @@ function inputBattleDialogue!(game::GameState,input::Input)
             game.dialogue.callback.func(game,game.dialogue.callback.args...)
         end
         
-        flushLayer!(game,:layer2,Position(24+1+112,16+1),Position(48,240))
+        flushLayer!(game,:layer3,Position(24+1+120,24+1),Position(32,208),0x68a0a0)
     end
 end
 
@@ -602,7 +610,7 @@ function inputBattleMenuSelector!(game::GameState)
     elseif game.input.battle1menu.select == 2
         return
     else
-        game.input.battle.active = false
+        game.input.battle = false
         game.input.move = true
         game.input.inputlock = false
     end

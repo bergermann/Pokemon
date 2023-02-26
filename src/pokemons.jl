@@ -31,12 +31,21 @@ mutable struct Attack
     name::String
     description::String
     ap::UInt8
+    apmax::UInt8
 
     power::UInt8
     accuracy::UInt8
     priority::Int8
 
     effect::Function
+
+    function Attack()
+        new("","",0,0,0,0,0,emtpy)
+    end
+
+    function Attack(name,description,ap,apmax,power,accuracy,priority,effect)
+        new(name,description,ap,apmax,power,accuracy,priority,effect)
+    end
 end
 
 mutable struct Item
@@ -151,7 +160,16 @@ function generatePkmn(game,id::UInt16,level::UInt8)
         Stats(data[4:9],level),         #stats
         0x00,                           #status
         Item(),                         #item
-        []                              #attacks
+        [Attack(
+            "Tackle",
+            "Trifft den Gegner mit vollem Körpereinsatz.",
+            35,
+            35,
+            40,
+            100,
+            0,
+            empty
+        )]                              #attacks
     )
 
     updateStats!(p)

@@ -302,3 +302,19 @@ function basedamage(game::GameState,attacker::PkmnBattle,defender::PkmnBattle)
         abilityfactor(attacker,defender))
     )
 end
+
+function flee!(game::GameState)
+    flee!(game.battle.state)
+end
+
+function flee!(state::BattleStateWild)
+
+end
+
+function flee!(state::BattleStateTrainerSolo)
+
+end
+
+function flee!(state::BattleStateTrainerDouble)
+
+end

@@ -36,6 +36,40 @@ function animBattleEntry1!(game::GameState)
     game.n.c[:battleintro].c += 1
 end
 
+function animWiggleBattle!(game::GameState)
+    if !(game.input.battle1 || game.input.battle2)
+        if game.n.c[:wiggle].c == 0
+            return
+        end
+
+        game.n.c[:wiggle].c = 0
+        game.im.sprites[:pkmn1].pos.h = 90
+        game.im.sprites[:tagown].pos.h = 72+24
+    end
+
+    if game.n.c[:wiggle].c == 7
+        flushLayer!(game,:layer2,game.im.sprites[:pkmn1].pos,game.im.sprites[:pkmn1].size)
+        game.im.sprites[:pkmn1].pos.h -= 1
+    elseif game.n.c[:wiggle].c == 15
+        flushLayer!(game,:layer3,game.im.sprites[:tagown].pos,game.im.sprites[:tagown].size)
+        game.im.sprites[:tagown].pos.h -= 1
+    elseif game.n.c[:wiggle].c == 23
+        flushLayer!(game,:layer2,game.im.sprites[:pkmn1].pos,game.im.sprites[:pkmn1].size)
+        game.im.sprites[:pkmn1].pos.h += 1
+    elseif game.n.c[:wiggle].c == 31
+        flushLayer!(game,:layer3,game.im.sprites[:tagown].pos,game.im.sprites[:tagown].size)
+        game.im.sprites[:tagown].pos.h += 1
+    elseif game.n.c[:wiggle].c == 32
+        game.n.c[:wiggle].c = 0
+    end
+
+    game.n.c[:wiggle].c += 1
+end
+
+
+
+
+
 function moveStop!(game::GameState,dir::Int)
     updateSprite!(game.im.sprites[:main],(dir-1)*10+1)
 

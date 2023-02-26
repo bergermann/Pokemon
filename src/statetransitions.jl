@@ -1,5 +1,11 @@
+# general functions that transition some state into another
 
 
+function stateSetInput!(game::GameState,args::Tuple{Symbol,Bool}...)
+    for arg in args
+        setfield!(game.input,arg[1],arg[2])
+    end
+end
 
 function stateBattleStage!(game::GameState,stage::Int)
     game.battle.stage = stage
@@ -16,8 +22,6 @@ function stateBattleIntroDialogue!(game::GameState)
     game.im.sprites[:cursor].active = true
 end
 
-function stateSetInput!(game::GameState,args::Tuple{Symbol,Bool}...)
-    for arg in args
-        setfield!(game.input,arg[1],arg[2])
-    end
+function stateBattleOutroDialogue!(game::GameState)
+
 end

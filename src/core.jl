@@ -750,6 +750,7 @@ mutable struct Layers
     layer3::Matrix{UInt32}
     layer4::Matrix{UInt32}
     layer5::Matrix{UInt32} #text?
+    layer6::Matrix{UInt32}
 
     textbox::Matrix{UInt32}
     menu::Matrix{UInt32}
@@ -903,9 +904,9 @@ function killCallback!(game::GameState,id::Symbol)
     popat!(game.callbacks,id)
 end
 
-function createCC!(game::GameState,id::Symbol,func::Function,args::Tuple)
+function createCC!(game::GameState,id::Symbol,func::Function,args::Tuple; active=false)
     createCounter!(game,id::Symbol)
-    createCallback!(game,id,func,args)
+    createCallback!(game,id,active,func,args)
 end
 
 function createCC!(game::GameState,idc::Symbol,idcb::Symbol,func::Function,args::Tuple)

@@ -3,7 +3,6 @@ using BenchmarkTools, Plots
 include("core.jl")
 include("rendering.jl")
 include("controls.jl")
-include("pokemons.jl")
 include("animations.jl")
 include("battle.jl")
 #include("maps.jl")
@@ -13,6 +12,7 @@ function showIm(im)
 end
 
 function testmain()
+    
     settings = Settings()
 
     global input = Input()
@@ -44,17 +44,22 @@ function testmain()
 
         Options()
     )
+
+    push!(game.trainer.pokemon,generatePkmn(game,0x0001,0x09))
+    push!(game.trainer.pokemon,generatePkmn(game,0x0002,0x03))
+
+    createSprite!(game,:main,:layer2,getSpriteMain("sprite"),Position(80,128),
+        11; active=true)
+
+    createCounter!(game,:movemain,0)
+    createCallback!(game,:movemain,false,moveMain!,(game.direction,-1))
+
+    game.input.map = true
+    game.input.move = true
+
+    resetMovePos!(game)
     
-    p = Position(10,10)
-    s = Position(100,200)
-
-    drawMap!(game)
-
-    showIm(game.im.layers.layer1)
-    
-    flushLayer!(game,:layer1,p,s)
-
-    showIm(game.im.layers.layer1)
+    initDrawMap!(game)
 
     return game
 end

@@ -139,6 +139,10 @@ function drawMap!(game::GameState; s=Settings())
     end
 end
 
+
+
+
+
 function combineLayers!(game::GameState,layers::Vector{Symbol};
     s::Settings=Settings())
 
@@ -150,6 +154,22 @@ function combineLayers!(game::GameState,layers::Vector{Symbol};
         @inbounds for i in eachindex(l)
             @views if ls[i] != 0x000000
                 l[i] = ls[i]
+            end
+        end
+
+        @inbounds for i in findall(x->x.layer==k&&x.active,
+                game.im.sprites.data[1:game.im.sprites.idx])
+
+            s = game.im.sprites[i]
+            v = view(
+                l,s.pos.h+1:s.pos.h+s.size.h,
+                s.pos.w+1:s.pos.w+s.size.w
+            )
+
+            @inbounds for i in eachindex(v)
+                if s.im[i] != 0x000000
+                    v[i] = s.im[i]
+                end
             end
         end
     end
@@ -283,6 +303,39 @@ end
 function updateSprite!(sprite::Sprite)
     sprite.im = sprite.dict[sprite.frame]
     sprite.size = Position(size(sprite.im)...)
+end
+
+function drawSprites!(game::GameState; s=Settings())
+    @inbounds for i in 1:game.im.sprites.idx
+        if !game.im.sprites[i].active
+            continue
+        end
+        
+        sprite = game.im.sprites.data[i]
+        l = getfield(game.im.layers,sprite.layer)
+
+        v = view(l, sprite.pos.h+1:sprite.pos.h+sprite.size.h,
+            sprite.pos.w+1:sprite.pos.w+sprite.size.w)
+
+        @inbounds for i in eachindex(v)
+            if sprite.im[i] != 0x000000
+                v[i] = sprite.im[i]
+            end
+        end
+    end
+
+    #=
+    id::Symbol
+
+    layer::Symbol
+    pos::Position
+    size::Position
+
+    frame::Symbol
+    dict::Dict{Symbol,Matrix{UInt32}}
+
+    im::Matrix{UInt32}
+    =#
 end
 
 function drawSprites!(game::GameState; s=Settings())
@@ -584,6 +637,11 @@ function drawHealthBar!(game::GameState,layer::Symbol,value::Int,pos::Position)
     getfield(game.im.layers,layer)[pos.h+1:pos.h+2,pos.w:pos.w+value] .= 0x73ffad
 end
 
+function drawHealthBar!(game::GameState,im::Matrix{UInt32},value::Int,pos::Position)
+    im[pos.h,pos.w:pos.w+value] .= 0x5ad684
+    im[pos.h+1:pos.h+2,pos.w:pos.w+value] .= 0x73ffad
+end
+
 
 
 
@@ -782,17 +840,13 @@ end
 
 function drawBattleIntro!(game::GameState; s=Settings())
     if game.n.c[:battleintro].c == 0
+        stateSetupBattle!(game)
+        
         flushLayer!(game)
         flushLayer!(game,:layer1)
         flushLayer!(game,:layer2)
         flushLayer!(game,:layer3)
         flushLayer!(game,:layer4)
-        
-        game.im.sprites[:main].active = false
-
-        game.im.postprocess.active = true
-        game.im.postprocess.func = shutterHorizontal!
-        game.im.postprocess.args = (24+80,0)
 
         game.im.layers.layer1[24+1:24+112,16+1:16+240] = getBattleBack("grass1")
         game.im.layers.layer3[24+1+112:24+160,16+1:16+240] = getDialogue("battle")
@@ -804,21 +858,29 @@ function drawBattleIntro!(game::GameState; s=Settings())
         
         createSprite!(game,:cursor1,:layer4,getCursor(),
             Position(146,136),1)
-        createSprite!(game,:cursor2,:layer4,getCursor(),
-            Position(146,32),1)
+        createSprite!(game,:cursor2,:layer5,getCursor(),
+            Position(146,24),1)
         
-        createSprite!(game,:tagown,:layer3,getBattleTagOwn(),
+        createSprite!(game,:tag1,:layer3,getBattleTagOwn(),
             Position(72+24,126+16),1; active=true)
-        createSprite!(game,:tagopp,:layer3,getBattleTagOpp(),
+        createSprite!(game,:tag2,:layer3,getBattleTagOpp(),
             Position(14+24,12+16),1; active=true)
 
-        drawText!(game,game.im.sprites[:tagown].im,pkmnName(game,game.battle.state.pkmn1.pkmn),
+        drawText!(game,game.im.sprites[:tag1].im,pkmnName(game,game.battle.state.pkmn1.pkmn),
             UInt(1),Position(4,17),0x424242,0xded6b5)
+        drawText!(game,game.im.sprites[:tag1].im,string(game.battle.state.pkmn1.pkmn.stats.level),
+            UInt(1),Position(4,91),0x424242,0xded6b5)
+        drawText!(game,game.im.sprites[:tag1].im,"/",
+            UInt(1),Position(22,76),0x424242,0xded6b5)
+        drawText!(game,game.im.sprites[:tag1].im,string(game.battle.state.pkmn1.pkmn.stats.rv[1]),
+            UInt(1),Position(22,81),0x424242,0xded6b5)
+        drawText!(game,game.im.sprites[:tag1].im,string(game.battle.state.pkmn1.pkmn.stats.hp),
+            UInt(1),Position(22,66),0x424242,0xded6b5)
         
-        drawText!(game,game.im.sprites[:tagopp].im,pkmnName(game,game.battle.state.pkmn2.pkmn),
+        drawText!(game,game.im.sprites[:tag2].im,pkmnName(game,game.battle.state.pkmn2.pkmn),
             UInt(1),Position(4,10),0x424242,0xded6b5)
-
-        createCC!(game,:wiggle,animWiggleBattle!,(); active = true)
+        drawText!(game,game.im.sprites[:tag2].im,string(game.battle.state.pkmn2.pkmn.stats.level),
+            UInt(1),Position(4,80),0x424242,0xded6b5)
     elseif game.n.c[:battleintro].c <= 32
         game.im.postprocess.args = (24+80,game.n.c[:battleintro].c)
     elseif game.n.c[:battleintro].c <= 56
@@ -850,10 +912,6 @@ end
 
 function drawBattleExit!(game::GameState; s=Settings())
     if game.n.c[:battleoutro].c == 0
-        killSprite!(game,:pkmn1)
-        killSprite!(game,:pkmn2)
-        killSprite!(game,:cursor)
-
         game.im.postprocess.active = true
         game.im.postprocess.func = fadeLinear!
         game.im.postprocess.args = (60,0)
@@ -862,15 +920,7 @@ function drawBattleExit!(game::GameState; s=Settings())
     elseif game.n.c[:battleoutro] == 61
         killCounter!(game,:battleoutro)
 
-        game.im.postprocess.active = false
-
-        game.battle.active = false
-        game.battle.outro = false
-
-        initDrawMap!(game)
-        game.input.map = true
-        
-        game.im.sprites[:main].active = true
+        stateEndBattle!(game)
     
         return
     end
@@ -880,7 +930,7 @@ end
 
 function drawBattleDialogue!(game::GameState)
     drawText!(game,:layer3,game.dialogue.str[game.dialogue.n],UInt(2),
-        Position(144,32),0xffffff,0x6b5a73)
+        P(144,32),0xffffff,0x6b5a73)
 end
 
 function drawBattleMenu1!(game::GameState)
@@ -896,13 +946,32 @@ function drawBattleMenu1!(game::GameState)
 end
 
 function drawBattleMenu2!(game::GameState)
-    drawFrame!(game,:layer5,UInt(6),UInt(20),Position(24+112,16+1))
-    drawFrame!(game,:layer5,UInt(6),UInt(10),Position(24+112,176+1))
+    drawFrame!(game,:layer5,UInt(6),UInt(20),Position(24+112,16))
+    drawFrame!(game,:layer5,UInt(6),UInt(10),Position(24+112,176))
 
-    drawText!(game,:layer5,"AP\\Typ:",UInt(3),Position(145,200),0x4a4a4a,0xd6d6ce)
-    drawText!(game,:layer5,"/",UInt(3),Position(145,224),0x4a4a4a,0xd6d6ce)
+    drawText!(game,:layer5,"/",UInt(3),Position(145,230),0x4a4a4a,0xd6d6ce)
+    drawText!(game,:layer5,
+        string(game.battle.state.pkmn1.pkmn.attacks[game.input.battle2menu.select+1].ap),
+        UInt(3),Position(145,218),0x4a4a4a,0xd6d6ce)
+    drawText!(game,:layer5,
+        string(game.battle.state.pkmn1.pkmn.attacks[game.input.battle2menu.select+1].apmax),
+        UInt(3),Position(145,236),0x4a4a4a,0xd6d6ce)
 
+    drawText!(game,:layer5,"AP\\Typ:",UInt(3),Position(145,186),0x4a4a4a,0xd6d6ce;
+        lineoffset=2)
+    drawText!(game,:layer5,
+        TypeNames[game.battle.state.pkmn1.pkmn.attacks[game.input.battle2menu.select+1].type],
+        UInt(3),Position(161,208),0x4a4a4a,0xd6d6ce)
 
+    for i in 1:length(game.battle.state.pkmn1.pkmn.attacks)
+        drawText!(game,:layer5,game.battle.state.pkmn1.pkmn.attacks[i].name,
+            UInt(3),Position(145+div(i-1,2)*16,32+((i-1)%2)*64))
+    end
+
+    for i in length(game.battle.state.pkmn1.pkmn.attacks)+1:4
+        drawText!(game,:layer5,"--",
+            UInt(3),Position(145+div(i-1,2)*16,32+((i-1)%2)*64))
+    end
 end
 
 
@@ -919,7 +988,7 @@ function drawBattle!(game::GameState; s=Settings())
     if game.draw.battle1
         drawBattleMenu1!(game)
     elseif game.draw.battle2
-        return
+        drawBattleMenu2!(game)
     end
 
     #initDrawMap!(game)
@@ -987,9 +1056,9 @@ function drawGame!(game::GameState; s=Settings())
         drawBattle!(game; s=s)
     end
 
-    if game.draw.sprites
-        drawSprites!(game; s=s)
-    end
+    # if game.draw.sprites
+    #     drawSprites!(game; s=s)
+    # end
     
     #combineLayers!(game,[:menu1,:menu2,:menu3]; s=s)
     

@@ -8,12 +8,20 @@ mutable struct Position
     w::Int32
 end
 
+const P = Position
+
 function posAdd(a::Position,b::Position)
     return Position(a.h+b.h,a.w+b.w)
 end
 
 function posAdd!(a::Position,b::Position)
     a.h += b.h; a.w += b.w
+
+    return
+end
+
+function posAdd!(p::Position,h::Int,w::Int)
+    p.h += h; p.w += w
 
     return
 end
@@ -137,6 +145,24 @@ mutable struct Sprite
     end
 end
 
+mutable struct BattleAction
+    id::Symbol
+
+    l::Int
+    str::String
+
+    anim::Function
+    target::Int
+
+    function BattleAction()
+        new(Symbol(),0,"",banimEmpty!,0)
+    end
+
+    function BattleAction(id,l,str,anim,target)
+        new(id,l,str,anim,target)
+    end
+end
+
 mutable struct ArrayList{T}
     data::Vector{T}
     idx::Int
@@ -171,38 +197,116 @@ function Base.push!(a::ArrayList, x)
     a.data[a.idx] = x
 end
 
-function Base.pop!(a::ArrayList{Sprite})
+function Base.pushfirst!(a::ArrayList,x)
+    if a.idx >= length(a.data)
+        error("ArrayList is full, can't push new element.")
+    end
+
+    a.idx += 1
+    a.data[2:a.idx] = a.data[1:a.idx-1]
+    a.data[1] = x
+end
+
+function pushat!(a::ArrayList,x,idx::Int)
+    if a.idx >= length(a.data)
+        error("ArrayList is full, can't push new element.")
+    end
+
+    a.idx += 1
+    a.data[idx+1:a.idx] = a.data[idx:a.idx-1]
+    a.data[idx] = x
+end
+
+# function Base.pop!(a::ArrayList{Sprite})
+#     if a.idx == 0
+#         error("ArrayList is empty, can't pop element.")
+#     end
+
+#     a.data[a.idx] = Sprite()
+#     a.idx -= 1
+# end
+
+# function Base.pop!(a::ArrayList{Counter})
+#     if a.idx == 0
+#         error("ArrayList is empty, can't pop element.")
+#     end
+
+#     a.data[a.idx] = Counter()
+#     a.idx -= 1
+# end
+
+# function Base.pop!(a::ArrayList{CallbackFunction})
+#     if a.idx == 0
+#         error("ArrayList is empty, can't pop element.")
+#     end
+
+#     a.data[a.idx] = CallbackFunction()
+#     a.idx -= 1
+# end
+
+# function Base.pop!(a::ArrayList{BattleAction})
+#     if a.idx == 0
+#         error("ArrayList is empty, can't pop element.")
+#     end
+
+#     a.data[a.idx] = BattleAction()
+#     a.idx -= 1
+# end
+
+function Base.pop!(a::ArrayList)
     if a.idx == 0
         error("ArrayList is empty, can't pop element.")
     end
 
-    a.data[a.idx] = Sprite()
+    a.data[a.idx] = eltype(a.data).name.wrapper()
     a.idx -= 1
 end
 
-function Base.pop!(a::ArrayList{Counter})
-    if a.idx == 0
-        error("ArrayList is empty, can't pop element.")
-    end
+# function Base.popat!(a::ArrayList{Sprite},i::Int)
+#     if a.idx == 0
+#         error("ArrayList is empty, can't pop element.")
+#     elseif i < 1 || i > a.idx
+#         error("Invalid index, can't pop element.")
+#     end
 
-    a.data[a.idx] = Counter()
+#     if i != a.idx
+#         a.data[i], a.data[a.idx] = a.data[a.idx], a.data[i]
+#     end
+
+#     a.data[a.idx] = Sprite()
+#     a.idx -= 1
+# end
+
+# function Base.popat!(a::ArrayList{Counter},i::Int)
+#     if a.idx == 0
+#         error("ArrayList is empty, can't pop element.")
+#     elseif i < 1 || i > a.idx
+#         error("Invalid index, can't pop element.")
+#     end
+
+#     if i != a.idx
+#         a.data[i], a.data[a.idx] = a.data[a.idx], a.data[i]
+#     end
+
+#     a.data[a.idx] = Counter()
+#     a.idx -= 1
+# end
+
+function Base.popat!(a::ArrayList,id::Symbol)
+    a[id], a[a.idx] = a[a.idx], a[id]
+
+    a[a.idx] = eltype(a.data).name.wrapper()
     a.idx -= 1
 end
 
-function Base.pop!(A::ArrayList{CallbackFunction})
-    if a.idx == 0
-        error("ArrayList is empty, can't pop element.")
-    end
+# function Base.popat!(A::ArrayList{CallbackFunction},id::Symbol)
+#     A[id], A[A.idx] = A[A.idx], A[id]
 
-    a.data[a.idx] = CallbackFunction()
-    a.idx -= 1
-end
+#     A[A.idx] = CallbackFunction()
+#     A.idx -= 1
+# end
 
-
-
-
-
-function Base.popat!(a::ArrayList{Sprite},i::Int)
+function Base.popat!(a::ArrayList,i::Int)   #DOES NOT RETAIN ORDERING
     if a.idx == 0
         error("ArrayList is empty, can't pop element.")
     elseif i < 1 || i > a.idx
@@ -213,37 +317,27 @@ function Base.popat!(a::ArrayList{Sprite},i::Int)
         a.data[i], a.data[a.idx] = a.data[a.idx], a.data[i]
     end
 
-    a.data[a.idx] = Sprite()
+    a.data[a.idx] = eltype(a.data).name.wrapper()
     a.idx -= 1
 end
 
-function Base.popat!(a::ArrayList{Counter},i::Int)
+# Base.popfirst!(A::ArrayList) = Base.popat!(A,1)
+
+function Base.popfirst!(a::ArrayList)
     if a.idx == 0
         error("ArrayList is empty, can't pop element.")
-    elseif i < 1 || i > a.idx
-        error("Invalid index, can't pop element.")
     end
 
-    if i != a.idx
-        a.data[i], a.data[a.idx] = a.data[a.idx], a.data[i]
+    if a.idx == 1
+        a.data[1] = eltype(a.data).name.wrapper()
+        a.idx -= 1
+
+        return 0
     end
 
-    a.data[a.idx] = Counter()
+    a.data[1:a.idx-1] = a.data[2:a.idx]
+    a.data[a.idx] = eltype(a.data).name.wrapper()
     a.idx -= 1
-end
-
-function Base.popat!(A::ArrayList{Counter},id::Symbol)
-    A[id], A[A.idx] = A[A.idx], A[id]
-
-    A[A.idx] = Counter()
-    A.idx -= 1
-end
-
-function Base.popat!(A::ArrayList{CallbackFunction},id::Symbol)
-    A[id], A[A.idx] = A[A.idx], A[id]
-
-    A[A.idx] = CallbackFunction()
-    A.idx -= 1
 end
 
 
@@ -576,7 +670,7 @@ end
 
 # battlestages:
 # 1 - selection
-# x - attack
+# 10 - attack
 # x - send first pokemon
 # x - swap pokemon
 # x - opponent send pokemon
@@ -633,9 +727,10 @@ end
 struct Options
     frame::UInt8
     diabox::UInt8
+    battleanim::Bool
 
     function Options()
-        new(0x01,0x01)
+        new(0x01,0x01,false)
     end
 end
 
@@ -904,8 +999,8 @@ function killCallback!(game::GameState,id::Symbol)
     popat!(game.callbacks,id)
 end
 
-function createCC!(game::GameState,id::Symbol,func::Function,args::Tuple; active=false)
-    createCounter!(game,id::Symbol)
+function createCC!(game::GameState,id::Symbol,func::Function,args::Tuple; active=false,n=0)
+    createCounter!(game,id,n)
     createCallback!(game,id,active,func,args)
 end
 

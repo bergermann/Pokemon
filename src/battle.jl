@@ -95,7 +95,7 @@ end
 mutable struct PkmnBattle
     pkmn::Pkmn
     
-    buffs::Vector{Int8}     #at,spat,def,spdef,init,acc,eva
+    buffs::Vector{Int8}     #at,spat,def,spdef,init,acc,eva,crit
 
     secstatus::SecStatus
 
@@ -106,7 +106,7 @@ mutable struct PkmnBattle
     function PkmnBattle(pkmn::Pkmn)
         new(
             pkmn,           #pkmn
-            zeros(Int8,7),  #buffs
+            zeros(Int8,8),  #buffs
             SecStatus(),    #secstatus
             DoubleMoves(),  #dmoves
             CommandChoose()           #attackchoice
@@ -192,8 +192,10 @@ mutable struct BattleStateWild <: BattleState
     pkmn1::PkmnBattle
     pkmn2::PkmnBattle
 
+    queue::ArrayList{BattleAction}
+
     function BattleStateWild(counters,turn,env,pkmn1,pkmn2)
-        new(counters,turn,env,pkmn1,pkmn2)
+        new(counters,turn,env,pkmn1,pkmn2,ArrayList(BattleAction,32))
     end
 end
 
@@ -268,6 +270,8 @@ function initBattleWild!(game::GameState)
     pb2 = PkmnBattle(generatePkmn(game,rand(0x0001:0x0097),rand(0x01:0x64)))
 
     game.battle.state = BattleStateWild(BattleCounters(),0,BattleEnvironment(),pb1,pb2)
+    
+    createCC!(game,:battlecounter,animBattlePhaseWild!,(); active=false)
 end
 
 function initBattleWild!(game::GameState,ids::Vector{UInt16},levels::Vector{UInt8})
@@ -279,7 +283,7 @@ function initBattleWild!(game::GameState,ids::Vector{UInt16},levels::Vector{UInt
     game.battle.state = BattleStateWild(BattleCounters(),0,BattleEnvironment(),pb1,pb2)
 end
 
-function damage(game::GameState)
+function damage(game::GameState,state::BattleState)
     0
 end
 
@@ -308,7 +312,17 @@ function flee!(game::GameState)
 end
 
 function flee!(state::BattleStateWild)
+    if state.pkmn1.secstatus.escapeblock
+        return
+    end
 
+    if (state.pkmn1.rv[6]*128/max(state.pkmn2.rv[6],1)+30)%256 > rand(UInt8)
+        #flucht gescheitert
+
+        return
+    end
+
+    stateEndBattleFlee!(game)
 end
 
 function flee!(state::BattleStateTrainerSolo)
@@ -317,4 +331,159 @@ end
 
 function flee!(state::BattleStateTrainerDouble)
 
+end
+
+function checkAttack!(game::GameState)
+    if game.battle.state.pkmn1.pkmn.attacks[game.input.battle2menu.select+1].ap == 0
+        return false
+    end
+
+    return true
+end
+
+function getPriority(state::BattleStateWild)
+    p1 = state.pkmn1.pkmn.attacks[state.pkmn1.command.n].priority
+    p2 = state.pkmn2.pkmn.attacks[state.pkmn2.command.n].priority
+
+    if p1 != p2
+        if !state.env.room.wonder
+            return (p1 > p2 ? (1,2) : (2,1))
+        else
+            return (p1 < p2 ? (1,2) : (2,1))
+        end
+    end
+
+    p1 = state.pkmn1.pkmn.stats.rv[6]
+    p1 *= getBuffMultiplier(state.pkmn1.buffs[6])
+
+    p2 = state.pkmn2.pkmn.stats.rv[6]
+    p2 *= getBuffMultiplier(state.pkmn2.buffs[6])
+
+    if !state.env.room.wonder
+        return (p1 > p2 ? (1,2) : (2,1))
+    else
+        return (p1 < p2 ? (1,2) : (2,1))
+    end
+end
+
+function getBuffMultiplier(level::Int8)::Rational{Int8}
+    if level >= 0
+        return (2+level)/2
+    else 
+        return 2/(2-level)
+    end
+end
+
+function getAccuracyMultiplier(state::BattleState,target::Int)::Rational{Int8}
+    level = target == 1 ? state.pkmn2.buffs[7]-state.pkmn1.buffs[8] : state.pkmn1.buffs[7]-state.pkmn2.buffs[8]
+
+    if level >= 0
+        return (3+level)/3
+    else 
+        return 3/(3-level)
+    end
+end
+
+function getAccuracyFactor(state::BattleState,target::Int)::Rational{UInt8}
+    return 0x01//0x01
+end
+
+function getMiss(state::BattleState,target::Int)::Bool
+    acc = target == 1 ? state.pkmn2.pkmn.attacks[state.pkmn2.command.n].accuracy : 
+        state.pkmn1.pkmn.attacks[state.pkmn1.command.n].accuracy
+
+    r = acc*getAccuracyMultiplier(state,target)*getAccuracyFactor(state,target)
+
+    return rand(1:100) > r
+end
+
+function getEff(state::BattleState,target::Int)
+    def = target == 1 ? state.pkmn1.pkmn : state.pkmn2.pkmn
+    att = target == 1 ? state.pkmn2.pkmn.attacks[state.pkmn2.command.n] : 
+        state.pkmn1.pkmn.attacks[state.pkmn1.command.n]
+    
+    return typetable[att.type,def.type[1]]*
+        (def.type[2] != 0 ? typetable[att.type,def.type[2]] : 0x01//0x01)
+end
+
+function getCrit(state::BattleState,target::Int)
+    cr = target == 1 ? state.pkmn2.pkmn.attacks[state.pkmn2.command.n].critrate : 
+        state.pkmn1.pkmn.attacks[state.pkmn1.command.n].critrate
+
+    br = target == 1 ? state.pkmn2.buffs[8] : state.pkmn1.buffs[8]
+
+    return rand() < (1/16,1/8,1/4,1/3,1/2)[clamp(cr+br,1,5)]
+end
+
+function queueSetup!(game::GameState,state::BattleStateWild)
+    p = getPriority(state)
+
+    p1 = state.pkmn1.pkmn
+    p2 = state.pkmn2.pkmn
+    a1 = state.pkmn1.pkmn.attacks[state.pkmn1.command.n]
+    a2 = state.pkmn2.pkmn.attacks[state.pkmn2.command.n]
+
+    if p[1] == 1
+        queueAttack!(game,state,a1,2,p1)
+        queueAttack!(game,state,a2,1,p2)
+    else
+        queueAttack!(game,state,a2,1,p2)
+        queueAttack!(game,state,a1,2,p1)
+    end
+end
+
+function queueAttack!(game::GameState,state::BattleState,attack::Attack,
+        target::Int,pkmn::Pkmn)
+    miss = getMiss(state,target)
+    crit = getCrit(state,target)
+    eff = getEff(state,target)
+
+    println(eff)
+
+    push!(state.queue,BattleAction(
+        :p1,120,getPkmnName(game,pkmn)*" setzt\\$(attack.name) ein.",banimEmpty!,0
+    ))
+
+    if miss
+        push!(state.queue,BattleAction(
+            :p1,120,"Die Attacke hat\\ihr Ziel verfehlt...",banimEmpty!,0
+        ))
+    elseif eff == 0
+        push!(state.queue,BattleAction(
+            :p1,120,"Es hat keine Wirkung...",banimEmpty!,0
+        ))
+    else
+        push!(state.queue,BattleAction(
+            :p1,60,"",bnoAnim!,target
+        ))
+
+        if crit
+            push!(state.queue,BattleAction(
+                :p1,120,"Ein Volltreffer!",banimEmpty!,0
+            ))
+        end
+
+        
+        if eff < 1
+            push!(state.queue,BattleAction(
+                :p1,120,"Das ist nicht sehr effektiv...",banimEmpty!,0
+            ))
+        elseif eff > 1
+            push!(state.queue,BattleAction(
+                :p1,120,"Das ist sehr effektiv!",banimEmpty!,0
+            ))
+        end
+    end
+end
+
+function queueWeather!(state::BattleState)
+    return
+end
+
+function queueStatusCond!(state::BattleState)
+    return
+end
+
+function queueCheckStatus!(state::BattleState)
+    return true
 end

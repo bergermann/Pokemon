@@ -7,8 +7,14 @@ include("statetransitions.jl")
 include("rendering.jl")
 include("controls.jl")
 include("animations.jl")
+include("attackanimations.jl")
 include("battle.jl")
+include("battlenpc.jl")
 #include("maps.jl")
+
+@time foreach(names(@__MODULE__, all=true)) do s
+    @eval export $s
+end
 
 function main()
     settings = Settings()

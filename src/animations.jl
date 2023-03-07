@@ -48,22 +48,76 @@ function animWiggleBattle!(game::GameState)
     end
 
     if game.n.c[:wiggle].c == 7
-        flushLayer!(game,:layer2,game.im.sprites[:pkmn1].pos,game.im.sprites[:pkmn1].size)
+        #flushLayer!(game,:layer2,game.im.sprites[:pkmn1].pos,game.im.sprites[:pkmn1].size)
         game.im.sprites[:pkmn1].pos.h -= 1
     elseif game.n.c[:wiggle].c == 15
-        flushLayer!(game,:layer3,game.im.sprites[:tagown].pos,game.im.sprites[:tagown].size)
-        game.im.sprites[:tagown].pos.h -= 1
+        #flushLayer!(game,:layer3,game.im.sprites[:tag1].pos,game.im.sprites[:tag1].size)
+        game.im.sprites[:tag1].pos.h -= 1
     elseif game.n.c[:wiggle].c == 23
-        flushLayer!(game,:layer2,game.im.sprites[:pkmn1].pos,game.im.sprites[:pkmn1].size)
+        #flushLayer!(game,:layer2,game.im.sprites[:pkmn1].pos,game.im.sprites[:pkmn1].size)
         game.im.sprites[:pkmn1].pos.h += 1
     elseif game.n.c[:wiggle].c == 31
-        flushLayer!(game,:layer3,game.im.sprites[:tagown].pos,game.im.sprites[:tagown].size)
-        game.im.sprites[:tagown].pos.h += 1
+        #flushLayer!(game,:layer3,game.im.sprites[:tag1].pos,game.im.sprites[:tag1].size)
+        game.im.sprites[:tag1].pos.h += 1
     elseif game.n.c[:wiggle].c == 32
         game.n.c[:wiggle].c = 0
     end
 
     game.n.c[:wiggle].c += 1
+end
+
+function getAnimLengths(game::GameState)
+    return (12,12)
+end
+
+function animBattlePhaseWild!(game::GameState)
+    # -1: set up
+    # -2: advance queue
+    # -3: exit queue
+
+    if game.n.c[:animbattle].c == -1
+        queueSetup!(game,game.battle.state)
+
+        game.n.c[:animbattle].c = 1
+    elseif game.n.c[:animbattle].c == -2
+        popfirst!(game.battle.state.queue)
+
+        if game.battle.state.queue.idx == 0
+            println("quitting queue")
+            stateEndBattlePhase!(game)
+    
+            return
+        end
+
+        game.n.c[:animbattle].c = 1
+    elseif game.n.c[:animbattle].c == -3
+        stateEndBattlePhase!(game)
+
+        return
+    end
+
+    queueCheckStatus!(game.battle.state)
+
+    if game.n.c[:animbattle].c == 1
+        if game.battle.state.queue[1].str != ""
+            drawText!(
+                game,:layer4,game.battle.state.queue[1].str,UInt(2),
+                P(144,32),0xffffff,0x6b5a73
+            )
+        end
+        
+        game.battle.state.queue[1].anim(game,game.battle.state.queue[1].target)
+    elseif game.n.c[:animbattle].c == game.battle.state.queue[1].l
+        if game.battle.state.queue[1].str != ""
+            flushLayer!(game,:layer4,P(144,32),P(32,200))
+        end
+
+        game.n.c[:animbattle].c = -2
+
+        return
+    end
+
+    game.n.c[:animbattle].c += 1
 end
 
 

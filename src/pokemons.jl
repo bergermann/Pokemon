@@ -79,6 +79,10 @@ mutable struct Stats
     end
 end
 
+function effectNo()
+    return
+end
+
 mutable struct Attack
     id::UInt
     name::String
@@ -96,7 +100,7 @@ mutable struct Attack
     effect::Function
 
     function Attack()
-        new(0,"","",0,0,0,0,0,0,0,0,emtpy)
+        new(0,"","",0,0,0,0,0,0,0,0,effectNo)
     end
 
     function Attack(id,name,description,ap,apmax,class,type,power,accuracy,priority,critrate,effect)
@@ -141,6 +145,7 @@ mutable struct Pkmn
     item::Item
 
     attacks::Vector{Attack}
+    ability::UInt16
 end
 
 
@@ -229,7 +234,7 @@ function generatePkmn(game,id::UInt16,level::UInt8)
                 100,
                 0,
                 1,
-                empty
+                effectNo
             ),
             Attack(
                 0x02,
@@ -243,9 +248,10 @@ function generatePkmn(game,id::UInt16,level::UInt8)
                 100,
                 0,
                 1,
-                empty
+                effectNo
             )
-        ]                              #attacks
+        ],                              #attacks
+        0x00
     )
 
     updateStats!(p)
@@ -258,6 +264,10 @@ end
 
 function getHealthBar(pokemon::Pkmn)
     return ceil(Int,48*pokemon.stats.hp/pokemon.stats.rv[1])
+end
+
+function getHealthBar(pokemon::Pkmn,hp::Int)
+    return ceil(Int,48*hp/pokemon.stats.rv[1])
 end
 
 function xpFormulas(level::UInt8,xptype::UInt8)

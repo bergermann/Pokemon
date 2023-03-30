@@ -498,8 +498,8 @@ end
 function drawMenu!(game::GameState)
     drawFrame!(game,:menu,UInt(20),UInt(10),Position(24,176))
 
-    drawText!(game,:menu,"POKEDEX\\POKEMON\\BEUTEL\\POKENAV\
-        \\$(game.trainer.name)\\SICHERN\\OPTION\\BEENDEN",
+    drawText!(game,:menu,"Pokedex\\Pokemon\\Beutel\\Pokenav\
+        \\$(game.trainer.name)\\Speichern\\Optionen\\Beenden",
         UInt(2),Position(38,194); lineoffset=2)
 
     drawText!(game,:menu,"▷",UInt(2),Position(38+(game.input.menu.select)*17,186))
@@ -640,6 +640,21 @@ end
 function drawHealthBar!(game::GameState,im::Matrix{UInt32},value::Int,pos::Position)
     im[pos.h,pos.w:pos.w+value] .= 0x5ad684
     im[pos.h+1:pos.h+2,pos.w:pos.w+value] .= 0x73ffad
+end
+
+function drawHealthBarBattle!(im::Matrix{UInt32},value::Int,pos::Position)
+    if value > 24
+        im[pos.h,pos.w+1:pos.w+value] .= 0x5ad684
+        im[pos.h+1:pos.h+2,pos.w+1:pos.w+value] .= 0x73ffad
+    elseif value > 12
+        im[pos.h,pos.w+1:pos.w+value] .= 0xe39517
+        im[pos.h+1:pos.h+2,pos.w+1:pos.w+value] .= 0xf79a05
+    else
+        im[pos.h,pos.w+1:pos.w+value] .= 0xbf0b0b
+        im[pos.h+1:pos.h+2,pos.w+1:pos.w+value] .= 0xf70505
+    end
+
+    im[pos.h:pos.h+2,pos.w+value+1:pos.w+48] .= 0x303030
 end
 
 

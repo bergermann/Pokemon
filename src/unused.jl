@@ -1479,3 +1479,156 @@ function drawMap_!(game::GameState; s=Settings())
         end
     end
 end
+
+
+
+function damage(state::BattleState,attacker::PkmnBattle,defender::PkmnBattle)
+    return floorProd(UInt16,
+        floorProd(UInt16,
+            (floor(UInt16,attacker.pkmn.level*2/5)+2),
+            basedamage(state,attacker,defender),
+            1/(50*defender.pkmn.stats.rv[state.attack.class == 1 ? 3 : 5])*
+                getBuffMultiplier(defender.buffs[state.attack.class == 1 ? 2 : 4]),
+            dmgFactor1(state,attacker,defender),
+        )+2,
+        1+1*state.crit,
+        dmgFactor(3),
+        100-rand(0:15),
+        1+0.5*(attacker.pkmn.type==state.attack.type),
+        getEff(state,state.target),
+        F3
+    )
+end
+
+function dmgFactor1(state::BattleState,attacker::PkmnBattle,defender::PkmnBattle)
+    return *(
+        1-0.5*(attacker.pkmn.status==0x01)*(state.attack.class==0x01),
+        1-0.5*(state.target == 1 ? state.env.reflect1 : state.env.reflect2)*
+            (state.attack.class==0x01),
+        1-0.5*(state.target == 1 ? state.env.screen1 : state.env.screen2)*
+            (state.attack.class==0x02),
+        1,  #2v2 factor (0.75 if atk hits mult targets)
+        1-0.5*((attack.type==0x03&&state.env.weather==0x02) ||
+            (attack.type==0x04&&state.env.weather==0x01)),
+        1+0.5*((attack.type==0x03&&state.env.weather==0x01) ||
+            (attack.type==0x04&&state.env.weather==0x02))
+    )
+end
+
+function dmgFactor2(state::BattleState,attacker::PkmnBattle,defender::PkmnBattle)
+    return 1
+end
+
+function dmgFactor3(state::BattleState,attacker::PkmnBattle,defender::PkmnBattle)
+    return *(
+        1-0.5*state.crit*false,  #felskern, filter + krit -> 0.5
+        1+0.2*state.crit.attacker.pkmn.item == 0xff, #expertengurt CHECK THIS
+        1+1*!state.crit*attacker.pkmn.ability == 0xffff, #aufwertung CHECK THIS
+        1-0.5*false #dmg reduct berry CHECK THIS
+    )
+end
+
+function basedamage(state::BattleState,attacker::PkmnBattle,defender::PkmnBattle)
+    return floor(UInt16,
+        *(
+            attack.strength,
+            itemfactor(attacker,defender),
+            1+0.5*attacker.secstatus.righthand,
+            1+1*attacker.secstatus.charge,
+            1-0.5*state.env.mud*(state.attack.type==0x0c),
+            1-0.5*state.env.wet*(state.attack.type==0x03),
+            abilityfactor(attacker,defender)
+        )
+    )
+end
+
+
+function queueAttack!(game::GameState,state::BattleStateWild,attack::Attack,
+        target::Int,pkmn::Pkmn)
+    miss = getMiss(state,target)
+    crit = getCrit(state,target)
+    eff = getEff(state,target)
+
+    println(eff)
+
+    if target == 1
+        state.pkmn1.attack = attack
+        state.pkmn1.crit = crit
+        state.pkmn1.eff = eff
+        setDmgFactors!(state,state.pkmn1,state.pkmn2)
+        state.pkmn1.dmg = calcDamage(state.pkmn1.factors)
+        println(state.pkmn1.dmg)
+    else
+        state.pkmn2.attack = attack
+        state.pkmn2.crit = crit
+        state.pkmn2.eff = eff
+        setDmgFactors!(state,state.pkmn2,state.pkmn1)
+        state.pkmn2.dmg = calcDamage(state.pkmn2.factors)
+        println(state.pkmn2.dmg)
+    end
+
+    push!(state.queue,BattleAction(
+        :p1,120,getPkmnName(game,pkmn)*" setzt\\$(attack.name) ein.",banimEmpty!,0
+    ))
+
+    if miss
+        push!(state.queue,BattleAction(
+            :p1,120,"Die Attacke hat\\ihr Ziel verfehlt...",banimEmpty!,0
+        ))
+    elseif eff == 0
+        push!(state.queue,BattleAction(
+            :p1,120,"Es hat keine Wirkung...",banimEmpty!,0
+        ))
+    else
+        push!(state.queue,BattleAction(
+            :p1,60,"",bnoAnim!,target
+        ))
+
+        if crit
+            push!(state.queue,BattleAction(
+                :p1,120,"Ein Volltreffer!",banimEmpty!,0
+            ))
+        end
+
+        
+        if eff < 1
+            push!(state.queue,BattleAction(
+                :p1,120,"Das ist nicht sehr effektiv...",banimEmpty!,0
+            ))
+        elseif eff > 1
+            push!(state.queue,BattleAction(
+                :p1,120,"Das ist sehr effektiv!",banimEmpty!,0
+            ))
+        end
+    end
+end
+
+
+
+function getCrit(state::BattleState,target::Int)
+    cr = target == 1 ? state.pkmn2.pkmn.attacks[state.pkmn2.command.n].critrate : 
+        state.pkmn1.pkmn.attacks[state.pkmn1.command.n].critrate
+
+    br = target == 1 ? state.pkmn2.buffs[8] : state.pkmn1.buffs[8]
+
+    return rand() < (1/16,1/8,1/4,1/3,1/2)[clamp(cr+br,1,5)]
+end
+
+function getEff(state::BattleState,target::Int)
+    def = target == 1 ? state.pkmn1.pkmn : state.pkmn2.pkmn
+    att = target == 1 ? state.pkmn2.pkmn.attacks[state.pkmn2.command.n] : 
+        state.pkmn1.pkmn.attacks[state.pkmn1.command.n]
+    
+    return typetable[att.type,def.type[1]]*
+        (def.type[2] != 0 ? typetable[att.type,def.type[2]] : 0x01//0x01)
+end
+
+
+function getMiss(state::BattleState,target::Int)::Bool
+    acc = target == 1 ? state.pkmn2.pkmn.attacks[state.pkmn2.command.n].accuracy : 
+        state.pkmn1.pkmn.attacks[state.pkmn1.command.n].accuracy
+
+    r = acc*getAccuracyMultiplier(state,target)*getAccuracyFactor(state,target)
+
+    return rand(1:100) > r
+end

@@ -11,8 +11,48 @@ function bnoAnim!(game::GameState,target::Int)
     end
 end
 
-function bTackle!(game::GameState,target::Int)
+function bhpAnim!(game::GameState,target::Int)
+    if target == 1
+        createCC!(game,:hp,bhpAnim1!,(:tag1,); active=true)
+    else
+        createCC!(game,:hp,bhpAnim2!,(:tag2,); active=true)
+    end
+end
+
+function bhpAnim1!(game::GameState,tag::Symbol)
+    p = game.battle.state.pkmn1.pkmn
+    dmg = min(game.battle.state.pkmn2.dmg,p.stats.hp)
+
+    drawHealthBarBattle!(game.im.sprites[tag].im,
+        getHealthBar(p,p.stats.hp-trunc(Int,dmg*game.n.c[:hp].c/48)),P(20,49))
     
+    if game.n.c[:hp].c == 47
+        game.battle.state.pkmn1.pkmn.stats.hp -= dmg
+
+        killCC!(game,:hp)
+
+        return
+    end
+
+    game.n.c[:hp].c += 1
+end
+
+function bhpAnim2!(game::GameState,tag::Symbol)
+    p = game.battle.state.pkmn2.pkmn
+    dmg = min(game.battle.state.pkmn1.dmg,p.stats.hp)
+
+    drawHealthBarBattle!(game.im.sprites[tag].im,
+        getHealthBar(p,p.stats.hp-trunc(Int,dmg*game.n.c[:hp].c/48)),P(20,40))
+    
+    if game.n.c[:hp].c == 47
+        game.battle.state.pkmn2.pkmn.stats.hp -= dmg
+        
+        killCC!(game,:hp)
+
+        return
+    end
+
+    game.n.c[:hp].c += 1
 end
 
 function btakeDamage!(game::GameState,target::Symbol,tag::Symbol)    #length: 30
@@ -85,4 +125,8 @@ function bmoveLinear!(game::GameState,distanceh::Int,distancew::Int,
 
         return
     end
+end
+
+function bTackle!(game::GameState,target::Int)
+    
 end

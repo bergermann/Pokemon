@@ -8,10 +8,22 @@ function stateSetInput!(game::GameState,args::Tuple{Symbol,Bool}...)
 end
 
 function stateBattleStage!(game::GameState,stage::Int)
-    game.battle.stage = stage
+    game.battle.state.stage = stage
 end
 
+function stateInitBattle!(game::GameState)
+    game.input.inputlock = true
+    game.input.map = false
+    game.input.move = false
+
+    createCounter!(game,:battleintro)
+    createCallback!(game,:battleintro,true,animBattleEntry1!,())
+end
+
+
 function stateSetupBattle!(game::GameState)
+    game.input.move = false
+
     game.im.sprites[:main].active = false
 
     game.im.postprocess.active = true
@@ -23,7 +35,7 @@ function stateSetupBattle!(game::GameState)
 end
 
 function stateBattleIntroDialogue!(game::GameState)
-    game.battle.stage = 1
+    game.battle.state.stage = 1
     game.dialogue.callback.func = emptyCallback
     game.dialogue.callback.args = ()
 
@@ -60,6 +72,8 @@ function stateBattleAttackSelected!(game::GameState)
     game.callbacks[:wiggle].active = false
     game.callbacks[:animbattle].active = true
     game.n.c[:animbattle].c = -1
+
+    queueSetupActions!(game,game.battle.state)
     # createCC!(game,:animbattle,animBattlePhaseWild!,(); active=true,n=-1)
 end
 
@@ -70,8 +84,98 @@ function stateEndBattlePhase!(game::GameState)
     game.draw.battle1 = true
     
     game.im.sprites[:cursor1].active = true
+    game.callbacks[:wiggle].active = true
+    game.callbacks[:animbattle].active = false
+end
+
+function stateQuitBattlePhase!(game::GameState)
+    stateBattleStage!(game,0)
+
+    game.input.battle1 = false
+    game.draw.battle1 = false
+    
+    game.im.sprites[:cursor1].active = false
     game.callbacks[:wiggle].active = false
     game.callbacks[:animbattle].active = false
+end
+
+function stateBattleFlee!(game::GameState)
+
+    game.input.battle1 = false
+
+    game.im.sprites[:cursor1].active = false
+
+    flushLayer!(game,:layer4,P(24+1+112,16+1),P(48,240))
+    
+    flee!(game,game.battle.state)
+end
+
+function flee!(game::GameState,state::BattleStateWild)
+    if !checkFlee(state)
+        game.dialogue.str = ["Flucht unmöglich."]
+        game.dialogue.n = 1
+        game.dialogue.callback.func = stateBattleFleeBlocked!
+        game.dialogue.callback.args = ()
+
+        game.input.battled = true
+        game.draw.battled = true
+
+        game.im.sprites[:cursor1].active = false
+
+        return
+    end
+    
+    stateBattleStage!(game,10)
+
+    game.callbacks[:wiggle].active = false
+
+    state.pkmn1.command = CommandFlee(
+        (state.pkmn1.pkmn.stats.rv[6]*128/max(state.pkmn2.pkmn.stats.rv[6],1)+
+            30*state.counters.flee)%256 > rand(UInt8)
+    )
+    state.pkmn2.command = battleChoiceWild(game)
+    
+    game.input.battle1 = false
+    game.input.battle2 = false
+    game.input.battle1menu.select = 0
+
+    game.draw.battle1 = false
+    game.draw.battle2 = false
+
+    game.im.sprites[:cursor1].active = false
+    game.im.sprites[:cursor2].active = false 
+            
+    flushLayer!(game,:layer4,Position(24+1+112,16+1),Position(48,240))
+    flushLayer!(game,:layer5,Position(24+1+112,16+1),Position(48,240))
+
+    game.callbacks[:wiggle].active = false
+    game.callbacks[:animbattle].active = true
+    game.n.c[:animbattle].c = -1
+
+    queueSetupActions!(game,game.battle.state)
+end
+
+function flee!(game::GameState,state::BattleStateTrainerSolo)
+    game.dialogue.str = ["Aus Trainerkämpfen kannst du\\nicht fliehen."]
+    game.dialogue.n = 1
+    game.dialogue.callback.func = stateBattleFleeBlocked!
+    game.dialogue.callback.args = ()
+
+    game.input.battled = true
+    game.draw.battled = true
+
+    game.im.sprites[:cursor1].active = false
+end
+
+function stateBattleFleeBlocked!(game::GameState)
+    game.battle.state.stage = 1
+    game.dialogue.callback.func = emptyCallback
+
+    game.input.battle1 = true
+    game.draw.battle1 = true
+
+    game.im.sprites[:cursor1].active = true
+    game.callbacks[:wiggle].active = true
 end
 
 # function stateEndBattle!(game::GameState)
@@ -79,20 +183,42 @@ end
 # end
 
 function stateEndBattle!(game::GameState)   #,state::BattleStateWild)
+    # println("state end battle")
+
     killSprite!(game,:pkmn1)
+    killSprite!(game,:tag1)
     killSprite!(game,:pkmn2)
+    killSprite!(game,:tag2)
+    
     killSprite!(game,:cursor1)
     killSprite!(game,:cursor2)
+
+    flushLayers!(game)
+    flushLayer!(game)
+
+    # killCC!(game,:animbattle)
 
     game.im.postprocess.active = false
 
     game.battle.active = false
-    game.battle.outro = false
+    game.battle.state.stage = 0
+
+    for i in 1:game.battle.state.actionqueue.idx
+        pop!(game.battle.state.actionqueue)
+    end
+
+    for i in 1:game.battle.state.animqueue.idx
+        pop!(game.battle.state.animqueue)
+    end
 
     initDrawMap!(game)
+    createCC!(game,:fadein,fadeIn!,(30,); active=true)
     game.input.map = true
+    game.input.move = true
     
     game.im.sprites[:main].active = true
 end
+
+
 
 

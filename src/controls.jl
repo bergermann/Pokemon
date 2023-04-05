@@ -6,137 +6,6 @@ include("maps.jl")
 
 
 
-mutable struct Input
-    input::Bool
-    _input::Bool
-    input_::Bool
-
-    A::Bool
-    _A::Bool
-    A_::Bool
-    B::Bool
-    _B::Bool
-    B_::Bool
-
-    L::Bool
-    _L::Bool
-    L_::Bool
-    R::Bool
-    _R::Bool
-    R_::Bool
-
-    up::Bool
-    _up::Bool
-    up_::Bool
-    down::Bool
-    _down::Bool
-    down_::Bool
-    left::Bool
-    _left::Bool
-    left_::Bool
-    right::Bool
-    _right::Bool
-    right_::Bool
-
-    start::Bool
-    _start::Bool
-    start_::Bool
-    select::Bool
-    _select::Bool
-    select_::Bool
-
-    function Input()
-        new([false for _ in fieldnames(Input)]...)
-    end
-end
-
-ctrls = Base.ImmutableDict(
-    MiniFB.KB_KEY_SPACE => :A,
-    MiniFB.KB_KEY_ENTER => :A,
-
-    MiniFB.KB_KEY_LEFT_CONTROL => :B,
-    MiniFB.KB_KEY_LEFT_SHIFT => :B,
-    MiniFB.KB_KEY_BACKSPACE => :B,
-
-    MiniFB.KB_KEY_Q => :L,
-
-    MiniFB.KB_KEY_E => :R,
-
-    MiniFB.KB_KEY_W => :up,
-    MiniFB.KB_KEY_UP => :up,
-
-    MiniFB.KB_KEY_S => :down,
-    MiniFB.KB_KEY_DOWN => :down,
-
-    MiniFB.KB_KEY_A => :left,
-    MiniFB.KB_KEY_LEFT => :left,
-
-    MiniFB.KB_KEY_D => :right,
-    MiniFB.KB_KEY_RIGHT => :right,
-
-    MiniFB.KB_KEY_X => :start,
-
-    MiniFB.KB_KEY_Y => :select,
-)
-
-_ctrls = Base.ImmutableDict(
-    MiniFB.KB_KEY_SPACE => :_A,
-    MiniFB.KB_KEY_ENTER => :_A,
-
-    MiniFB.KB_KEY_LEFT_CONTROL => :_B,
-    MiniFB.KB_KEY_LEFT_SHIFT => :_B,
-    MiniFB.KB_KEY_BACKSPACE => :_B,
-
-    MiniFB.KB_KEY_Q => :_L,
-
-    MiniFB.KB_KEY_E => :_R,
-
-    MiniFB.KB_KEY_W => :_up,
-    MiniFB.KB_KEY_UP => :_up,
-
-    MiniFB.KB_KEY_S => :_down,
-    MiniFB.KB_KEY_DOWN => :_down,
-
-    MiniFB.KB_KEY_A => :_left,
-    MiniFB.KB_KEY_LEFT => :_left,
-
-    MiniFB.KB_KEY_D => :_right,
-    MiniFB.KB_KEY_RIGHT => :_right,
-
-    MiniFB.KB_KEY_X => :_start,
-
-    MiniFB.KB_KEY_Y => :_select,
-)
-
-ctrls_ = Base.ImmutableDict(
-    MiniFB.KB_KEY_SPACE => :A_,
-    MiniFB.KB_KEY_ENTER => :A_,
-
-    MiniFB.KB_KEY_LEFT_CONTROL => :B_,
-    MiniFB.KB_KEY_LEFT_SHIFT => :B_,
-    MiniFB.KB_KEY_BACKSPACE => :B_,
-
-    MiniFB.KB_KEY_Q => :L_,
-
-    MiniFB.KB_KEY_E => :R_,
-
-    MiniFB.KB_KEY_W => :up_,
-    MiniFB.KB_KEY_UP => :up_,
-
-    MiniFB.KB_KEY_S => :down_,
-    MiniFB.KB_KEY_DOWN => :down_,
-
-    MiniFB.KB_KEY_A => :left_,
-    MiniFB.KB_KEY_LEFT => :left_,
-
-    MiniFB.KB_KEY_D => :right_,
-    MiniFB.KB_KEY_RIGHT => :right_,
-
-    MiniFB.KB_KEY_X => :start_,
-
-    MiniFB.KB_KEY_Y => :select_,
-)
-
 dirs = Base.ImmutableDict(
     1 => Position(-1,0),    #up
     2 => Position(1,0),     #down
@@ -149,9 +18,6 @@ mapid = Base.ImmutableDict(
     0x00 => map0,
     0x01 => map1
 )
-
-
-
 
 
 function onpress(window, button, mod, isPressed)::Cvoid
@@ -337,9 +203,7 @@ function inputMove!(game::GameState,input::Input)
     end
 
     dir = findfirst([input.up,input.down,input.left,input.right])
-    #game.movepos = game.pos
-    #posAdd!(game.movepos,dirs[dir])
-    #resetMovePos!(game)
+    
     updateMovePos!(game,dir)
 
     if !checkWalkable(game,game.movepos)
@@ -678,9 +542,7 @@ function inputBattleMenuSelector!(game::GameState)
     elseif game.input.battle1menu.select == 2
         return
     else
-        game.input.battle = false
-        game.input.move = true
-        game.input.inputlock = false
+        stateBattleFlee!(game)
     end
 end
 
@@ -706,7 +568,7 @@ function mapAction!(game::GameState)
     if tile ∈ [0x0000,0x0001,0x0005,0x0006,0x0007]
         return
     elseif tile >= 0x003c && tile <= 0x004f
-        game.input.move
+        game.input.move = false
         game.dialogue.d = true
         game.dialogue.str = game.map.signs[tile-0x003b]
     end

@@ -1632,3 +1632,171 @@ function getMiss(state::BattleState,target::Int)::Bool
 
     return rand(1:100) > r
 end
+
+
+
+# function Base.pop!(a::ArrayList{Sprite})
+#     if a.idx == 0
+#         error("ArrayList is empty, can't pop element.")
+#     end
+
+#     a.data[a.idx] = Sprite()
+#     a.idx -= 1
+# end
+
+# function Base.pop!(a::ArrayList{Counter})
+#     if a.idx == 0
+#         error("ArrayList is empty, can't pop element.")
+#     end
+
+#     a.data[a.idx] = Counter()
+#     a.idx -= 1
+# end
+
+# function Base.pop!(a::ArrayList{CallbackFunction})
+#     if a.idx == 0
+#         error("ArrayList is empty, can't pop element.")
+#     end
+
+#     a.data[a.idx] = CallbackFunction()
+#     a.idx -= 1
+# end
+
+# function Base.pop!(a::ArrayList{BattleAction})
+#     if a.idx == 0
+#         error("ArrayList is empty, can't pop element.")
+#     end
+
+#     a.data[a.idx] = BattleAction()
+#     a.idx -= 1
+# end
+# function Base.popat!(a::ArrayList{Sprite},i::Int)
+#     if a.idx == 0
+#         error("ArrayList is empty, can't pop element.")
+#     elseif i < 1 || i > a.idx
+#         error("Invalid index, can't pop element.")
+#     end
+
+#     if i != a.idx
+#         a.data[i], a.data[a.idx] = a.data[a.idx], a.data[i]
+#     end
+
+#     a.data[a.idx] = Sprite()
+#     a.idx -= 1
+# end
+
+# function Base.popat!(a::ArrayList{Counter},i::Int)
+#     if a.idx == 0
+#         error("ArrayList is empty, can't pop element.")
+#     elseif i < 1 || i > a.idx
+#         error("Invalid index, can't pop element.")
+#     end
+
+#     if i != a.idx
+#         a.data[i], a.data[a.idx] = a.data[a.idx], a.data[i]
+#     end
+
+#     a.data[a.idx] = Counter()
+#     a.idx -= 1
+# end
+
+
+function queueSetup!(game::GameState,state::BattleStateWild)
+    p = getPriority(state)
+
+    state.pkmn1.attack = state.pkmn1.pkmn.attacks[state.pkmn1.command.n]
+    state.pkmn2.attack = state.pkmn2.pkmn.attacks[state.pkmn2.command.n]
+
+    if p[1] == 1
+        queueAttack!(game,state,state.pkmn1,state.pkmn2,2,:p1)
+        queueAttack!(game,state,state.pkmn2,state.pkmn1,1,:p2)
+    else
+        queueAttack!(game,state,state.pkmn2,state.pkmn1,1,:p2)
+        queueAttack!(game,state,state.pkmn1,state.pkmn2,2,:p1)
+    end
+
+    queueStatusCond!(state)
+    queueWeather!(state)
+end
+
+function queueAttack!(game::GameState,state::BattleState,
+        attacker::PkmnBattle,defender::PkmnBattle,target::Int,id::Symbol)
+    attacker.hit = getHit(state,attacker,defender)
+    attacker.crit = getCrit(attacker,defender)
+    attacker.eff = getEff(attacker,defender)
+
+    setDmgFactors!(state,attacker,defender)
+    attacker.dmg = calcDamage(attacker.factors)
+
+    println("$id D: ",attacker.dmg)
+    
+    push!(state.queue,BattleAnimation(
+        id,120,getPkmnName(game,attacker.pkmn)*" setzt\\$(attacker.attack.name) ein.",
+        banimEmpty!,0
+    ))
+
+    if !attacker.hit
+        push!(state.queue,BattleAnimation(
+            id,120,"Die Attacke hat\\ihr Ziel verfehlt...",banimEmpty!,0
+        ))
+
+        return
+    elseif attacker.eff == 0
+        push!(state.queue,BattleAnimation(
+            id,120,"Es hat keine Wirkung...",banimEmpty!,0
+        ))
+
+        return
+    end
+
+    push!(state.queue,BattleAnimation(
+        id,60,"",bnoAnim!,target
+    ))
+
+    push!(state.queue,BattleAnimation(
+        id,48,"",bhpAnim!,target
+    ))
+
+    if attacker.crit
+        push!(state.queue,BattleAnimation(
+            id,120,"Ein Volltreffer!",banimEmpty!,0
+        ))
+    end
+
+    if attacker.eff < 1
+        push!(state.queue,BattleAnimation(
+            id,120,"Das ist nicht sehr effektiv...",banimEmpty!,0
+        ))
+    elseif attacker.eff > 1
+        push!(state.queue,BattleAnimation(
+            id,120,"Das ist sehr effektiv!",banimEmpty!,0
+        ))
+    end
+end
+
+
+# function Base.popat!(a::ArrayList,id::Symbol)
+    # if a.idx == 0
+    #     error("ArrayList is empty, can't pop element.")
+    # end
+
+#     a[id], a[a.idx] = a[a.idx], a[id]
+
+#     a[a.idx] = eltype(a.data).name.wrapper()
+#     a.idx -= 1
+# end
+
+# function Base.popat!(a::ArrayList,i::Int)   #DOES NOT RETAIN ORDERING
+#     if a.idx == 0
+#         error("ArrayList is empty, can't pop element.")
+#     elseif i < 1 || i > a.idx
+#         error("Invalid index, can't pop element.")
+#     end
+
+#     if i != a.idx
+#         a.data[i], a.data[a.idx] = a.data[a.idx], a.data[i]
+#     end
+
+#     a.data[a.idx] = eltype(a.data).name.wrapper()
+#     a.idx -= 1
+# end

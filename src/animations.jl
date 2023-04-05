@@ -66,26 +66,53 @@ function animWiggleBattle!(game::GameState)
     game.n.c[:wiggle].c += 1
 end
 
-function getAnimLengths(game::GameState)
-    return (12,12)
-end
-
 function animBattlePhaseWild!(game::GameState)
+    # println("stage: ",game.battle.state.stage)
     # -1: set up
     # -2: advance queue
     # -3: exit queue
 
     if game.n.c[:animbattle].c == -1
-        queueSetup!(game,game.battle.state)
+        F = queueCheckStatus!(game.battle.state)
+
+        if F
+            game.n.c[:animbattle].c = 0
+
+            return
+        end
+
+        if game.battle.state.stage == 250 || game.battle.state.stage == 251
+            stateQuitBattlePhase!(game)
+
+            killCC!(game,:animbattle)
+            killCC!(game,:wiggle)
+
+            game.draw.battleoutro = true
+            createCounter!(game,:battleoutro)
+
+            return
+        end
+
+        if game.battle.state.actionqueue.idx == 0
+            stateEndBattlePhase!(game)
+
+            return
+        end
+
+        queueSetupAnimation!(game,game.battle.state)
 
         game.n.c[:animbattle].c = 1
     elseif game.n.c[:animbattle].c == -2
-        popfirst!(game.battle.state.queue)
+        popfirst!(game.battle.state.animqueue)
 
-        if game.battle.state.queue.idx == 0
-            println("quitting queue")
-            stateEndBattlePhase!(game)
+        if game.battle.state.animqueue.idx == 0
     
+            game.n.c[:animbattle].c = -1
+
+            if game.battle.state.actionqueue.idx != 0
+                popfirst!(game.battle.state.actionqueue)
+            end
+
             return
         end
 
@@ -99,16 +126,16 @@ function animBattlePhaseWild!(game::GameState)
     queueCheckStatus!(game.battle.state)
 
     if game.n.c[:animbattle].c == 1
-        if game.battle.state.queue[1].str != ""
+        if game.battle.state.animqueue[1].str != ""
             drawText!(
-                game,:layer4,game.battle.state.queue[1].str,UInt(2),
+                game,:layer4,game.battle.state.animqueue[1].str,UInt(2),
                 P(144,32),0xffffff,0x6b5a73
             )
         end
         
-        game.battle.state.queue[1].anim(game,game.battle.state.queue[1].target)
-    elseif game.n.c[:animbattle].c == game.battle.state.queue[1].l
-        if game.battle.state.queue[1].str != ""
+        game.battle.state.animqueue[1].anim(game,game.battle.state.animqueue[1].target)
+    elseif game.n.c[:animbattle].c == game.battle.state.animqueue[1].l
+        if game.battle.state.animqueue[1].str != ""
             flushLayer!(game,:layer4,P(144,32),P(32,200))
         end
 
@@ -234,15 +261,15 @@ function fadeIn!(game::GameState,len::Int)
     if game.n.c[:fadein].c == 0
         game.im.postprocess.active = true
         game.im.postprocess.func = fadeLinear!
-        game.im.postprocess.args = (len,len,)
+        game.im.postprocess.args = (UInt8(len),UInt8(len),)
     elseif game.n.c[:fadein].c <= len
-        game.im.postprocess.args = (len,len-game.n.c[:fadein].c,)
+        game.im.postprocess.args = (UInt8(len),UInt8(len-game.n.c[:fadein].c),)
     else
         game.im.postprocess.active = false
         game.im.postprocess.func = empty
         game.im.postprocess.args = ()
-        #
-        killCC!(game,fadein)
+        
+        killCC!(game,:fadein)
 
         return
     end
@@ -251,21 +278,21 @@ function fadeIn!(game::GameState,len::Int)
 end
 
 function fadeOut!(game::GameState,len::Int)
-    if game.n.c[:fadein].c == 0
+    if game.n.c[:fadeout].c == 0
         game.im.postprocess.active = true
         game.im.postprocess.func = fadeLinear!
-        game.im.postprocess.args = (len,0,)
-    elseif game.n.c[:fadein].c <= len
-        game.im.postprocess.args = (len,game.n.c[:fadein].c,)
+        game.im.postprocess.args = (UInt8(len),0x00,)
+    elseif game.n.c[:fadeout].c <= len
+        game.im.postprocess.args = (UInt8(len),UInt8(game.n.c[:fadeout].c),)
     else
         game.im.postprocess.active = false
         game.im.postprocess.func = empty
         game.im.postprocess.args = ()
         
-        killCC!(game,fadein)
+        killCC!(game,:fadeout)
 
         return
     end
 
-    game.n.c[:fadein].c += 1
+    game.n.c[:fadeout].c += 1
 end

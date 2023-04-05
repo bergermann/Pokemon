@@ -1,56 +1,5 @@
 #240x160
-using MiniFB, Images, DelimitedFiles
 
-include("parser.jl")
-#include("animations.jl")
-
-#=
-struct Settings
-    width::UInt16
-    height::UInt16
-    fps::Float16
-
-    Nh::UInt8
-    Nw::UInt8
-    tilesize::UInt8
-
-    offseth::UInt16
-    offsetw::UInt16
-
-    function Settings()
-        new(0x00f0,0x00a0,60.,0x0d,0x11,0x10,0x0000,0x0000)
-    end
-
-    function Settings(width::UInt16,height::UInt16,fps::Float16,
-            Nh::UInt8,Nw::UInt8,tilesize::UInt8,offseth::UInt16,offsetw::UInt16)
-        new(width,height,fps,Nh,Nw,tilesize,offseth,offsetw)
-    end
-end
-
-mutable struct Layers
-    water::Matrix{UInt32}
-    layer1::Matrix{UInt32}
-    layer2::Matrix{UInt32}
-    layer3::Matrix{UInt32}
-    layer4::Matrix{UInt32}
-
-    textbox::Matrix{UInt32}
-
-    menu::Matrix{UInt32}
-
-    menu1::Matrix{UInt32}
-    menu2::Matrix{UInt32}
-    menu3::Matrix{UInt32}
-    
-    #text::Matrix{UInt32}
-    
-
-    function Layers(; s::Settings=Settings())
-        new([zeros(UInt32,UInt16(s.Nh)*UInt16(s.tilesize),
-            UInt16(s.Nw)*UInt16(s.tilesize)) for _ in eachindex(fieldnames(Layers))]...)
-    end
-end
-=#
 
 function flushLayer!(game::GameState,layer::Symbol)
     getfield(game.im.layers,layer) .= 0x000000
@@ -632,10 +581,10 @@ function drawMenuPkmn!(game::GameState)
     drawText!(game,:menu2,"ZURUCK",UInt(1),Position(24+137,16+204))
 end
 
-function drawHealthBar!(game::GameState,layer::Symbol,value::Int,pos::Position)
-    getfield(game.im.layers,layer)[pos.h,pos.w:pos.w+value] .= 0x5ad684
-    getfield(game.im.layers,layer)[pos.h+1:pos.h+2,pos.w:pos.w+value] .= 0x73ffad
-end
+# function drawHealthBar!(game::GameState,layer::Symbol,value::Int,pos::Position)
+#     getfield(game.im.layers,layer)[pos.h,pos.w:pos.w+value] .= 0x5ad684
+#     getfield(game.im.layers,layer)[pos.h+1:pos.h+2,pos.w:pos.w+value] .= 0x73ffad
+# end
 
 function drawHealthBar!(game::GameState,im::Matrix{UInt32},value::Int,pos::Position)
     im[pos.h,pos.w:pos.w+value] .= 0x5ad684
@@ -647,14 +596,15 @@ function drawHealthBarBattle!(im::Matrix{UInt32},value::Int,pos::Position)
         im[pos.h,pos.w+1:pos.w+value] .= 0x5ad684
         im[pos.h+1:pos.h+2,pos.w+1:pos.w+value] .= 0x73ffad
     elseif value > 12
-        im[pos.h,pos.w+1:pos.w+value] .= 0xe39517
-        im[pos.h+1:pos.h+2,pos.w+1:pos.w+value] .= 0xf79a05
+        im[pos.h,pos.w+1:pos.w+value] .= 0xcead08
+        im[pos.h+1:pos.h+2,pos.w+1:pos.w+value] .= 0xffe739
     else
-        im[pos.h,pos.w+1:pos.w+value] .= 0xbf0b0b
-        im[pos.h+1:pos.h+2,pos.w+1:pos.w+value] .= 0xf70505
+        im[pos.h,pos.w+1:pos.w+value] .= 0xad424a
+        im[pos.h+1:pos.h+2,pos.w+1:pos.w+value] .= 0xff5a39
     end
 
-    im[pos.h:pos.h+2,pos.w+value+1:pos.w+48] .= 0x303030
+    im[pos.h,pos.w+value+1:pos.w+48] .= 0x4a425a
+    im[pos.h+1:pos.h+2,pos.w+value+1:pos.w+48] .= 0x526b5a
 end
 
 
@@ -881,10 +831,15 @@ function drawBattleIntro!(game::GameState; s=Settings())
         createSprite!(game,:tag2,:layer3,getBattleTagOpp(),
             Position(14+24,12+16),1; active=true)
 
+        drawHealthBarBattle!(game.im.sprites[:tag1].im,
+            getHealthBar(game.battle.state.pkmn1.pkmn),P(20,49))
+        drawHealthBarBattle!(game.im.sprites[:tag2].im,
+            getHealthBar(game.battle.state.pkmn2.pkmn),P(20,40))
+
         drawText!(game,game.im.sprites[:tag1].im,pkmnName(game,game.battle.state.pkmn1.pkmn),
             UInt(1),Position(4,17),0x424242,0xded6b5)
         drawText!(game,game.im.sprites[:tag1].im,string(game.battle.state.pkmn1.pkmn.stats.level),
-            UInt(1),Position(4,91),0x424242,0xded6b5)
+            UInt(1),Position(4,86),0x424242,0xded6b5)
         drawText!(game,game.im.sprites[:tag1].im,"/",
             UInt(1),Position(22,76),0x424242,0xded6b5)
         drawText!(game,game.im.sprites[:tag1].im,string(game.battle.state.pkmn1.pkmn.stats.rv[1]),
@@ -895,7 +850,7 @@ function drawBattleIntro!(game::GameState; s=Settings())
         drawText!(game,game.im.sprites[:tag2].im,pkmnName(game,game.battle.state.pkmn2.pkmn),
             UInt(1),Position(4,10),0x424242,0xded6b5)
         drawText!(game,game.im.sprites[:tag2].im,string(game.battle.state.pkmn2.pkmn.stats.level),
-            UInt(1),Position(4,80),0x424242,0xded6b5)
+            UInt(1),Position(4,76),0x424242,0xded6b5)
     elseif game.n.c[:battleintro].c <= 32
         game.im.postprocess.args = (24+80,game.n.c[:battleintro].c)
     elseif game.n.c[:battleintro].c <= 56
@@ -929,10 +884,20 @@ function drawBattleExit!(game::GameState; s=Settings())
     if game.n.c[:battleoutro].c == 0
         game.im.postprocess.active = true
         game.im.postprocess.func = fadeLinear!
-        game.im.postprocess.args = (60,0)
+        game.im.postprocess.args = (0x3c,0x01,0x00)
+        
+        # game.im.postprocess.func = combine!
+        # game.im.postprocess.args = (0x000000,0x3c,0x00)
+
+        # createCC!(game,:fadeout,fadeOut!,(60,); active=true)
     elseif game.n.c[:battleoutro].c <= 60
-        game.im.postprocess.args = (game.n.c[:battleoutro].c)
-    elseif game.n.c[:battleoutro] == 61
+        game.im.postprocess.args = (0x3c,0x01,UInt8(game.n.c[:battleoutro].c))
+        # game.im.postprocess.args = (0x000000,0x3c,UInt8(game.n.c[:battleoutro].c))
+    elseif game.n.c[:battleoutro].c == 61
+        # game.im.postprocess.active = false
+        # game.im.postprocess.func = empty
+        # game.im.postprocess.args = ()
+
         killCounter!(game,:battleoutro)
 
         stateEndBattle!(game)
@@ -1069,6 +1034,10 @@ function drawGame!(game::GameState; s=Settings())
 
     if game.draw.battle
         drawBattle!(game; s=s)
+    end
+
+    if game.draw.battleoutro
+        drawBattleExit!(game; s=s)
     end
 
     # if game.draw.sprites

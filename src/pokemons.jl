@@ -1,154 +1,5 @@
 #pokemon stuff
 
-const typetable = Matrix{Rational{UInt8}}(
-    [#  no  pf  fe  wa  ka  fl  gi  bo  st  kä  ge  el  ps  eis dr  un  st  fee
-        1   1   1   1   1   1   1   1   0.5 1   0   1   1   1   1   1   0.5 1   #normal
-        1   0.5 0.5 2   1   0.5 0.5 2   2   0.5 1   1   1   1   0.5 1   0.5 1   #pflanze
-        1   2   0.5 0.5 1   1   1   1   0.5 2   1   1   1   2   0.5 1   2   1   #feuer
-        1   0.5 2   0.5 1   1   1   2   2   1   1   1   1   1   0.5 1   1   1   #wasser
-        2   1   1   1   1   0.5 0.5 1   2   0.5 0   1   0.5 2   1   2   2   0.5 #kampf
-        1   2   1   1   2   1   1   1   0.5 2   1   0.5 1   1   1   1   0.5 1   #flug
-        1   2   1   1   1   1   0.5 0.5 0.5 1   0.5 1   1   1   1   1   0   2   #gift
-        1   0.5 2   1   1   0   2   1   2   0.5 1   2   1   1   1   1   2   1   #boden
-        1   1   2   1   0.5 2   1   0.5 1   2   1   1   1   2   1   1   0.5 1   #stein
-        1   2   0.5 1   0.5 0.5 0.5 1   1   1   0.5 1   2   1   1   2   0.5 0.5 #käfer
-        0   1   1   1   1   1   1   1   1   1   2   1   2   1   1   0.5 1   1   #geist
-        1   0.5 1   2   1   2   1   0   1   1   1   0.5 1   1   0.5 1   1   1   #elektro
-        1   1   1   1   2   1   2   1   1   1   1   1   0.5 1   1   0   0.5 1   #psycho
-        1   2   0.5 0.5 1   2   1   2   1   1   1   1   1   0.5 2   1   0.5 1   #eis
-        1   1   1   1   1   1   1   1   1   1   1   1   1   1   2   1   0.5 0   #drache
-        1   1   1   1   0.5 1   1   1   1   1   2   1   2   1   1   0.5 1   0.5 #unlicht
-        1   1   0.5 0.5 1   1   1   1   2   1   1   0.5 1   2   1   1   0.5 2   #stahl
-        1   1   0.5 1   2   1   0.5 1   1   1   1   1   1   1   2   2   0.5 1   #fee
-    ]
-)
-
-function printTypes(attacker)
-    println("Angreifer:     $(TypeNames[UInt8(attacker)])")
-    println("Stark gegen:   ",get.(Ref(TypeNames),findall(x->x==0x02//0x01,typetable[attacker,:]),0).*", "...)
-    println("Schwach gegen: ",get.(Ref(TypeNames),findall(x->x==0x01//0x02,typetable[attacker,:]),0).*", "...)
-    println("Kein Effekt:   ",get.(Ref(TypeNames),findall(x->x==0x00//0x01,typetable[attacker,:]),0).*", "...)
-end
-
-const TypeNames = Base.ImmutableDict(
-    0x00 => "Null",
-    0x01 => "Normal",
-    0x02 => "Pflanze",
-    0x03 => "Feuer",
-    0x04 => "Wasser",
-    0x05 => "Kampf",
-    0x06 => "Flug",
-    0x07 => "Gift",
-    0x08 => "Boden",
-    0x09 => "Gestein",
-    0x0a => "Käfer",
-    0x0b => "Geist",
-    0x0c => "Elektro",
-    0x0d => "Psycho",
-    0x0e => "Eis",
-    0x0f => "Drache",
-    0x10 => "Unlicht",
-    0x11 => "Stahl",
-    0x12 => "Fee",
-)
-
-mutable struct Stats
-    bv::Vector{UInt8}
-    dv::Vector{UInt8}   #HP, At, Def, SpAt, SpDef, Init
-    ev::Vector{UInt8}
-    rv::Vector{UInt16}
-
-    hp::UInt16
-
-    level::UInt8
-    xp::UInt32
-
-    nature::UInt8
-    affection::UInt8
-
-    function Stats(bv,level)
-        new(bv,rand(0:31,6),zeros(UInt8,6),zeros(UInt16,6),0,level,0,rand(1:25),0)
-    end
-
-    function Stats(bv,dv,level)
-        new(bv,dv,zeros(UInt8),level,1,0,rand(1:25),0)
-    end
-
-    function Stats(bv,dv,level,nature,affection)
-        new(bv,dv,zeros(UInt8),level,1,0,nature,affection)
-    end
-end
-
-function effectNo()
-    return
-end
-
-mutable struct Attack
-    id::UInt
-    name::String
-    description::String
-    ap::UInt8
-    apmax::UInt8
-
-    class::UInt8
-    type::UInt8
-    power::UInt8
-    accuracy::UInt8
-    priority::Int8
-    critrate::Int8
-
-    effect::Function
-
-    function Attack()
-        new(0,"","",0,0,0,0,0,0,0,0,effectNo)
-    end
-
-    function Attack(id,name,description,ap,apmax,class,type,power,accuracy,priority,critrate,effect)
-        new(id,name,description,ap,apmax,class,type,power,accuracy,priority,critrate,effect)
-    end
-end
-
-mutable struct Item
-    name::String
-    description::String
-    type::UInt8
-
-    function Item()
-        new("","",0x00)
-    end
-end
-
-struct Pokeball
-    name::String
-    description::String
-    catchrate::Float64
-    sprite
-end
-
-mutable struct Pkmn
-    id::UInt16
-    name::String
-    gender::UInt8
-    shiny::Bool
-    form::UInt8
-    xptype::UInt8
-
-    otrainer::String
-    otrainerid::UInt16
-    location::String
-    ball::UInt8
-    markers::Vector{Bool}
-
-    type::Tuple{UInt8,UInt8}
-    stats::Stats
-    status::UInt8
-    item::Item
-
-    attacks::Vector{Attack}
-    ability::UInt16
-end
-
-
 
 
 
@@ -172,10 +23,6 @@ function getGender(genderweight::Vector{UInt16})
         return 0x02
     end
 end
-
-
-
-
 
 function updateStats!(pkmn::Pkmn)
     N = natureMod(pkmn.stats.nature)
@@ -202,7 +49,7 @@ function natureMod(nature::UInt8)
     return a
 end
 
-function generatePkmn(game,id::UInt16,level::UInt8)
+function generatePkmn(game::GameState,id::UInt16,level::UInt8)
     data = game.pkmndata.base[id,:]
     
     p =  Pkmn(
@@ -270,6 +117,10 @@ function getHealthBar(pokemon::Pkmn,hp::Int)
     return ceil(Int,48*hp/pokemon.stats.rv[1])
 end
 
+# function getHealthBar(pokemon::Pkmn,hp::UInt16)
+#     return ceil(Int,48*hp/pokemon.stats.rv[1])
+# end
+
 function xpFormulas(level::UInt8,xptype::UInt8)
     n = UInt(level)
 
@@ -304,6 +155,18 @@ function xpFormulas(level::UInt8,xptype::UInt8)
     end
 end
 
+function calcXpDrop1(state::BattleState,attacker::PkmnBattle,defender::PkmnBattle)
+    return floor(UInt32,
+        *(
+            1+0.5*!(typeof(state)==BattleStateWild),
+            100, #game.pkmndata.base[defender.pkmn.id], #xp base value
+            1.5,    #trainer != otrainer
+            1+0.5*(attacker.pkmn.item==0x00),   #glücksei
+            defender.pkmn.stats.level
+        )/7
+    )
+end
+
 function pkmnName(game,pkmn::Pkmn)
     if pkmn.name == ""
         return game.pkmndata.name[pkmn.id]
@@ -314,7 +177,7 @@ end
 
 getPkmnName(game,pkmn::Pkmn) = pkmnName(game,pkmn)
 
-function activePkmn(game)
+function activePkmn(game::GameState)
     return game.trainer.pokemon[
         findfirst(x->x.stats.hp!=0x0000,game.trainer.pokemon)
     ]

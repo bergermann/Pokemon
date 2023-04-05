@@ -90,20 +90,44 @@ function channels(i::UInt32)
     return r,g,b
 end
 
+function channelsUInt8(i::UInt32)
+    r,g,b = channels(i)
+    
+    return UInt8(r >> 16), UInt8(g >> 8), UInt8(b)
+end
+
+# function scaleChannels(i::UInt32,denom::UInt8,num::UInt8)
+#     r = div(i & 0xff0000,denom)*num & 0xff0000
+#     g = div(i & 0x00ff00,denom)*num & 0x00ff00
+#     b = div(i & 0x0000ff,denom)*num
+
+#     return |(r,g,b)
+# end
+
+# function scaleChannels!(im::Matrix{UInt32},denom::UInt8,num::UInt8)
+#     @inbounds for i in eachindex(im)
+#         im[i] = |(
+#             div(im[i] & 0xff0000,denom)*num & 0xff0000,
+#             div(im[i] & 0x00ff00,denom)*num & 0x00ff00,
+#             div(im[i] & 0x0000ff,denom)*num
+#         )
+#     end
+# end
+
 function scaleChannels(i::UInt32,denom::UInt8,num::UInt8)
-    r = div(i & 0xff0000,denom)*num & 0xff0000
-    g = div(i & 0x00ff00,denom)*num & 0x00ff00
-    b = div(i & 0x0000ff,denom)*num
+    r = trunc(UInt32,i*num/denom) & 0xff0000
+    g = trunc(UInt32,(i & 0x00ff00)*num/denom) & 0x00ff00
+    b = trunc(UInt32,(i & 0x0000ff)*num/denom)
 
     return |(r,g,b)
 end
 
 function scaleChannels!(im::Matrix{UInt32},denom::UInt8,num::UInt8)
-    @inbounds for i in eachindex(A)
+    @inbounds for i in eachindex(im)
         im[i] = |(
-            div(im[i] & 0xff0000,denom)*num & 0xff0000,
-            div(im[i] & 0x00ff00,denom)*num & 0x00ff00,
-            div(im[i] & 0x0000ff,denom)*num
+            trunc(UInt32,im[i]*num/denom) & 0xff0000,
+            trunc(UInt32,(im[i] & 0x00ff00)*num/denom) & 0x00ff00,
+            trunc(UInt32,(im[i] & 0x0000ff)*num/denom)
         )
     end
 end
@@ -209,20 +233,23 @@ function fadeLinear!(im::Matrix{UInt32},denom::UInt8,num::UInt8)
         return error("ArgumentError: Fraction must be between 0 and 1.")
     end
 
-    @inbounds for i in eachindex(im)
-        im[i] -= div(im[i],denom)*num
-    end
+    # @inbounds for i in eachindex(im)
+    #     im[i] -= scaleChannels!(im[i],denom,num)
+    # end
+    scaleChannels!(im,denom,denom-num)
 end
 
 function fadeLinear!(im::Matrix{UInt32},denom::UInt8,num::UInt8,frame::UInt8)
     
-    if denom < num
+    if denom < num*frame
         return error("ArgumentError: Fraction must be between 0 and 1.")
     end
 
-    @inbounds for i in eachindex(im)
-        im[i] -= div(im[i],denom)*num*frame
-    end
+    # @inbounds for i in eachindex(im)
+    #     im[i] -= scaleChannels!(im[i],denom,num*frame)
+    # end
+
+    scaleChannels!(im,denom,denom-num*frame)
 end
 
 function shutterHorizontal!(im::Matrix{UInt32},center::Int,n::Int)

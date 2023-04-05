@@ -1,15 +1,23 @@
-__precompile__(true)
+# __precompile__(true)
 
 module Pokemon
 
+using MiniFB, Images, DelimitedFiles
+
+include("types/typespkmn.jl")
+include("types/typescore.jl")
+include("types/typesbattle.jl")
+
+include("parser.jl")
+include("pokemons.jl")
 include("core.jl")
+include("battle.jl")
 include("statetransitions.jl")
 include("rendering.jl")
 include("controls.jl")
 include("npcs.jl")
 include("animations.jl")
 include("attackanimations.jl")
-include("battle.jl")
 include("battlenpc.jl")
 #include("maps.jl")
 

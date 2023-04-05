@@ -1,400 +1,32 @@
 #battle manager stuff
-#include("core.jl")
-
-
-
-abstract type BattleCommand end
-
-mutable struct CommandAttack <: BattleCommand
-    n::UInt
-end
-
-mutable struct CommandSwitch <: BattleCommand
-    n::UInt
-end
-
-mutable struct CommandItem <: BattleCommand
-    target::UInt
-    #item::Item
-end
-
-mutable struct CommandFlee <: BattleCommand end
-
-mutable struct CommandChoose <: BattleCommand end
-
-
-
-
-mutable struct SecStatus
-    confused::Bool
-    flinch::Bool
-    charmed::Bool
-    seeded::Bool
-    attackblock::Vector{Bool}
-    trapped::Bool
-    trappedc::UInt8
-    trappeddmg::UInt8
-    cursed::Bool
-    nightmare::Bool
-    perish::Bool
-    perishc::UInt8
-    spotted::UInt8
-    escapeblock::Bool
-    encore::Bool
-    torment::Bool
-    taunt::Bool
-    healblock::Bool
-    itemblock::Bool
-    telekinesis::Bool
-
-    righthand::Bool
-    charge::Bool
-
-    function SecStatus()
-        new(
-            false,      #confused
-            false,      #flinch
-            false,
-            false,
-            falses(4),  #attackblock
-            false,
-            0,
-            0,
-            false,      #cursed
-            false,
-            false,
-            0,
-            0,          #spotted
-            false,
-            false,
-            false,
-            false,      #taunt
-            false,
-            false,
-            false,       #telekinesis
-        )
-    end
-end
-
-mutable struct DmgFactors
-    LVL::UInt
-
-    BP::UInt         #base power
-    RH::Float64     #right hand
-    CH::Float64     #charge
-    IF::Float64     #item factor attacker
-    MW::Float64     #muddy, wet
-    AA::Float64     #ability attacker
-    AD::Float64     #ability defender
-    BD::UInt16      #base dmg
-
-    ATK::UInt16
-    DEF::UInt16
-    CRIT::Float64
-    EFF::Float64
-    STAB::Float64
-
-    RAND::UInt16
-
-    BRT::Float64
-    RFSC::Float64
-    MULT::Float64
-    WEATHER::Float64
-    FC::Float64     #firecatcher
-    F1::Float64
-
-    LO::Float64     #Lifeorb
-    ME::Float64     #metronom factor
-    MC::UInt8       #metronom count
-    ET::Float64     #egotrip
-    F2::Float64
-
-    FF::Float64
-    EB::Float64
-    UP::Float64
-    BF::Float64
-    F3::Float64
-
-    function DmgFactors()
-        new(
-            0,#::UInt        #level
-
-            0,#::Int         #base power
-            1,#::Float64     #right hand
-            1,#::Float64     #charge
-            1,#::Float64     #item factor attacker
-            1,#::Float64     #muddy, wet
-            1,#::Float64     #ability attacker
-            1,#::Float64     #ability defender
-            0,#::UInt16      #base dmg
-
-            0,# ATK::UIn16
-            0,# DEF::UInt16
-            1,# CRIT::Float64
-            1,# EFF::Float64
-            1,# STAB::Float64
-
-            100,# RAND::UInt16
-
-            1,# BRT::Float
-            1,# RFSC::Float
-            1,# MULT::Float
-            1,# WEATHER::Float
-            1,# FC::Float
-            1,# F1::Float
-
-            1,# ME::Float
-            1,# MC::UInt8
-            1,# F2::Float
-
-            1,# FF::Float
-            1,# EB::Float
-            1,# UP::Float
-            1,# BF::Float
-            1,# F3::Float
-        )
-    end
-end
-
-mutable struct DoubleMoves
-    sight::Bool
-    sightc::UInt
-
-    fly::Bool
-    dive::Bool
-    dig::Bool
-    shadow::Bool
-    bounce::Bool
-
-    function DoubleMoves()
-        new(false,0x00,false,false,false,false,false)
-    end
-end
-    
-
-mutable struct PkmnBattle
-    pkmn::Pkmn
-    
-    buffs::Vector{Int8}     #at,def,spat,spdef,init,acc,eva,crit #CHECK THIS LATER
-
-    secstatus::SecStatus
-    factors::DmgFactors
-    
-    hit::Bool
-    crit::Bool
-    eff::Float64
-    dmg::Int
-    heal::Int
-    stat::Int
-
-    screen::Bool
-    screenc::Int
-    reflect::Bool
-    reflectc::Int
-
-    dmoves::DoubleMoves
-    
-    command::BattleCommand
-    attack::Attack
-    lastattack::Int
-
-    function PkmnBattle(pkmn::Pkmn)
-        new(
-            pkmn,           #pkmn
-            zeros(Int8,8),  #buffs
-            SecStatus(),    #secstatus
-            DmgFactors(),
-
-            true,
-            false,
-            1,
-            0,
-            0,
-            0,
-            false,
-            0,
-            false,
-            0,
-            DoubleMoves(),  #dmoves
-            CommandChoose(),           #attackchoice
-            Attack(),
-            0
-        )
-    end
-end
-
-mutable struct BattleCounters
-    turn::Int
-    flee::Int
-    c3::Int
-
-    function BattleCounters()
-        new(0,0,0)
-    end
-end
-
-mutable struct EntryHazards
-    spikes::UInt8
-    toxspikes::UInt8
-    rocks::Bool
-    sticky::Bool
-
-    function EntryHazards()
-        new(0,0,false,false)
-    end
-end
-
-mutable struct BattleRoom
-    trick::Bool
-    trickc::UInt8
-
-    magic::Bool
-    magicc::UInt8
-
-    wonder::Bool
-    wonderc::UInt8
-
-    function BattleRoom()
-        new(false,0,false,0,false,0)
-    end
-end
-
-mutable struct BattleEnvironment
-    weather::UInt8          #CHECK THIS
-    weatherc::UInt8
-
-    mud::Bool
-    wet::Bool
-
-    enthaz1::EntryHazards
-    enthaz2::EntryHazards
-
-    room::BattleRoom
-
-    function BattleEnvironment()
-        new(
-            0,
-            0,
-            false,
-            false,
-            EntryHazards(),
-            EntryHazards(),
-            BattleRoom()
-        )
-    end
-end
-
-
-
-
-
-#abstract type BattleState end
-
-mutable struct BattleStateNone <: BattleState end
-
-mutable struct BattleStateWild <: BattleState
-    counters::BattleCounters
-    turn::UInt
-
-    env::BattleEnvironment
-
-    pkmn1::PkmnBattle
-    pkmn2::PkmnBattle
-
-    queue::ArrayList{BattleAction}
-
-    function BattleStateWild(counters,turn,env,pkmn1,pkmn2)
-        new(counters,turn,env,pkmn1,pkmn2,ArrayList(BattleAction,32))
-    end
-end
-
-mutable struct BattleStateTrainerSolo <: BattleState
-    counters::BattleCounters
-    turn::UInt
-
-    env::BattleEnvironment
-
-    pkmn1::PkmnBattle
-    pkmn2::PkmnBattle
-
-    attackanim::Function
-
-    function BattleState(counters,turn,env,pkmn1,pkmn2,nothing)
-        new(counters,turn,env,pkmn1,pkmn2)
-    end
-end
-
-mutable struct BattleStateTrainerDouble <: BattleState
-    counters::BattleCounters
-    turn::UInt
-
-    env::BattleEnvironment
-
-    pkmn11::PkmnBattle
-    pkmn12::PkmnBattle
-    pkmn21::PkmnBattle
-    pkmn22::PkmnBattle
-
-    attackanim::Function
-
-    function BattleState(counters,turn,env,pkmn1,pkmn2,nothing)
-        new(counters,turn,env,pkmn1,pkmn2)
-    end
-end
-
-
-
-
-
-function setupBattle!(game::GameState)
-    game.input.inputlock = true
-    game.input.map = false
-    game.input.move = false
-
-    createCounter!(game,:battleanim)
-    createCounter!(game,:battledelay)
-    createCounter!(game,:battleintro)
-    createCallback!(game,:battleintro,true,animBattleEntry1!,())
-end
-
-function closeBattle!(game::GameState)
-    game.input.inputlock = false
-    game.input.move = true
-    game.input.map = true
-
-    killCounter!(game,:battleanim)
-    killCounter!(game,:battledelay)
-    
-    initDrawMap!(game)
-end
-
-function loopBattleWild(game::GameState)
-    0
-end
 
 function initBattleWild!(game::GameState)
-    setupBattle!(game)
+    stateInitBattle!(game)
 
-    pb1 = PkmnBattle(activePkmn(game))
+    pb1 = PkmnBattle(activePkmn(game),getPkmnName(game,activePkmn(game)))
     pb2 = PkmnBattle(generatePkmn(game,rand(0x0001:0x0097),rand(0x01:0x0a)))
+    pb2.name = getPkmnName(game,pb2.pkmn)
+    pb2.xpdrop = UInt32(max(1,rand(UInt8)))    #game.pkmndata.base[pb2.pkmn.id,x]
+
+    println(pb1.pkmn.stats.rv[6])
+    println(pb2.pkmn.stats.rv[6])
 
     game.battle.state = BattleStateWild(BattleCounters(),0,BattleEnvironment(),pb1,pb2)
-    
-    createCC!(game,:battlecounter,animBattlePhaseWild!,(); active=false)
 end
 
 function initBattleWild!(game::GameState,ids::Vector{UInt16},levels::Vector{UInt8})
-    game.battle.active = true
+    stateInitBattle!(game)
 
-    pb1 = PkmnBattle(activePkmn(game))
+    pb1 = PkmnBattle(activePkmn(game),getPkmnName(game,activePkmn(game)))
     pb2 = PkmnBattle(generatePkmn(game,rand(ids),rand(levels)))
+    pb2.name = getPkmnName(game,pb2.pkmn)
 
     game.battle.state = BattleStateWild(BattleCounters(),0,BattleEnvironment(),pb1,pb2)
 end
 
 
 
-
+#damage calculation
 
 function floorProd(t::Type,args...)
     x = t(1)
@@ -583,32 +215,7 @@ end
 
 
 
-
-function flee!(game::GameState)
-    flee!(game.battle.state)
-end
-
-function flee!(state::BattleStateWild)
-    if state.pkmn1.secstatus.escapeblock
-        return
-    end
-
-    if (state.pkmn1.rv[6]*128/max(state.pkmn2.rv[6],1)+30)%256 > rand(UInt8)
-        #flucht gescheitert
-
-        return
-    end
-
-    stateEndBattleFlee!(game)
-end
-
-function flee!(state::BattleStateTrainerSolo)
-
-end
-
-function flee!(state::BattleStateTrainerDouble)
-
-end
+# managing battlephase
 
 function checkAttack!(game::GameState)
     if game.battle.state.pkmn1.pkmn.attacks[game.input.battle2menu.select+1].ap == 0
@@ -683,18 +290,59 @@ function getCrit(attacker::PkmnBattle,defender::PkmnBattle)
         attacker.attack.critrate+attacker.buffs[8],1,5)]
 end
 
-function queueSetup!(game::GameState,state::BattleStateWild)
-    p = getPriority(state)
-
-    state.pkmn1.attack = state.pkmn1.pkmn.attacks[state.pkmn1.command.n]
-    state.pkmn2.attack = state.pkmn2.pkmn.attacks[state.pkmn2.command.n]
-
-    if p[1] == 1
-        queueAttack!(game,state,state.pkmn1,state.pkmn2,2,:p1)
-        queueAttack!(game,state,state.pkmn2,state.pkmn1,1,:p2)
+function getCommandPriority(state::BattleState,target::Int)
+    if typeof(state[target].command) == CommandAttack
+        return state[target].pkmn.attacks[state[target].command.n].priority
     else
-        queueAttack!(game,state,state.pkmn2,state.pkmn1,1,:p2)
-        queueAttack!(game,state,state.pkmn1,state.pkmn2,2,:p1)
+        return 6
+    end
+end
+
+function queueSetupActions!(game::GameState,state::BattleStateWild)
+    for i in 1:state.actionqueue.idx
+        pop!(state.actionqueue)
+    end
+
+    push!(state.actionqueue,BattleAction(
+        :p1,getCommandPriority(state,1),
+        state[1].pkmn.stats.rv[6]*getBuffMultiplier(state[1].buffs[5]),1,2
+    ))
+
+    push!(state.actionqueue,BattleAction(
+        :p2,getCommandPriority(state,2),
+        state[2].pkmn.stats.rv[6]*getBuffMultiplier(state[2].buffs[5]),2,1
+    ))
+
+    sortPriority!(state.actionqueue,state.env.room.trick)
+
+    if typeof(state[1].command) == CommandAttack
+        state[1].attack = state[1].pkmn.attacks[state[1].command.n]
+    else
+        state[1].attack = Attack()
+    end
+
+    if typeof(state[2].command) == CommandAttack
+        state[2].attack = state[2].pkmn.attacks[state[2].command.n]
+    else
+        state[2].attack = Attack()
+    end
+end
+
+function queueSetupAnimation!(game::GameState,state::BattleStateWild)
+    command  = state[state.actionqueue[1].user].command
+
+    if typeof(command) == CommandAttack
+        queueAttack!(
+            game,state,state[state.actionqueue[1].user],
+            state[state.actionqueue[1].target],state.actionqueue[1].target,
+            state.actionqueue[1].user == 1 ? :p1 : :p2
+        )
+    elseif typeof(command) == CommandItem
+        queueItem!(state)
+    elseif typeof(command) == CommandSwitch
+        queueSwitch!(state)
+    else typeof(command) == CommandFlee
+        queueFlee!(state,state[state.actionqueue[1].user])
     end
 
     queueStatusCond!(state)
@@ -710,47 +358,47 @@ function queueAttack!(game::GameState,state::BattleState,
     setDmgFactors!(state,attacker,defender)
     attacker.dmg = calcDamage(attacker.factors)
 
-    println("$id D: ",attacker.dmg)
+    # println("$id D: ",attacker.dmg)
     
-    push!(state.queue,BattleAction(
+    push!(state.animqueue,BattleAnimation(
         id,120,getPkmnName(game,attacker.pkmn)*" setzt\\$(attacker.attack.name) ein.",
         banimEmpty!,0
     ))
 
     if !attacker.hit
-        push!(state.queue,BattleAction(
+        push!(state.animqueue,BattleAnimation(
             id,120,"Die Attacke hat\\ihr Ziel verfehlt...",banimEmpty!,0
         ))
 
         return
     elseif attacker.eff == 0
-        push!(state.queue,BattleAction(
+        push!(state.animqueue,BattleAnimation(
             id,120,"Es hat keine Wirkung...",banimEmpty!,0
         ))
 
         return
     end
 
-    push!(state.queue,BattleAction(
+    push!(state.animqueue,BattleAnimation(
         id,60,"",bnoAnim!,target
     ))
 
-    push!(state.queue,BattleAction(
+    push!(state.animqueue,BattleAnimation(
         id,48,"",bhpAnim!,target
     ))
 
     if attacker.crit
-        push!(state.queue,BattleAction(
+        push!(state.animqueue,BattleAnimation(
             id,120,"Ein Volltreffer!",banimEmpty!,0
         ))
     end
 
     if attacker.eff < 1
-        push!(state.queue,BattleAction(
+        push!(state.animqueue,BattleAnimation(
             id,120,"Das ist nicht sehr effektiv...",banimEmpty!,0
         ))
     elseif attacker.eff > 1
-        push!(state.queue,BattleAction(
+        push!(state.animqueue,BattleAnimation(
             id,120,"Das ist sehr effektiv!",banimEmpty!,0
         ))
     end
@@ -761,8 +409,8 @@ function queueWeather!(state::BattleState)
         return
     end
 
-    push!(state.queue,BattleAction(
-        :p1,120,"Wetter",banimEmpty!,0
+    push!(state.animqueue,BattleAnimation(
+        :w,120,"Wetter",banimEmpty!,0
     ))
 end
 
@@ -776,6 +424,95 @@ function queueStatusCond!(state::BattleState)
     end
 end
 
-function queueCheckStatus!(state::BattleState)
+function queueItem!(state::BattleState)
+    0
+end
+
+function queueSwitch!(state::BattleState)
+    0
+end
+
+function queueFlee!(state::BattleState,user::PkmnBattle)
+    if state.actionqueue[1].user == 1
+        if user.command.success
+            state.stage = 250
+
+            push!(state.animqueue,BattleAnimation(
+                :p1,120,"Du bist entkommen!",banimEmpty!,0
+            ))
+        else
+            state.counters.flee += 1
+
+            push!(state.animqueue,BattleAnimation(
+                :p1,120,"Flucht gescheitert!",banimEmpty!,0
+            ))
+        end
+    else
+        state.stage = 250
+
+        push!(state.animqueue,BattleAnimation(
+            :p2,120,"Der Gegner ist geflohen!",banimEmpty!,0
+        ))
+    end
+end
+
+function queueCheckStatus!(state::BattleStateWild)
+    F = false
+
+    if state[1].pkmn.stats.hp == 0x0000
+        F = false
+
+        for i in eachindex(findall(x->x.id==:p1,
+                state.actionqueue[1:state.actionqueue.idx]))
+            popat!(state.actionqueue,:p1)
+        end
+
+        push!(state.animqueue,BattleAnimation(
+            :p1,30,"$(state[1].name) wurde besiegt.",bfaint!,1
+        ))
+
+        state[1].pkmn.stats.hp = -1
+
+        F = true
+    end
+
+    if state[2].pkmn.stats.hp == 0x0000
+        F = false
+
+        # println("pre clean up:")
+        # println(state.actionqueue)
+
+        for i in eachindex(findall(x->x.id==:p2,
+                state.actionqueue[1:state.actionqueue.idx]))
+            popat!(state.actionqueue,:p2)
+        end
+
+        # println("post clean up:")
+        # println(state.actionqueue)
+
+        push!(state.animqueue,BattleAnimation(
+            :p2,120,"$(state[2].name) wurde besiegt.",bfaint!,2
+        ))
+
+        push!(state.animqueue,BattleAnimation(
+            :p1,120,"$(state[1].name) erhält $(calcXpDrop1(state,state[1],state[2])) E.-Punkte.",
+            banimEmpty!,1
+        ))
+
+        state[2].pkmn.stats.hp = -1
+
+        state.stage = 251
+
+        F = true
+    end
+
+    return F
+end
+
+function checkFlee(state::BattleStateWild)
+    if state.pkmn1.secstatus.escapeblock
+        return false
+    end
+
     return true
 end

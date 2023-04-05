@@ -13,40 +13,40 @@ end
 
 function bhpAnim!(game::GameState,target::Int)
     if target == 1
-        createCC!(game,:hp,bhpAnim1!,(:tag1,); active=true)
+        createCC!(game,:hp,bhpAnim!,(2,1,:tag1,P(20,49)); active=true)
     else
-        createCC!(game,:hp,bhpAnim2!,(:tag2,); active=true)
+        createCC!(game,:hp,bhpAnim!,(1,2,:tag2,P(20,40)); active=true)
     end
 end
 
-function bhpAnim1!(game::GameState,tag::Symbol)
-    p = game.battle.state.pkmn1.pkmn
-    dmg = min(game.battle.state.pkmn2.dmg,p.stats.hp)
+function bhpAnim!(game::GameState,user::Int,target::Int,tag::Symbol,pos::Position)
+    p = game.battle.state[target].pkmn
+    dmg = min(game.battle.state[user].dmg,p.stats.hp)
+
+    b1 = getHealthBar(p,p.stats.hp)
+    b2 = getHealthBar(p,p.stats.hp-dmg)
 
     drawHealthBarBattle!(game.im.sprites[tag].im,
-        getHealthBar(p,p.stats.hp-trunc(Int,dmg*game.n.c[:hp].c/48)),P(20,49))
+        b1-trunc(Int,(b1-b2)*(game.n.c[:hp].c+1)/48),pos)
     
-    if game.n.c[:hp].c == 47
-        game.battle.state.pkmn1.pkmn.stats.hp -= dmg
 
-        killCC!(game,:hp)
-
-        return
-    end
-
-    game.n.c[:hp].c += 1
-end
-
-function bhpAnim2!(game::GameState,tag::Symbol)
-    p = game.battle.state.pkmn2.pkmn
-    dmg = min(game.battle.state.pkmn1.dmg,p.stats.hp)
-
-    drawHealthBarBattle!(game.im.sprites[tag].im,
-        getHealthBar(p,p.stats.hp-trunc(Int,dmg*game.n.c[:hp].c/48)),P(20,40))
-    
-    if game.n.c[:hp].c == 47
-        game.battle.state.pkmn2.pkmn.stats.hp -= dmg
+    if target == 1
+        game.im.sprites[:tag1].im[25:32,60:76] .= 0xf8f8d6
         
+        drawText!(game,game.im.sprites[:tag1].im,
+            string(game.battle.state[1].pkmn.stats.hp-trunc(Int,dmg*(game.n.c[:hp].c+1)/48)),
+            UInt(1),Position(22,66),0x424242,0xded6b5)
+    end
+    
+    if game.n.c[:hp].c == 47
+        game.battle.state[target].pkmn.stats.hp -= dmg
+
+        if game.battle.state[target].pkmn.stats.hp < 0x0000   # fix
+            error("HP got below 0? it fucked up.")
+        end
+
+        game.battle.state[user].dmg = 0
+
         killCC!(game,:hp)
 
         return
@@ -75,7 +75,35 @@ function btakeDamage!(game::GameState,target::Symbol,tag::Symbol)    #length: 30
     game.n.c[:dmg].c += 1
 end
 
-function bmoveHorizontal!(game::GameState,distance::Int,speed::Int,target::Symbol)
+function bfaint!(game::GameState,target::Int)
+    if target == 1
+        createCC!(game,:faint,bfaint!,(:pkmn1,:tag1); active=true)
+    else
+        createCC!(game,:faint,bfaint!,(:pkmn2,:tag2); active=true)
+    end
+end
+
+function bfaint!(game::GameState,target::Symbol,tag::Symbol)
+
+    if 60 <= game.n.c[:faint].c <= 75
+        posAdd!(game.im.sprites[target].pos,4,0)
+    end
+
+    if game.n.c[:faint].c == 75
+        game.im.sprites[target].active = false
+    elseif game.n.c[:faint].c == 121
+        game.im.sprites[tag].active = false
+
+        killCC!(game,:faint)
+
+        return
+    end
+
+    game.n.c[:faint].c += 1
+end
+
+function bmoveHorizontal!(game::GameState,distance::Int,speed::Int,
+        target::Symbol,kill::Bool)
     if distance%speed != 0
         error("Distance needs to integer multiple of speed.")
     end
@@ -85,13 +113,18 @@ function bmoveHorizontal!(game::GameState,distance::Int,speed::Int,target::Symbo
     game.n.c[:moveh].c += 1
 
     if game.n.c[:moveh].c == div(distance,speed)
+        if kill
+            killSprite!(game,target)
+        end
+
         killCC!(game,:moveh)
 
         return
     end
 end
 
-function bmoveVertical!(game::GameState,distance::Int,speed::Int,target::Symbol)
+function bmoveVertical!(game::GameState,distance::Int,speed::Int,
+        target::Symbol,kill::Bool)
     if distance%speed != 0
         error("Distance needs to integer multiple of speed.")
     end
@@ -101,6 +134,10 @@ function bmoveVertical!(game::GameState,distance::Int,speed::Int,target::Symbol)
     game.n.c[:movew].c += 1
 
     if game.n.c[:movew].c == div(distance,speed)
+        if kill
+            killSprite!(game,target)
+        end
+        
         killCC!(game,:movew)
 
         return

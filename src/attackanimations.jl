@@ -84,7 +84,6 @@ function bfaint!(game::GameState,target::Int)
 end
 
 function bfaint!(game::GameState,target::Symbol,tag::Symbol)
-
     if 60 <= game.n.c[:faint].c <= 75
         posAdd!(game.im.sprites[target].pos,4,0)
     end
@@ -101,6 +100,31 @@ function bfaint!(game::GameState,target::Symbol,tag::Symbol)
 
     game.n.c[:faint].c += 1
 end
+
+function bxpAnim!(game::GameState,target::Int)
+    createCC!(game,:xp,bxpAnim!,(xp,); active=true)
+end
+
+function bxpAnim!(game::GameState,xp::Int,len::Int)
+    if 60 <= game.n.c[:faint].c <= 123
+        0x42ceff
+    end
+
+    game.n.c[:xp].c += 1
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function bmoveHorizontal!(game::GameState,distance::Int,speed::Int,
         target::Symbol,kill::Bool)

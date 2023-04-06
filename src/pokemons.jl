@@ -155,6 +155,10 @@ function xpFormulas(level::UInt8,xptype::UInt8)
     end
 end
 
+function xpFormulas(level,xptype)
+    return Int(xpFormulas(UInt8(level),UInt8(xptype)))
+end
+
 function calcXpDrop1(state::BattleState,attacker::PkmnBattle,defender::PkmnBattle)
     return floor(UInt32,
         *(
@@ -179,6 +183,6 @@ getPkmnName(game,pkmn::Pkmn) = pkmnName(game,pkmn)
 
 function activePkmn(game::GameState)
     return game.trainer.pokemon[
-        findfirst(x->x.stats.hp!=0x0000,game.trainer.pokemon)
+        findfirst(x->x.stats.hp>0x0000,game.trainer.pokemon)
     ]
 end

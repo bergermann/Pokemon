@@ -2,7 +2,11 @@
 
 module Pokemon
 
+export main
+
 using MiniFB, Images, DelimitedFiles
+
+
 
 include("types/typespkmn.jl")
 include("types/typescore.jl")
@@ -21,9 +25,9 @@ include("attackanimations.jl")
 include("battlenpc.jl")
 #include("maps.jl")
 
-@time foreach(names(@__MODULE__, all=true)) do s
-    @eval export $s
-end
+# @time foreach(names(@__MODULE__, all=true)) do s
+#     @eval export $s
+# end
 
 function main()
     settings = Settings()
@@ -83,8 +87,8 @@ function main()
     state = mfb_update(w, b)
     
     while true
-        begin
-        #@time begin
+        # begin
+        @time begin
             game.n.frame += 0x01
 
             writeToBuffer!(b,game)
@@ -115,5 +119,3 @@ end
 main()
 
 end
-
-

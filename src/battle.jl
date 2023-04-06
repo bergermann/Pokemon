@@ -8,8 +8,8 @@ function initBattleWild!(game::GameState)
     pb2.name = getPkmnName(game,pb2.pkmn)
     pb2.xpdrop = UInt32(max(1,rand(UInt8)))    #game.pkmndata.base[pb2.pkmn.id,x]
 
-    println(pb1.pkmn.stats.rv[6])
-    println(pb2.pkmn.stats.rv[6])
+    # println(pb1.pkmn.stats.rv[6])
+    # println(pb2.pkmn.stats.rv[6])
 
     game.battle.state = BattleStateWild(BattleCounters(),0,BattleEnvironment(),pb1,pb2)
 end
@@ -479,25 +479,23 @@ function queueCheckStatus!(state::BattleStateWild)
     if state[2].pkmn.stats.hp == 0x0000
         F = false
 
-        # println("pre clean up:")
-        # println(state.actionqueue)
-
         for i in eachindex(findall(x->x.id==:p2,
                 state.actionqueue[1:state.actionqueue.idx]))
             popat!(state.actionqueue,:p2)
         end
-
-        # println("post clean up:")
-        # println(state.actionqueue)
 
         push!(state.animqueue,BattleAnimation(
             :p2,120,"$(state[2].name) wurde besiegt.",bfaint!,2
         ))
 
         push!(state.animqueue,BattleAnimation(
-            :p1,120,"$(state[1].name) erhält $(calcXpDrop1(state,state[1],state[2])) E.-Punkte.",
+            :p1,60,"$(state[1].name) erhält $(calcXpDrop1(state,state[1],state[2])) E.-Punkte.",
             banimEmpty!,1
         ))
+
+        if state[1].pkmn.stats.level < 0x64
+            queueCheckXp!(state)
+        end
 
         state[2].pkmn.stats.hp = -1
 
@@ -515,4 +513,28 @@ function checkFlee(state::BattleStateWild)
     end
 
     return true
+end
+
+function queueCheckXp!(state::BattleState)
+    levelups = 0
+
+    while xpFormulas(state[1].pkmn.stats.level,state.pkmn.xptype)+state[2].xpdrop > 
+            xpFormulas(state[1].pkmn.stats.level+lups,state.pkmn.xptype)
+        levelups += 1
+    end
+
+    push!(state.animqueue,BattleAnimation(
+        :p1,60,"",bxpAnim!,1
+    ))
+
+    if lups > 0
+        push!(state.animqueue,BattleAnimation(
+            :p1,60,"$(state[1].name) erreicht Stufe $(state[1].pkmn.stats.level+lups)",
+            banimEmpty!,1
+        ))
+
+        push!(state.animqueue,BattleAnimation(
+            :p1,60,"",bxpAnim!,1
+        ))
+    end
 end

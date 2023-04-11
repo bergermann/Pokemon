@@ -159,11 +159,18 @@ function xpFormulas(level,xptype)
     return Int(xpFormulas(UInt8(level),UInt8(xptype)))
 end
 
+function getXpBar(pkmn::Pkmn,xpgain::Int)
+    x0 = xpFormulas(pkmn.stats.level,pkmn.xptype)
+
+    return trunc(Int,min(64,64*(pkmn.stats.xp+xpgain-x0)/
+        (xpFormulas(pkmn.stats.level+1,pkmn.xptype)-x0)))
+end
+
 function calcXpDrop1(state::BattleState,attacker::PkmnBattle,defender::PkmnBattle)
     return floor(UInt32,
         *(
             1+0.5*!(typeof(state)==BattleStateWild),
-            100, #game.pkmndata.base[defender.pkmn.id], #xp base value
+            defender.xpdrop, #game.pkmndata.base[defender.pkmn.id], #xp base value
             1.5,    #trainer != otrainer
             1+0.5*(attacker.pkmn.item==0x00),   #glücksei
             defender.pkmn.stats.level

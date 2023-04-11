@@ -607,6 +607,12 @@ function drawHealthBarBattle!(im::Matrix{UInt32},value::Int,pos::Position)
     im[pos.h+1:pos.h+2,pos.w+value+1:pos.w+48] .= 0x526b5a
 end
 
+function drawXpBar!(game::GameState,im::Matrix{UInt32},value::Int,pos::Position)
+    im[pos.h:pos.h+1,pos.w+1:pos.w+value] .= 0x42ceff
+    # im[pos.h:pos.h+1,pos.w+64:-2:pos.w+value+1] .= 0xd8d0b0
+    # im[pos.h:pos.h+1,pos.w+63:-2:pos.w+value+1] .= 0xc0b870
+end
+
 
 
 
@@ -833,6 +839,9 @@ function drawBattleIntro!(game::GameState; s=Settings())
 
         drawHealthBarBattle!(game.im.sprites[:tag1].im,
             getHealthBar(game.battle.state.pkmn1.pkmn),P(20,49))
+        println("value: ",getXpBar(game.battle.state.pkmn1.pkmn,0))
+        drawXpBar!(game,game.im.sprites[:tag1].im,
+            getXpBar(game.battle.state.pkmn1.pkmn,0),P(36,33))
         drawHealthBarBattle!(game.im.sprites[:tag2].im,
             getHealthBar(game.battle.state.pkmn2.pkmn),P(20,40))
 

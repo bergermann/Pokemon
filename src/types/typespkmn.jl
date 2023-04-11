@@ -62,7 +62,7 @@ mutable struct Stats
     hp::Int
 
     level::UInt8
-    xp::UInt32
+    xp::Int
 
     nature::UInt8
     affection::UInt8

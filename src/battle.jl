@@ -459,7 +459,7 @@ end
 function queueCheckStatus!(state::BattleStateWild)
     F = false
 
-    if state[1].pkmn.stats.hp == 0x0000
+    if state[1].pkmn.stats.hp == 0
         F = false
 
         for i in eachindex(findall(x->x.id==:p1,
@@ -476,7 +476,7 @@ function queueCheckStatus!(state::BattleStateWild)
         F = true
     end
 
-    if state[2].pkmn.stats.hp == 0x0000
+    if state[2].pkmn.stats.hp == 0
         F = false
 
         for i in eachindex(findall(x->x.id==:p2,
@@ -493,11 +493,11 @@ function queueCheckStatus!(state::BattleStateWild)
             banimEmpty!,1
         ))
 
+        state[2].pkmn.stats.hp = -1
+
         if state[1].pkmn.stats.level < 0x64
             queueCheckXp!(state)
         end
-
-        state[2].pkmn.stats.hp = -1
 
         state.stage = 251
 
@@ -518,23 +518,41 @@ end
 function queueCheckXp!(state::BattleState)
     levelups = 0
 
-    while xpFormulas(state[1].pkmn.stats.level,state.pkmn.xptype)+state[2].xpdrop > 
-            xpFormulas(state[1].pkmn.stats.level+lups,state.pkmn.xptype)
+    xpdrop = Int(calcXpDrop1(state,state[1],state[2]))
+
+    while state[1].pkmn.stats.xp+xpdrop > 
+            xpFormulas(state[1].pkmn.stats.level+levelups+1,state[1].pkmn.xptype)
         levelups += 1
     end
 
-    push!(state.animqueue,BattleAnimation(
-        :p1,60,"",bxpAnim!,1
-    ))
+    println("xp: ",xpdrop,", xpnext: ",
+        xpFormulas(state[1].pkmn.stats.level+1,state[1].pkmn.xptype)-
+        state[1].pkmn.stats.xp,
+        ", levelups: ",levelups)
 
-    if lups > 0
+    state[1].pkmn.stats.xp += xpdrop
+    
+    if levelups == 0
         push!(state.animqueue,BattleAnimation(
-            :p1,60,"$(state[1].name) erreicht Stufe $(state[1].pkmn.stats.level+lups)",
+            :p1,120,"",bxpAnim!,-Int(xpdrop)
+        ))
+
+        println(state.animqueue)
+    else
+        println("level up")
+        push!(state.animqueue,BattleAnimation(
+            :p1,120,"",bxpAnimLvUp!,levelups
+        ))
+        
+        push!(state.animqueue,BattleAnimation(
+            :p1,60,"$(state[1].name) erreicht Lv. $(state[1].pkmn.stats.level+levelups)!",
             banimEmpty!,1
         ))
 
         push!(state.animqueue,BattleAnimation(
-            :p1,60,"",bxpAnim!,1
+            :p1,120,"",bxpAnim!,
+            Int(xpFormulas(state[1].pkmn.stats.level+levelups,state[1].pkmn.xptype))-
+                state[1].pkmn.stats.xp
         ))
     end
 end

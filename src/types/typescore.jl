@@ -293,6 +293,19 @@ end
 
 
 
+function Base.print(a::ArrayList)
+    println("")
+    println("Type: ",eltype(a.data))
+    println("Leng: ",a.idx)
+    for i in 1:a.idx
+        println(a.data[i])
+    end
+end
+
+Base.println(a::ArrayList) = begin print(a); println("") end
+
+
+
 
 mutable struct PkmnData
     base::Matrix{UInt16}

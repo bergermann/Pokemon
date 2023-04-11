@@ -90,7 +90,7 @@ function bfaint!(game::GameState,target::Symbol,tag::Symbol)
 
     if game.n.c[:faint].c == 75
         game.im.sprites[target].active = false
-    elseif game.n.c[:faint].c == 121
+    elseif game.n.c[:faint].c == 119
         game.im.sprites[tag].active = false
 
         killCC!(game,:faint)
@@ -100,51 +100,6 @@ function bfaint!(game::GameState,target::Symbol,tag::Symbol)
 
     game.n.c[:faint].c += 1
 end
-
-# function bxpAnim!(game::GameState,levelups::Int)
-#     createCC!(game,:xp,bxpAnim!,
-#         (
-#             Int(calcXpDrop1(game.battle.state,game.battle.state[1],game.battle.state[2])),
-#             xpFormulas(game.battle.state[1].pkmn.stats.level+1,game.battle.state[1].pkmn.xptype) - 
-#             game.battle.state[1].pkmn.stats.xp,
-#             levelups
-#         ); active=true)
-# end
-
-# function bxpAnim!(game::GameState,xpgain::Int,xpnext::Int,levelups::Int)
-#     p = game.battle.state.pkmn1.pkmn
-
-#     d = 0
-
-#     if levelups > 0
-#         d = xpFormulas(
-#             game.battle.state[1].pkmn.stats.level+levelups,
-#             game.battle.state[1].pkmn.xptype
-#         ) - xpFormulas(
-#             game.battle.state[1].pkmn.stats.level,game.battle.state[1].pkmn.xptype
-#         )
-#     end
-
-#     drawXpBar!(game,game.im.sprites[:tag1].im,
-#         getXpBar(p,trunc(Int,min(xpgain-d,xpnext)*game.n.c[:xp].c/64)),P(36,33))
-
-#     if game.n.c[:xp].c == 59
-#         if xpgain < xpnext
-#             p.stats.xp += UInt32(xpgain)
-#         elseif xpgain >= xpnext
-#             drawXpBar!(game,game.im.sprites[:tag1].im,0,P(36,33))
-#         elseif levelups > 0
-#             p.stats.xp += UInt32(xpgain)
-#             p.stats.level += UInt8(levelups)
-#         end
-
-#         killCC!(game,:xp)
-
-#         return
-#     end
-
-#     game.n.c[:xp].c += 1
-# end
 
 function bxpAnim!(game::GameState,xp::Int)
     createCC!(game,:xp,bxpAnimXp!,(
@@ -158,18 +113,16 @@ function bxpAnim!(game::GameState,xp::Int)
 end
 
 function bxpAnimXp!(game::GameState,xp::Int,xpnext::Int,xplevel::Int)
-    # p = game.battle.state.pkmn1.pkmn
-
     println("xpnext: ",xpnext,", xplevel: ",xplevel)
 
     val = trunc(Int,64*(1-(xpnext+xp)/xplevel))+
-        trunc(Int,64*xp/xplevel*(1-game.n.c[:xp].c/120))
+        trunc(Int,64*xp/xplevel*(1-game.n.c[:xp].c/60))
 
     println(val)
 
     drawXpBar!(game,game.im.sprites[:tag1].im,val,P(36,33))
 
-    if game.n.c[:xp].c == 119
+    if game.n.c[:xp].c == 59
         killCC!(game,:xp)
 
         return
@@ -190,11 +143,11 @@ function bxpAnimLevelUp!(game::GameState,levelups::Int)
     xplevel = xpFormulas(p.stats.level+1,p.xptype)-xpFormulas(p.stats.level,p.xptype)
 
     drawXpBar!(game,game.im.sprites[:tag1].im,
-        64+trunc(Int,64*xpnext/xplevel*(1-game.n.c[:xp].c/120)),P(36,33))
+        64+trunc(Int,64*xpnext/xplevel*(1-game.n.c[:xp].c/60)),P(36,33))
 
-    println("value: ",64+trunc(Int,64*xpnext/xplevel*(1-game.n.c[:xp].c/120)))
+    # println("value: ",64+trunc(Int,64*xpnext/xplevel*(1-game.n.c[:xp].c/120)))
 
-    if game.n.c[:xp].c == 119
+    if game.n.c[:xp].c == 59
         p.stats.level += levelups
 
         game.im.sprites[:tag1].im[4:10,86:96] .= 0xffffff

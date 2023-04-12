@@ -228,7 +228,7 @@ function scaleColor!(imbase::Matrix{UInt32},color::UInt32,
 end
 
 function fadeLinear!(im::Matrix{UInt32},denom::UInt8,num::UInt8)
-    
+
     if denom < num
         return error("ArgumentError: Fraction must be between 0 and 1.")
     end

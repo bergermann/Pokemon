@@ -807,7 +807,9 @@ end
 
 
 
-
+function drawBattleTag!(game::GameState,pkmn::Pkmn,im::Matrix{UInt32})
+    
+end
 
 function drawBattleIntro!(game::GameState; s=Settings())
     if game.n.c[:battleintro].c == 0

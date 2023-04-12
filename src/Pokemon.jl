@@ -62,7 +62,7 @@ function main()
         Options()
     )
 
-    push!(game.trainer.pokemon,generatePkmn(game,0x0001,0x10))
+    push!(game.trainer.pokemon,generatePkmn(game,0x0001,0x14))
     push!(game.trainer.pokemon,generatePkmn(game,0x0002,0x03))
 
     createSprite!(game,:main,:layer2,getSpriteMain("sprite"),Position(80,128),

@@ -219,7 +219,7 @@ function scaleColor!(imbase::Matrix{UInt32},color::UInt32,
         return error("ArgumentError: Fraction must be between 0 and 1.")
     end
 
-    color_ = div(color,demon)*num
+    color_ = div(color,denom)*num
 
     @inbounds for i in eachindex(imbase)
         imbase[i] -= scaleChannels(imbase[i],denom,num)
@@ -227,27 +227,57 @@ function scaleColor!(imbase::Matrix{UInt32},color::UInt32,
     end
 end
 
-function fadeLinear!(im::Matrix{UInt32},denom::UInt8,num::UInt8)
+# function scaleColorTransparent!(imbase::Matrix{UInt32},color::UInt32,
+#         denom::UInt8,num::UInt8)
+
+#     if denom < num
+#         return error("ArgumentError: Fraction must be between 0 and 1.")
+#     end
+
+#     color_ = scaleChannels(color,denom,num)
+
+#     @inbounds for i in eachindex(imbase)
+#         if imbase[i] == 0x000000
+#             continue
+#         end
+
+#         imbase[i] -= scaleChannels(imbase[i],denom,denom-num)
+#         imbase[i] += color_
+#     end
+# end
+
+function scaleColorTransparent!(imbase::Matrix{UInt32},color::UInt32,
+        denom::UInt8,num::UInt8)
 
     if denom < num
         return error("ArgumentError: Fraction must be between 0 and 1.")
     end
 
-    # @inbounds for i in eachindex(im)
-    #     im[i] -= scaleChannels!(im[i],denom,num)
-    # end
+    color_ = scaleChannels(color,denom,num)
+
+    scaleChannels!(imbase,denom,denom-num)
+
+    @inbounds for i in eachindex(imbase)
+        if imbase[i] == 0x000000
+            continue
+        end
+
+        imbase[i] += color_
+    end
+end
+
+function fadeLinear!(im::Matrix{UInt32},denom::UInt8,num::UInt8)
+    if denom < num
+        return error("ArgumentError: Fraction must be between 0 and 1.")
+    end
+
     scaleChannels!(im,denom,denom-num)
 end
 
 function fadeLinear!(im::Matrix{UInt32},denom::UInt8,num::UInt8,frame::UInt8)
-    
     if denom < num*frame
         return error("ArgumentError: Fraction must be between 0 and 1.")
     end
-
-    # @inbounds for i in eachindex(im)
-    #     im[i] -= scaleChannels!(im[i],denom,num*frame)
-    # end
 
     scaleChannels!(im,denom,denom-num*frame)
 end

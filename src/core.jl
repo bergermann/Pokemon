@@ -160,7 +160,7 @@ function createSprite!(game::GameState,id::Symbol,layer::Symbol,
         Position(size(dict[frame])...),
         frame,
         dict,
-        dict[frame]
+        copy(dict[frame])
         )
     )
 end

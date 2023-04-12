@@ -143,21 +143,23 @@ function bxpAnimLevelUp!(game::GameState,levelups::Int,xpnext::Int,xplevel::Int)
         val = trunc(Int,64-64*xpnext/xplevel*(1-game.n.c[:xp].c/30))
 
         drawXpBar!(game,game.im.sprites[:tag1].im,val,P(36,33))
-    elseif 30 < game.n.c[:xp].c <= 42
-        scaleColor!(game.im.sprites[:tag1],0xffffff,0x0c,UInt8(game.n.c[:xp].c-30))
+    elseif 30 < game.n.c[:xp].c <= 48
+        scaleColorTransparent!(game.im.sprites[:tag1].im,0xf5eeee,0x20,UInt8(game.n.c[:xp].c-30))
     end
     
-    if game.n.c[:xp].c == 43
+    if game.n.c[:xp].c == 48
+        evdrop = rand(0x00:0x03,6)   # needs work
+        diffhp = calcHp(game.battle.state.pkmn1.pkmn,UInt8(levelups),evups)-
+            game.battle.state.pkmn1.pkmn.stats.rv[1]
+
         game.battle.state.pkmn1.pkmn.stats.level += levelups
+        game.battle.state.pkmn1.pkmn.stats.hp += diffhp
+        game.battle.state.pkmn1.pkmn.stats.ev += evdrop
 
-        drawBattleTag!(game,game.state.battle.pkmn1.pkmn,game.im.sprites[:tag1])
+        updateStats!(game.battle.state.pkmn1.pkmn)
 
-        # game.im.sprites[:tag1].im[6:14,86:96] .= 0xf8f8d8
-        
-        # drawText!(game,game.im.sprites[:tag1].im,string(game.battle.state.pkmn1.pkmn.stats.level),
-        #     UInt(1),Position(4,86),0x424242,0xded6b5)
-
-        # drawXpBar!(game,game.im.sprites[:tag1].im,0,P(36,33))
+        updateSprite!(game.im.sprites[:tag1])
+        drawBattleTagOwn!(game,game.battle.state.pkmn1.pkmn,game.im.sprites[:tag1].im)
 
         killCC!(game,:xp)
 

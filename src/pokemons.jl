@@ -24,12 +24,28 @@ function getGender(genderweight::Vector{UInt16})
     end
 end
 
+function calcHp(pkmn::Pkmn)
+    return UInt16(
+        floor(UInt16,
+            (2*pkmn.stats.bv[1]+pkmn.stats.dv[1]+floor(pkmn.stats.ev[1]/4))*
+            pkmn.stats.level/100
+        )+pkmn.stats.level+10
+    )
+end
+
+function calcHp(pkmn::Pkmn,levelups::UInt8,evups::UInt8)
+    return UInt16(
+        floor(UInt16,
+            (2*pkmn.stats.bv[1]+pkmn.stats.dv[1]+floor((pkmn.stats.ev[1]+evups)/4))*
+            (pkmn.stats.level+levelups)/100
+        )+(pkmn.stats.level+levelups)+10
+    )
+end
+
 function updateStats!(pkmn::Pkmn)
     N = natureMod(pkmn.stats.nature)
 
-    pkmn.stats.rv[1] = UInt16(floor(UInt16,
-        (2*pkmn.stats.bv[1]+pkmn.stats.dv[1]+floor(pkmn.stats.ev[1]/4))*pkmn.stats.level/100)
-        +pkmn.stats.level+10)
+    pkmn.stats.rv[1] = calcHp(pkmn)
     
     for i in 2:6
         pkmn.stats.rv[i] = floor(UInt16,floor(UInt16,
@@ -173,7 +189,8 @@ function calcXpDrop1(state::BattleState,attacker::PkmnBattle,defender::PkmnBattl
             defender.xpdrop, #game.pkmndata.base[defender.pkmn.id], #xp base value
             1.5,    #trainer != otrainer
             1+0.5*(attacker.pkmn.item==0x00),   #glücksei
-            defender.pkmn.stats.level
+            defender.pkmn.stats.level,
+            10  # remove this
         )/7
     )
 end

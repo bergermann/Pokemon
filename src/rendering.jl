@@ -245,12 +245,12 @@ end
 
 function updateSprite!(sprite::Sprite,frame::Int)
     sprite.frame = frame
-    sprite.im = sprite.dict[frame]
+    sprite.im = copy(sprite.dict[frame])
     sprite.size = Position(size(sprite.im)...)
 end
 
 function updateSprite!(sprite::Sprite)
-    sprite.im = sprite.dict[sprite.frame]
+    sprite.im = copy(sprite.dict[sprite.frame])
     sprite.size = Position(size(sprite.im)...)
 end
 
@@ -272,19 +272,6 @@ function drawSprites!(game::GameState; s=Settings())
             end
         end
     end
-
-    #=
-    id::Symbol
-
-    layer::Symbol
-    pos::Position
-    size::Position
-
-    frame::Symbol
-    dict::Dict{Symbol,Matrix{UInt32}}
-
-    im::Matrix{UInt32}
-    =#
 end
 
 function drawSprites!(game::GameState; s=Settings())
@@ -807,8 +794,22 @@ end
 
 
 
-function drawBattleTag!(game::GameState,pkmn::Pkmn,im::Matrix{UInt32})
-    
+function drawBattleTagOwn!(game::GameState,pkmn::Pkmn,im::Matrix{UInt32})
+    drawHealthBarBattle!(im,getHealthBar(pkmn),P(20,49))
+    drawXpBar!(game,im,getXpBar(pkmn,0),P(36,33))
+
+    drawText!(game,im,pkmnName(game,pkmn),UInt(1),Position(4,17),0x424242,0xded6b5)
+    drawText!(game,im,string(pkmn.stats.level),UInt(1),Position(4,86),0x424242,0xded6b5)
+    drawText!(game,im,"/",UInt(1),Position(22,76),0x424242,0xded6b5)
+    drawText!(game,im,string(pkmn.stats.rv[1]),UInt(1),Position(22,81),0x424242,0xded6b5)
+    drawText!(game,im,string(pkmn.stats.hp),UInt(1),Position(22,66),0x424242,0xded6b5)
+end
+
+function drawBattleTagOpp!(game::GameState,pkmn::Pkmn,im::Matrix{UInt32})
+    drawHealthBarBattle!(im,getHealthBar(pkmn),P(20,40))
+        
+    drawText!(game,im,pkmnName(game,pkmn),UInt(1),Position(4,10),0x424242,0xded6b5)
+    drawText!(game,im,string(pkmn.stats.level),UInt(1),Position(4,76),0x424242,0xded6b5)
 end
 
 function drawBattleIntro!(game::GameState; s=Settings())
@@ -839,29 +840,29 @@ function drawBattleIntro!(game::GameState; s=Settings())
         createSprite!(game,:tag2,:layer3,getBattleTagOpp(),
             Position(14+24,12+16),1; active=true)
 
-        drawHealthBarBattle!(game.im.sprites[:tag1].im,
-            getHealthBar(game.battle.state.pkmn1.pkmn),P(20,49))
-        println("value: ",getXpBar(game.battle.state.pkmn1.pkmn,0))
-        drawXpBar!(game,game.im.sprites[:tag1].im,
-            getXpBar(game.battle.state.pkmn1.pkmn,0),P(36,33))
-        drawHealthBarBattle!(game.im.sprites[:tag2].im,
-            getHealthBar(game.battle.state.pkmn2.pkmn),P(20,40))
+        drawBattleTagOwn!(game,game.battle.state.pkmn1.pkmn,game.im.sprites[:tag1].im)
+        drawBattleTagOpp!(game,game.battle.state.pkmn2.pkmn,game.im.sprites[:tag2].im)
 
-        drawText!(game,game.im.sprites[:tag1].im,pkmnName(game,game.battle.state.pkmn1.pkmn),
-            UInt(1),Position(4,17),0x424242,0xded6b5)
-        drawText!(game,game.im.sprites[:tag1].im,string(game.battle.state.pkmn1.pkmn.stats.level),
-            UInt(1),Position(4,86),0x424242,0xded6b5)
-        drawText!(game,game.im.sprites[:tag1].im,"/",
-            UInt(1),Position(22,76),0x424242,0xded6b5)
-        drawText!(game,game.im.sprites[:tag1].im,string(game.battle.state.pkmn1.pkmn.stats.rv[1]),
-            UInt(1),Position(22,81),0x424242,0xded6b5)
-        drawText!(game,game.im.sprites[:tag1].im,string(game.battle.state.pkmn1.pkmn.stats.hp),
-            UInt(1),Position(22,66),0x424242,0xded6b5)
+        # drawHealthBarBattle!(game.im.sprites[:tag1].im,
+        #     getHealthBar(game.battle.state.pkmn1.pkmn),P(20,49))
+        # drawXpBar!(game,game.im.sprites[:tag1].im,
+        #     getXpBar(game.battle.state.pkmn1.pkmn,0),P(36,33))
+
+        # drawText!(game,game.im.sprites[:tag1].im,pkmnName(game,game.battle.state.pkmn1.pkmn),
+        #     UInt(1),Position(4,17),0x424242,0xded6b5)
+        # drawText!(game,game.im.sprites[:tag1].im,string(game.battle.state.pkmn1.pkmn.stats.level),
+        #     UInt(1),Position(4,86),0x424242,0xded6b5)
+        # drawText!(game,game.im.sprites[:tag1].im,"/",
+        #     UInt(1),Position(22,76),0x424242,0xded6b5)
+        # drawText!(game,game.im.sprites[:tag1].im,string(game.battle.state.pkmn1.pkmn.stats.rv[1]),
+        #     UInt(1),Position(22,81),0x424242,0xded6b5)
+        # drawText!(game,game.im.sprites[:tag1].im,string(game.battle.state.pkmn1.pkmn.stats.hp),
+        #     UInt(1),Position(22,66),0x424242,0xded6b5)
         
-        drawText!(game,game.im.sprites[:tag2].im,pkmnName(game,game.battle.state.pkmn2.pkmn),
-            UInt(1),Position(4,10),0x424242,0xded6b5)
-        drawText!(game,game.im.sprites[:tag2].im,string(game.battle.state.pkmn2.pkmn.stats.level),
-            UInt(1),Position(4,76),0x424242,0xded6b5)
+        # drawText!(game,game.im.sprites[:tag2].im,pkmnName(game,game.battle.state.pkmn2.pkmn),
+        #     UInt(1),Position(4,10),0x424242,0xded6b5)
+        # drawText!(game,game.im.sprites[:tag2].im,string(game.battle.state.pkmn2.pkmn.stats.level),
+        #     UInt(1),Position(4,76),0x424242,0xded6b5)
     elseif game.n.c[:battleintro].c <= 32
         game.im.postprocess.args = (24+80,game.n.c[:battleintro].c)
     elseif game.n.c[:battleintro].c <= 56

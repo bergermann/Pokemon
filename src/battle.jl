@@ -525,32 +525,25 @@ function queueCheckXp!(state::BattleState)
         levelups += 1
     end
 
-    println("xp: ",xpdrop,", xpnext: ",
-        xpFormulas(state[1].pkmn.stats.level+1,state[1].pkmn.xptype)-
-        state[1].pkmn.stats.xp,
-        ", levelups: ",levelups)
-
     state[1].pkmn.stats.xp += xpdrop
     
     if levelups == 0
         push!(state.animqueue,BattleAnimation(
             :p1,60,"",bxpAnim!,-Int(xpdrop)
         ))
-
-        println(state.animqueue)
     else
-        println("level up")
         push!(state.animqueue,BattleAnimation(
             :p1,60,"",bxpAnimLvUp!,levelups
         ))
         
         push!(state.animqueue,BattleAnimation(
-            :p1,60,"$(state[1].name) erreicht Lv. $(state[1].pkmn.stats.level+levelups)!",
+            :p1,120,"$(state[1].name) erreicht Lv. $(state[1].pkmn.stats.level+levelups)!",
             banimEmpty!,1
         ))
 
         push!(state.animqueue,BattleAnimation(
-            :p1,60,"",bxpAnim!,
+            :p1,60,"",  # "$(state[1].name) erreicht Lv. $(state[1].pkmn.stats.level+levelups)!",
+            bxpAnim!,
             Int(xpFormulas(state[1].pkmn.stats.level+levelups,state[1].pkmn.xptype))-
                 state[1].pkmn.stats.xp
         ))

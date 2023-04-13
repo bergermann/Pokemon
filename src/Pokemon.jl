@@ -38,7 +38,7 @@ function main()
         Im(),
         PkmnData(),
 
-        Trainer("Void",0x0000,0x02,Vector{Pkmn}([]),[],[],
+        Trainer("Void",0x0000,0x02,ArrayList(Pkmn,6),[],[],
             falses(151),getSpriteMain("sprite"; s=settings)),
 
         map1,
@@ -64,6 +64,7 @@ function main()
 
     push!(game.trainer.pokemon,generatePkmn(game,0x0001,0x14))
     push!(game.trainer.pokemon,generatePkmn(game,0x0002,0x03))
+    push!(game.trainer.pokemon,generatePkmn(game,0x0003,0x60))
 
     createSprite!(game,:main,:layer2,getSpriteMain("sprite"),Position(80,128),
         11; active=true)

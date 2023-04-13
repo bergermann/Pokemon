@@ -203,6 +203,10 @@ function Base.setindex!(A::ArrayList, X, id::Symbol)
     return setindex!(A.data,X,findfirst(x -> x.id==id, A.data))
 end
 
+function Base.eachindex(a::ArrayList)
+    return eachindex(a.data[1:a.idx])
+end
+
 function Base.push!(a::ArrayList, x)
     if a.idx >= length(a.data)           
         error("ArrayList is full, can't push new element.")
@@ -322,7 +326,7 @@ mutable struct Trainer
     id::UInt16
     gender::UInt8
 
-    pokemon::Vector{Pkmn}
+    pokemon::ArrayList{Pkmn}
     inventory::Vector   #placeholder
 
     badges::Vector{UInt8}
@@ -736,10 +740,6 @@ mutable struct Layers
     layer6::Matrix{UInt32}
 
     textbox::Matrix{UInt32}
-    menu::Matrix{UInt32}
-    menu1::Matrix{UInt32}
-    menu2::Matrix{UInt32}
-    menu3::Matrix{UInt32}
     
 
     function Layers(; s::Settings=Settings())

@@ -26,7 +26,7 @@ function bhpAnim!(game::GameState,user::Int,target::Int,tag::Symbol,pos::Positio
     b1 = getHealthBar(p,p.stats.hp)
     b2 = getHealthBar(p,p.stats.hp-dmg)
 
-    drawHealthBarBattle!(game.im.sprites[tag].im,
+    drawHealthBar!(game.im.sprites[tag].im,
         b1-trunc(Int,(b1-b2)*game.n.c[:hp].c/48),pos)
     
 
@@ -148,7 +148,7 @@ function bxpAnimLevelUp!(game::GameState,levelups::Int,xpnext::Int,xplevel::Int)
     end
     
     if game.n.c[:xp].c == 48
-        evdrop = rand(0x00:0x03,6)   # needs work
+        evdrop = rand(0x00:0x03,6)   # fix this
         diffhp = calcHp(game.battle.state.pkmn1.pkmn,UInt8(levelups),evups)-
             game.battle.state.pkmn1.pkmn.stats.rv[1]
 

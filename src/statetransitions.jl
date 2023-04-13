@@ -222,3 +222,44 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+function stateMenuPkmnOpen!(game::GameState)
+    game.draw.map = false
+
+    flushLayers!(game)
+    flushLayer!(game)
+
+    killSprite!(game,:main)
+    killSprite!(game,:cursor)
+    killCC!(game,:movemain)
+
+    createCC!(game,:wiggle,emptyCallback,(); active=false)
+
+    drawMenuPkmn!(game)
+end
+
+function stateMenuPkmnCtrls!(game::GameState)
+    game.input.inputlock = false
+    game.input.menu.pkmn = true
+    
+end
+
+function stateMenuClose!(game::GameState)
+    game.draw.map = false
+
+    flushLayers!(game)
+    flushLayer!(game)
+
+    killSprite!(game,:main)
+    killSprite!(game,:cursor)
+    killCC!(game,:movemain)
+end
+

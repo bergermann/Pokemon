@@ -184,6 +184,7 @@ function inputMap!(game::GameState,input::Input)
 
         game.draw.menu1 = true
 
+        drawMenu!(game)
         return
     end
 
@@ -240,11 +241,21 @@ function inputMenu!(game::GameState,input::Input)
 
     if input._down
         game.input.menu.select = (game.input.menu.select+0x01)%0x08
+        game.im.sprites[:cursor].pos = P(40+(game.input.menu.select)*17,185)
     elseif input._up
-        game.input.menu.select = (game.input.menu.select-0x01)%0x08
+        if game.input.menu.select == 0x00
+            game.input.menu.select = 0x07
+        else
+            game.input.menu.select -= 0x01
+        end
+
+        game.im.sprites[:cursor].pos = P(40+(game.input.menu.select)*17,185)
     elseif input._A
         inputMenuSelector!(game)
     elseif (input._start || input._B)
+        flushLayer!(game,:layer5)
+        killSprite!(game,:cursor)
+
         game.input.move = true
         game.input.map = true
         game.input.menu.main = false
@@ -259,8 +270,11 @@ function inputMenuSelector!(game::GameState)
         game.input.menu.pdex = true
         game.input.map = false
     elseif game.input.menu.select == 0x01
-        game.input.menu.pkmn = true
         game.input.map = false
+        game.input.inputlock = true
+
+        createCC!(game,:scenet,sceneTransition!,
+            (24,12,stateMenuPkmnOpen!,(),stateMenuPkmnCtrls!,()); active=true,n=1)
     elseif game.input.menu.select == 0x02
         game.input.menu.bags = true
         game.input.map = false
@@ -288,24 +302,27 @@ end
 
 function inputMenuPkmn!(game::GameState,input::Input)
     if input._A
-        if game.input.menu.pkmn.select == length(game.trainer.pokemon)
+        if game.input.menu.pkmn.select == game.trainer.pokemon.idx
+            game.input.inputlock = true
             game.input.menu.pkmn = false
             game.input.menu.menupkmn.select = 0x00
-            game.input.map = true
+
+            createCC!(game,:scenet,sceneTransition!,
+                (stateMenuPkmnClose!,(),stateMapCtrls!,()); active=true,n=1)
         end
     elseif input._B
         game.input.menu.pkmn = false
         game.input.menu.menupkmn.select = 0x00
         game.input.map = true
     elseif input._down
-        if game.menu.pkmn.select == length(game.trainer.pokemon)
+        if game.menu.pkmn.select == game.trainer.pokemon.idx
             game.input.menu.menupkmn.select = 0x00
         else
             game.input.menu.menupkmn.select += 0x01
         end
     elseif input._up
         if game.input.menu.pkmn.select == 0x00
-            game.input.menu.pkmn.select = length(game.trainer.pokemon)
+            game.input.menu.pkmn.select = game.trainer.pokemon.idx
         else
             game.input.menu.pkmn.select -= 0x01
         end

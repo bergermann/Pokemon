@@ -296,3 +296,31 @@ function fadeOut!(game::GameState,len::Int)
 
     game.n.c[:fadeout].c += 1
 end
+
+function sceneTransition!(game::GameState,len::Int,pause::Int,  # pause >= 1!
+        state1::Function,state1args::Tuple,
+        state2::Function,state2args::Tuple)
+
+    if game.n.c[:scenet].c == 1
+        game.im.postprocess.active = true
+        game.im.postprocess.func = fadeLinear!
+        game.im.postprocess.args = (UInt8(len),0x01,)
+    elseif game.n.c[:scenet].c <= len
+        game.im.postprocess.args = (UInt8(len),UInt8(game.n.c[:scenet].c),)
+    elseif game.n.c[:scenet].c == len+1
+        Base.GC.gc()
+        state1(game,state1args...)
+    elseif len+pause+1 <= game.n.c[:scenet].c <= 2*len+pause
+        game.im.postprocess.args = (UInt8(len),UInt8(2*len+pause-game.n.c[:scenet].c),)
+    else
+        game.im.postprocess.active = false
+        game.im.postprocess.func = emptyCallback
+        state2(game,state2args...)
+
+        killCC!(game,:scenet)
+
+        return
+    end
+   
+    game.n.c[:scenet].c += 1
+end

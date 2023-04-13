@@ -432,13 +432,13 @@ function drawFrame1!(game::GameState,layer::Symbol,height::Int,width::Int,
 end
 
 function drawMenu!(game::GameState)
-    drawFrame!(game,:menu,UInt(20),UInt(10),Position(24,176))
+    drawFrame!(game,:layer5,UInt(20),UInt(10),Position(24,176))
 
-    drawText!(game,:menu,"Pokedex\\Pokemon\\Beutel\\Pokenav\
+    drawText!(game,:layer5,"Pokedex\\Pokemon\\Beutel\\Pokenav\
         \\$(game.trainer.name)\\Speichern\\Optionen\\Beenden",
         UInt(2),Position(38,194); lineoffset=2)
 
-    drawText!(game,:menu,"▷",UInt(2),Position(38+(game.input.menu.select)*17,186))
+    createSprite!(game,:cursor,:layer5,getCursor(),P(57,185),1; active=true)
 end
 
 
@@ -486,99 +486,80 @@ function getMenuPkmn()
 end
 
 function drawMenuPkmn!(game::GameState)
-    game.im.layers.menu1[24+1:24+160,16+1:16+240] = game.im.menupkmn["bg"]
+    m = game.im.menupkmn    # fix
+
+    game.im.layers.layer1[24+1:24+160,16+1:16+240] = game.im.menupkmn["bg"]
+
+    createSprite!(game,:slot1,:layer1,Dict(
+        1 => copy(m["slotmain0"]),
+        2 => copy(m["slotmain1"]),
+        3 => copy(m["slotmainswap0"]),
+        4 => copy(m["slotmainswap1"])
+        ),P(24+24,16+8),2; active=true)
+
+    drawHealthBar!(game.im.sprites[:slot1].im,
+        getHealthBar(game.trainer.pokemon[1]),Position(34,24))
+
+    drawText!(game,game.im.sprites[:slot1].im,
+        pkmnName(game,game.trainer.pokemon[1])*"\\  Lv."*
+        string(game.trainer.pokemon[1].stats.level),UInt(1),P(10,24),
+        0xffffff,0x737373; lineoffset=-3)
+
+    drawText!(game,game.im.sprites[:slot1].im,
+        string(game.trainer.pokemon[1].stats.hp)*"/"*
+        string(game.trainer.pokemon[1].stats.rv[1]),UInt(1),P(36,36),
+        0xffffff,0x737373)
+
+    createSprite!(game,:ball1,:layer1,Dict(1 => copy(m["ball0"]),2 => copy(m["ball1"])),
+        P(24+16,16+2),2; active=true)
+
+    for i in 2:game.trainer.pokemon.idx
+        createSprite!(game,Symbol("slot$i"),:layer1,Dict(
+            1 => copy(m["slotside0"]),
+            2 => copy(m["slotside1"]),
+            3 => copy(m["slotsideswap0"]),
+            4 => copy(m["slotsideswap1"])
+            ),P(24+10+(i-2)*24,16+96),1; active=true)
+
+        drawHealthBar!(game.im.sprites[Symbol("slot$i")].im,
+            getHealthBar(game.trainer.pokemon[i]),Position(9,88))
+
+        drawText!(game,game.im.sprites[Symbol("slot$i")].im,
+            pkmnName(game,game.trainer.pokemon[i])*"\\  Lv."*
+            string(game.trainer.pokemon[i].stats.level),UInt(1),
+            P(2,20),0xffffff,0x737373; lineoffset = -3)
+        
+        drawText!(game,game.im.sprites[Symbol("slot$i")].im,
+            string(game.trainer.pokemon[i].stats.hp)*"/"*
+            string(game.trainer.pokemon[i].stats.rv[1]),UInt(1),
+            P(11,100),0xffffff,0x737373)
+        
+        createSprite!(game,Symbol("ball$i"),:layer1,
+            Dict(1 => copy(m["ball0"]),2 => copy(m["ball1"])),
+            P(24+9+(i-2)*24,16+88),1; active=true)
+    end
+
+    for i in game.trainer.pokemon.idx+1:6
+        game.im.layers.layer1[24+10+1+(i-2)*24:24+10+22+(i-2)*24,
+            16+96+1:16+96+142] = copy(game.im.menupkmn["slotempty"])
+    end
+
+    createSprite!(game,:exit,:layer1,
+        Dict(1 => copy(m["exit0"]), 2 => copy(m["exit1"])),
+        P(24+136,16+186),1; active=true)
     
+    createSprite!(game,:ballexit,:layer1,
+        Dict(1 => copy(m["ball0"]), 2 => copy(m["ball1"])),
+        P(24+132,16+184),1; active=true)
 
-    for i in eachindex(game.trainer.pokemon)
-        if i == 1
-            if game.menu.pkmn.select == 0x00
-                game.im.layers.menu1[24+24+1:24+24+49,
-                    16+8+1:16+8+78] = game.im.menupkmn["slotmain1"]
-                
-                game.im.layers.menu2[24+16+1:24+16+24,
-                    16+2+1:16+2+20] = game.im.menupkmn["ball1"]
-            else
-                game.im.layers.menu1[24+24+1:24+24+49,
-                    16+8+1:16+8+78] = game.im.menupkmn["slotmain0"]
-                
-                game.im.layers.menu2[24+16+1:24+16+24,
-                    16+2+1:16+2+20] = game.im.menupkmn["ball0"]
-            end
-            
-            drawText!(game,:menu1,pkmnName(game,game.trainer.pokemon[1])*"\\  Lv."*
-                string(game.trainer.pokemon[1].stats.level),UInt(1),
-                Position(24+34,16+34); lineoffset = -3)
-            
-            drawText!(game,:menu1,string(game.trainer.pokemon[1].stats.hp)*"/"*
-                string(game.trainer.pokemon[1].stats.rv[1]),UInt(1),
-                Position(24+60,16+58))
-            
-            drawHealthBar!(game,:menu1,getHealthBar(game.trainer.pokemon[1]),
-                Position(24+58,16+33))
-        else
-            if game.menu.pkmn.select == UInt8(i-1)
-                game.im.layers.menu1[24+10+1+(i-2)*24:24+10+22+(i-2)*24,
-                    16+96+1:16+96+142] = game.im.menupkmn["slotside1"]
-                
-                game.im.layers.menu2[24+9+1+(i-2)*24:24+9+24+(i-2)*24,
-                    16+88+1:16+88+20] = game.im.menupkmn["ball1"]
-            else
-                game.im.layers.menu1[24+10+1+(i-2)*24:24+10+22+(i-2)*24,
-                    16+96+1:16+96+142] = game.im.menupkmn["slotside0"]
-                
-                game.im.layers.menu2[24+9+1+(i-2)*24:24+9+24+(i-2)*24,
-                    16+88+1:16+88+20] = game.im.menupkmn["ball0"]
-            end
-            
-            drawText!(game,:menu1,pkmnName(game,game.trainer.pokemon[i])*"\\  Lv."*
-                string(game.trainer.pokemon[i].stats.level),UInt(1),
-                Position(24+11+(i-2)*24,16+121); lineoffset = -3)
-            
-            drawText!(game,:menu1,string(game.trainer.pokemon[i].stats.hp)*"/"*
-                string(game.trainer.pokemon[i].stats.rv[1]),UInt(1),
-                Position(24+21+(i-2)*24,16+211))
-
-            drawHealthBar!(game,:menu1,getHealthBar(game.trainer.pokemon[i]),
-                Position(24+19+(i-2)*24,16+185))
-        end
-    end
-
-    for i in length(game.trainer.pokemon)+1:6
-        game.im.layers.menu1[24+10+1+(i-2)*24:24+10+22+(i-2)*24,
-            16+96+1:16+96+142] = game.im.menupkmn["slotempty"]
-    end
-
-    if game.menu.pkmn.select == length(game.trainer.pokemon)
-        game.im.layers.menu1[24+136+1:24+136+16,
-            16+186+1:16+186+52] = game.im.menupkmn["exit1"]
-        
-        game.im.layers.menu2[24+132+1:24+132+24,
-            16+184+1:16+184+20] = game.im.menupkmn["ball1"]
-    else
-        game.im.layers.menu1[24+136+1:24+136+16,
-            16+186+1:16+186+52] = game.im.menupkmn["exit0"]
-        
-        game.im.layers.menu2[24+132+1:24+132+24,
-            16+184+1:16+184+20] = game.im.menupkmn["ball0"]
-    end
-
-    drawFrame!(game,:menu2,UInt(4),UInt(23),Position(24+128,16))
-
-    drawText!(game,:menu2,"Wähle ein Pokémon.",UInt(2),Position(24+136,24))
-    drawText!(game,:menu2,"ZURUCK",UInt(1),Position(24+137,16+204))
+    drawText!(game,game.im.sprites[:exit].im,"ZURUCK",UInt(1),Position(2,18),
+        0xffffff,0x737373)
+    
+    drawFrame!(game,:layer2,UInt(4),UInt(23),Position(24+128,16))
+    drawText!(game,:layer2,"Wähle ein Pokémon.",UInt(2),Position(24+138,24))
 end
 
-# function drawHealthBar!(game::GameState,layer::Symbol,value::Int,pos::Position)
-#     getfield(game.im.layers,layer)[pos.h,pos.w:pos.w+value] .= 0x5ad684
-#     getfield(game.im.layers,layer)[pos.h+1:pos.h+2,pos.w:pos.w+value] .= 0x73ffad
-# end
-
-function drawHealthBar!(game::GameState,im::Matrix{UInt32},value::Int,pos::Position)
-    im[pos.h,pos.w:pos.w+value] .= 0x5ad684
-    im[pos.h+1:pos.h+2,pos.w:pos.w+value] .= 0x73ffad
-end
-
-function drawHealthBarBattle!(im::Matrix{UInt32},value::Int,pos::Position)
+function drawHealthBar!(im::Matrix{UInt32},value::Int,pos::Position)
     if value > 24
         im[pos.h,pos.w+1:pos.w+value] .= 0x5ad684
         im[pos.h+1:pos.h+2,pos.w+1:pos.w+value] .= 0x73ffad
@@ -795,7 +776,7 @@ end
 
 
 function drawBattleTagOwn!(game::GameState,pkmn::Pkmn,im::Matrix{UInt32})
-    drawHealthBarBattle!(im,getHealthBar(pkmn),P(20,49))
+    drawHealthBar!(im,getHealthBar(pkmn),P(20,49))
     drawXpBar!(game,im,getXpBar(pkmn,0),P(36,33))
 
     drawText!(game,im,pkmnName(game,pkmn),UInt(1),Position(4,17),0x424242,0xded6b5)
@@ -806,7 +787,7 @@ function drawBattleTagOwn!(game::GameState,pkmn::Pkmn,im::Matrix{UInt32})
 end
 
 function drawBattleTagOpp!(game::GameState,pkmn::Pkmn,im::Matrix{UInt32})
-    drawHealthBarBattle!(im,getHealthBar(pkmn),P(20,40))
+    drawHealthBar!(im,getHealthBar(pkmn),P(20,40))
         
     drawText!(game,im,pkmnName(game,pkmn),UInt(1),Position(4,10),0x424242,0xded6b5)
     drawText!(game,im,string(pkmn.stats.level),UInt(1),Position(4,76),0x424242,0xded6b5)
@@ -1020,25 +1001,25 @@ function drawGame!(game::GameState; s=Settings())
         drawDialogue!(game)
     end
 
-    if game.draw.menu1
-        drawMenu!(game)
-    end
+    # if game.draw.menu1
+    #     drawMenu!(game)
+    # end
 
-    if game.draw.pdex
-        0
-    elseif game.draw.pkmn
-        drawMenuPkmn!(game)
-    elseif game.draw.bags
-        drawInventory!(game)
-    elseif game.draw.pnav
-        0
-    elseif game.draw.self
-        0
-    elseif game.draw.save
-        0
-    elseif game.draw.optn
-        0
-    end
+    # if game.draw.pdex
+    #     0
+    # elseif game.draw.pkmn
+    #     drawMenuPkmn!(game)
+    # elseif game.draw.bags
+    #     drawInventory!(game)
+    # elseif game.draw.pnav
+    #     0
+    # elseif game.draw.self
+    #     0
+    # elseif game.draw.save
+    #     0
+    # elseif game.draw.optn
+    #     0
+    # end
 
     if game.draw.battleintro
         drawBattleIntro!(game; s=s)
@@ -1056,9 +1037,8 @@ function drawGame!(game::GameState; s=Settings())
     #     drawSprites!(game; s=s)
     # end
     
-    #combineLayers!(game,[:menu1,:menu2,:menu3]; s=s)
     
-    combineLayers!(game,[:layer1,:layer2,:layer3,:layer4,:layer5,:layer6,:menu]; s=s)
+    combineLayers!(game,[:layer1,:layer2,:layer3,:layer4,:layer5,:layer6,:textbox]; s=s)
 
     if game.im.weather.active
         game.im.weather.func(game.im.layer,game.im.weather.args...)

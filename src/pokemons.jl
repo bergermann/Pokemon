@@ -207,6 +207,6 @@ getPkmnName(game,pkmn::Pkmn) = pkmnName(game,pkmn)
 
 function activePkmn(game::GameState)
     return game.trainer.pokemon[
-        findfirst(x->x.stats.hp>0x0000,game.trainer.pokemon)
+        findfirst(x->x.stats.hp>0x0000,game.trainer.pokemon.data)
     ]
 end

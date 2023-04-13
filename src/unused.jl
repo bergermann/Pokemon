@@ -1847,3 +1847,86 @@
 
 # #     game.n.c[:xp].c += 1
 # # end
+
+# function drawMenuPkmn!(game::GameState)
+    #     game.im.layers.menu1[24+1:24+160,16+1:16+240] = game.im.menupkmn["bg"]
+        
+    
+    #     for i in eachindex(game.trainer.pokemon)
+    #         if i == 1
+    #             if game.menu.pkmn.select == 0x00
+    #                 game.im.layers.menu1[24+24+1:24+24+49,
+    #                     16+8+1:16+8+78] = game.im.menupkmn["slotmain1"]
+                    
+    #                 game.im.layers.menu2[24+16+1:24+16+24,
+    #                     16+2+1:16+2+20] = game.im.menupkmn["ball1"]
+    #             else
+    #                 game.im.layers.menu1[24+24+1:24+24+49,
+    #                     16+8+1:16+8+78] = game.im.menupkmn["slotmain0"]
+                    
+    #                 game.im.layers.menu2[24+16+1:24+16+24,
+    #                     16+2+1:16+2+20] = game.im.menupkmn["ball0"]
+    #             end
+                
+    #             drawText!(game,:menu1,pkmnName(game,game.trainer.pokemon[1])*"\\  Lv."*
+    #                 string(game.trainer.pokemon[1].stats.level),UInt(1),
+    #                 Position(24+34,16+34); lineoffset = -3)
+                
+    #             drawText!(game,:menu1,string(game.trainer.pokemon[1].stats.hp)*"/"*
+    #                 string(game.trainer.pokemon[1].stats.rv[1]),UInt(1),
+    #                 Position(24+60,16+58))
+                
+    #             drawHealthBar!(xxx,getHealthBar(game.trainer.pokemon[1]),
+    #                 Position(24+58,16+33))
+    #         else
+    #             if game.menu.pkmn.select == UInt8(i-1)
+    #                 game.im.layers.menu1[24+10+1+(i-2)*24:24+10+22+(i-2)*24,
+    #                     16+96+1:16+96+142] = game.im.menupkmn["slotside1"]
+                    
+    #                 game.im.layers.menu2[24+9+1+(i-2)*24:24+9+24+(i-2)*24,
+    #                     16+88+1:16+88+20] = game.im.menupkmn["ball1"]
+    #             else
+    #                 game.im.layers.menu1[24+10+1+(i-2)*24:24+10+22+(i-2)*24,
+    #                     16+96+1:16+96+142] = game.im.menupkmn["slotside0"]
+                    
+    #                 game.im.layers.menu2[24+9+1+(i-2)*24:24+9+24+(i-2)*24,
+    #                     16+88+1:16+88+20] = game.im.menupkmn["ball0"]
+    #             end
+                
+    #             drawText!(game,:menu1,pkmnName(game,game.trainer.pokemon[i])*"\\  Lv."*
+    #                 string(game.trainer.pokemon[i].stats.level),UInt(1),
+    #                 Position(24+11+(i-2)*24,16+121); lineoffset = -3)
+                
+    #             drawText!(game,:menu1,string(game.trainer.pokemon[i].stats.hp)*"/"*
+    #                 string(game.trainer.pokemon[i].stats.rv[1]),UInt(1),
+    #                 Position(24+21+(i-2)*24,16+211))
+    
+    #             drawHealthBar!(xxx,getHealthBar(game.trainer.pokemon[i]),
+    #                 Position(24+19+(i-2)*24,16+185))
+    #         end
+    #     end
+    
+    #     for i in length(game.trainer.pokemon)+1:6
+    #         game.im.layers.menu1[24+10+1+(i-2)*24:24+10+22+(i-2)*24,
+    #             16+96+1:16+96+142] = game.im.menupkmn["slotempty"]
+    #     end
+    
+    #     if game.menu.pkmn.select == length(game.trainer.pokemon)
+    #         game.im.layers.menu1[24+136+1:24+136+16,
+    #             16+186+1:16+186+52] = game.im.menupkmn["exit1"]
+            
+    #         game.im.layers.menu2[24+132+1:24+132+24,
+    #             16+184+1:16+184+20] = game.im.menupkmn["ball1"]
+    #     else
+    #         game.im.layers.menu1[24+136+1:24+136+16,
+    #             16+186+1:16+186+52] = game.im.menupkmn["exit0"]
+            
+    #         game.im.layers.menu2[24+132+1:24+132+24,
+    #             16+184+1:16+184+20] = game.im.menupkmn["ball0"]
+    #     end
+    
+    #     drawFrame!(game,:menu2,UInt(4),UInt(23),Position(24+128,16))
+    
+    #     drawText!(game,:menu2,"Wähle ein Pokémon.",UInt(2),Position(24+136,24))
+    #     drawText!(game,:menu2,"ZURUCK",UInt(1),Position(24+137,16+204))
+    # end

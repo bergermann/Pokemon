@@ -559,6 +559,10 @@ function drawMenuPkmn!(game::GameState)
     drawText!(game,:layer2,"Wähle ein Pokémon.",UInt(2),Position(24+138,24))
 end
 
+function switchSlot!(game::GameState)
+    
+end
+
 function drawHealthBar!(im::Matrix{UInt32},value::Int,pos::Position)
     if value > 24
         im[pos.h,pos.w+1:pos.w+value] .= 0x5ad684

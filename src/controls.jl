@@ -305,32 +305,50 @@ function inputMenuPkmn!(game::GameState,input::Input)
         if game.input.menu.pkmn.select == game.trainer.pokemon.idx
             game.input.inputlock = true
             game.input.menu.pkmn = false
-            game.input.menu.menupkmn.select = 0x00
+            game.input.menu.menupkmn.select = 0
 
             createCC!(game,:scenet,sceneTransition!,
                 (stateMenuPkmnClose!,(),stateMapCtrls!,()); active=true,n=1)
+
+            return
         end
     elseif input._B
+        game.input.inputlock = true
         game.input.menu.pkmn = false
-        game.input.menu.menupkmn.select = 0x00
-        game.input.map = true
+        game.input.menu.menupkmn.select = 0
+
+        createCC!(game,:scenet,sceneTransition!,
+            (stateMenuPkmnClose!,(),stateMapCtrls!,()); active=true,n=1)
+
+        return
     elseif input._down
         if game.menu.pkmn.select == game.trainer.pokemon.idx
-            game.input.menu.menupkmn.select = 0x00
+            game.input.menu.menupkmn.select = 0
+            
+            updateSprite!(game.im.sprites[Symbol(:slot,game.input.menu.menupkmn.select)],2)
+            updateSprite!(game.im.sprites[Symbol(:slot,game.input.menu.menupkmn.select-1)],1)
+            updateSprite!(game.im.sprites[Symbol(:ball,game.input.menu.menupkmn.select)],2)
+            updateSprite!(game.im.sprites[Symbol(:ball,game.input.menu.menupkmn.select-1)],1)
         else
-            game.input.menu.menupkmn.select += 0x01
+            game.input.menu.menupkmn.select += 1
+
+            updateSprite!(game.im.sprites[Symbol(:slot,game.input.menu.menupkmn.select)],2)
+            updateSprite!(game.im.sprites[Symbol(:slot,game.input.menu.menupkmn.select-1)],1)
+            updateSprite!(game.im.sprites[Symbol(:ball,game.input.menu.menupkmn.select)],2)
+            updateSprite!(game.im.sprites[Symbol(:ball,game.input.menu.menupkmn.select-1)],1)
         end
+
     elseif input._up
-        if game.input.menu.pkmn.select == 0x00
+        if game.input.menu.pkmn.select == 0
             game.input.menu.pkmn.select = game.trainer.pokemon.idx
         else
-            game.input.menu.pkmn.select -= 0x01
+            game.input.menu.pkmn.select -= 1
         end
     elseif input._left || input._right
-        if game.input.menu.pkmn.select == 0x00
-            game.input.menu.pkmn.select = 0x01
+        if game.input.menu.pkmn.select == 0
+            game.input.menu.pkmn.select = 1
         else
-            game.input.menu.pkmn.select = 0x00
+            game.input.menu.pkmn.select = 0
         end
     end
 end

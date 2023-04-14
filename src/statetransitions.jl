@@ -264,8 +264,6 @@ function stateMenuClose!(game::GameState)
     createSprite!(game,:main,:layer2,getSpriteMain("sprite"),game.pos,
         game.direction*10+1; active=true)
 
-    # createCounter!(game,:movemain,0)
-    # createCallback!(game,:movemain,false,moveMain!,(game.direction,-1))
     createCC!(game,:movemain,moveMain!,(game.direction,-1))
 end
 

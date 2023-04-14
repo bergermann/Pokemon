@@ -249,17 +249,28 @@ end
 function stateMenuPkmnCtrls!(game::GameState)
     game.input.inputlock = false
     game.input.menu.pkmn = true
-    
 end
 
 function stateMenuClose!(game::GameState)
-    game.draw.map = false
+    game.draw.map = true
 
     flushLayers!(game)
     flushLayer!(game)
 
-    killSprite!(game,:main)
-    killSprite!(game,:cursor)
-    killCC!(game,:movemain)
+    killSpriteAll!(game)
+    killCC!(game,:wiggle)
+
+
+    createSprite!(game,:main,:layer2,getSpriteMain("sprite"),game.pos,
+        game.direction*10+1; active=true)
+
+    # createCounter!(game,:movemain,0)
+    # createCallback!(game,:movemain,false,moveMain!,(game.direction,-1))
+    createCC!(game,:movemain,moveMain!,(game.direction,-1))
+end
+
+function stateMapCtrls!(game::GameState)
+    game.input.inputlock = false
+    game.input.menu.pkmn = true
 end
 

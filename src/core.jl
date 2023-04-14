@@ -168,3 +168,9 @@ end
 function killSprite!(game::GameState,id::Symbol)
     popat!(game.im.sprites,id)
 end
+
+function killSpriteAll!(game::GameState)
+    for _ in eachindex(game.im.sprites)
+        pop!(game.im.sprites)
+    end
+end

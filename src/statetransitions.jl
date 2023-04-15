@@ -267,8 +267,8 @@ function stateMenuClose!(game::GameState)
     createCC!(game,:movemain,moveMain!,(game.direction,-1))
 end
 
-function stateMapCtrls!(game::GameState)
+function stateMenuMainOpen!(game::GameState)
     game.input.inputlock = false
-    game.input.menu.pkmn = true
+    game.input.menu.main = true
 end
 

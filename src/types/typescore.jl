@@ -395,7 +395,7 @@ mutable struct MenuPkmn
     choice::Int
 
     function MenuPkmn()
-        new(0,0)
+        new(1,0)
     end
 end
 
@@ -770,7 +770,6 @@ mutable struct Im
     font::Font
     frames::Dict
     diabox::Dict
-    menupkmn::Dict
     inv::Dict
 
     tilesext::Dict
@@ -790,7 +789,6 @@ mutable struct Im
             Font(),
             getFrames("frames"),
             getDialogueBox("dialogue"),
-            getMenuPkmn(),
             getInventory(),
             
             getTiles("tiles_exterior"),
@@ -802,7 +800,7 @@ mutable struct Im
             Layers(),
             copy(Layers().layer1),
 
-            CallbackFunction(:pp,empty,()),
+            CallbackFunction(:weather,empty,()),
             CallbackFunction(:pp,empty,())
         )
     end

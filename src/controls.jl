@@ -271,6 +271,7 @@ function inputMenuSelector!(game::GameState)
         game.input.map = false
     elseif game.input.menu.select == 0x01
         game.input.map = false
+        game.input.menu.main = false
         game.input.inputlock = true
 
         createCC!(game,:scenet,sceneTransition!,
@@ -302,10 +303,10 @@ end
 
 function inputMenuPkmn!(game::GameState,input::Input)
     if input._A
-        if game.input.menu.pkmn.select == game.trainer.pokemon.idx
+        if game.input.menu.menupkmn.select == game.trainer.pokemon.idx+1
             game.input.inputlock = true
             game.input.menu.pkmn = false
-            game.input.menu.menupkmn.select = 0
+            game.input.menu.menupkmn.select = 1
 
             createCC!(game,:scenet,sceneTransition!,
                 (stateMenuPkmnClose!,(),stateMapCtrls!,()); active=true,n=1)
@@ -315,40 +316,31 @@ function inputMenuPkmn!(game::GameState,input::Input)
     elseif input._B
         game.input.inputlock = true
         game.input.menu.pkmn = false
-        game.input.menu.menupkmn.select = 0
+        game.input.menu.menupkmn.select = 1
 
         createCC!(game,:scenet,sceneTransition!,
-            (stateMenuPkmnClose!,(),stateMapCtrls!,()); active=true,n=1)
+            (stateMenuPkmnClose!,(),stateMenuMainOpen!,()); active=true,n=1)
 
         return
     elseif input._down
-        if game.menu.pkmn.select == game.trainer.pokemon.idx
-            game.input.menu.menupkmn.select = 0
-            
-            updateSprite!(game.im.sprites[Symbol(:slot,game.input.menu.menupkmn.select)],2)
-            updateSprite!(game.im.sprites[Symbol(:slot,game.input.menu.menupkmn.select-1)],1)
-            updateSprite!(game.im.sprites[Symbol(:ball,game.input.menu.menupkmn.select)],2)
-            updateSprite!(game.im.sprites[Symbol(:ball,game.input.menu.menupkmn.select-1)],1)
+        if game.input.menu.menupkmn.select == game.trainer.pokemon.idx+1
+            switchSlot!(game,game.input.menu.menupkmn.select,1)
         else
-            game.input.menu.menupkmn.select += 1
-
-            updateSprite!(game.im.sprites[Symbol(:slot,game.input.menu.menupkmn.select)],2)
-            updateSprite!(game.im.sprites[Symbol(:slot,game.input.menu.menupkmn.select-1)],1)
-            updateSprite!(game.im.sprites[Symbol(:ball,game.input.menu.menupkmn.select)],2)
-            updateSprite!(game.im.sprites[Symbol(:ball,game.input.menu.menupkmn.select-1)],1)
+            switchSlot!(game,game.input.menu.menupkmn.select,
+                game.input.menu.menupkmn.select+1)
         end
-
     elseif input._up
-        if game.input.menu.pkmn.select == 0
-            game.input.menu.pkmn.select = game.trainer.pokemon.idx
+        if game.input.menu.menupkmn.select == 1
+            switchSlot!(game,1,game.trainer.pokemon.idx+1)
         else
-            game.input.menu.pkmn.select -= 1
+            switchSlot!(game,game.input.menu.menupkmn.select,
+                game.input.menu.menupkmn.select-1)
         end
     elseif input._left || input._right
-        if game.input.menu.pkmn.select == 0
-            game.input.menu.pkmn.select = 1
+        if game.input.menu.menupkmn.select == 1
+            switchSlot!(game,1,2)
         else
-            game.input.menu.pkmn.select = 0
+            switchSlot!(game,game.input.menu.menupkmn.select,1)
         end
     end
 end

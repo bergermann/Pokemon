@@ -275,7 +275,7 @@ function inputMenuSelector!(game::GameState)
         game.input.inputlock = true
 
         createCC!(game,:scenet,sceneTransition!,
-            (24,12,stateMenuPkmnOpen!,(),stateMenuPkmnCtrls!,()); active=true,n=1)
+            (16,8,stateMenuPkmnOpen!,(),stateMenuPkmnCtrls!,()); active=true,n=1)
     elseif game.input.menu.select == 0x02
         game.input.menu.bags = true
         game.input.map = false
@@ -298,6 +298,9 @@ function inputMenuSelector!(game::GameState)
         game.input.menu.select = 0x01
 
         game.draw.menu1 = false
+
+        flushLayer!(game,:layer5)
+        killSprite!(game,:cursor)
     end
 end
 
@@ -308,8 +311,8 @@ function inputMenuPkmn!(game::GameState,input::Input)
             game.input.menu.pkmn = false
             game.input.menu.menupkmn.select = 1
 
-            createCC!(game,:scenet,sceneTransition!,
-                (stateMenuPkmnClose!,(),stateMapCtrls!,()); active=true,n=1)
+            createCC!(game,:scenet,sceneTransition!,(16,8,
+                stateMenuPkmnClose!,(),stateMenuMainOpen!,()); active=true,n=1)
 
             return
         end
@@ -318,8 +321,8 @@ function inputMenuPkmn!(game::GameState,input::Input)
         game.input.menu.pkmn = false
         game.input.menu.menupkmn.select = 1
 
-        createCC!(game,:scenet,sceneTransition!,
-            (stateMenuPkmnClose!,(),stateMenuMainOpen!,()); active=true,n=1)
+        createCC!(game,:scenet,sceneTransition!,(16,8,
+            stateMenuPkmnClose!,(),stateMenuMainOpen!,()); active=true,n=1)
 
         return
     elseif input._down

@@ -300,7 +300,7 @@ end
 function sceneTransition!(game::GameState,len::Int,pause::Int,  # pause >= 1!
         state1::Function,state1args::Tuple,
         state2::Function,state2args::Tuple)
-
+    
     if game.n.c[:scenet].c == 1
         game.im.postprocess.active = true
         game.im.postprocess.func = fadeLinear!
@@ -309,10 +309,13 @@ function sceneTransition!(game::GameState,len::Int,pause::Int,  # pause >= 1!
         game.im.postprocess.args = (UInt8(len),UInt8(game.n.c[:scenet].c),)
     elseif game.n.c[:scenet].c == len+1
         Base.GC.gc()
+        flushLayers!(game)
+        flushLayer!(game)
+        
         state1(game,state1args...)
     elseif len+pause+1 <= game.n.c[:scenet].c <= 2*len+pause
         game.im.postprocess.args = (UInt8(len),UInt8(2*len+pause-game.n.c[:scenet].c),)
-    else
+    elseif game.n.c[:scenet].c == 2*len+pause+1
         game.im.postprocess.active = false
         game.im.postprocess.func = emptyCallback
         state2(game,state2args...)

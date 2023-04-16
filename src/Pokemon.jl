@@ -88,8 +88,8 @@ function main()
     state = mfb_update(w, b)
     
     while true
-        begin
-        # @time begin
+        # begin
+        @time begin
             game.n.frame += 0x01
 
             writeToBuffer!(b,game)
@@ -99,7 +99,6 @@ function main()
                 break
             end
 
-            # print(game.input.battle,", ")
             # print(game.input.battled,", ")
             # print(game.input.inputlock,", ")
             # print(game.dialogue.n)

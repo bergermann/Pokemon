@@ -446,7 +446,7 @@ end
 
 
 function getMenuStuff(str::String,partitions::Int)
-    img = mfb_rgb.(load("im/menupokemon/"*str*".png"))
+    img = mfb_rgb.(load("im/"*str*".png"))
 
     dh = Int(size(img)[1]/partitions)
 
@@ -457,7 +457,7 @@ function drawMenuPkmn!(game::GameState)
     game.im.layers.layer1[24+1:24+160,16+1:16+240] = 
         mfb_rgb.(load("im/menupokemon/background.png"))
 
-    b = getMenuStuff("pokeballs",2)
+    b = getMenuStuff("menupokemon/pokeballs",2)
 
     drawSlotMain!(game,b)
 
@@ -473,7 +473,7 @@ function drawMenuPkmn!(game::GameState)
     end
 
     createSprite!(game,:exit,:layer1,
-        getMenuStuff("exit",2),
+        getMenuStuff("menupokemon/exit",2),
         P(24+136,16+186),1; active=true)
     
     createSprite!(game,:ballexit,:layer1,copy(b),
@@ -491,7 +491,7 @@ function drawMenuPkmn!(game::GameState)
 end
 
 function drawSlotMain!(game::GameState,b::Dict)
-    createSprite!(game,:slot1,:layer1,getMenuStuff("slotmain",6),
+    createSprite!(game,:slot1,:layer1,getMenuStuff("menupokemon/slotmain",6),
         P(24+24,16+8),2; active=true)
 
     for i in 1:4
@@ -515,7 +515,7 @@ function drawSlotMain!(game::GameState,b::Dict)
 end
 
 function drawSlotSide!(game::GameState,slot::Int,b)
-    createSprite!(game,Symbol("slot$slot"),:layer1,getMenuStuff("slotside",6),
+    createSprite!(game,Symbol("slot$slot"),:layer1,getMenuStuff("menupokemon/slotside",6),
         P(24+10+(slot-2)*24,16+96),1; active=true)
 
     for i in 1:4
@@ -587,96 +587,33 @@ end
 
 
 
-
-
-function getInventory()
-    img = mfb_rgb.(load("im/inventory.png"))
-
-    parts::Vector{String} = [
-        "bgblue","bgred","items","balls","machines","berries","key","marker1","marker0","`?",
-        "up","down","left","right","back","slotred","slotblue","bag1","bag2",
-        "bag3","bag4","bag5","belt1","belt2","belt3","belt4","belt5"
-    ]
-
-    key::Matrix{Int} = [
-        1 1 160 240;    #bgblue
-        1 241 160 240;  #bgred
-        1 481 16 80;    #items
-        17 481 16 80;   #balls
-        33 481 16 80;   #machines
-        49 481 16 80;   #berries
-        65 481 16 80;   #key
-        81 481 16 8;    #marker1
-        81 489 16 8;    #marker0
-        81 497 16 16;   #?
-        81 513 16 16;   #up
-        81 529 16 16;   #down
-        97 513 16 16;   #left
-        97 529 16 16;   #right
-        81 545 24 24;   #back
-        105 481 8 8;    #slotred
-        105 489 8 8;    #slotblue
-        161 1 64 64;    #bag1
-        161 65 64 64;   #bag2
-        161 129 64 64;  #bag3
-        161 193 64 64;  #bag4
-        161 257 64 64;  #bag5
-        161 321 64 64;  #belt1
-        161 385 64 64;  #belt2
-        161 449 64 64;  #belt3
-        161 513 64 64;  #belt4
-        161 577 64 64;  #belt5
-    ]
-
-    return Dict{String,Matrix{UInt32}}(zip(parts,[img[key[i,1]:key[i,1]+key[i,3]-1,
-        key[i,2]:key[i,2]+key[i,4]-1] for i in eachindex(parts)]))
-end
-
 function drawInventory!(game::GameState)
-    game.im.layers.menu1[24+1:24+160,16+1:16+240] = game.im.inv["bgblue"]
+    game.im.layers.layer1[24+1:24+160,16+1:16+240] =
+        mfb_rgb.(load("im/menubags/background1.png"))
 
-    for i in 0:4
-        game.im.layers.menu2[24+24+1:24+24+8,16+40+1+i*8:16+40+8+i*8] .= 0x000000
-    end
+    createSprite!(game,:slotmarker,:layer1,getMenuStuff("menubags/slotmarker1",1),
+        P(24+24,16+40+game.menu.menubags.bag*8),1; active=true)
 
-    game.im.layers.menu2[24+24+1:24+24+8,
-        16+40+1+game.menu.bags.slot*8:16+40+8+game.menu.bags.slot*8] = game.im.inv["slotred"]
+    createSprite!(game,:slot,:layer1,getMenuStuff("menubags/slots",5),
+        P(24+8,16+24),game.menu.menubags.bag+1; active=true)
 
-    if game.menu.bags.slot == 0x00
-        game.im.layers.menu1[24+8+1:24+8+16,16+24+1:16+24+80] = game.im.inv["items"]
-        game.im.layers.menu2[24+36+1:24+36+64,16+40+1:16+40+64] = game.im.inv["bag1"]
-    elseif game.menu.bags.slot == 0x01
-        game.im.layers.menu1[24+8+1:24+8+16,16+24+1:16+24+80] = game.im.inv["balls"]
-        game.im.layers.menu2[24+36+1:24+36+64,16+40+1:16+40+64] = game.im.inv["bag2"]
-    elseif game.menu.bags.slot == 0x02
-        game.im.layers.menu1[24+8+1:24+8+16,16+24+1:16+24+80] = game.im.inv["machines"]
-        game.im.layers.menu2[24+36+1:24+36+64,16+40+1:16+40+64] = game.im.inv["bag3"]
-    elseif game.menu.bags.slot == 0x03
-        game.im.layers.menu1[24+8+1:24+8+16,16+24+1:16+24+80] = game.im.inv["berries"]
-        game.im.layers.menu2[24+36+1:24+36+64,16+40+1:16+40+64] = game.im.inv["bag4"]
-    elseif game.menu.bags.slot == 0x04
-        game.im.layers.menu1[24+8+1:24+8+16,16+24+1:16+24+80] = game.im.inv["key"]
-        game.im.layers.menu2[24+36+1:24+36+64,16+40+1:16+40+64] = game.im.inv["bag5"]
-    end
+    createSprite!(game,:bag,:layer1,getMenuStuff("menubags/bags1",5),
+        P(24+26,16+40),game.menu.menubags.bag+1; active=true)
 
-    if game.n.frame%0x1e < 0x0f
-        game.im.layers.menu2[
-            24+8+1:24+8+16,16+22+1-div(game.n.frame%0x1e,0x05):16+22+16-div(game.n.frame%0x1e,0x05)
-        ] = game.im.inv["left"]
-        
-        game.im.layers.menu2[
-            24+8+1:24+8+16,16+90+1+div(game.n.frame%0x1e,0x05):16+90+16+div(game.n.frame%0x1e,0x05)
-        ] = game.im.inv["right"]
-    else
-        game.im.layers.menu2[
-            24+8+1:24+8+16,16+19+1+div(game.n.frame%0x1e,0x05):16+19+16+div(game.n.frame%0x1e,0x05)
-        ] = game.im.inv["left"]
-        
-        game.im.layers.menu2[
-            24+8+1:24+8+16,16+93+1-div(game.n.frame%0x1e,0x05):16+93+16-div(game.n.frame%0x1e,0x05)
-        ] = game.im.inv["right"]
-    end
+    createSprite!(game,:arrowleft,:layer1,getMenuStuff("menubags/arrowleft",1),
+        P(24+8,16+22),1; active=true)
+    
+    createSprite!(game,:arrowright,:layer1,getMenuStuff("menubags/arrowright",1),
+        P(24+8,16+90),1; active=true)
 
+    createSprite!(game,:arrowup,:layer1,getMenuStuff("menubags/arrowup",1),
+        P(24+26,16+40),1; active=false)
+    
+    createSprite!(game,:arrowdown,:layer1,getMenuStuff("menubags/arrowdown",1),
+        P(24+26,16+40),1; active=false)
+    
+    createSprite!(game,:cursor,:layer1,getMenuStuff("menubags/cursor",1),
+        P(24+24,16+112),1; active=true)
 end
 
 

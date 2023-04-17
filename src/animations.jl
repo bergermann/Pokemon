@@ -376,3 +376,7 @@ function animBagSwitch!(game::GameState)
 
     game.n.c[:bagswitch].c += 1
 end
+
+function animMenuPkmnWiggle!(game::GameState)
+    
+end

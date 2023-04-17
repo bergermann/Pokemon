@@ -410,10 +410,11 @@ end
 
 mutable struct MenuPkmn
     select::Int
+    swap::Int
     choice::Int
 
     function MenuPkmn()
-        new(1,1)
+        new(1,1,1)
     end
 end
 

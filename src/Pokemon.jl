@@ -108,8 +108,8 @@ function main()
             updateGame!(game,input; s=settings)
 
             #print("draw:")
-            @time drawGame!(game; s=settings)
-            # drawGame!(game; s=settings)
+            # @time drawGame!(game; s=settings)
+            drawGame!(game; s=settings)
             resetInput!()
         end
     end

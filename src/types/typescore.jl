@@ -3,6 +3,14 @@
 mutable struct Position
     h::Int32
     w::Int32
+
+    function Position()
+        new(0,0)
+    end
+
+    function Position(h,w)
+        new(h,w)
+    end
 end
 
 Base.println(p::Position) = println("P($(P.h),$(P.w))")
@@ -277,6 +285,14 @@ function Base.popat!(a::ArrayList,i::Int)
 
     a.data[i:a.idx-1] = a.data[i+1:a.idx-1]
     a.idx -= 1
+end
+
+function popall!(a::ArrayList)
+    for i in 1:a.idx
+        a.data[i] = eltype(a.data).name.wrapper()
+    end
+
+    a.idx = 0
 end
 
 function Base.popfirst!(a::ArrayList)

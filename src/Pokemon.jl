@@ -104,14 +104,13 @@ function main()
             # print(game.dialogue.n)
             # println()
             #print("update:")
-            #@time updateGame!(game,input; s=settings)
+            # @time updateGame!(game,input; s=settings)
             updateGame!(game,input; s=settings)
 
             #print("draw:")
-            #@time 
-            drawGame!(game; s=settings)
+            @time drawGame!(game; s=settings)
+            # drawGame!(game; s=settings)
             resetInput!()
-            #print("loop:")
         end
     end
 end

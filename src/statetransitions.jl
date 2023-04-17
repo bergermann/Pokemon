@@ -178,13 +178,7 @@ function stateBattleFleeBlocked!(game::GameState)
     game.callbacks[:wiggle].active = true
 end
 
-# function stateEndBattle!(game::GameState)
-#     stateEndBattle!(game,game.battle.state)
-# end
-
 function stateEndBattle!(game::GameState)   #,state::BattleStateWild)
-    # println("state end battle")
-
     killSprite!(game,:pkmn1)
     killSprite!(game,:tag1)
     killSprite!(game,:pkmn2)
@@ -195,9 +189,7 @@ function stateEndBattle!(game::GameState)   #,state::BattleStateWild)
 
     flushLayers!(game)
     flushLayer!(game)
-
-    # killCC!(game,:animbattle)
-
+    
     game.im.postprocess.active = false
 
     game.battle.active = false
@@ -235,7 +227,7 @@ function stateMenuPkmnOpen!(game::GameState)
     killSprite!(game,:cursor)
     killCC!(game,:movemain)
 
-    createCC!(game,:wiggle,emptyCallback,(); active=false)
+    createCallback!(game,:wiggle,animMenuPkmnWiggle!,(); active=true)
 
     drawMenuPkmn!(game)
 end
@@ -250,13 +242,13 @@ function stateMenuPkmnClose!(game::GameState)
     game.input.inputlock = true
 
     killSpriteAll!(game)
-    killCC!(game,:wiggle)
+    killCallback!(game,:wiggle)
 
-    createSprite!(game,:main,:layer2,getSpriteMain("sprite"),Position(80,128),
+    createSprite!(game,:main,:layer2,getSpriteMain("sprite"),P(80,128),
         (game.direction-1)*10+1; active=true)
 
     createCounter!(game,:movemain,0)
-    createCallback!(game,:movemain,false,moveMain!,(game.direction,-1))
+    createCallback!(game,:movemain,moveMain!,(game.direction,-1))
 
     drawMenu!(game)
 end

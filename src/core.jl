@@ -102,11 +102,11 @@ function killCounter!(game::GameState,id::Symbol)
     popat!(game.n.c,id)
 end
 
-function createCallback!(game::GameState,id::Symbol,func::Function,args::Tuple)
-    push!(game.callbacks,CallbackFunction(id,false,func,args))
+function createCallback!(game::GameState,id::Symbol,active::Bool,func::Function,args::Tuple)
+    push!(game.callbacks,CallbackFunction(id,active,func,args))
 end
 
-function createCallback!(game::GameState,id::Symbol,active::Bool,func::Function,args::Tuple)
+function createCallback!(game::GameState,id::Symbol,func::Function,args::Tuple; active=false)
     push!(game.callbacks,CallbackFunction(id,active,func,args))
 end
 
@@ -170,7 +170,5 @@ function killSprite!(game::GameState,id::Symbol)
 end
 
 function killSpriteAll!(game::GameState)
-    for _ in eachindex(game.im.sprites)
-        pop!(game.im.sprites)
-    end
+    popall!(game.im.sprites)
 end

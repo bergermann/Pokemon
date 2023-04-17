@@ -149,7 +149,7 @@ function bxpAnimLevelUp!(game::GameState,levelups::Int,xpnext::Int,xplevel::Int)
     
     if game.n.c[:xp].c == 48
         evdrop = rand(0x00:0x03,6)   # fix this
-        diffhp = calcHp(game.battle.state.pkmn1.pkmn,UInt8(levelups),evdrop)-
+        diffhp = calcHp(game.battle.state.pkmn1.pkmn,UInt8(levelups),evdrop[1])-
             game.battle.state.pkmn1.pkmn.stats.rv[1]
 
         game.battle.state.pkmn1.pkmn.stats.level += levelups

@@ -378,5 +378,15 @@ function animBagSwitch!(game::GameState)
 end
 
 function animMenuPkmnWiggle!(game::GameState)
-    
+    return
+
+    for i in 1:game.trainer.pokemon.idx
+        if i == game.input.menu.menupkmn.select
+            updateSprite!(game.im.sprites[0+i],2*div(game.n.frame%30,15)+1)
+
+            continue
+        end
+
+        updateSprite!(game.im.sprites[0+i],div(game.n.frame%30,15)+1)   #fix this
+    end
 end

@@ -5,6 +5,8 @@ mutable struct Position
     w::Int32
 end
 
+Base.println(p::Position) = println("P($(P.h),$(P.w))")
+
 const P = Position
 
 function posAdd(a::Position,b::Position)
@@ -395,7 +397,7 @@ mutable struct MenuPkmn
     choice::Int
 
     function MenuPkmn()
-        new(1,0)
+        new(1,1)
     end
 end
 
@@ -403,7 +405,7 @@ mutable struct MenuNav
     select::Int
 
     function MenuNav()
-        new(0)
+        new(1)
     end
 end
 
@@ -412,7 +414,7 @@ mutable struct MenuBags
     select::Int
 
     function MenuBags()
-        new(0,0)
+        new(1,1)
     end
 end
 
@@ -420,7 +422,7 @@ mutable struct MenuSelf
     select::Int
 
     function MenuSelf()
-        new(0)
+        new(1)
     end
 end
 
@@ -428,7 +430,7 @@ mutable struct MenuSave
     select::Int
 
     function MenuSave()
-        new(0)
+        new(1)
     end
 end
 
@@ -436,7 +438,7 @@ mutable struct MenuOpt
     select::Int
 
     function MenuOpt()
-        new(0)
+        new(1)
     end
 end
 
@@ -770,7 +772,6 @@ mutable struct Im
     font::Font
     frames::Dict
     diabox::Dict
-    inv::Dict
 
     tilesext::Dict
     tilesint::Dict
@@ -789,7 +790,6 @@ mutable struct Im
             Font(),
             getFrames("frames"),
             getDialogueBox("dialogue"),
-            getInventory(),
             
             getTiles("tiles_exterior"),
             Dict(),

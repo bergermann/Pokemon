@@ -438,7 +438,8 @@ function drawMenu!(game::GameState)
         \\$(game.trainer.name)\\Speichern\\Optionen\\Beenden",
         UInt(2),Position(38,194); lineoffset=2)
 
-    createSprite!(game,:cursor,:layer5,getCursor(),P(57,185),1; active=true)
+    createSprite!(game,:cursor,:layer5,getCursor(),
+        P(40+(game.input.menu.select)*17,185),1; active=true)
 end
 
 
@@ -589,31 +590,31 @@ end
 
 function drawInventory!(game::GameState)
     game.im.layers.layer1[24+1:24+160,16+1:16+240] =
-        mfb_rgb.(load("im/menubags/background1.png"))
+        mfb_rgb.(load("im/menubag/background1.png"))
 
-    createSprite!(game,:slotmarker,:layer1,getMenuStuff("menubags/slotmarker1",1),
-        P(24+24,16+40+game.menu.menubags.bag*8),1; active=true)
+    createSprite!(game,:slotmarker,:layer1,getMenuStuff("menubag/slotmarker1",1),
+        P(24+27,16+34+game.input.menu.menubags.bag*8),1; active=true)
 
-    createSprite!(game,:slot,:layer1,getMenuStuff("menubags/slots",5),
-        P(24+8,16+24),game.menu.menubags.bag+1; active=true)
+    createSprite!(game,:slot,:layer1,getMenuStuff("menubag/slots",5),
+        P(24+8,16+24),game.input.menu.menubags.bag; active=true)
 
-    createSprite!(game,:bag,:layer1,getMenuStuff("menubags/bags1",5),
-        P(24+26,16+40),game.menu.menubags.bag+1; active=true)
+    createSprite!(game,:bag,:layer1,getMenuStuff("menubag/bags1",6),
+        P(24+34,16+40),game.input.menu.menubags.bag; active=true)
 
-    createSprite!(game,:arrowleft,:layer1,getMenuStuff("menubags/arrowleft",1),
+    createSprite!(game,:arrowleft,:layer1,getMenuStuff("menubag/arrowleft",1),
         P(24+8,16+22),1; active=true)
     
-    createSprite!(game,:arrowright,:layer1,getMenuStuff("menubags/arrowright",1),
+    createSprite!(game,:arrowright,:layer1,getMenuStuff("menubag/arrowright",1),
         P(24+8,16+90),1; active=true)
 
-    createSprite!(game,:arrowup,:layer1,getMenuStuff("menubags/arrowup",1),
+    createSprite!(game,:arrowup,:layer1,getMenuStuff("menubag/arrowup",1),
         P(24+26,16+40),1; active=false)
     
-    createSprite!(game,:arrowdown,:layer1,getMenuStuff("menubags/arrowdown",1),
+    createSprite!(game,:arrowdown,:layer1,getMenuStuff("menubag/arrowdown",1),
         P(24+26,16+40),1; active=false)
     
-    createSprite!(game,:cursor,:layer1,getMenuStuff("menubags/cursor",1),
-        P(24+24,16+112),1; active=true)
+    createSprite!(game,:cursor,:layer1,getMenuStuff("menubag/cursor",2),
+        P(24+22,16+114),1; active=true)
 end
 
 
@@ -934,28 +935,8 @@ function drawGame!(game::GameState; s=Settings())
         sortHorizontal!(game.im.sprites)
     end
 
-    if game.draw.dialogue && !game.draw.battle
-        drawDialogue!(game)
-    end
-
-    # if game.draw.menu1
-    #     drawMenu!(game)
-    # end
-
-    # if game.draw.pdex
-    #     0
-    # elseif game.draw.pkmn
-    #     drawMenuPkmn!(game)
-    # elseif game.draw.bags
-    #     drawInventory!(game)
-    # elseif game.draw.pnav
-    #     0
-    # elseif game.draw.self
-    #     0
-    # elseif game.draw.save
-    #     0
-    # elseif game.draw.optn
-    #     0
+    # if game.draw.dialogue && !game.draw.battle
+    #     drawDialogue!(game)
     # end
 
     if game.draw.battleintro
@@ -969,11 +950,6 @@ function drawGame!(game::GameState; s=Settings())
     if game.draw.battleoutro
         drawBattleExit!(game; s=s)
     end
-
-    # if game.draw.sprites
-    #     drawSprites!(game; s=s)
-    # end
-    
     
     combineLayers!(game,[:layer1,:layer2,:layer3,:layer4,:layer5,:layer6,:textbox]; s=s)
 

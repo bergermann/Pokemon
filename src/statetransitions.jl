@@ -223,19 +223,13 @@ end
 
 
 
-
-
-
-
-
-
-
+function stateMenuMainOpen!(game::GameState)
+    game.input.inputlock = false
+    game.input.menu.main = true
+end
 
 function stateMenuPkmnOpen!(game::GameState)
     game.draw.map = false
-
-    # flushLayers!(game)
-    # flushLayer!(game)
 
     killSprite!(game,:main)
     killSprite!(game,:cursor)
@@ -255,9 +249,6 @@ function stateMenuPkmnClose!(game::GameState)
     game.draw.map = true
     game.input.inputlock = true
 
-    # flushLayers!(game)
-    # flushLayer!(game)
-
     killSpriteAll!(game)
     killCC!(game,:wiggle)
 
@@ -270,8 +261,39 @@ function stateMenuPkmnClose!(game::GameState)
     drawMenu!(game)
 end
 
-function stateMenuMainOpen!(game::GameState)
-    game.input.inputlock = false
-    game.input.menu.main = true
+
+
+function stateMenuBagsOpen!(game::GameState)
+    game.draw.map = false
+
+    killSprite!(game,:main)
+    killSprite!(game,:cursor)
+    killCC!(game,:movemain)
+
+    createCC!(game,:bagswitch,animBagSwitch!,(); n=1)
+    createCallback!(game,:wiggle,true,animArrowsMenu!,())
+
+    drawInventory!(game)
 end
 
+function stateMenuBagsCtrls!(game::GameState)
+    game.input.inputlock = false
+    game.input.menu.bags = true
+end
+
+function stateMenuBagsClose!(game::GameState)
+    game.draw.map = true
+    game.input.inputlock = true
+    
+    killSpriteAll!(game)
+    killCallback!(game,:wiggle)
+    killCC!(game,:bagswitch)
+
+    createSprite!(game,:main,:layer2,getSpriteMain("sprite"),Position(80,128),
+        (game.direction-1)*10+1; active=true)
+
+    createCounter!(game,:movemain,0)
+    createCallback!(game,:movemain,false,moveMain!,(game.direction,-1))
+
+    drawMenu!(game)
+end

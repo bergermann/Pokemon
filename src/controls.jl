@@ -121,13 +121,13 @@ function inputManager!(game::GameState,input::Input)
         return
     end
 
-    if game.input.map
-        inputMap!(game,input)
+    if game.input.dialogue
+        inputDialogue!(game,input)
         return
     end
 
-    if game.input.dialogue
-        inputDialogue!(game,input)
+    if game.input.map
+        inputMap!(game,input)
         return
     end
 
@@ -277,8 +277,12 @@ function inputMenuSelector!(game::GameState)
         createCC!(game,:scenet,sceneTransition!,
             (16,8,stateMenuPkmnOpen!,(),stateMenuPkmnCtrls!,()); active=true,n=1)
     elseif game.input.menu.select == 0x02
-        game.input.menu.bags = true
         game.input.map = false
+        game.input.menu.main = false
+        game.input.inputlock = true
+
+        createCC!(game,:scenet,sceneTransition!,
+            (16,8,stateMenuBagsOpen!,(),stateMenuBagsCtrls!,()); active=true,n=1)
     elseif game.input.menu.select == 0x03
         game.input.menu.pnav = true
         game.input.map = false
@@ -352,46 +356,69 @@ function inputMenuBags!(game::GameState,input::Input)
     if input._A
         return
     elseif input._B
-        game.input.menu.menubags = false
-        game.input.menu.menubags.select = 0x00
-        game.input.map = true
+        game.input.inputlock = true
+        game.input.menu.bags = false
+
+        createCC!(game,:scenet,sceneTransition!,(16,8,
+            stateMenuBagsClose!,(),stateMenuMainOpen!,()); active=true,n=1)
+
+        return
     elseif input._down
-        if game.input.menu.menubags.select == 0x06
-            game.input.menu.menubags.select = 0x00
+        if game.input.menu.menubags.select == 8
+            game.input.menu.menubags.select = 1
         else
-            game.input.menu.menubags.select += 0x01
+            game.input.menu.menubags.select += 1
         end
+        
+        setPos!(game.im.sprites[:cursor].pos,24+22+12*game.input.menu.menubags.select,16+114)
     elseif input._up
-        if game.input.menu.menubags.select == 0x00
-            game.input.menu.menubags.select = 0x06
+        if game.input.menu.menubags.select == 1
+            game.input.menu.menubags.select = 8
         else
-            game.input.menu.menubags.select -= 0x01
+            game.input.menu.menubags.select -= 1
         end
+
+        setPos!(game.im.sprites[:cursor].pos,24+24+12*game.input.menu.menubags.select,16+112)
     elseif input._left
-        if game.input.menu.menubags.slot == 0x00
-            game.input.menu.menubags.slot = 0x04
+        if game.input.menu.menubags.bag == 1
+            game.input.menu.menubags.bag = 5
         else
-            game.input.menu.menubags.slot -= 0x01
+            game.input.menu.menubags.bag -= 1
         end
+        
+        game.input.inputlock = true
+        game.callbacks[:bagswitch].active = true
     elseif input._right
-        if game.input.menu.menubags.slot == 0x04
-            game.input.menu.menubags.slot = 0x00
+        if game.input.menu.menubags.bag == 5
+            game.input.menu.menubags.bag = 1
         else
-            game.input.menu.menubags.slot += 0x01
+            game.input.menu.menubags.bag += 1
         end
+        
+        game.input.inputlock = true
+        game.callbacks[:bagswitch].active = true
     end
 end
 
 function inputDialogue!(game::GameState,input::Input)
-    if input._A || input._B || input._down
-        if game.dialogue.n < length(game.dialogue.str)
-            game.dialogue.n += 1
-        else
-            game.dialogue.d = false
-            game.dialogue.n = 1
-            game.input.move = true
-            game.input.dialogue = false
-        end
+    if !(input._A || input._B || input._down)
+        return
+    end
+
+    if game.dialogue.n < length(game.dialogue.str)
+        game.dialogue.n += 1
+        
+        game.im.layers.textbox[end-48-24+1:end-24,16+1:end-16] =
+            game.im.diabox[game.options.diabox]
+        drawText!(game,:textbox,game.dialogue.str[game.dialogue.n],UInt(2),P(144,32))
+    else
+        game.dialogue.d = false
+        game.dialogue.n = 1
+        game.input.move = true
+        game.input.map = true
+        game.input.dialogue = false
+        
+        flushLayer!(game,:textbox,P(24+112,16),P(48,240))
     end
 end
 
@@ -598,9 +625,13 @@ function mapAction!(game::GameState)
     if tile ∈ [0x0000,0x0001,0x0005,0x0006,0x0007]
         return
     elseif tile >= 0x003c && tile <= 0x004f
+        game.input.map = false
         game.input.move = false
-        game.dialogue.d = true
+        game.input.dialogue = true
         game.dialogue.str = game.map.signs[tile-0x003b]
+
+        game.im.layers.textbox[end-48-24+1:end-24,16+1:end-16] = game.im.diabox[game.options.diabox]
+        drawText!(game,:textbox,game.dialogue.str[game.dialogue.n],UInt(2),P(144,32))
     end
 end
 

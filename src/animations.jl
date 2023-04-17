@@ -203,6 +203,8 @@ function moveWalk!(game::GameState,dir::Int)
         game.n.c[:movemain].c = -1
         game.callbacks[:movemain].active = false
 
+        updateMovePos!(game,dir)
+
         checkEncounter!(game)
 
         return
@@ -220,6 +222,8 @@ function moveWalkWall!(game::GameState,dir::Int)
         end
     elseif game.n.c[:movemain].c%32 == 15
         updateSprite!(game.im.sprites[:main],(dir-1)*10+1)
+
+        updateMovePos!(game,dir)
     end
 
     game.n.c[:movemain].c += 1
@@ -248,6 +252,8 @@ function moveRun!(game::GameState,dir::Int)
         
         game.n.c[:movemain].c = -1
         game.callbacks[:movemain].active = false
+
+        updateMovePos!(game,dir)
 
         checkEncounter!(game)
 
@@ -311,7 +317,7 @@ function sceneTransition!(game::GameState,len::Int,pause::Int,  # pause >= 1!
         Base.GC.gc()
         flushLayers!(game)
         flushLayer!(game)
-        
+
         state1(game,state1args...)
     elseif len+pause+1 <= game.n.c[:scenet].c <= 2*len+pause
         game.im.postprocess.args = (UInt8(len),UInt8(2*len+pause-game.n.c[:scenet].c),)
@@ -326,4 +332,47 @@ function sceneTransition!(game::GameState,len::Int,pause::Int,  # pause >= 1!
     end
    
     game.n.c[:scenet].c += 1
+end
+
+function animArrowsMenu!(game::GameState)
+    if (game.n.frame%48) < 24
+        game.im.sprites[:arrowleft].pos = P(24+8,16+22-div((game.n.frame%24),6))
+        game.im.sprites[:arrowright].pos = P(24+8,16+90+div((game.n.frame%24),6))
+    else
+        game.im.sprites[:arrowleft].pos = P(24+8,16+22-4+div((game.n.frame%24),6))
+        game.im.sprites[:arrowright].pos = P(24+8,16+90+4-div((game.n.frame%24),6))
+    end
+end
+
+function animBagSwitch!(game::GameState)
+    if game.n.c[:bagswitch].c == 1
+        updateSprite!(game.im.sprites[:slot],game.input.menu.menubags.bag)
+        setPos!(game.im.sprites[:slotmarker].pos,24+27,16+34+game.input.menu.menubags.bag*8)
+
+        updateSprite!(game.im.sprites[:bag],6)
+
+        game.im.sprites[:arrowleft].active = false
+        game.im.sprites[:arrowright].active = false
+    end
+
+    if game.n.c[:bagswitch].c < 4
+        setPos!(game.im.sprites[:bag].pos,24+34-game.n.c[:bagswitch].c+1,16+40)
+    elseif game.n.c[:bagswitch].c == 4
+        updateSprite!(game.im.sprites[:bag],game.input.menu.menubags.bag)
+    elseif game.n.c[:bagswitch].c <= 8
+        setPos!(game.im.sprites[:bag].pos,24+34-4+game.n.c[:bagswitch].c-4,16+40)
+    end
+
+    if game.n.c[:bagswitch].c == 8
+        game.im.sprites[:arrowleft].active = true
+        game.im.sprites[:arrowright].active = true
+
+        game.input.inputlock = false
+        game.n.c[:bagswitch].c = 1
+        game.callbacks[:bagswitch].active = false
+
+        return
+    end
+
+    game.n.c[:bagswitch].c += 1
 end

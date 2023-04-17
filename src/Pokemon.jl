@@ -88,8 +88,8 @@ function main()
     state = mfb_update(w, b)
     
     while true
-        # begin
-        @time begin
+        begin
+        # @time begin
             game.n.frame += 0x01
 
             writeToBuffer!(b,game)

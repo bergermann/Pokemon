@@ -675,21 +675,22 @@ mutable struct Map
 
     signs::Vector{Vector{String}}
 
-    npcs::Vector
+    npcsstatic::Vector
+    npcsmobile::Vector
     trainers::Vector
 
     function Map(id::UInt8)
-        new(id,0,"$id",[],getTiles("tiles_exterior"),
+        new(id,[],"$id",[],getTiles("tiles_exterior"),
             getTileMap("$id",[:layer1,:layer2,:layer3,:layer4,:collision]),
-            [],[],[])
+            [],[],[],[])
     end
 
     function Map(id::UInt8,environment::Vector{Symbol},path::String,areas::Vector,
             exits::Vector{Tuple{UInt8,Position}},tiles::Dict{UInt16,Matrix{UInt32}},
-            tilemap::TileMap,signs::Vector{Vector{String}},npcs::Vector,
-            trainers::Vector)
+            tilemap::TileMap,signs::Vector{Vector{String}},npcsstatic::Vector,
+            npcsmobile::Vector,trainers::Vector)
 
-        new(id,environment,path,areas,exits,tiles,tilemap,signs,npcs,trainers)
+        new(id,environment,path,areas,exits,tiles,tilemap,signs,npcsstatic,npcsmobile,trainers)
     end
 end
 
@@ -866,6 +867,9 @@ mutable struct GameState
     
     input::InputState
     draw::DrawState
+
+    # npcs::ArrayList{NPC}
+    # trainers::ArrayList{NPCTrainer}
 
     options::Options
 end

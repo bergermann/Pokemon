@@ -12,12 +12,12 @@ include("core.jl")
 include("battle.jl")
 include("statetransitions.jl")
 include("rendering.jl")
-include("controls.jl")
 include("npcs.jl")
+include("maps.jl")
+include("controls.jl")
 include("animations.jl")
 include("attackanimations.jl")
 include("battlenpc.jl")
-#include("maps.jl")
 
 function showIm(im)
     display(plot(reinterpret(RGB24,im)))
@@ -33,7 +33,7 @@ function testmain()
         Im(),
         PkmnData(),
 
-        Trainer("Void",0x0000,0x02,Vector{Pkmn}([]),[],[],
+        Trainer("Void",0x0000,0x02,ArrayList(Pkmn,6),[],[],
             falses(151),getSpriteMain("sprite"; s=settings)),
 
         map1,
@@ -79,3 +79,25 @@ end
 g = testmain()
 
 ;
+
+
+
+function drawMap!(game::GameState; s=Settings())
+    dh,dw = div(s.Nh-0x01,0x02),div(s.Nw-0x01,0x02)
+
+    @inbounds for k in game.map.environment
+        @inbounds for i in 1:s.Nh, j in 1:s.Nw
+            tile = game.map.tiles[
+                getfield(game.map.tilemap,k)[game.pos.h+i-dh-1,
+                game.pos.w+j-dw-1]]
+
+            v = view(getfield(game.im.layers,k),
+                1+(i-1)*s.tilesize:i*s.tilesize,
+                1+(j-1)*s.tilesize:j*s.tilesize)
+            
+            @inbounds for t in eachindex(v)
+                v[t] = tile[t]
+            end
+        end
+    end
+end

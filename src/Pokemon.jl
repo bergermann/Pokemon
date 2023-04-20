@@ -18,12 +18,12 @@ include("core.jl")
 include("battle.jl")
 include("statetransitions.jl")
 include("rendering.jl")
-include("controls.jl")
 include("npcs.jl")
+include("maps.jl")
+include("controls.jl")
 include("animations.jl")
 include("attackanimations.jl")
 include("battlenpc.jl")
-#include("maps.jl")
 
 # @time foreach(names(@__MODULE__, all=true)) do s
 #     @eval export $s

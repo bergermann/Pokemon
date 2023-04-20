@@ -1,6 +1,6 @@
 #using MiniFB
 
-include("maps.jl")
+# include("maps.jl")
 
 
 

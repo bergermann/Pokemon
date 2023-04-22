@@ -203,6 +203,8 @@ function moveWalk!(game::GameState,dir::Int)
         game.n.c[:movemain].c = -1
         game.callbacks[:movemain].active = false
 
+        drawMapUpdate!(game,dir)
+
         updateMovePos!(game,dir)
 
         checkEncounter!(game)
@@ -252,6 +254,8 @@ function moveRun!(game::GameState,dir::Int)
         
         game.n.c[:movemain].c = -1
         game.callbacks[:movemain].active = false
+
+        drawMapUpdate!(game,dir)
 
         updateMovePos!(game,dir)
 

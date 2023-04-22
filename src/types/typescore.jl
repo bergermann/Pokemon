@@ -206,7 +206,7 @@ function Base.setindex!(A::ArrayList, X, inds...)
 end
 
 function Base.getindex(A::ArrayList,id::Symbol)
-    return getindex(A.data, findfirst(x -> x.id==id, A.data[1:A.idx]))
+    return getindex(A.data, findfirst(x -> x==id, A.data))
 end
 
 function Base.setindex!(A::ArrayList, X, id::Symbol)
@@ -797,6 +797,8 @@ mutable struct Im
 
     sprites::ArrayList{Sprite}
 
+    L::Vector{Symbol}
+
     layers::Layers
     layer::Matrix{UInt32}
 
@@ -815,11 +817,13 @@ mutable struct Im
 
             ArrayList(Sprite,128),
 
+            [:layer1,:layer2,:layer3,:layer4,:layer5,:layer6,:textbox],
+
             Layers(),
             copy(Layers().layer1),
 
-            CallbackFunction(:weather,empty,()),
-            CallbackFunction(:pp,empty,())
+            CallbackFunction(:weather,false,empty,()),
+            CallbackFunction(:pp,false,empty,())
         )
     end
 end

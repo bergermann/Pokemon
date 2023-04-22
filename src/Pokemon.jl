@@ -77,7 +77,7 @@ function main()
 
     resetMovePos!(game)
     
-    initDrawMap!(game)
+    stateInitDrawMap!(game)
 
     w,b = startWindow(settings)
     
@@ -110,7 +110,7 @@ function main()
             #print("draw:")
             # @time drawGame!(game; s=settings)
             drawGame!(game; s=settings)
-            resetInput!()
+            resetInput!(input)
         end
     end
 end

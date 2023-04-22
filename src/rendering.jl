@@ -68,6 +68,30 @@ end
 
 
 
+function shiftLayerUp!(l::Matrix{UInt32})
+    @inbounds for j in 1:272, i in 1:208-16
+        l[i,j] = l[i+16,j]
+    end
+end
+
+function shiftLayerDown!(l::Matrix{UInt32})
+    @inbounds for j in 1:272, i in 208:-1:17
+        l[i,j] = l[i-16,j]
+    end
+end
+
+function shiftLayerLeft!(l::Matrix{UInt32})
+    @inbounds for j in 1:256, i in 1:208
+        l[i,j] = l[i,j+16]
+    end
+end
+
+function shiftLayerRight!(l::Matrix{UInt32})
+    @inbounds for j in 272:-1:17, i in 1:208
+        l[i,j] = l[i,j-16]
+    end
+end
+
 function drawMap!(game::GameState; s=Settings())
     dh,dw = div(s.Nh-0x01,0x02),div(s.Nw-0x01,0x02)
 
@@ -88,6 +112,86 @@ function drawMap!(game::GameState; s=Settings())
     end
 end
 
+function drawMapUpdate!(game::GameState,dir::Int; s=Settings())
+    # dh,dw = div(s.Nh-0x01,0x02),div(s.Nw-0x01,0x02)
+    dh,dw = div(0x0c,0x02),div(0x10,0x02)
+
+    if dir == 1
+        @inbounds for k in game.map.environment
+            shiftLayerDown!(getfield(game.im.layers,k))
+
+            @inbounds for j in 0x01:0x11
+                tile = game.map.tiles[
+                    getfield(game.map.tilemap,k)[game.pos.h-dh,
+                    game.pos.w+j-dw-0x01]]
+    
+                v = view(getfield(game.im.layers,k),
+                    0x01:0x10,
+                    0x01+(j-0x01)*0x10:j*0x10)
+                
+                @inbounds for t in eachindex(v)
+                    v[t] = tile[t]
+                end
+            end
+        end
+    elseif dir == 2
+        @inbounds for k in game.map.environment
+            shiftLayerUp!(getfield(game.im.layers,k))
+
+            @inbounds for j in 0x01:0x11
+                tile = game.map.tiles[
+                    getfield(game.map.tilemap,k)[game.pos.h+0x0c-dh,
+                    game.pos.w+j-dw-0x01]]
+    
+                v = view(getfield(game.im.layers,k),
+                    0xc1:0xd0,
+                    0x01+(j-0x01)*0x10:j*0x10)
+                
+                @inbounds for t in eachindex(v)
+                    v[t] = tile[t]
+                end
+            end
+        end
+    elseif dir == 3
+        @inbounds for k in game.map.environment
+            shiftLayerRight!(getfield(game.im.layers,k))
+
+            @inbounds for i in 0x01:0x0d
+                tile = game.map.tiles[
+                    getfield(game.map.tilemap,k)[game.pos.h+i-dh-0x01,
+                    game.pos.w-dw]]
+    
+                v = view(getfield(game.im.layers,k),
+                    0x01+(i-0x01)*0x10:i*0x10,
+                    0x01:0x10)
+                
+                @inbounds for t in eachindex(v)
+                    v[t] = tile[t]
+                end
+            end
+        end
+    else
+        @inbounds for k in game.map.environment
+            shiftLayerLeft!(getfield(game.im.layers,k))
+
+            @inbounds for i in 0x01:0x0d
+                tile = game.map.tiles[
+                    getfield(game.map.tilemap,k)[game.pos.h+i-dh-1,
+                    game.pos.w+0x11-dw-1]]
+    
+                v = view(getfield(game.im.layers,k),
+                    0x01+(i-0x01)*0x10:i*0x10,
+                    0x01+0x0100:0x0110)
+                
+                @inbounds for t in eachindex(v)
+                    v[t] = tile[t]
+                end
+            end
+        end
+    end
+end
+
+
 
 
 
@@ -106,12 +210,15 @@ function combineLayers!(game::GameState,layers::Vector{Symbol};
             end
         end
 
-        @inbounds for i in findall(x->x.layer==k&&x.active,
-                game.im.sprites.data[1:game.im.sprites.idx])
+        @inbounds for j in 1:game.im.sprites.idx
+            if game.im.sprites[j].layer != k || !game.im.sprites[j].active
+                continue
+            end
 
-            s = game.im.sprites[i]
+            s = game.im.sprites[j]
             v = view(
-                l,s.pos.h+1:s.pos.h+s.size.h,
+                l,
+                s.pos.h+1:s.pos.h+s.size.h,
                 s.pos.w+1:s.pos.w+s.size.w
             )
 
@@ -910,14 +1017,6 @@ end
 
 
 
-function initDrawMap!(game::GameState)
-    for i in eachindex(fieldnames(DrawState))
-        setfield!(game.draw,i,false)
-    end
-
-    game.draw.map = true
-    game.draw.sprites = true
-end
 
 function initDrawBattle!(game::GameState)
     for i in eachindex(fieldnames(DrawState))
@@ -929,16 +1028,6 @@ function initDrawBattle!(game::GameState)
 end
 
 function drawGame!(game::GameState; s=Settings())
-    if game.draw.map
-        drawMap!(game; s=s)
-        
-        sortHorizontal!(game.im.sprites)
-    end
-
-    # if game.draw.dialogue && !game.draw.battle
-    #     drawDialogue!(game)
-    # end
-
     if game.draw.battleintro
         drawBattleIntro!(game; s=s)
     end
@@ -951,7 +1040,7 @@ function drawGame!(game::GameState; s=Settings())
         drawBattleExit!(game; s=s)
     end
     
-    combineLayers!(game,[:layer1,:layer2,:layer3,:layer4,:layer5,:layer6,:textbox]; s=s)
+    combineLayers!(game,game.im.L; s=s)
 
     if game.im.weather.active
         game.im.weather.func(game.im.layer,game.im.weather.args...)

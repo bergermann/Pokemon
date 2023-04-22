@@ -2,22 +2,22 @@
 
 # using MiniFB, Images, DelimitedFiles
 
-# include("types/typespkmn.jl")
-# include("types/typescore.jl")
-# include("types/typesbattle.jl")
+include("types/typespkmn.jl")
+include("types/typescore.jl")
+include("types/typesbattle.jl")
 
-# include("parser.jl")
-# include("pokemons.jl")
-# include("core.jl")
-# include("battle.jl")
-# include("statetransitions.jl")
-# include("rendering.jl")
-# include("npcs.jl")
-# include("maps.jl")
-# include("controls.jl")
-# include("animations.jl")
-# include("attackanimations.jl")
-# include("battlenpc.jl")
+include("parser.jl")
+include("pokemons.jl")
+include("core.jl")
+include("battle.jl")
+include("statetransitions.jl")
+include("rendering.jl")
+include("npcs.jl")
+include("maps.jl")
+include("controls.jl")
+include("animations.jl")
+include("attackanimations.jl")
+include("battlenpc.jl")
 
 function showIm(im)
     display(plot(reinterpret(RGB24,im)))
@@ -56,22 +56,24 @@ function testmain()
 
         Options()
     )
-
-    drawMap!(game)
-    combineLayers!(game,[:layer1,:layer2,:layer3,:layer4,:layer5,:layer6])
-    # showIm(game.im.layer)
-    # shiftLayerUp!(game.im.layer)
-    # showIm(game.im.layer)
-    # shiftLayerLeft!(game.im.layer)
-    # showIm(game.im.layer)
-    # shiftLayerDown!(game.im.layer)
-    # showIm(game.im.layer)
-    # shiftLayerRight!(game.im.layer)
-    # showIm(game.im.layer)
-    # shiftMatrix1!(game.im.layer)
     
-    # @btime shiftLayerLeft!($game.im.layer)
-    # @btime shiftLayerRight!($game.im.layer)
+    createSprite!(game,:main,:layer2,getSpriteMain("sprite"),Position(80,128),
+        11; active=true)
+
+    createSprite!(game,:main1,:layer2,getSpriteMain("sprite"),Position(96,128+32),
+        11; active=true)
+
+    # drawMap!(game)
+    # combineLayers!(game,)
+    # showIm(game.im.layer)
+
+    # l = [:layer1,:layer2,:layer3,:layer4,:layer5,:layer6]
+
+    # @btime combineLayers!($game,$l; s=$settings)
+
+    s = :main
+    game.im.sprites[:main1]
+    # @btime $game.im.sprites[$s]
 
 
     return game
@@ -81,85 +83,4 @@ g = testmain()
 
 ;
 
-function shiftLayerUp!(l::Matrix{UInt32})
-    @inbounds for j in 1:272, i in 1:208-16
-        l[i,j] = l[i+16,j]
-    end
-end
 
-function shiftLayerDown!(l::Matrix{UInt32})
-    @inbounds for j in 1:272, i in 208:-1:17
-        l[i,j] = l[i-16,j]
-    end
-end
-
-function shiftLayerLeft!(l::Matrix{UInt32})
-    @inbounds for j in 1:256, i in 1:208
-        l[i,j] = l[i,j+16]
-    end
-end
-
-function shiftLayerRight!(l::Matrix{UInt32})
-    @inbounds for j in 272:-1:17, i in 1:208
-        l[i,j] = l[i,j-16]
-    end
-end
-
-function drawMap!(game::GameState; s=Settings())
-    dh,dw = div(s.Nh-0x01,0x02),div(s.Nw-0x01,0x02)
-
-    @inbounds for k in game.map.environment
-        @inbounds for i in 1:s.Nh, j in 1:s.Nw
-            tile = game.map.tiles[
-                getfield(game.map.tilemap,k)[game.pos.h+i-dh-1,
-                game.pos.w+j-dw-1]]
-
-            v = view(getfield(game.im.layers,k),
-                1+(i-1)*s.tilesize:i*s.tilesize,
-                1+(j-1)*s.tilesize:j*s.tilesize)
-            
-            @inbounds for t in eachindex(v)
-                v[t] = tile[t]
-            end
-        end
-    end
-end
-
-
-function drawMapUpdate!(game::GameState,dir::Int; s=Settings())
-    if dir == 1
-        for l in game.map.environment
-            shiftLayerDown!(getfield(game.im.layers,l))
-        end
-    elseif dir == 2
-        for l in game.map.environment
-            shiftLayerUp!(getfield(game.im.layers,l))
-        end
-    elseif dir == 3
-        for l in game.map.environment
-            shiftLayerRight!(getfield(game.im.layers,l))
-        end
-    else
-        for l in game.map.environment
-            shiftLayerleft!(getfield(game.im.layers,l))
-        end
-    end
-
-    dh,dw = div(s.Nh-0x01,0x02),div(s.Nw-0x01,0x02)
-
-    @inbounds for k in game.map.environment
-        @inbounds for i in 1:s.Nh, j in 1:s.Nw
-            tile = game.map.tiles[
-                getfield(game.map.tilemap,k)[game.pos.h+i-dh-1,
-                game.pos.w+j-dw-1]]
-
-            v = view(getfield(game.im.layers,k),
-                1+(i-1)*s.tilesize:i*s.tilesize,
-                1+(j-1)*s.tilesize:j*s.tilesize)
-            
-            @inbounds for t in eachindex(v)
-                v[t] = tile[t]
-            end
-        end
-    end
-end

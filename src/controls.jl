@@ -46,15 +46,40 @@ function onpress(window, button, mod, isPressed)::Cvoid
     return nothing
 end
 
-function resetInput!()
-    global input
+function resetInput!(input::Input)
+    input._input    = false
+    input.input_    = false
+    input._A        = false
+    input.A_        = false
+    input._B        = false
+    input.B_        = false
+    input._L        = false
+    input.L_        = false
+    input._R        = false
+    input.R_        = false
+    input._up       = false
+    input.up_       = false
+    input._down     = false
+    input.down_     = false
+    input._left     = false
+    input.left_     = false
+    input._right    = false
+    input.right_    = false
+    input._start    = false
+    input.start_    = false
+    input._select   = false
+    input.select_   = false
+end
 
-    for i in eachindex(fieldnames(Input))
-        if i%3 == 1
-            continue
-        end
-        
-        setfield!(input,i,false)
+function finddir(input::Input)::Int
+    if input.up
+        return 1
+    elseif input.down
+        return 2
+    elseif input.left
+        return 3
+    else
+        return 4
     end
 end
 
@@ -119,54 +144,32 @@ end
 function inputManager!(game::GameState,input::Input)
     if game.input.inputlock
         return
-    end
-
-    if game.input.dialogue
+    elseif game.input.dialogue
         inputDialogue!(game,input)
         return
-    end
-
-    if game.input.map
+    elseif game.input.map
         inputMap!(game,input)
         return
-    end
-
-    if game.input.menu.main
+    elseif game.input.menu.main
         inputMenu!(game,input)
         return
-    end
-
-    if game.input.menu.pdex
+    elseif game.input.menu.pdex
         return
-    end
-
-    if game.input.menu.pkmn
+    elseif game.input.menu.pkmn
         inputMenuPkmn!(game::GameState,input::Input)
         return
-    end
-
-    if game.input.menu.bags
+    elseif game.input.menu.bags
         inputMenuBags!(game::GameState,input::Input)
         return
-    end
-
-    if game.input.menu.pnav
+    elseif game.input.menu.pnav
         return
-    end
-
-    if game.input.menu.self
+    elseif game.input.menu.self
         return
-    end
-
-    if game.input.menu.save
+    elseif game.input.menu.save
         return
-    end
-
-    if game.input.menu.optn
+    elseif game.input.menu.optn
         return
-    end
-
-    if game.input.battle
+    elseif game.input.battle
         inputBattle!(game,input)
         return
     end
@@ -174,7 +177,7 @@ end
 
 function inputMap!(game::GameState,input::Input)
     if game.input.move
-        inputMove!(game::GameState,input::Input)
+        inputMove!(game,input)
     end
 
     if game.input.move && input._start
@@ -195,7 +198,7 @@ end
 
 function inputMove!(game::GameState,input::Input)
     if !(input.up || input.down || input.left || input.right)
-        if game.n.c[:movemain].c != 0
+        @time if game.n.c[:movemain].c != 0
             game.callbacks[:movemain].active = true
             game.callbacks[:movemain].args = (game.direction,-1)
         end
@@ -203,7 +206,7 @@ function inputMove!(game::GameState,input::Input)
         return
     end
 
-    dir = findfirst([input.up,input.down,input.left,input.right])
+    dir = finddir(input)
     
     updateMovePos!(game,dir)
 

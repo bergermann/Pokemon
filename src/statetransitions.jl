@@ -214,6 +214,9 @@ end
 
 
 
+function stateInitDrawMap!(game::GameState)
+    drawMap!(game)
+end
 
 function stateMenuMainOpen!(game::GameState)
     game.input.inputlock = false

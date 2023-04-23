@@ -98,16 +98,11 @@ function main()
             if state != MiniFB.STATE_OK
                 break
             end
-
-            # print(game.input.battled,", ")
-            # print(game.input.inputlock,", ")
-            # print(game.dialogue.n)
-            # println()
-            #print("update:")
+            
             # @time updateGame!(game,input; s=settings)
             updateGame!(game,input; s=settings)
+            
 
-            #print("draw:")
             # @time drawGame!(game; s=settings)
             drawGame!(game; s=settings)
             resetInput!(input)

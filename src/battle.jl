@@ -8,9 +8,6 @@ function initBattleWild!(game::GameState)
     pb2.name = getPkmnName(game,pb2.pkmn)
     pb2.xpdrop = UInt32(max(1,rand(UInt8)))    #game.pkmndata.base[pb2.pkmn.id,x]
 
-    # println(pb1.pkmn.stats.rv[6])
-    # println(pb2.pkmn.stats.rv[6])
-
     game.battle.state = BattleStateWild(BattleCounters(),0,BattleEnvironment(),pb1,pb2)
 end
 

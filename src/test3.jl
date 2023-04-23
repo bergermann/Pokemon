@@ -1,6 +1,6 @@
-# using BenchmarkTools, Plots
+using BenchmarkTools, Plots
 
-# using MiniFB, Images, DelimitedFiles
+using MiniFB, Images, DelimitedFiles
 
 include("types/typespkmn.jl")
 include("types/typescore.jl")
@@ -72,14 +72,17 @@ function testmain()
     # @btime combineLayers!($game,$l; s=$settings)
 
     s = :main
-    game.im.sprites[:main1]
-    # @btime $game.im.sprites[$s]
+    # game.im.sprites[:main1]
+    # findfirst(x->x.id==:main1,game.im.sprites.data)
+    @btime $game.im.sprites[$s]
 
 
     return game
 end
 
 g = testmain()
+
+println(Base.summarysize(g))
 
 ;
 

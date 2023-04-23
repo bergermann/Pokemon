@@ -13,7 +13,7 @@ mutable struct Position
     end
 end
 
-Base.println(p::Position) = println("P($(P.h),$(P.w))")
+Base.println(p::Position) = println("P($(p.h),$(p.w))")
 
 const P = Position
 
@@ -119,7 +119,7 @@ mutable struct Sprite
     size::Position
 
     frame::Int
-    dict::Dict{Int,Matrix{UInt32}}
+    dict::Dict{Int,Tuple{Matrix{UInt32},Position}}
 
     im::Matrix{UInt32}
 
@@ -137,7 +137,7 @@ mutable struct Sprite
             Position(0,0),
 
             0,
-            Dict{Int,Matrix{UInt32}}(),
+            Dict{Int,Tuple{Matrix{UInt32},Position}}(),
 
             zeros(UInt32,0,0)
         )
@@ -197,20 +197,20 @@ mutable struct ArrayList{T}
     end
 end
 
-function Base.getindex(A::ArrayList, inds...)
-    return getindex(A.data, inds...)
+function Base.getindex(a::ArrayList, inds...)
+    return getindex(a.data, inds...)
 end
 
-function Base.setindex!(A::ArrayList, X, inds...)
-    setindex!(A.data,X,inds...)
+function Base.setindex!(a::ArrayList, x, inds...)
+    setindex!(a.data,x,inds...)
 end
 
-function Base.getindex(A::ArrayList,id::Symbol)
-    return getindex(A.data, findfirst(x -> x==id, A.data))
+function Base.getindex(a::ArrayList,id::Symbol)
+    return getindex(a.data, findfirst(x -> x.id==id, a.data))
 end
 
-function Base.setindex!(A::ArrayList, X, id::Symbol)
-    return setindex!(A.data,X,findfirst(x -> x.id==id, A.data))
+function Base.setindex!(a::ArrayList, x, id::Symbol)
+    return setindex!(a.data,x,findfirst(x -> x.id==id, a.data))
 end
 
 function Base.eachindex(a::ArrayList)
@@ -350,7 +350,7 @@ mutable struct Trainer
     badges::Vector{UInt8}
     pokedex::Vector{Bool}
 
-    sprite::Dict{Int,Matrix{UInt32}}
+    sprite::Dict{Int,Tuple{Matrix{UInt32},Position}}
 end
 
 mutable struct MItem

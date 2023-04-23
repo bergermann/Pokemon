@@ -147,7 +147,7 @@ function setBattleDialogue!(game::GameState,str::String)
 end
 
 function createSprite!(game::GameState,id::Symbol,layer::Symbol,
-        dict::Dict{Int,Matrix{UInt32}},pos::Position,frame::Int;
+        dict::Dict{Int,Tuple{Matrix{UInt32},Position}},pos::Position,frame::Int;
         active=false,hreverse=false,vreverse=false)
     
     push!(game.im.sprites,Sprite(
@@ -157,10 +157,10 @@ function createSprite!(game::GameState,id::Symbol,layer::Symbol,
         vreverse,
         layer,
         pos,
-        Position(size(dict[frame])...),
+        dict[frame][2],
         frame,
         dict,
-        copy(dict[frame])
+        copy(dict[frame][1])
         )
     )
 end

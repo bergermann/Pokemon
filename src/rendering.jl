@@ -270,6 +270,74 @@ function Sprites(n::Int)
     return S
 end
 
+function updateSprite!(sprite::Sprite,frame::Int)
+    sprite.frame = frame
+
+    if sprite.size.h == sprite.dict[frame][2].h &&
+            sprite.size.w == sprite.dict[frame][2].w
+
+        sprite.im[:] = sprite.dict[frame][1]
+    else
+        sprite.im = copy(sprite.dict[frame][1])
+        sprite.size = sprite.dict[frame][2]
+    end
+end
+
+function updateSprite!(sprite::Sprite)
+    if sprite.size.h == sprite.dict[sprite.frame][2].h &&
+            sprite.size.w == sprite.dict[sprite.frame][2].w
+
+        sprite.im[:] = sprite.dict[sprite.frame][1]
+    else
+        sprite.im = copy(sprite.dict[sprite.frame][1])
+        sprite.size = sprite.dict[sprite.frame][2]
+    end
+end
+
+# function drawSprites!(game::GameState; s=Settings())
+#     @inbounds for i in 1:game.im.sprites.idx
+#         if !game.im.sprites[i].active
+#             continue
+#         end
+        
+#         sprite = game.im.sprites.data[i]
+#         l = getfield(game.im.layers,sprite.layer)
+
+#         v = view(l, sprite.pos.h+1:sprite.pos.h+sprite.size.h,
+#             sprite.pos.w+1:sprite.pos.w+sprite.size.w)
+
+#         @inbounds for i in eachindex(v)
+#             if sprite.im[i] != 0x000000
+#                 v[i] = sprite.im[i]
+#             end
+#         end
+#     end
+# end
+
+function drawSprites!(game::GameState; s=Settings())
+    @inbounds for i in 1:game.im.sprites.idx
+        if !game.im.sprites[i].active
+            continue
+        end
+        
+        sprite = game.im.sprites.data[i]
+        l = getfield(game.im.layers,sprite.layer)
+
+        v = view(l, sprite.pos.h+1:sprite.pos.h+sprite.size.h,
+            sprite.pos.w+1:sprite.pos.w+sprite.size.w)
+
+        @inbounds for i in eachindex(v)
+            if sprite.im[i] != 0x000000
+                v[i] = sprite.im[i]
+            end
+        end
+    end
+end
+
+
+
+
+
 function getSpriteMain(set::String; s=Settings())
     spriteset = mfb_rgb.(load("sprites/$set.png"))
 
@@ -313,105 +381,30 @@ function getSpriteMain(set::String; s=Settings())
         (97,401,64,64,1,270)
     ]
 
-    d = Dict{Int,Matrix{UInt32}}()
+    d = Dict{Int,Tuple{Matrix{UInt32},Position}}()
 
     for k in key
         if k[5] > 1
             for i in 1:k[5]
                 s = k[6]+i
 
-                d[s] = spriteset[k[1]+(i-1)*k[3]:k[1]+i*k[3]-1,
-                    k[2]:k[2]+k[4]-1]
+                d[s] = (spriteset[k[1]+(i-1)*k[3]:k[1]+i*k[3]-1,
+                    k[2]:k[2]+k[4]-1],P(k[3],k[4]))
             end
         else
-            d[k[6]] = spriteset[k[1]:k[1]+k[3]-1,k[2]:k[2]+k[4]-1]
+            d[k[6]] = (spriteset[k[1]:k[1]+k[3]-1,k[2]:k[2]+k[4]-1],P(k[3],k[4]))
         end
     end
 
-    d[31] = reverse(d[21]; dims=2)
-    d[32] = reverse(d[22]; dims=2)
-    d[33] = reverse(d[23]; dims=2)
+    d[31] = (reverse(d[21][1]; dims=2),d[21][2])
+    d[32] = (reverse(d[22][1]; dims=2),d[22][2])
+    d[33] = (reverse(d[23][1]; dims=2),d[23][2])
     
-    d[71] = reverse(d[61]; dims=2)
-    d[72] = reverse(d[62]; dims=2)
-    d[73] = reverse(d[63]; dims=2)
+    d[71] = (reverse(d[61][1]; dims=2),d[61][2])
+    d[72] = (reverse(d[62][1]; dims=2),d[62][2])
+    d[73] = (reverse(d[63][1]; dims=2),d[63][2])
     
-    #=
-    d[:walkright] = reverse.(d[:walkleft]; dims=2)
-    d[:runright] = reverse.(d[:runleft]; dims=2)
-    d[:bikeright] = reverse.(d[:bikeleft]; dims=2)
-    d[:sitright] = reverse.(d[:sitleft]; dims=2)
-    d[:waterright] = reverse.(d[:waterleft]; dims=2)
-    d[:fishright] = reverse.(d[:fishleft]; dims=2)
-    d[:surfright] = reverse.(d[:surfleft]; dims=2)
-    d[:diveright] = reverse.(d[:diveleft]; dims=2)
-    =#
-
     return d
-end
-
-function updateSprite!(sprite::Sprite,frame::Int)
-    sprite.frame = frame
-    sprite.im = copy(sprite.dict[frame])
-    sprite.size = Position(size(sprite.im)...)
-end
-
-function updateSprite!(sprite::Sprite)
-    sprite.im = copy(sprite.dict[sprite.frame])
-    sprite.size = Position(size(sprite.im)...)
-end
-
-function drawSprites!(game::GameState; s=Settings())
-    @inbounds for i in 1:game.im.sprites.idx
-        if !game.im.sprites[i].active
-            continue
-        end
-        
-        sprite = game.im.sprites.data[i]
-        l = getfield(game.im.layers,sprite.layer)
-
-        v = view(l, sprite.pos.h+1:sprite.pos.h+sprite.size.h,
-            sprite.pos.w+1:sprite.pos.w+sprite.size.w)
-
-        @inbounds for i in eachindex(v)
-            if sprite.im[i] != 0x000000
-                v[i] = sprite.im[i]
-            end
-        end
-    end
-end
-
-function drawSprites!(game::GameState; s=Settings())
-    @inbounds for i in 1:game.im.sprites.idx
-        if !game.im.sprites[i].active
-            continue
-        end
-        
-        sprite = game.im.sprites.data[i]
-        l = getfield(game.im.layers,sprite.layer)
-
-        v = view(l, sprite.pos.h+1:sprite.pos.h+sprite.size.h,
-            sprite.pos.w+1:sprite.pos.w+sprite.size.w)
-
-        @inbounds for i in eachindex(v)
-            if sprite.im[i] != 0x000000
-                v[i] = sprite.im[i]
-            end
-        end
-    end
-
-    #=
-    id::Symbol
-
-    layer::Symbol
-    pos::Position
-    size::Position
-
-    frame::Symbol
-    dict::Dict{Symbol,Matrix{UInt32}}
-
-    im::Matrix{UInt32}
-    =#
 end
 
 
@@ -557,8 +550,9 @@ function getMenuStuff(str::String,partitions::Int)
     img = mfb_rgb.(load("im/"*str*".png"))
 
     dh = Int(size(img)[1]/partitions)
+    dw = size(img)[2]
 
-    return Dict(zip(1:partitions,[img[1+dh*(i-1):dh*i,:] for i in 1:partitions]))
+    return Dict(zip(1:partitions,[(img[1+dh*(i-1):dh*i,:],P(dh,dw)) for i in 1:partitions]))
 end
 
 function drawMenuPkmn!(game::GameState)
@@ -587,9 +581,9 @@ function drawMenuPkmn!(game::GameState)
     createSprite!(game,:ballexit,:layer1,copy(b),
         P(24+132,16+184),1; active=true)
 
-    drawText!(game,game.im.sprites[:exit].dict[1],"ZURUCK",UInt(1),Position(2,18),
+    drawText!(game,game.im.sprites[:exit].dict[1][1],"ZURUCK",UInt(1),Position(2,18),
         0xffffff,0x737373)
-    drawText!(game,game.im.sprites[:exit].dict[2],"ZURUCK",UInt(1),Position(2,18),
+    drawText!(game,game.im.sprites[:exit].dict[2][1],"ZURUCK",UInt(1),Position(2,18),
         0xffffff,0x737373)
 
     updateSprite!(game.im.sprites[:exit])
@@ -603,15 +597,15 @@ function drawSlotMain!(game::GameState,b::Dict)
         P(24+24,16+8),2; active=true)
 
     for i in 1:4
-        drawHealthBar!(game.im.sprites[:slot1].dict[i],
+        drawHealthBar!(game.im.sprites[:slot1].dict[i][1],
             getHealthBar(game.trainer.pokemon[1]),Position(34,24))
         
-        drawText!(game,game.im.sprites[:slot1].dict[i],
+        drawText!(game,game.im.sprites[:slot1].dict[i][1],
             pkmnName(game,game.trainer.pokemon[1])*"\\  Lv."*
             string(game.trainer.pokemon[1].stats.level),UInt(1),
             P(10,24),0xffffff,0x737373; lineoffset = -3)
         
-        drawText!(game,game.im.sprites[1].dict[i],
+        drawText!(game,game.im.sprites[1].dict[i][1],
             string(game.trainer.pokemon[1].stats.hp)*"/"*
             string(game.trainer.pokemon[1].stats.rv[1]),UInt(1),
             P(36,36),0xffffff,0x737373)
@@ -627,15 +621,15 @@ function drawSlotSide!(game::GameState,slot::Int,b)
         P(24+10+(slot-2)*24,16+96),1; active=true)
 
     for i in 1:4
-        drawHealthBar!(game.im.sprites[Symbol("slot$slot")].dict[i],
+        drawHealthBar!(game.im.sprites[Symbol("slot$slot")].dict[i][1],
             getHealthBar(game.trainer.pokemon[slot]),P(9,88))
 
-        drawText!(game,game.im.sprites[Symbol("slot$slot")].dict[i],
+        drawText!(game,game.im.sprites[Symbol("slot$slot")].dict[i][1],
             pkmnName(game,game.trainer.pokemon[slot])*"\\  Lv."*
             string(game.trainer.pokemon[slot].stats.level),UInt(1),
             P(2,20),0xffffff,0x737373; lineoffset = -3)
         
-        drawText!(game,game.im.sprites[Symbol("slot$slot")].dict[i],
+        drawText!(game,game.im.sprites[Symbol("slot$slot")].dict[i][1],
             string(game.trainer.pokemon[slot].stats.hp)*"/"*
             string(game.trainer.pokemon[slot].stats.rv[1]),UInt(1),
             P(11,100),0xffffff,0x737373)
@@ -732,9 +726,9 @@ function getBattlers()
     img = mfb_rgb.(load("im/battlers gen1.png"))
 
     d1 = Dict{UInt,Matrix{UInt32}}(
-        zip(Vector{UInt}(1:151),[img[
+        zip(Vector{UInt}(1:151),[(img[
             1+64*div(i,10):64+64*div(i,10),1+64*i%10:64+64*i%10
-        ] for i in 0:150])
+        ],P(64,64)) for i in 0:150])
     )
 
     return merge(d1,)
@@ -743,36 +737,36 @@ end
 function getBattlerFront(id::Int)
     img = mfb_rgb.(load("im/battlers/front/normal/$id.png"))
 
-    return Dict{Int,Matrix{UInt32}}(1=>img[:,1:64],2=>img[:,65:128])
+    return Dict{Int,Tuple{Matrix{UInt32},Position}}(1=>(img[:,1:64],P(64,64)),2=>(img[:,65:128],P(64,64)))
 end
 
 function getBattlerFront(pkmn::Pkmn)
     if !pkmn.shiny
         img = mfb_rgb.(load("im/battlers/front/normal/$(pkmn.id).png"))
 
-        return Dict{Int,Matrix{UInt32}}(1=>img[:,1:64],2=>img[:,65:128])
+        return Dict{Int,Tuple{Matrix{UInt32},Position}}(1=>(img[:,1:64],P(64,64)),2=>(img[:,65:128],P(64,64)))
     else
         img = mfb_rgb.(load("im/battlers/front/shiny/$(pkmn.id).png"))
 
-        return Dict{Int,Matrix{UInt32}}(1=>img[:,1:64],2=>img[:,65:128])
+        return Dict{Int,Tuple{Matrix{UInt32},Position}}(1=>(img[:,1:64],P(64,64)),2=>(img[:,65:128],P(64,64)))
     end
 end
 
 function getBattlerBack(id::Int)
     img = mfb_rgb.(load("im/battlers/back/normal/$id.png"))
 
-    return Dict{Int,Matrix{UInt32}}(1=>img[:,1:64])
+    return Dict{Int,Tuple{Matrix{UInt32},Position}}(1=>(img[:,1:64],P(64,64)))
 end
 
 function getBattlerBack(pkmn::Pkmn)
     if !pkmn.shiny
         img = mfb_rgb.(load("im/battlers/back/normal/$(pkmn.id).png"))
 
-        return Dict{Int,Matrix{UInt32}}(1=>img)
+        return Dict{Int,Tuple{Matrix{UInt32},Position}}(1=>(img,P(64,64)))
     else
         img = mfb_rgb.(load("im/battlers/back/shiny/$(pkmn.id).png"))
 
-        return Dict{Int,Matrix{UInt32}}(1=>img)
+        return Dict{Int,Tuple{Matrix{UInt32},Position}}(1=>(img,P(64,64)))
     end
 end
 
@@ -790,7 +784,7 @@ function getBattleTags()
     tagopp = img[1:32,1:102]
     tagown = img[33:72,1:106]
 
-    return Dict(1=>tagown), Dict(1=>tagopp)
+    return Dict(1=>(tagown,P(size(tagown)...))), Dict(1=>(tagopp,P(size(tagopp)...)))
 end
 
 function getBattleTagOwn()
@@ -798,7 +792,7 @@ function getBattleTagOwn()
 
     tagown = img[33:72,1:106]
 
-    return Dict(1=>tagown)
+    return Dict(1=>(tagown,P(size(tagown)...)))
 end
 
 function getBattleTagOpp()
@@ -806,7 +800,7 @@ function getBattleTagOpp()
 
     tagopp = img[1:32,1:102]
 
-    return Dict(1=>tagopp)
+    return Dict(1=>(tagopp,P(size(tagopp)...)))
 end
 
 function getCursor()
@@ -814,7 +808,7 @@ function getCursor()
 
     cursor = img[17:30,113:120]
 
-    return Dict(1=>cursor)
+    return Dict(1=>(cursor,P(size(cursor)...)))
 end
 
 
@@ -918,33 +912,24 @@ function drawBattleIntro!(game::GameState; s=Settings())
     game.n.c[:battleintro].c += 1
 end
 
-function drawBattleExit!(game::GameState; s=Settings())
-    if game.n.c[:battleoutro].c == 0
-        game.im.postprocess.active = true
-        game.im.postprocess.func = fadeLinear!
-        game.im.postprocess.args = (0x3c,0x01,0x00)
-        
-        # game.im.postprocess.func = combine!
-        # game.im.postprocess.args = (0x000000,0x3c,0x00)
+# function drawBattleExit!(game::GameState; s=Settings())
+#     println(game.n.c)
+#     if game.n.c[:battleoutro].c == 0
+#         game.im.postprocess.active = true
+#         game.im.postprocess.func = fadeLinear!
+#         game.im.postprocess.args = (0x3c,0x01,0x00)
+#     elseif game.n.c[:battleoutro].c <= 60
+#         game.im.postprocess.args = (0x3c,0x01,UInt8(game.n.c[:battleoutro].c))
+#     elseif game.n.c[:battleoutro].c == 61
+#         killCounter!(game,:battleoutro)
 
-        # createCC!(game,:fadeout,fadeOut!,(60,); active=true)
-    elseif game.n.c[:battleoutro].c <= 60
-        game.im.postprocess.args = (0x3c,0x01,UInt8(game.n.c[:battleoutro].c))
-        # game.im.postprocess.args = (0x000000,0x3c,UInt8(game.n.c[:battleoutro].c))
-    elseif game.n.c[:battleoutro].c == 61
-        # game.im.postprocess.active = false
-        # game.im.postprocess.func = empty
-        # game.im.postprocess.args = ()
-
-        killCounter!(game,:battleoutro)
-
-        stateEndBattle!(game)
+#         stateEndBattle!(game)
     
-        return
-    end
+#         return
+#     end
 
-    game.n.c[:battleoutro].c += 1
-end
+#     game.n.c[:battleoutro].c += 1
+# end
 
 function drawBattleDialogue!(game::GameState)
     drawText!(game,:layer3,game.dialogue.str[game.dialogue.n],UInt(2),
@@ -1018,14 +1003,6 @@ end
 
 
 
-function initDrawBattle!(game::GameState)
-    for i in eachindex(fieldnames(DrawState))
-        setfield!(game.draw,i,false)
-    end
-
-    game.draw.battleintro = true
-    game.draw.sprites = true
-end
 
 function drawGame!(game::GameState; s=Settings())
     if game.draw.battleintro
@@ -1036,9 +1013,9 @@ function drawGame!(game::GameState; s=Settings())
         drawBattle!(game; s=s)
     end
 
-    if game.draw.battleoutro
-        drawBattleExit!(game; s=s)
-    end
+    # if game.draw.battleoutro
+    #     drawBattleExit!(game; s=s)
+    # end
     
     combineLayers!(game,game.im.L; s=s)
 

@@ -198,7 +198,7 @@ end
 
 function inputMove!(game::GameState,input::Input)
     if !(input.up || input.down || input.left || input.right)
-        @time if game.n.c[:movemain].c != 0
+        if game.n.c[:movemain].c != 0
             game.callbacks[:movemain].active = true
             game.callbacks[:movemain].args = (game.direction,-1)
         end
@@ -647,7 +647,7 @@ function updateGame!(game::GameState,input::Input; s=Settings())
 
     for i in 1:game.callbacks.idx
         if game.callbacks[i].active
-            game.callbacks[i].func(game,game.callbacks[i].args...)
+            @time game.callbacks[i].func(game,game.callbacks[i].args...)
         end
     end
 

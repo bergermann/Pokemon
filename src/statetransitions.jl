@@ -21,6 +21,16 @@ function stateInitBattle!(game::GameState)
 end
 
 
+
+function stateInitDrawBattle!(game::GameState)
+    for i in eachindex(fieldnames(DrawState))
+        setfield!(game.draw,i,false)
+    end
+
+    game.draw.battleintro = true
+    game.draw.sprites = true
+end
+
 function stateSetupBattle!(game::GameState)
     game.input.move = false
 
@@ -92,11 +102,13 @@ function stateQuitBattlePhase!(game::GameState)
     stateBattleStage!(game,0)
 
     game.input.battle1 = false
-    game.draw.battle1 = false
     
     game.im.sprites[:cursor1].active = false
     game.callbacks[:wiggle].active = false
     game.callbacks[:animbattle].active = false
+    
+    killCC!(game,:animbattle)
+    killCC!(game,:wiggle)
 end
 
 function stateBattleFlee!(game::GameState)
@@ -195,24 +207,24 @@ function stateEndBattle!(game::GameState)   #,state::BattleStateWild)
     game.battle.active = false
     game.battle.state.stage = 0
 
-    for i in 1:game.battle.state.actionqueue.idx
-        pop!(game.battle.state.actionqueue)
-    end
+    popall!(game.battle.state.actionqueue)
+    popall!(game.battle.state.animqueue)
 
-    for i in 1:game.battle.state.animqueue.idx
-        pop!(game.battle.state.animqueue)
-    end
-
-    initDrawMap!(game)
-    createCC!(game,:fadein,fadeIn!,(30,); active=true)
-    game.input.map = true
-    game.input.move = true
+    stateInitDrawMap!(game)
     
     game.im.sprites[:main].active = true
 end
 
 
 
+
+
+function stateInitMapCtrls!(game::GameState)
+    game.input.inputlock = false
+
+    game.input.map = true
+    game.input.move = true
+end
 
 function stateInitDrawMap!(game::GameState)
     drawMap!(game)
@@ -241,7 +253,6 @@ function stateMenuPkmnCtrls!(game::GameState)
 end
 
 function stateMenuPkmnClose!(game::GameState)
-    game.draw.map = true
     game.input.inputlock = true
 
     killSpriteAll!(game)
@@ -253,14 +264,13 @@ function stateMenuPkmnClose!(game::GameState)
     createCounter!(game,:movemain,0)
     createCallback!(game,:movemain,moveMain!,(game.direction,-1))
 
+    drawMap!(game)
     drawMenu!(game)
 end
 
 
 
 function stateMenuBagsOpen!(game::GameState)
-    game.draw.map = false
-
     killSprite!(game,:main)
     killSprite!(game,:cursor)
     killCC!(game,:movemain)
@@ -277,7 +287,6 @@ function stateMenuBagsCtrls!(game::GameState)
 end
 
 function stateMenuBagsClose!(game::GameState)
-    game.draw.map = true
     game.input.inputlock = true
     
     killSpriteAll!(game)
@@ -290,5 +299,6 @@ function stateMenuBagsClose!(game::GameState)
     createCounter!(game,:movemain,0)
     createCallback!(game,:movemain,false,moveMain!,(game.direction,-1))
 
+    drawMap!(game)
     drawMenu!(game)
 end

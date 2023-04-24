@@ -120,14 +120,14 @@ function drawMapUpdate!(game::GameState,dir::Int; s=Settings())
         @inbounds for k in game.map.environment
             shiftLayerDown!(getfield(game.im.layers,k))
 
-            @inbounds for j in 0x01:0x11
+            @inbounds for j in 0x0001:0x0011
                 tile = game.map.tiles[
                     getfield(game.map.tilemap,k)[game.pos.h-dh,
-                    game.pos.w+j-dw-0x01]]
+                    game.pos.w+j-dw-0x0001]]
     
                 v = view(getfield(game.im.layers,k),
-                    0x01:0x10,
-                    0x01+(j-0x01)*0x10:j*0x10)
+                    0x0001:0x0010,
+                    0x0001+(j-0x0001)*0x0010:j*0x0010)
                 
                 @inbounds for t in eachindex(v)
                     v[t] = tile[t]
@@ -138,14 +138,14 @@ function drawMapUpdate!(game::GameState,dir::Int; s=Settings())
         @inbounds for k in game.map.environment
             shiftLayerUp!(getfield(game.im.layers,k))
 
-            @inbounds for j in 0x01:0x11
+            @inbounds for j in 0x0001:0x0011
                 tile = game.map.tiles[
-                    getfield(game.map.tilemap,k)[game.pos.h+0x0c-dh,
-                    game.pos.w+j-dw-0x01]]
+                    getfield(game.map.tilemap,k)[game.pos.h+0x000c-dh,
+                    game.pos.w+j-dw-0x0001]]
     
                 v = view(getfield(game.im.layers,k),
-                    0xc1:0xd0,
-                    0x01+(j-0x01)*0x10:j*0x10)
+                    0x00c1:0x00d0,
+                    0x0001+(j-0x0001)*0x0010:j*0x0010)
                 
                 @inbounds for t in eachindex(v)
                     v[t] = tile[t]

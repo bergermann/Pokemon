@@ -59,11 +59,15 @@ mutable struct TrainerMove <: NPCTrainer
     reward::Int
 end
 
-npctest = NPCStatic(
-    1,
-    P(110,30),
-    2,
-    1,
-    ["Test 123","Ich bin eine hohle Nuss."],
-    0
-)
+# npctest = NPCStatic(
+#     1,
+#     P(110,30),
+#     2,
+#     1,
+#     ["Test 123","Ich bin eine hohle Nuss."],
+#     0
+# )
+
+function loadNPCs(str::String)
+    
+end

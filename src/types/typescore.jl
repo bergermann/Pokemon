@@ -848,6 +848,23 @@ mutable struct Locks
     end
 end
 
+
+
+
+abstract type NPC end
+
+abstract type NPCNormal <: NPC end
+
+abstract type NPCTrainer <:NPC end
+
+
+
+
+
+
+
+
+
 mutable struct GameState
     im::Im
     pkmndata::PkmnData
@@ -872,7 +889,7 @@ mutable struct GameState
     input::InputState
     draw::DrawState
 
-    # npcs::ArrayList{NPC}
+    npcstatic::ArrayList{<:NPC}
     # trainers::ArrayList{NPCTrainer}
 
     options::Options

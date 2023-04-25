@@ -1,63 +1,6 @@
 # NPC related stuff
 
-abstract type NPC end
 
-abstract type NPCNormal <: NPC end
-
-abstract type NPCTrainer <:NPC end
-
-mutable struct NPCStatic <: NPCNormal
-    id::UInt16
-
-    pos::Position
-    dir::Int
-    spriteid::Int
-    dialogue::Vector{String}
-    pattern::Int
-
-    # 0 up, down, left, right
-    # 5 circ clockwise
-    # 6 circ cclockwise
-    # 7 rand
-end
-
-mutable struct NPCMove <: NPCNormal
-    id::UInt16
-
-    pos::Position
-    dir::Int
-    sprite::Sprite
-    dia::Int
-    pattern::Int
-end
-
-mutable struct TrainerStatic <: NPCTrainer
-    id::UInt16
-
-    pos::Position
-    dir::Int
-    sprite::Sprite
-    dia::Int
-
-    pattern::Int
-    range::Int
-
-    reward::Int
-end
-
-mutable struct TrainerMove <: NPCTrainer
-    id::UInt16
-
-    pos::Position
-    dir::Int
-    sprite::Sprite
-    dia::Int
-
-    pattern::Int
-    range::Int
-
-    reward::Int
-end
 
 # npctest = NPCStatic(
 #     1,
@@ -68,6 +11,18 @@ end
 #     0
 # )
 
-function loadNPCs(str::String)
+function loadStaticNPC!(game::GameState,d::Vector{Int})
+    push!(game.npcstatic,NPCStatic(d[1],P(d[2],d[3]),d[4],d[5],d[6],d[7]))
+end
+
+function loadNPCs(game::GameState,mapid::Int)
+    f = readdlm("maps/$mapid/npcstatic.txt",'\t',)
+
+    for i in 1:size(f)[1]
+        loadStaticNPC(game,f[i,:])
+    end
+end
+
+function getSpriteNPC(id::Int)
     
 end

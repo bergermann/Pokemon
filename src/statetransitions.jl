@@ -201,8 +201,6 @@ function stateEndBattle!(game::GameState)   #,state::BattleStateWild)
 
     flushLayers!(game)
     flushLayer!(game)
-    
-    game.im.postprocess.active = false
 
     game.battle.active = false
     game.battle.state.stage = 0

@@ -11,6 +11,7 @@ using MiniFB, Images, DelimitedFiles
 include("types/typespkmn.jl")
 include("types/typescore.jl")
 include("types/typesbattle.jl")
+include("types/typesnpc.jl")
 
 include("parser.jl")
 include("pokemons.jl")
@@ -24,6 +25,7 @@ include("controls.jl")
 include("animations.jl")
 include("attackanimations.jl")
 include("battlenpc.jl")
+include("npcs.jl")
 
 # @time foreach(names(@__MODULE__, all=true)) do s
 #     @eval export $s
@@ -58,6 +60,8 @@ function main()
 
         InputState(),
         DrawState(),
+
+        ArrayList(NPCStatic,64),
 
         Options()
     )

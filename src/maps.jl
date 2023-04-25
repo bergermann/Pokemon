@@ -15,7 +15,7 @@ map0 = Map(0x00,[:layer1,:layer2,:layer3,:layer4],"0",[],[
 map1 = Map(0x01,[:layer1,:layer2,:layer3,:layer4],"1",[],[
     (0x00,Position(-112,-28))],getTiles("tiles_exterior"),
     getTileMap("1",[:layer1,:layer2,:layer3,:layer4,:collision]),
-    [["test"]],[npctest],[],[])
+    [["test"]],[],[],[])
 
 
 

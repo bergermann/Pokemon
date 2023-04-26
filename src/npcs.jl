@@ -13,6 +13,8 @@
 
 function loadStaticNPC!(game::GameState,d::Vector{Int})
     push!(game.npcstatic,NPCStatic(d[1],P(d[2],d[3]),d[4],d[5],d[6],d[7]))
+    createSprite!(game,Symbol("npc",d[1]),:layer2,getSpriteNPC(d[5]),
+        P(80+16*(d[2]-game.pos.h),128+16*(d[3]-game.pos.w)),d[4])
 end
 
 function loadNPCs(game::GameState,mapid::Int)
@@ -24,5 +26,13 @@ function loadNPCs(game::GameState,mapid::Int)
 end
 
 function getSpriteNPC(id::Int)
-    
+    img = mfb_rgb.(load("im/npcs/$id.png"))
+
+    return Dict{Int,Tuple{Matrix{UInt32},Position}}(
+        1:9,
+        (
+            img[:,1+16*i:16+16*i for i in 0:8],
+            P(32,16)
+        )
+    )
 end

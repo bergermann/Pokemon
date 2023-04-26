@@ -134,6 +134,10 @@ function drawMapUpdate!(game::GameState,dir::Int; s=Settings())
                 end
             end
         end
+
+        for i in 1:game.im.sprites.idx
+            posAdd!(game.im.sprites[i].pos,-16,0)
+        end
     elseif dir == 2
         @inbounds for k in game.map.environment
             shiftLayerUp!(getfield(game.im.layers,k))
@@ -151,6 +155,10 @@ function drawMapUpdate!(game::GameState,dir::Int; s=Settings())
                     v[t] = tile[t]
                 end
             end
+        end
+
+        for i in 1:game.im.sprites.idx
+            posAdd!(game.im.sprites[i].pos,16,0)
         end
     elseif dir == 3
         @inbounds for k in game.map.environment
@@ -170,6 +178,10 @@ function drawMapUpdate!(game::GameState,dir::Int; s=Settings())
                 end
             end
         end
+
+        for i in 1:game.im.sprites.idx
+            posAdd!(game.im.sprites[i].pos,0,-16)
+        end
     else
         @inbounds for k in game.map.environment
             shiftLayerLeft!(getfield(game.im.layers,k))
@@ -187,6 +199,10 @@ function drawMapUpdate!(game::GameState,dir::Int; s=Settings())
                     v[t] = tile[t]
                 end
             end
+        end
+
+        for i in 1:game.im.sprites.idx
+            posAdd!(game.im.sprites[i].pos,0,16)
         end
     end
 end

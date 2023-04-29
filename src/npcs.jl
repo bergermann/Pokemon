@@ -31,8 +31,7 @@ function getSpriteNPC(id::Int)
     return Dict{Int,Tuple{Matrix{UInt32},Position}}(
         1:9,
         (
-            img[:,1+16*i:16+16*i for i in 0:8],
-            P(32,16)
+            [(img[:,1+16*i:16+16*i], P(32,16)) for i in 0:8]
         )
     )
 end

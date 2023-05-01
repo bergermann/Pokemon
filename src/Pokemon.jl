@@ -70,11 +70,7 @@ function main()
     push!(game.trainer.pokemon,generatePkmn(game,0x0002,0x03))
     push!(game.trainer.pokemon,generatePkmn(game,0x0003,0x60))
 
-    createSprite!(game,:main,:layer2,getSpriteMain("sprite"),Position(80,128),
-        11; active=true)
-
-    createCounter!(game,:movemain,0)
-    createCallback!(game,:movemain,false,moveMain!,(game.direction,-1))
+    
 
     game.input.map = true
     game.input.move = true
@@ -92,8 +88,8 @@ function main()
     state = mfb_update(w, b)
     
     while true
-        begin
-        # @time begin
+        # begin
+        @time begin
             game.n.frame += 0x01
 
             writeToBuffer!(b,game)
@@ -110,6 +106,12 @@ function main()
             # @time drawGame!(game; s=settings)
             drawGame!(game; s=settings)
             resetInput!(input)
+            # println(game.pos)
+
+            # for i in 1:game.im.sprites.idx
+            #     print(game.im.sprites[i].id,": ")
+            #     println(game.im.sprites[i].pos)
+            # end
         end
     end
 end

@@ -136,7 +136,11 @@ function drawMapUpdate!(game::GameState,dir::Int; s=Settings())
         end
 
         for i in 1:game.im.sprites.idx
-            posAdd!(game.im.sprites[i].pos,-16,0)
+            if game.im.sprites[i].id == :main
+                continue
+            end
+
+            posAdd!(game.im.sprites[i].pos,+16,0)
         end
     elseif dir == 2
         @inbounds for k in game.map.environment
@@ -158,7 +162,11 @@ function drawMapUpdate!(game::GameState,dir::Int; s=Settings())
         end
 
         for i in 1:game.im.sprites.idx
-            posAdd!(game.im.sprites[i].pos,16,0)
+            if game.im.sprites[i].id == :main
+                continue
+            end
+
+            posAdd!(game.im.sprites[i].pos,-16,0)
         end
     elseif dir == 3
         @inbounds for k in game.map.environment
@@ -180,7 +188,11 @@ function drawMapUpdate!(game::GameState,dir::Int; s=Settings())
         end
 
         for i in 1:game.im.sprites.idx
-            posAdd!(game.im.sprites[i].pos,0,-16)
+            if game.im.sprites[i].id == :main
+                continue
+            end
+            
+            posAdd!(game.im.sprites[i].pos,0,+16)
         end
     else
         @inbounds for k in game.map.environment
@@ -202,7 +214,11 @@ function drawMapUpdate!(game::GameState,dir::Int; s=Settings())
         end
 
         for i in 1:game.im.sprites.idx
-            posAdd!(game.im.sprites[i].pos,0,16)
+            if game.im.sprites[i].id == :main
+                continue
+            end
+            
+            posAdd!(game.im.sprites[i].pos,0,-16)
         end
     end
 end

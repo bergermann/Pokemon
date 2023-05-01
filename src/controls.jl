@@ -92,11 +92,15 @@ bikeable::Vector{UInt16} = [0x0000,0x0005,0x00006]
 swimmable::Vector{UInt16} = [0x0002,0x0003]
 
 function checkWalkable(game::GameState,movepos::Position)
-    return game.map.tilemap.collision[movepos.h,movepos.w] ∈ walkable ||
-        (game.map.tilemap.collision[movepos.h,movepos.w] >= 0x14 &&
-        game.map.tilemap.collision[movepos.h,movepos.w] <= 0x3b) ||
-        (game.map.tilemap.collision[movepos.h,movepos.w] >= 0xc8 &&
-        game.map.tilemap.collision[movepos.h,movepos.w] <= 0xdb)
+    for i in 1:game.npcstatic.idx
+        if game.npcstatic[i].pos.h == movepos.h && game.npcstatic[i].pos.w == movepos.w
+            return false
+        end
+    end
+
+    return (game.map.tilemap.collision[movepos.h,movepos.w] ∈ walkable ||
+        (0x14 <= game.map.tilemap.collision[movepos.h,movepos.w] <= 0x3b) ||
+        (0xc8 <= game.map.tilemap.collision[movepos.h,movepos.w] <= 0xdb))
 end
 
 function updateMovePos!(game::GameState,dir::Int)
@@ -622,6 +626,12 @@ function changeMap!(game::GameState,exit::Tuple{UInt8,Position})
     game.pos = posAdd(game.pos,exit[2])
 end
 
+function checkMapChange!(game::GameState)
+    if game.map.tilemap.collision[game.pos.h,game.pos.w] ∈ 0x14:0x3b
+        changeMap!(game,game.map.exits[game.map.tilemap.collision[game.pos.h,game.pos.w]-19])
+    end
+end
+
 function mapAction!(game::GameState)
     tile = game.map.tilemap.collision[game.movepos.h,game.movepos.w]
 
@@ -645,13 +655,17 @@ end
 function updateGame!(game::GameState,input::Input; s=Settings())
     inputManager!(game,input)
 
+    if !game.battle.active
+        checkProximityNPCs!(game)
+        sortHorizontal!(game.im.sprites)
+
+        # checkMapChange!(game)
+    end
+
     for i in 1:game.callbacks.idx
         if game.callbacks[i].active
-            @time game.callbacks[i].func(game,game.callbacks[i].args...)
+            game.callbacks[i].func(game,game.callbacks[i].args...)
         end
     end
 
-    if game.map.tilemap.collision[game.pos.h,game.pos.w] ∈ 0x14:0x3b
-        changeMap!(game,game.map.exits[game.map.tilemap.collision[game.pos.h,game.pos.w]-19])
-    end
 end

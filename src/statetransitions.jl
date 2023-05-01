@@ -226,6 +226,14 @@ end
 
 function stateInitDrawMap!(game::GameState)
     drawMap!(game)
+    
+    createSprite!(game,:main,:layer2,getSpriteMain("sprite"),Position(80,128),
+        11; active=true)
+
+    createCounter!(game,:movemain,0)
+    createCallback!(game,:movemain,false,moveMain!,(game.direction,-1))
+
+    loadNPCs!(game,game.map.id)
 end
 
 function stateMenuMainOpen!(game::GameState)

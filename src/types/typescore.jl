@@ -512,6 +512,7 @@ end
 mutable struct InputState
     inputlock::Bool
     textlock::Bool
+    npclock::Bool
 
     map::Bool
     move::Bool
@@ -534,6 +535,7 @@ mutable struct InputState
 
     function InputState()
         new(
+            false,
             false,
             false,
 

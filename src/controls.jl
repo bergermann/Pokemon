@@ -659,7 +659,9 @@ function updateGame!(game::GameState,input::Input; s=Settings())
         checkProximityNPCs!(game)
         sortHorizontal!(game.im.sprites)
 
-        # checkMapChange!(game)
+        manageNPCs!(game)
+
+        checkMapChange!(game)
     end
 
     for i in 1:game.callbacks.idx

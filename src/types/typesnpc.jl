@@ -5,22 +5,27 @@ mutable struct NPCStatic <: NPCNormal
 
     pos::Position
     dir::Int
-    spriteid::Int
-    # dialogue::Vector{String}
-    dialogue::Int
+    sprite::Int
+    spriteid::Symbol
     pattern::Int
+    parg::Int
+    c::Int
+    dialogue::Int
+    dialoguelen::Int
 
-    # 0 up, down, left, right
+    # patterns
+    # 0 dont return
+    # 1 2 3 4 return to
     # 5 circ clockwise
     # 6 circ cclockwise
     # 7 rand
 
     function NPCStatic()
-        new(0,P(0,0),1,0,0,0)
+        new(0,P(0,0),1,Symbol(),0,0,0,0,0)
     end
 
-    function NPCStatic(id,pos,dir,spriteid,dialogue,pattern)
-        new(id,pos,dir,spriteid,dialogue,pattern)
+    function NPCStatic(id,pos,dir,sprite,spriteid,pattern,parg,c,dialogue,dialoguelen)
+        new(id,pos,dir,sprite,spriteid,pattern,parg,c,dialogue,dialoguelen)
     end
 end
 
@@ -32,6 +37,7 @@ mutable struct NPCMove <: NPCNormal
     sprite::Sprite
     dia::Int
     pattern::Int
+    c::Int
 end
 
 mutable struct TrainerStatic <: NPCTrainer

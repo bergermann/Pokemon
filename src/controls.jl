@@ -633,11 +633,24 @@ function checkMapChange!(game::GameState)
 end
 
 function mapAction!(game::GameState)
+    b, n = checkTileNPC(game)
+
+    if b
+        game.input.npclock = true
+        game.input.map = false
+        game.input.move = false
+        game.input.dialogue = true
+        game.dialogue.str = game.map.
+
+        return
+    end
+
     tile = game.map.tilemap.collision[game.movepos.h,game.movepos.w]
 
     if tile ∈ [0x0000,0x0001,0x0005,0x0006,0x0007]
         return
-    elseif tile >= 0x003c && tile <= 0x004f
+    elseif 0x003c <= tile <= 0x004f
+        game.input.npclock = true
         game.input.map = false
         game.input.move = false
         game.input.dialogue = true

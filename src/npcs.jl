@@ -81,6 +81,18 @@ function checkProximityNPCs!(game::GameState)
     end
 end
 
+function checkTileNPC(game::GameState)
+    for i in 1:game.npcstatic.idx
+        if game.npcstatic[i].pos.h == game.movepos.h &&
+                game.npcstatic[i].pos.w == game.movepos.w
+            
+            return true, i
+        end
+
+        return false, 0
+    end
+end
+
 function manageNPCs!(game::GameState)
     manageStaticNPCs!(game)
     manageMoveNPCs!(game)

@@ -677,22 +677,17 @@ mutable struct Map
 
     signs::Vector{Vector{String}}
 
-    npcsstatic::Vector
-    npcsmobile::Vector
-    trainers::Vector
-
     function Map(id::UInt8)
         new(id,[],"$id",[],getTiles("tiles_exterior"),
             getTileMap("$id",[:layer1,:layer2,:layer3,:layer4,:collision]),
-            [],[],[],[])
+            [])
     end
 
     function Map(id::UInt8,environment::Vector{Symbol},path::String,areas::Vector,
             exits::Vector{Tuple{UInt8,Position}},tiles::Dict{UInt16,Matrix{UInt32}},
-            tilemap::TileMap,signs::Vector{Vector{String}},npcsstatic::Vector,
-            npcsmobile::Vector,trainers::Vector)
+            tilemap::TileMap,signs::Vector{Vector{String}})
 
-        new(id,environment,path,areas,exits,tiles,tilemap,signs,npcsstatic,npcsmobile,trainers)
+        new(id,environment,path,areas,exits,tiles,tilemap,signs)
     end
 end
 

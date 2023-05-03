@@ -1,0 +1,1 @@
+id	h	w	dir	spr	pat par	dia	dl

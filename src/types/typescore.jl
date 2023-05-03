@@ -675,19 +675,25 @@ mutable struct Map
     tiles::Dict{UInt16,Matrix{UInt32}}
     tilemap::TileMap
 
-    signs::Vector{Vector{String}}
+    str::Vector{String}
 
     function Map(id::UInt8)
-        new(id,[],"$id",[],getTiles("tiles_exterior"),
-            getTileMap("$id",[:layer1,:layer2,:layer3,:layer4,:collision]),
-            [])
+        new(
+            id,                                                             # id
+            [:layer1,:layer2,:layer3,:layer4],      # env
+            "$id",                                                          # path
+
+            [],                                                             # area
+            [],                                                             # exits
+            getTiles("tiles_exterior"),                                     # tiles
+            getTileMap("$id",[:layer1,:layer2,:layer3,:layer4,:collision]), # tilemap
+            
+            loadMapStrings(id)                                              # str
+        )
     end
 
-    function Map(id::UInt8,environment::Vector{Symbol},path::String,areas::Vector,
-            exits::Vector{Tuple{UInt8,Position}},tiles::Dict{UInt16,Matrix{UInt32}},
-            tilemap::TileMap,signs::Vector{Vector{String}})
-
-        new(id,environment,path,areas,exits,tiles,tilemap,signs)
+    function Map(id,environment,path,areas,exits,tiles,tilemap,str)
+        new(id,environment,path,areas,exits,tiles,tilemap,str)
     end
 end
 

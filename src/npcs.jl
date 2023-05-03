@@ -86,11 +86,11 @@ function checkTileNPC(game::GameState)
         if game.npcstatic[i].pos.h == game.movepos.h &&
                 game.npcstatic[i].pos.w == game.movepos.w
             
-            return true, i
+            return i
         end
-
-        return false, 0
     end
+
+    return 0
 end
 
 function manageNPCs!(game::GameState)
@@ -175,8 +175,4 @@ end
 
 function manageMoveNPCs!(game::GameState)
     return
-end
-
-function loadMapStrings(mapid::Int)
-    return readlines("map/$mapid.txt")
 end

@@ -461,8 +461,16 @@ function getDialogue(str::String; s=Settings())
 end
 
 function drawDialogue!(game::GameState)
-    game.im.layers.textbox[end-48-24+1:end-24,16+1:end-16] = game.im.diabox[game.options.diabox]
-    drawText!(game,:textbox,game.dialogue.str[game.dialogue.n],UInt(2),Position(144,32))
+    game.im.layers.textbox[end-48-24+1:end-24,16+1:end-16] = 
+        game.im.diabox[game.options.diabox]
+    drawText!(game,:textbox,game.dialogue.str[game.dialogue.n],UInt(2),
+        Position(144,32))
+end
+
+function drawDialogueUpdate!(game::GameState)
+    flushLayer!(game,:textbox,P(144,32),P(32,160),0xffffff)
+    drawText!(game,:textbox,game.dialogue.str[game.dialogue.n],UInt(2),
+        Position(144,32))
 end
 
 

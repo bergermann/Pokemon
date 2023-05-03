@@ -6,8 +6,6 @@ export main
 
 using MiniFB, Images, DelimitedFiles
 
-
-
 include("types/typespkmn.jl")
 include("types/typescore.jl")
 include("types/typesbattle.jl")

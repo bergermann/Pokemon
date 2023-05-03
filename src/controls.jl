@@ -415,17 +415,17 @@ function inputDialogue!(game::GameState,input::Input)
     if game.dialogue.n < length(game.dialogue.str)
         game.dialogue.n += 1
         
-        game.im.layers.textbox[end-48-24+1:end-24,16+1:end-16] =
-            game.im.diabox[game.options.diabox]
-        drawText!(game,:textbox,game.dialogue.str[game.dialogue.n],UInt(2),P(144,32))
+        drawDialogueUpdate!(game)
     else
         game.dialogue.d = false
         game.dialogue.n = 1
         game.input.move = true
         game.input.map = true
         game.input.dialogue = false
+        game.input.npclock = false
         
-        flushLayer!(game,:textbox,P(24+112,16),P(48,240))
+        # flushLayer!(game,:textbox,P(24+112,16),P(48,240))
+        flushLayer!(game,:textbox)
     end
 end
 
@@ -628,19 +628,29 @@ end
 
 function checkMapChange!(game::GameState)
     if game.map.tilemap.collision[game.pos.h,game.pos.w] ∈ 0x14:0x3b
-        changeMap!(game,game.map.exits[game.map.tilemap.collision[game.pos.h,game.pos.w]-19])
+        changeMap!(game,
+            game.map.exits[game.map.tilemap.collision[game.pos.h,game.pos.w]-19])
     end
 end
 
 function mapAction!(game::GameState)
-    b, n = checkTileNPC(game)
+    n = checkTileNPC(game)
 
-    if b
+    if n != 0
+        npc = game.npcstatic[n]
+
+        if npc.dialogue == 0    # FIX
+            return
+        end
+
         game.input.npclock = true
         game.input.map = false
         game.input.move = false
         game.input.dialogue = true
-        game.dialogue.str = game.map.
+        game.dialogue.n = 1
+        game.dialogue.str = game.map.str[npc.dialogue:npc.dialogue+npc.dialoguelen-1]
+
+        drawDialogue!(game)
 
         return
     end
@@ -654,10 +664,9 @@ function mapAction!(game::GameState)
         game.input.map = false
         game.input.move = false
         game.input.dialogue = true
-        game.dialogue.str = game.map.signs[tile-0x003b]
+        game.dialogue.str = game.map.str[tile-59]
 
-        game.im.layers.textbox[end-48-24+1:end-24,16+1:end-16] = game.im.diabox[game.options.diabox]
-        drawText!(game,:textbox,game.dialogue.str[game.dialogue.n],UInt(2),P(144,32))
+        drawDialogue!(game)
     end
 end
 

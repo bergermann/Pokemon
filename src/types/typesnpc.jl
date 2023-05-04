@@ -7,9 +7,11 @@ mutable struct NPCStatic <: NPCNormal
     dir::Int
     sprite::Int
     spriteid::Symbol
+
     pattern::Int
     parg::Int
     c::Int
+
     dialogue::Int
     dialoguelen::Int
 
@@ -33,11 +35,31 @@ mutable struct NPCMove <: NPCNormal
     id::UInt16
 
     pos::Position
+    homepos::Position
     dir::Int
-    sprite::Sprite
-    dia::Int
+    sprite::Int
+    spriteid::Symbol
+    
     pattern::Int
+    parg1::Int
+    parg2::Int
     c::Int
+
+    dialogue::Int
+    dialoguelen::Int
+
+    # patterns
+    # 1         horizontal  left    right
+    # 2         vertical    up      down
+    # 3 4 5 6   l shape     arm1    arm2
+    # 7         rect        ax1     ax2
+    # 8         rand        freq    max
+
+    function NPCMove(id,pos,homepos,dir,sprite,spriteid,pattern,parg1,parg2,c,
+            dialogue,dialoguelen)
+        
+        new(id,pos,homepos,dir,sprite,spriteid,pattern,parg1,parg2,c,dialogue,dialoguelen)
+    end
 end
 
 mutable struct TrainerStatic <: NPCTrainer

@@ -60,6 +60,7 @@ function main()
         DrawState(),
 
         ArrayList(NPCStatic,64),
+        ArrayList(NPCMove,64),
 
         Options()
     )

@@ -892,7 +892,8 @@ mutable struct GameState
     input::InputState
     draw::DrawState
 
-    npcstatic::ArrayList{<:NPC}
+    npcstatic::ArrayList{NPCStatic}
+    npcmove::ArrayList{NPCMove}
     # trainers::ArrayList{NPCTrainer}
 
     options::Options

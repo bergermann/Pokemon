@@ -38,12 +38,41 @@ function loadStaticNPCs!(game::GameState,d::Vector{Int})
     createSprite!(game,Symbol("npc",d[1]),:layer2,getSpriteNPC(d[5]),
         P(80+16*(d[2]-game.pos.h),128+16*(d[3]-game.pos.w)),d[4])
 end
+# id	h	w	dir	spr	pat p1	p2	dia	dl
+
+function loadMoveNPCs!(game::GameState,d::Vector{Int})
+    push!(game.npcmove,NPCMove(
+            d[1],    # id::UInt16
+
+            P(d[2],d[3]),    # pos::Position
+            d[4],    # dir::Int
+            d[5],    # sprite::Int
+            Symbol("npc",d[1]),    # spriteid::Symbol
+                
+            d[6],    # pattern::Int
+            d[7],    # parg1::Int
+            d[8],    # parg2::Int
+            0,    # c::Int
+
+            d[9],    # dialogue::Int
+            d[10]    # dialoguelen::Int
+        )
+    )
+
+    createSprite!(game,Symbol("npc",d[1]),:layer2,getSpriteNPC(d[5]),
+        P(80+16*(d[2]-game.pos.h),128+16*(d[3]-game.pos.w)),d[4])
+end
 
 function loadNPCs!(game::GameState,mapid)
-    f = readdlm("maps/$mapid/npcstatic.txt",'\t',Int,'\n'; skipstart=1)
+    f1 = readdlm("maps/$mapid/npcstatic.txt",'\t',Int,'\n'; skipstart=1)
+    f2 = readdlm("maps/$mapid/npcmove.txt",'\t',Int,'\n'; skipstart=1)
 
-    for i in 1:size(f)[1]
-        loadStaticNPCs!(game,f[i,:])
+    for i in axes(f1,1)
+        loadStaticNPCs!(game,f1[i,:])
+    end
+
+    for i in axes(f2,1)
+        loadMoveNPCs!(game,f2[i,:])
     end
 
     checkProximityNPCs!(game)
@@ -94,15 +123,15 @@ function checkTileNPC(game::GameState)
 end
 
 function manageNPCs!(game::GameState)
+    if game.input.npclock
+        return
+    end
+
     manageStaticNPCs!(game)
     manageMoveNPCs!(game)
 end
 
 function manageStaticNPCs!(game::GameState)
-    if game.input.npclock
-        return
-    end
-
     for i in 1:game.npcstatic.idx
         manageStaticNPC!(game,game.npcstatic[i])
     end
@@ -170,9 +199,29 @@ function manageStaticNPC!(game::GameState,npc::NPCStatic)
         else
             npc.c += 1
         end
+
+        return
     end
 end
 
 function manageMoveNPCs!(game::GameState)
-    return
+    for i in 1:game.npcmove.idx
+        manageMoveNPC!(game,game.npcmove[i])
+    end
 end
+
+function manageMoveNPC!(game::GameState,npc::NPCMove)
+    if npc.pattern == 0
+        return
+    elseif npc.pattern == 1
+        return
+    end
+    
+end
+
+# patterns
+# 1         horizontal  left    right
+# 2         vertical    up      down
+# 3 4 5 6   l shape     arm1    arm2
+# 7         rect        ax1     ax2
+# 8         rand        freq    max

@@ -42,20 +42,21 @@ end
 
 function loadMoveNPCs!(game::GameState,d::Vector{Int})
     push!(game.npcmove,NPCMove(
-            d[1],    # id::UInt16
+            d[1],               # id::UInt16
 
-            P(d[2],d[3]),    # pos::Position
-            d[4],    # dir::Int
-            d[5],    # sprite::Int
-            Symbol("npc",d[1]),    # spriteid::Symbol
+            P(d[2],d[3]),       # pos::Position
+            P(d[2],d[3]),       #homepos
+            d[4],               # dir::Int
+            d[5],               # sprite::Int
+            Symbol("npc",d[1]), # spriteid::Symbol
                 
-            d[6],    # pattern::Int
-            d[7],    # parg1::Int
-            d[8],    # parg2::Int
-            0,    # c::Int
+            d[6],               # pattern::Int
+            d[7],               # parg1::Int
+            d[8],               # parg2::Int
+            0,                  # c::Int
 
-            d[9],    # dialogue::Int
-            d[10]    # dialoguelen::Int
+            d[9],               # dialogue::Int
+            d[10]               # dialoguelen::Int
         )
     )
 

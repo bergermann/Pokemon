@@ -14,6 +14,14 @@ dirs = Base.ImmutableDict(
     0 => Position(0,0)      #null
 )
 
+invdirs = Base.ImmutableDict(
+    1 => 2,     #up
+    2 => 1,     #down
+    3 => 4,     #left
+    4 => 3,     #right
+    0 => 0      #null
+)
+
 mapid = Base.ImmutableDict(
     0x00 => map0,
     0x01 => map1
@@ -93,7 +101,13 @@ swimmable::Vector{UInt16} = [0x0002,0x0003]
 
 function checkWalkable(game::GameState,movepos::Position)
     for i in 1:game.npcstatic.idx
-        if game.npcstatic[i].pos.h == movepos.h && game.npcstatic[i].pos.w == movepos.w
+        if isequal(game.npcstatic[i].pos,movepos)
+            return false
+        end
+    end
+
+    for i in 1:game.npcmove.idx
+        if isequal(game.npcmove[i].pos,movepos)
             return false
         end
     end
@@ -424,8 +438,8 @@ function inputDialogue!(game::GameState,input::Input)
         game.input.dialogue = false
         game.input.npclock = false
         
-        # flushLayer!(game,:textbox,P(24+112,16),P(48,240))
-        flushLayer!(game,:textbox)
+        flushLayer!(game,:textbox,P(24+112,16),P(48,240))
+        # flushLayer!(game,:textbox)
     end
 end
 
@@ -634,14 +648,15 @@ function checkMapChange!(game::GameState)
 end
 
 function mapAction!(game::GameState)
-    n = checkTileNPC(game)
+    b, npc = checkTileNPC(game)
 
-    if n != 0
-        npc = game.npcstatic[n]
-
+    if b
         if npc.dialogue == 0    # FIX
             return
         end
+
+        npc.dir = invdirs[npc.dir]
+        updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
 
         game.input.npclock = true
         game.input.map = false

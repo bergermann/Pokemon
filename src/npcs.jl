@@ -45,7 +45,7 @@ function loadMoveNPCs!(game::GameState,d::Vector{Int})
             d[1],               # id::UInt16
 
             P(d[2],d[3]),       # pos::Position
-            P(d[2],d[3]),       #homepos
+            P(d[2],d[3]),       # homepos
             d[4],               # dir::Int
             d[5],               # sprite::Int
             Symbol("npc",d[1]), # spriteid::Symbol
@@ -53,7 +53,8 @@ function loadMoveNPCs!(game::GameState,d::Vector{Int})
             d[6],               # pattern::Int
             d[7],               # parg1::Int
             d[8],               # parg2::Int
-            0,                  # c::Int
+            0,                  # c1::Int
+            d[4],                  # c2::Int
 
             d[9],               # dialogue::Int
             d[10]               # dialoguelen::Int
@@ -80,10 +81,15 @@ function loadNPCs!(game::GameState,mapid)
 end
 
 function getSpriteNPC(id::Int)
+    if id == 0
+        return Dict{Int,Tuple{Matrix{UInt32},Position}}(
+            0 => (Array{Int}(undef,0,0),P(0,0)))
+    end
+
     img = mfb_rgb.(load("im/npcs/$id.png"))
 
     d = Dict{Int,Tuple{Matrix{UInt32},Position}}(
-        zip([2,1,3,6,5,7,10,9,11],
+        zip([2,1,3,6,10,5,9,7,11],
         [(img[:,1+16*i:16+16*i], P(32,16)) for i in 0:8])
     )
 
@@ -116,11 +122,19 @@ function checkTileNPC(game::GameState)
         if game.npcstatic[i].pos.h == game.movepos.h &&
                 game.npcstatic[i].pos.w == game.movepos.w
             
-            return i
+            return true, game.npcstatic[i]
         end
     end
 
-    return 0
+    for i in 1:game.npcmove.idx
+        if game.npcmove[i].pos.h == game.movepos.h &&
+                game.npcmove[i].pos.w == game.movepos.w
+            
+            return true, game.npcmove[i]
+        end
+    end
+
+    return false, nothing
 end
 
 function manageNPCs!(game::GameState)
@@ -214,10 +228,17 @@ end
 function manageMoveNPC!(game::GameState,npc::NPCMove)
     if npc.pattern == 0
         return
-    elseif npc.pattern == 1
+    elseif npc.pattern == 1 # horizontal
+        moveHorizontalNPC!(game,npc)
+    elseif npc.pattern == 2 # vertical
+        moveVerticalNPC!(game,npc)
+    elseif 3 <= npc.pattern <= 6
         return
-    end
-    
+    elseif npc.pattern == 7
+        return
+    else
+        return
+    end    
 end
 
 # patterns
@@ -226,3 +247,71 @@ end
 # 3 4 5 6   l shape     arm1    arm2
 # 7         rect        ax1     ax2
 # 8         rand        freq    max
+
+function moveHorizontalNPC!(game::GameState,npc::NPC)
+    dw = npc.pos.w-npc.homepos.w
+    dir = npc.c2 == 3 ? -1 : 1
+
+    if npc.c1 == 0
+        if -npc.parg1 < dw < npc.parg2
+            if !isequal(game.pos,npc.pos,0,-dir)
+                npc.pos.w += dir
+            else
+                return
+            end
+        else
+            npc.pos.w -= dir
+            npc.c2 -= dir
+            npc.dir = npc.c2
+        end
+        
+        if npc.pos.h%2 == npc.pos.w%2
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir+4)
+        else
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir+8)
+        end
+    elseif npc.c1 == 8
+        updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+    end
+
+    game.im.sprites[npc.spriteid].pos.w += dir
+
+    npc.c1 += 1
+    npc.c1 %= 15
+
+    return
+end
+
+function moveVerticalNPC!(game::GameState,npc::NPC)
+    dh = npc.pos.h-npc.homepos.h
+    dir = npc.c2 == 1 ? -1 : 1
+
+    if npc.c1 == 0
+        if -npc.parg1 < dh < npc.parg2
+            if !isequal(game.pos,npc.pos,-dir,0)
+                npc.pos.h += dir
+            else
+                return
+            end
+        else
+            npc.pos.h -= dir
+            npc.c2 -= dir
+            npc.dir = npc.c2
+        end
+        
+        if npc.pos.h%2 == npc.pos.w%2
+            updateSprite!(game.im.sprites[npc.spriteid],npc.c2+4)
+        else
+            updateSprite!(game.im.sprites[npc.spriteid],npc.c2+8)
+        end
+    elseif npc.c1 == 8
+        updateSprite!(game.im.sprites[npc.spriteid],npc.c2)
+    end
+
+    game.im.sprites[npc.spriteid].pos.h += dir
+
+    npc.c1 += 1
+    npc.c1 %= 15
+
+    return
+end

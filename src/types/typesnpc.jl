@@ -1,5 +1,7 @@
 # types for npcs on map stuff
 
+
+
 mutable struct NPCStatic <: NPCNormal
     id::UInt16
 
@@ -43,7 +45,8 @@ mutable struct NPCMove <: NPCNormal
     pattern::Int
     parg1::Int
     parg2::Int
-    c::Int
+    c1::Int
+    c2::Int
 
     dialogue::Int
     dialoguelen::Int
@@ -55,10 +58,11 @@ mutable struct NPCMove <: NPCNormal
     # 7         rect        ax1     ax2
     # 8         rand        freq    max
 
-    function NPCMove(id,pos,homepos,dir,sprite,spriteid,pattern,parg1,parg2,c,
-            dialogue,dialoguelen)
+    function NPCMove(id,pos,homepos,dir,sprite,spriteid,pattern,parg1,parg2,
+            c1,c2,dialogue,dialoguelen)
         
-        new(id,pos,homepos,dir,sprite,spriteid,pattern,parg1,parg2,c,dialogue,dialoguelen)
+        new(id,pos,homepos,dir,sprite,spriteid,pattern,parg1,parg2,
+            c1,c2,dialogue,dialoguelen)
     end
 end
 

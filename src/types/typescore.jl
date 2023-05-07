@@ -17,6 +17,14 @@ Base.println(p::Position) = println("P($(p.h),$(p.w))")
 
 const P = Position
 
+function Base.isequal(p1::Position,p2::Position)
+    return (p1.h == p2.h) && (p1.w == p2.w)
+end
+
+function Base.isequal(p1::Position,p2::Position,dh::Int,dw::Int)
+    return (p1.h+dh == p2.h) && (p1.w+dw == p2.w)
+end
+
 function posAdd(a::Position,b::Position)
     return Position(a.h+b.h,a.w+b.w)
 end
@@ -892,8 +900,8 @@ mutable struct GameState
     input::InputState
     draw::DrawState
 
-    npcstatic::ArrayList{NPCStatic}
-    npcmove::ArrayList{NPCMove}
+    npcstatic::ArrayList{<:NPCNormal}
+    npcmove::ArrayList{<:NPCNormal}
     # trainers::ArrayList{NPCTrainer}
 
     options::Options

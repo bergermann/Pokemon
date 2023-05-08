@@ -1,2 +1,3 @@
 id	h	w	dir	spr	pat p1	p2	dia	dl
 10	107	20	3	5	1	5	1	47	1
+11	110	30	4	6	2	5	2	49	1

@@ -655,9 +655,6 @@ function mapAction!(game::GameState)
             return
         end
 
-        npc.dir = invdirs[npc.dir]
-        updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
-
         game.input.npclock = true
         game.input.map = false
         game.input.move = false

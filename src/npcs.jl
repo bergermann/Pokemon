@@ -128,7 +128,8 @@ function checkTileNPC(game::GameState)
 
     for i in 1:game.npcmove.idx
         if game.npcmove[i].pos.h == game.movepos.h &&
-                game.npcmove[i].pos.w == game.movepos.w
+                game.npcmove[i].pos.w == game.movepos.w # &&
+                # game.npcmove[i].c1 == 0
             
             return true, game.npcmove[i]
         end
@@ -138,15 +139,15 @@ function checkTileNPC(game::GameState)
 end
 
 function manageNPCs!(game::GameState)
-    if game.input.npclock
-        return
-    end
-
     manageStaticNPCs!(game)
     manageMoveNPCs!(game)
 end
 
 function manageStaticNPCs!(game::GameState)
+    if game.input.npclock
+        return
+    end
+
     for i in 1:game.npcstatic.idx
         manageStaticNPC!(game,game.npcstatic[i])
     end
@@ -226,6 +227,12 @@ function manageMoveNPCs!(game::GameState)
 end
 
 function manageMoveNPC!(game::GameState,npc::NPCMove)
+    if game.input.npclock && npc.c1 == 0
+        updateSprite!(game.im.sprites[npc.spriteid],invdirs[game.direction])
+        
+        return
+    end
+    
     if npc.pattern == 0
         return
     elseif npc.pattern == 1 # horizontal

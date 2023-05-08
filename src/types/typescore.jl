@@ -770,8 +770,7 @@ mutable struct Layers
     layer5::Matrix{UInt32} #text?
     layer6::Matrix{UInt32}
 
-    textbox::Matrix{UInt32}
-    
+    textbox::Matrix{UInt32}    
 
     function Layers(; s::Settings=Settings())
         new([zeros(UInt32,UInt16(s.Nh)*UInt16(s.tilesize),

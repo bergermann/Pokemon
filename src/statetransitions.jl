@@ -28,13 +28,12 @@ function stateInitDrawBattle!(game::GameState)
     end
 
     game.draw.battleintro = true
-    game.draw.sprites = true
 end
 
 function stateSetupBattle!(game::GameState)
     game.input.move = false
 
-    game.im.sprites[:main].active = false
+    popall!(game.im.sprites)
 
     game.im.postprocess.active = true
     game.im.postprocess.func = shutterHorizontal!

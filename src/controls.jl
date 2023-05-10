@@ -22,6 +22,24 @@ invdirs = Base.ImmutableDict(
     0 => 0      #null
 )
 
+turndirsright = Base.ImmutableDict(
+    1 => 4,     #up
+    2 => 3,     #down
+    3 => 1,     #left
+    4 => 2,     #right
+    0 => 0      #null
+)
+
+turndirsleft = Base.ImmutableDict(
+    1 => 3,     #up
+    2 => 4,     #down
+    3 => 2,     #left
+    4 => 1,     #right
+    0 => 0      #null
+)
+
+
+
 mapid = Base.ImmutableDict(
     0x00 => map0,
     0x01 => map1
@@ -689,7 +707,7 @@ end
 function updateGame!(game::GameState,input::Input; s=Settings())
     inputManager!(game,input)
 
-    if !game.battle.active
+    if game.overworld
         checkProximityNPCs!(game)
         sortHorizontal!(game.im.sprites)
 

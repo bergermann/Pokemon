@@ -2,24 +2,6 @@
 
 
 
-#= 
-id::UInt16
-
-pos::Position
-dir::Int
-sprite::Int
-spriteid::Symbol
-# dialogue::Vector{String}
-dialogue::Int
-pattern::Int
-parg::Int
-c::Int
-
-id	h	w	dir	spr	dia	pat parg
-id	h	w	dir	spr	pat par	dia	dl
-=#
-
-
 function loadStaticNPCs!(game::GameState,d::Vector{Int})
     push!(game.npcstatic,NPCStatic(
             d[1],                   # id
@@ -35,10 +17,9 @@ function loadStaticNPCs!(game::GameState,d::Vector{Int})
         )
     )
 
-    createSprite!(game,Symbol("npc",d[1]),:layer2,getSpriteNPC(d[5]),
-        P(80+16*(d[2]-game.pos.h),128+16*(d[3]-game.pos.w)),d[4])
+    # createSprite!(game,Symbol("npc",d[1]),:layer2,getSpriteNPC(d[5]),
+    #     P(80+16*(d[2]-game.pos.h),128+16*(d[3]-game.pos.w)),d[4])
 end
-# id	h	w	dir	spr	pat p1	p2	dia	dl
 
 function loadMoveNPCs!(game::GameState,d::Vector{Int})
     push!(game.npcmove,NPCMove(
@@ -54,15 +35,15 @@ function loadMoveNPCs!(game::GameState,d::Vector{Int})
             d[7],               # parg1::Int
             d[8],               # parg2::Int
             0,                  # c1::Int
-            d[4],                  # c2::Int
+            d[4],               # c2::Int
 
             d[9],               # dialogue::Int
             d[10]               # dialoguelen::Int
         )
     )
 
-    createSprite!(game,Symbol("npc",d[1]),:layer2,getSpriteNPC(d[5]),
-        P(80+16*(d[2]-game.pos.h),128+16*(d[3]-game.pos.w)),d[4])
+    # createSprite!(game,Symbol("npc",d[1]),:layer2,getSpriteNPC(d[5]),
+    #     P(80+16*(d[2]-game.pos.h),128+16*(d[3]-game.pos.w)),d[4])
 end
 
 function loadNPCs!(game::GameState,mapid)
@@ -76,8 +57,6 @@ function loadNPCs!(game::GameState,mapid)
     for i in axes(f2,1)
         loadMoveNPCs!(game,f2[i,:])
     end
-
-    checkProximityNPCs!(game)
 end
 
 function getSpriteNPC(id::Int)
@@ -99,6 +78,26 @@ function getSpriteNPC(id::Int)
 
     return d
 end
+
+function loadSpritesNPCs!(game::GameState)
+    for i in 1:game.npcstatic.idx
+        npc = game.npcstatic[i]
+        createSprite!(game,npc.spriteid,:layer2,getSpriteNPC(npc.sprite),
+            P(80+16*(npc.pos.h-game.pos.h),128+16*(npc.pos.w-game.pos.w)),npc.dir)
+    end
+
+    for i in 1:game.npcmove.idx
+        npc = game.npcmove[i]
+        createSprite!(game,npc.spriteid,:layer2,getSpriteNPC(npc.sprite),
+            posAddMult(P(80+16*(npc.pos.h-game.pos.h),128+16*(npc.pos.w-game.pos.w)),
+            dirs[npc.c2],-npc.c1),npc.dir)
+    end
+
+    checkProximityNPCs!(game)
+end
+
+
+
 
 function checkProximityNPCs!(game::GameState)
     # for i in 1:game.npcstatic.idx
@@ -240,7 +239,11 @@ function manageMoveNPC!(game::GameState,npc::NPCMove)
     elseif npc.pattern == 2 # vertical
         moveVerticalNPC!(game,npc)
     elseif 3 <= npc.pattern <= 6
-        return
+        @time moveAngleNPC1!(game,npc,(1,2,4,3))
+        # 1: [1,2,4,3]
+        # 2: [4,3,2,1]
+        # 3: [2,1,3,4]
+        # 4: [3,4,1,2]
     elseif npc.pattern == 7
         return
     else
@@ -261,7 +264,7 @@ function moveHorizontalNPC!(game::GameState,npc::NPC)
 
     if npc.c1 == 0
         if -npc.parg1 < dw < npc.parg2
-            if !isequal(game.pos,npc.pos,0,-dir)
+            if !isequal(npc.pos,game.pos,0,dir)
                 npc.pos.w += dir
             else
                 return
@@ -295,7 +298,7 @@ function moveVerticalNPC!(game::GameState,npc::NPC)
 
     if npc.c1 == 0
         if -npc.parg1 < dh < npc.parg2
-            if !isequal(game.pos,npc.pos,-dir,0)
+            if !isequal(npc.pos,game.pos,dir,0)
                 npc.pos.h += dir
             else
                 return
@@ -316,6 +319,88 @@ function moveVerticalNPC!(game::GameState,npc::NPC)
     end
 
     game.im.sprites[npc.spriteid].pos.h += dir
+
+    npc.c1 += 1
+    npc.c1 %= 15
+
+    return
+end
+
+
+# 1: [1,2,4,3]
+function moveAngleNPC1!(game::GameState,npc::NPCMove,pattern::NTuple{4,Int})
+    if npc.c1 == 0
+        dh = npc.pos.h-npc.homepos.h+dirs[npc.dir].h
+        dw = npc.pos.w-npc.homepos.w+dirs[npc.dir].w
+
+        if dh > 0 || dh < -npc.parg1 || dw < 0 || dw > npc.parg2
+            npc.c2 += 1
+
+            if npc.c2 == 5
+                npc.c2 = 1
+            end
+
+            npc.dir = pattern[npc.c2]
+        end
+
+        if isequal(npc.pos,game.pos,dirs[pattern[npc.c2]])
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+
+            return
+        else
+            posAdd!(npc.pos,dirs[npc.dir])
+        end
+        
+        if npc.pos.h%2 == npc.pos.w%2
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir+4)
+        else
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir+8)
+        end
+    elseif npc.c1 == 8
+        updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+    end
+
+    posAdd!(game.im.sprites[npc.spriteid].pos,dirs[npc.dir])
+
+    npc.c1 += 1
+    npc.c1 %= 15
+
+    return
+end
+
+function moveAngleNPC2!(game::GameState,npc::NPCMove,pattern::NTuple{4,Int})
+    if npc.c1 == 0
+        dh = npc.pos.h-npc.homepos.h+dirs[npc.dir].h
+        dw = npc.pos.w-npc.homepos.w+dirs[npc.dir].w
+
+        if dh > 0 || dh < -npc.parg1 || dw < 0 || dw > npc.parg2
+            npc.c2 += 1
+
+            if npc.c2 == 5
+                npc.c2 = 1
+            end
+
+            npc.dir = pattern[npc.c2]
+        end
+
+        if isequal(npc.pos,game.pos,dirs[pattern[npc.c2]])
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+
+            return
+        else
+            posAdd!(npc.pos,dirs[npc.dir])
+        end
+        
+        if npc.pos.h%2 == npc.pos.w%2
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir+4)
+        else
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir+8)
+        end
+    elseif npc.c1 == 8
+        updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+    end
+
+    posAdd!(game.im.sprites[npc.spriteid].pos,dirs[npc.dir])
 
     npc.c1 += 1
     npc.c1 %= 15

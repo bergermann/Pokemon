@@ -25,6 +25,10 @@ function Base.isequal(p1::Position,p2::Position,dh::Int,dw::Int)
     return (p1.h+dh == p2.h) && (p1.w+dw == p2.w)
 end
 
+function Base.isequal(p1::Position,p2::Position,dp::Position)
+    return (p1.h+dp.h == p2.h) && (p1.w+dp.w == p2.w)
+end
+
 function posAdd(a::Position,b::Position)
     return Position(a.h+b.h,a.w+b.w)
 end
@@ -61,6 +65,10 @@ function posMult!(p::Position,n::Signed)
     return
 end
 
+function posAddMult(a::Position,b::Position,n::Signed)
+    return P(a.h+b.h*n,a.w+b.w*n)
+end
+
 function posAddMult!(a::Position,b::Position,n::Signed)
     a.h += b.h*n; a.w += b.w*n
 
@@ -70,6 +78,8 @@ end
 function setPos!(pos::Position,h::Int,w::Int)
     pos.h = h
     pos.w = w
+
+    return
 end
 
 
@@ -687,6 +697,7 @@ mutable struct Map
 
     function Map(id::UInt8)
         new(
+
             id,                                                             # id
             [:layer1,:layer2,:layer3,:layer4],      # env
             "$id",                                                          # path
@@ -894,6 +905,7 @@ mutable struct GameState
 
     dialogue::Dialogue
 
+    overworld::Bool
     battle::Battle
     
     input::InputState

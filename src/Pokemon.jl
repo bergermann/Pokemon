@@ -54,6 +54,7 @@ function main()
 
         Dialogue(),
 
+        true,
         Battle(),
 
         InputState(),
@@ -69,13 +70,12 @@ function main()
     push!(game.trainer.pokemon,generatePkmn(game,0x0002,0x03))
     push!(game.trainer.pokemon,generatePkmn(game,0x0003,0x60))
 
-    
-
     game.input.map = true
     game.input.move = true
 
     resetMovePos!(game)
-    
+    loadNPCs!(game,game.map.id)
+
     stateInitDrawMap!(game)
 
     w,b = startWindow(settings)

@@ -34,6 +34,7 @@ function stateSetupBattle!(game::GameState)
     game.input.move = false
 
     popall!(game.im.sprites)
+    game.overworld = false
 
     game.im.postprocess.active = true
     game.im.postprocess.func = shutterHorizontal!
@@ -190,13 +191,7 @@ function stateBattleFleeBlocked!(game::GameState)
 end
 
 function stateEndBattle!(game::GameState)   #,state::BattleStateWild)
-    killSprite!(game,:pkmn1)
-    killSprite!(game,:tag1)
-    killSprite!(game,:pkmn2)
-    killSprite!(game,:tag2)
-    
-    killSprite!(game,:cursor1)
-    killSprite!(game,:cursor2)
+    popall!(game.im.sprites)
 
     flushLayers!(game)
     flushLayer!(game)
@@ -225,6 +220,7 @@ end
 
 function stateInitDrawMap!(game::GameState)
     drawMap!(game)
+    game.overworld = true
     
     createSprite!(game,:main,:layer2,getSpriteMain("sprite"),Position(80,128),
         11; active=true)
@@ -232,19 +228,26 @@ function stateInitDrawMap!(game::GameState)
     createCounter!(game,:movemain,0)
     createCallback!(game,:movemain,false,moveMain!,(game.direction,-1))
 
-    loadNPCs!(game,game.map.id)
+    loadSpritesNPCs!(game)
 end
+
+
+
+
 
 function stateMenuMainOpen!(game::GameState)
     game.input.inputlock = false
     game.input.menu.main = true
 end
 
-function stateMenuPkmnOpen!(game::GameState)
-    game.draw.map = false
 
-    killSprite!(game,:main)
-    killSprite!(game,:cursor)
+
+
+
+function stateMenuPkmnOpen!(game::GameState)
+    popall!(game.im.sprites)
+    game.overworld = false
+
     killCC!(game,:movemain)
 
     createCallback!(game,:wiggle,animMenuPkmnWiggle!,(); active=true)
@@ -263,21 +266,18 @@ function stateMenuPkmnClose!(game::GameState)
     killSpriteAll!(game)
     killCallback!(game,:wiggle)
 
-    createSprite!(game,:main,:layer2,getSpriteMain("sprite"),P(80,128),
-        (game.direction-1)*10+1; active=true)
-
-    createCounter!(game,:movemain,0)
-    createCallback!(game,:movemain,moveMain!,(game.direction,-1))
-
-    drawMap!(game)
+    stateInitDrawMap!(game)
     drawMenu!(game)
 end
 
 
 
+
+
 function stateMenuBagsOpen!(game::GameState)
-    killSprite!(game,:main)
-    killSprite!(game,:cursor)
+    popall!(game.im.sprites)
+    game.overworld = false
+
     killCC!(game,:movemain)
 
     createCC!(game,:bagswitch,animBagSwitch!,(); n=1)
@@ -294,16 +294,11 @@ end
 function stateMenuBagsClose!(game::GameState)
     game.input.inputlock = true
     
-    killSpriteAll!(game)
+    popall!(game.im.sprites)
+
     killCallback!(game,:wiggle)
     killCC!(game,:bagswitch)
 
-    createSprite!(game,:main,:layer2,getSpriteMain("sprite"),Position(80,128),
-        (game.direction-1)*10+1; active=true)
-
-    createCounter!(game,:movemain,0)
-    createCallback!(game,:movemain,false,moveMain!,(game.direction,-1))
-
-    drawMap!(game)
+    stateInitDrawMap!(game)
     drawMenu!(game)
 end

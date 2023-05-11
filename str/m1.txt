@@ -53,3 +53,5 @@ Test bewegter NPC 3.
 Test bewegter NPC 4.
 
 Test bewegter NPC 5.
+
+Test bewegter NPC 6.

@@ -166,15 +166,7 @@ function manageStaticNPC!(game::GameState,npc::NPCStatic)
         return
     elseif npc.pattern == 5
         if npc.c >= npc.parg
-            if npc.dir == 1
-                npc.dir = 4
-            elseif npc.dir == 2
-                npc.dir = 3
-            elseif npc.dir == 3
-                npc.dir = 1
-            else
-                npc.dir = 2
-            end
+            npc.dir = dirsturnright[npc.dir]
 
             updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
 
@@ -186,15 +178,7 @@ function manageStaticNPC!(game::GameState,npc::NPCStatic)
         return
     elseif npc.pattern == 6
         if npc.c >= npc.parg
-            if npc.dir == 1
-                npc.dir = 3
-            elseif npc.dir == 2
-                npc.dir = 4
-            elseif npc.dir == 3
-                npc.dir = 2
-            else
-                npc.dir = 1
-            end
+            npc.dir = dirsturnleft[npc.dir]
 
             updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
 
@@ -227,7 +211,7 @@ end
 
 function manageMoveNPC!(game::GameState,npc::NPCMove)
     if game.input.npclock && npc.c1 == 0
-        updateSprite!(game.im.sprites[npc.spriteid],dirsinv[game.direction])
+        # updateSprite!(game.im.sprites[npc.spriteid],dirsinv[game.direction])
         
         return
     end
@@ -243,7 +227,7 @@ function manageMoveNPC!(game::GameState,npc::NPCMove)
     elseif npc.pattern == 4
         moveRectangleNPC!(game,npc,dirsturnleft)
     else
-        return
+        moveRandomNPC!(game,npc)
     end    
 end
 
@@ -258,7 +242,7 @@ function moveLinearNPC!(game::GameState,npc::NPC)
         if dr < -npc.parg1
             npc.c2 = 2
             npc.dir = dirsinv[npc.dir]
-        elseif dr > npc.parg1
+        elseif dr > npc.parg2
             npc.c2 = 1
             npc.dir = dirsinv[npc.dir]
         end
@@ -375,21 +359,45 @@ function moveRectangleNPC!(game::GameState,npc::NPC,turns::Base.ImmutableDict)
     return
 end
 
-function moveHorizontalNPC!(game::GameState,npc::NPC)
-    dw = npc.pos.w-npc.homepos.w
-    dir = npc.c2 == 3 ? -1 : 1
+function moveRandomNPC!(game::GameState,npc::NPC)
+    if npc.c2 != 0
+        npc.c2 += 1
+        npc.c2 %= 60
+
+        return
+    end
 
     if npc.c1 == 0
-        if -npc.parg1 < dw < npc.parg2
-            if !isequal(npc.pos,game.pos,0,dir)
-                npc.pos.w += dir
-            else
-                return
-            end
+        if rand(UInt8) <= npc.parg1
+            # println("updated")
+            npc.dir = rand(1:4)
         else
-            npc.pos.w -= dir
-            npc.c2 -= dir
-            npc.dir = npc.c2
+            return
+        end
+
+        # print("pos: "); println(npc.pos)
+        # println("dh: ",dh)
+        # println("dw: ",dw)
+
+        if rand(1:2) == 1
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+
+            npc.c2 = 1
+
+            return
+        end
+
+        dh = npc.pos.h-npc.homepos.h+dirs[npc.dir].h
+        dw = npc.pos.w-npc.homepos.w+dirs[npc.dir].w
+
+        if !(0 <= dh <= npc.parg2 && 0 <= dw <= npc.parg2) ||
+                isequal(npc.pos,game.pos,dirs[npc.dir])
+            
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+
+            return
+        else
+            posAdd!(npc.pos,dirs[npc.dir])
         end
         
         if npc.pos.h%2 == npc.pos.w%2
@@ -401,44 +409,14 @@ function moveHorizontalNPC!(game::GameState,npc::NPC)
         updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
     end
 
-    game.im.sprites[npc.spriteid].pos.w += dir
+    posAdd!(game.im.sprites[npc.spriteid].pos,dirs[npc.dir])
 
     npc.c1 += 1
-    npc.c1 %= 16
-
-    return
-end
-
-function moveVerticalNPC!(game::GameState,npc::NPC)
-    dh = npc.pos.h-npc.homepos.h
-    dir = npc.c2 == 1 ? -1 : 1
-
-    if npc.c1 == 0
-        if -npc.parg1 < dh < npc.parg2
-            if !isequal(npc.pos,game.pos,dir,0)
-                npc.pos.h += dir
-            else
-                return
-            end
-        else
-            npc.pos.h -= dir
-            npc.c2 -= dir
-            npc.dir = npc.c2
-        end
-        
-        if npc.pos.h%2 == npc.pos.w%2
-            updateSprite!(game.im.sprites[npc.spriteid],npc.c2+4)
-        else
-            updateSprite!(game.im.sprites[npc.spriteid],npc.c2+8)
-        end
-    elseif npc.c1 == 8
-        updateSprite!(game.im.sprites[npc.spriteid],npc.c2)
+    
+    if npc.c1 == 16
+        npc.c1 = 0
+        npc.c2 = 1
     end
-
-    game.im.sprites[npc.spriteid].pos.h += dir
-
-    npc.c1 += 1
-    npc.c1 %= 16
 
     return
 end

@@ -105,12 +105,6 @@ function main()
             # @time drawGame!(game; s=settings)
             drawGame!(game; s=settings)
             resetInput!(input)
-            # println(game.pos)
-
-            # for i in 1:game.im.sprites.idx
-            #     print(game.im.sprites[i].id,": ")
-            #     println(game.im.sprites[i].pos)
-            # end
         end
     end
 end

@@ -14,7 +14,7 @@ dirs = Base.ImmutableDict(
     0 => Position(0,0)      #null
 )
 
-invdirs = Base.ImmutableDict(
+dirsinv = Base.ImmutableDict(
     1 => 2,     #up
     2 => 1,     #down
     3 => 4,     #left
@@ -22,7 +22,7 @@ invdirs = Base.ImmutableDict(
     0 => 0      #null
 )
 
-turndirsright = Base.ImmutableDict(
+dirsturnright = Base.ImmutableDict(
     1 => 4,     #up
     2 => 3,     #down
     3 => 1,     #left
@@ -30,7 +30,7 @@ turndirsright = Base.ImmutableDict(
     0 => 0      #null
 )
 
-turndirsleft = Base.ImmutableDict(
+dirsturnleft = Base.ImmutableDict(
     1 => 3,     #up
     2 => 4,     #down
     3 => 2,     #left

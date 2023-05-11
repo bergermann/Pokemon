@@ -52,11 +52,11 @@ mutable struct NPCMove <: NPCNormal
     dialoguelen::Int
 
     # patterns
-    # 1         horizontal  left    right
-    # 2         vertical    up      down
-    # 3 4 5 6   l shape     arm1    arm2
-    # 7         rect        ax1     ax2
-    # 8         rand        freq    max
+    # 1         linear      dirneg  dirpos
+    # 2         l shape     arm1    arm2
+    # 3         rect cw     ax1     ax2
+    # 4         rect ccw    ax1     ax2
+    # 5         rand        freq    max
 
     function NPCMove(id,pos,homepos,dir,sprite,spriteid,pattern,parg1,parg2,
             c1,c2,dialogue,dialoguelen)

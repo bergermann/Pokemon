@@ -49,3 +49,7 @@ Test bewegter NPC 1.
 Test bewegter NPC 2.
 
 Test bewegter NPC 3.
+
+Test bewegter NPC 4.
+
+Test bewegter NPC 5.

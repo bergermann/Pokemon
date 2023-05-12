@@ -180,6 +180,8 @@ function manageStaticNPC!(game::GameState,npc::NPCStatic)
         if npc.c == npc.parg
             npc.dir = dirsinv[npc.dir]
             npc.c = 0
+            
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
         end
 
         npc.c += 1
@@ -188,9 +190,13 @@ function manageStaticNPC!(game::GameState,npc::NPCStatic)
     elseif npc.pattern == 6     # angle
         if npc.c == npc.parg
             npc.dir = dirsturnright[npc.dir]
+
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
         elseif npc.c == 2*npc.parg
             npc.dir = dirsturnleft[npc.dir]
             npc.c = 0
+
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
         end
 
         npc.c += 1
@@ -199,13 +205,21 @@ function manageStaticNPC!(game::GameState,npc::NPCStatic)
     elseif npc.pattern == 7     # T
         if npc.c == npc.parg
             npc.dir = dirsturnright[npc.dir]
+
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
         elseif npc.c == 2*npc.parg
             npc.dir = dirsturnright[npc.dir]
+
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
         elseif npc.c == 3*npc.parg
             npc.dir = dirsturnleft[npc.dir]
+
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
         elseif npc.c == 4*npc.parg
             npc.dir = dirsturnleft[npc.dir]
             npc.c = 0
+
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
         end
 
         npc.c += 1
@@ -214,11 +228,17 @@ function manageStaticNPC!(game::GameState,npc::NPCStatic)
     elseif npc.pattern == 8     # T cw
         if npc.c == npc.parg
             npc.dir = dirsturnright[npc.dir]
+
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
         elseif npc.c == 2*npc.parg
             npc.dir = dirsturnright[npc.dir]
+
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
         elseif npc.c == 3*npc.parg
             npc.dir = dirsinv[npc.dir]
             npc.c = 0
+
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
         end
 
         npc.c += 1
@@ -227,11 +247,17 @@ function manageStaticNPC!(game::GameState,npc::NPCStatic)
     elseif npc.pattern == 9     # T ccw
         if npc.c == npc.parg
             npc.dir = dirsturnleft[npc.dir]
+
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
         elseif npc.c == 2*npc.parg
             npc.dir = dirsturnleft[npc.dir]
+
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
         elseif npc.c == 3*npc.parg
             npc.dir = dirsinv[npc.dir]
             npc.c = 0
+
+            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
         end
 
         npc.c += 1

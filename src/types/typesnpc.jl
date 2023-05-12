@@ -20,9 +20,14 @@ mutable struct NPCStatic <: NPCNormal
     # patterns
     # 0 dont return
     # 1 2 3 4 return to
-    # 5 circ clockwise
-    # 6 circ cclockwise
-    # 7 rand
+    # 5 line 
+    # 6 angle
+    # 7 T
+    # 8 T clockwise
+    # 9 T cclockwise
+    # 10 circ clockwise
+    # 11 circ cclockwise
+    # 12 rand
 
     function NPCStatic()
         new(0,P(0,0),1,Symbol(),0,0,0,0,0)

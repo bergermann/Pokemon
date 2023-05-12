@@ -90,7 +90,7 @@ function loadSpritesNPCs!(game::GameState)
         npc = game.npcmove[i]
         createSprite!(game,npc.spriteid,:layer2,getSpriteNPC(npc.sprite),
             posAddMult(P(80+16*(npc.pos.h-game.pos.h),128+16*(npc.pos.w-game.pos.w)),
-            dirs[npc.c2],-npc.c1),npc.dir)
+            dirs[npc.dir],-npc.c1),npc.dir)
     end
 
     checkProximityNPCs!(game)
@@ -153,6 +153,18 @@ function manageStaticNPCs!(game::GameState)
 end
 
 function manageStaticNPC!(game::GameState,npc::NPCStatic)
+    # patterns
+    # 0 dont return
+    # 1 2 3 4 return to
+    # 5 line 
+    # 6 angle
+    # 7 T
+    # 8 T clockwise
+    # 9 T cclockwise
+    # 10 circ clockwise
+    # 11 circ cclockwise
+    # 12 rand
+
     if npc.pattern == 0
         return
     elseif 1 <= npc.pattern <= 4
@@ -164,7 +176,68 @@ function manageStaticNPC!(game::GameState,npc::NPCStatic)
         updateSprite!(game.im.sprites[npc.spriteid],npc.pattern)
 
         return
-    elseif npc.pattern == 5
+    elseif npc.pattern == 5     # linear
+        if npc.c == npc.parg
+            npc.dir = dirsinv[npc.dir]
+            npc.c = 0
+        end
+
+        npc.c += 1
+
+        return
+    elseif npc.pattern == 6     # angle
+        if npc.c == npc.parg
+            npc.dir = dirsturnright[npc.dir]
+        elseif npc.c == 2*npc.parg
+            npc.dir = dirsturnleft[npc.dir]
+            npc.c = 0
+        end
+
+        npc.c += 1
+
+        return
+    elseif npc.pattern == 7     # T
+        if npc.c == npc.parg
+            npc.dir = dirsturnright[npc.dir]
+        elseif npc.c == 2*npc.parg
+            npc.dir = dirsturnright[npc.dir]
+        elseif npc.c == 3*npc.parg
+            npc.dir = dirsturnleft[npc.dir]
+        elseif npc.c == 4*npc.parg
+            npc.dir = dirsturnleft[npc.dir]
+            npc.c = 0
+        end
+
+        npc.c += 1
+
+        return
+    elseif npc.pattern == 8     # T cw
+        if npc.c == npc.parg
+            npc.dir = dirsturnright[npc.dir]
+        elseif npc.c == 2*npc.parg
+            npc.dir = dirsturnright[npc.dir]
+        elseif npc.c == 3*npc.parg
+            npc.dir = dirsinv[npc.dir]
+            npc.c = 0
+        end
+
+        npc.c += 1
+
+        return
+    elseif npc.pattern == 9     # T ccw
+        if npc.c == npc.parg
+            npc.dir = dirsturnleft[npc.dir]
+        elseif npc.c == 2*npc.parg
+            npc.dir = dirsturnleft[npc.dir]
+        elseif npc.c == 3*npc.parg
+            npc.dir = dirsinv[npc.dir]
+            npc.c = 0
+        end
+
+        npc.c += 1
+
+        return
+    elseif npc.pattern == 10     # cw
         if npc.c >= npc.parg
             npc.dir = dirsturnright[npc.dir]
 
@@ -176,7 +249,7 @@ function manageStaticNPC!(game::GameState,npc::NPCStatic)
         npc.c += 1
 
         return
-    elseif npc.pattern == 6
+    elseif npc.pattern == 11    # ccw
         if npc.c >= npc.parg
             npc.dir = dirsturnleft[npc.dir]
 
@@ -188,7 +261,7 @@ function manageStaticNPC!(game::GameState,npc::NPCStatic)
         npc.c += 1
 
         return
-    elseif npc.pattern == 7
+    elseif npc.pattern == 12    # random
         if rand(UInt8) < npc.parg && npc.c >= 30
             npc.dir = rand(1:4)
 

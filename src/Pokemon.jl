@@ -7,10 +7,12 @@ export main
 using MiniFB, Images, DelimitedFiles
 
 include("types/typespkmn.jl")
+include("types/typesitems.jl")
 include("types/typescore.jl")
 include("types/typesbattle.jl")
 include("types/typesnpc.jl")
 
+include("items.jl")
 include("parser.jl")
 include("pokemons.jl")
 include("core.jl")

@@ -363,7 +363,7 @@ mutable struct Trainer
     gender::UInt8
 
     pokemon::ArrayList{Pkmn}
-    inventory::Vector   #placeholder
+    inventory::Inventory   #placeholder
 
     badges::Vector{UInt8}
     pokedex::Vector{Bool}
@@ -387,16 +387,6 @@ mutable struct KItem
     name::String
     description::String
     type::UInt8
-end
-
-mutable struct Inventory
-    items::Array{Tuple{Item,UInt16}}
-    medicine::Array{Tuple{MItem,UInt16}}
-    balls::Array{Tuple{Pokeball,UInt16}}
-    training::Array{Tuple{TItem,UInt16}}
-    keys::Array{Tuple{KItem}}
-
-    cash::UInt32
 end
 
 

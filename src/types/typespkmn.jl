@@ -109,23 +109,6 @@ mutable struct Attack
     end
 end
 
-mutable struct Item
-    name::String
-    description::String
-    type::UInt8
-
-    function Item()
-        new("","",0x00)
-    end
-end
-
-struct Pokeball
-    name::String
-    description::String
-    catchrate::Float64
-    sprite
-end
-
 mutable struct Pkmn
     id::UInt16
     name::String

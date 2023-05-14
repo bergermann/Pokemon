@@ -34,9 +34,14 @@ end
 
 struct MedicineAP <: Item
     amount::Int
+    all::Bool
 end
 
 
+
+struct Vitamin <: Item
+    stat::Int
+end
 
 
 

@@ -126,7 +126,7 @@ mutable struct Pkmn
     type::Tuple{UInt8,UInt8}
     stats::Stats
     status::UInt8
-    item::Item
+    item::Int
 
     attacks::Vector{Attack}
     ability::UInt16

@@ -656,6 +656,9 @@ end
 function changeMap!(game::GameState,exit::Tuple{UInt8,Position})
     game.map = mapid[exit[1]]
     game.pos = posAdd(game.pos,exit[2])
+    drawMap!(game)
+    # popall!(game.sp)
+    # loadSpritesNPCs!(game)
 end
 
 function checkMapChange!(game::GameState)

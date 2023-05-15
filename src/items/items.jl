@@ -1,6 +1,6 @@
 # items (battleitems, medicine n such)
 
-items = Base.ImmutableDict(
+items = Dict{Int,Item}(
     21 => MedicineHealth(20,false,0),   # trank
     22 => MedicineHealth(50,false,0),   # supertrank
     23 => MedicineHealth(200,false,0),  # hypertrank

@@ -1,6 +1,6 @@
-# pokemon testicles
+# poke balls
 
-pokeballs = Base.ImmutableDict(
+pokeballs = Dict{Int,Pokeball}(
      1 => Pokeball(1,0),    # poke ball
      2 => Pokeball(1.5,0),  # great ball
      3 => Pokeball(2,0),    # ultra ball

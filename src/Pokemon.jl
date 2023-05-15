@@ -6,8 +6,8 @@ export main
 
 using MiniFB, Images, DelimitedFiles
 
-include("types/typespkmn.jl")
 include("types/typesitems.jl")
+include("types/typespkmn.jl")
 include("types/typescore.jl")
 include("types/typesbattle.jl")
 include("types/typesnpc.jl")
@@ -40,7 +40,7 @@ function main()
         Im(),
         PkmnData(),
 
-        Trainer("Void",0x0000,0x02,ArrayList(Pkmn,6),[],[],
+        Trainer("Void",0x0000,0x02,ArrayList(Pkmn,6),Inventory(),[],
             falses(151),getSpriteMain("sprite"; s=settings)),
 
         map1,
@@ -68,6 +68,8 @@ function main()
         Options()
     )
 
+    Base.GC.@preserve game sceneTransition!
+
     push!(game.trainer.pokemon,generatePkmn(game,0x0001,0x14))
     push!(game.trainer.pokemon,generatePkmn(game,0x0002,0x03))
     push!(game.trainer.pokemon,generatePkmn(game,0x0003,0x60))
@@ -89,8 +91,8 @@ function main()
     state = mfb_update(w, b)
     
     while true
-        begin
-        # @time begin
+        # begin
+        @time begin
             game.n.frame += 0x01
 
             writeToBuffer!(b,game)

@@ -83,7 +83,7 @@ function generatePkmn(game::GameState,id::UInt16,level::UInt8)
         Tuple{UInt8,UInt8}(data[2:3]),  #types
         Stats(data[4:9],level),         #stats
         0x00,                           #status
-        Item(),                         #item
+        0,                         #item
         [
             Attack(
                 0x01,

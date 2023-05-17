@@ -1,1 +1,0 @@
-# items to teach pokemons attacks

@@ -70,6 +70,8 @@ function main()
 
     Base.GC.@preserve game sceneTransition!
 
+    setInventoryTest!(game.trainer.inventory)
+
     push!(game.trainer.pokemon,generatePkmn(game,0x0001,0x14))
     push!(game.trainer.pokemon,generatePkmn(game,0x0002,0x03))
     push!(game.trainer.pokemon,generatePkmn(game,0x0003,0x60))

@@ -2,26 +2,80 @@
 
 
 mutable struct Inventory
-    items::Matrix{UInt8}
-    balls::Matrix{UInt8}
-    tms::Matrix{UInt8}
-    berries::Matrix{UInt8}
-    keys::Matrix{UInt8}
+    items::Matrix{UInt16}
+    balls::Matrix{UInt16}
+    machines::Matrix{UInt16}
+    berries::Matrix{UInt16}
+    keys::Matrix{UInt16}
+
+    nitems::Int
+    nballs::Int
+    nmachines::Int
+    nberries::Int
+    nkeys::Int
 
     cash::UInt32
 
     function Inventory()
-        items   = zeros(UInt8,10,2);   items[:,1] = 1:10
-        balls   = zeros(UInt8,12,2);   balls[:,1] = 1:12
-        tms     = zeros(UInt8,10,2);     tms[:,1] = 1:10
-        berries = zeros(UInt8,10,2); berries[:,1] = 1:10
-        keys    = zeros(UInt8,10,2);    keys[:,1] = 1:10
+        items   = zeros(UInt16,25,2);   items[:,1] = 21:45
+        balls   = zeros(UInt16,12,2);   balls[:,1] = 1:12
+        tms     = zeros(UInt16,2,2);      tms[:,1] = 101:102
+        berries = zeros(UInt16,2,2);  berries[:,1] = 201:202
+        keys    = zeros(UInt16,2,2);     keys[:,1] = 301:302
 
-        new(items,balls,tms,berries,keys,0)
+        new(items,balls,tms,berries,keys,0,0,0,0,0,0)
     end
 end
 
+function Base.getindex(inv::Inventory,ind)
+    # if ind == -5
+    #     return inv.nkeys
+    # elseif ind == -4
+    #     return inv.nberries
+    # elseif ind == -3
+    #     return inv.nmachines
+    # elseif ind == -2
+    #     return inv.nballs
+    # elseif ind == -1
+    #     return inv.nitems
+    # elseif ind == 0
+    #     return inv.cash
+    if ind == 1
+        return inv.items
+    elseif ind == 2
+        return inv.balls
+    elseif ind == 3
+        return inv.machines
+    elseif ind == 4
+        return inv.berries
+    elseif ind == 5
+        return inv.keys
+    end
+end
+
+function setInventoryTest!(inv::Inventory)
+    inv[1][1,2] = 10; inv[1][2,2] = 5
+    inv.nitems = 2
+
+    inv[2][1,2] = 20; inv[2][2,2] = 15; inv[2][3,2] = 10
+    inv.nballs = 3
+
+    inv[3][1,2] = 10; inv[3][2,2] = 5
+    inv.nmachines = 2
+
+    inv[4][1,2] = 5
+    inv.nberries = 1
+
+    inv[1][1,2] = 1
+    inv.nkeys = 1
+
+    inv.cash = 10000
+end
+
+
+
 abstract type ItemType end
+
 
 
 # general items
@@ -70,12 +124,6 @@ struct Repel <: Item
     duration::Int
 end
 
-# berries
-
-abstract type Berries <: ItemType end
-
-
-
 # pokeballs
 
 struct Pokeball <: ItemType
@@ -83,19 +131,52 @@ struct Pokeball <: ItemType
     effect::Int
 end
 
+
+
+# tms
+
+abstract type Machine <: ItemType end
+
+mutable struct TM <: Machine end
+
+mutable struct HM <: Machine end
+
+
+
+# berries
+
+abstract type Berry <: ItemType end
+
+
+
+struct BerryHealth <: Berry
+    amount::Int
+    fraction::Bool
+
+    status::Int
+end
+
+struct BerryAP <: Berry
+    amount::Int
+    all::Bool
+end
+
+
 # key items
 
-abstract type Keys <: ItemType end
+abstract type KeyItem <: ItemType end
 
-struct Key <: Keys end
+struct Key <: KeyItem end
 
-struct QuestItem <: Keys end
+struct QuestItem <: KeyItem end
 
-struct Fossil <: Keys end
+struct Fossil <: KeyItem end
 
-abstract type Usable <: Keys end
+abstract type Usable <: KeyItem end
 
 struct Rod <: Usable end
+
+struct Bike <: Usable end
 
 
 

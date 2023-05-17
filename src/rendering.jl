@@ -64,6 +64,24 @@ function getTileMap(dir::String,key::Vector{Symbol}; s=Settings())
     return tm
 end
 
+function getGridImage(dir::String,rows::Int,columns::Int)
+    im = mfb_rgb.(load(dir))
+    height, width = size(im)
+
+    dh = div(height,rows); dw = div(width,columns)
+
+    return [im[1+(h-1)*dh:h*dh,1+(w-1)*dw:w*dw] for w in 1:columns, h in 1:rows]
+end
+
+function getGridImage(dir::String,tilesize::Int)
+    im = mfb_rgb.(load(dir))
+    height, width = size(im)
+
+    nh = div(height,tilesize); nw = div(width,tilesize)
+
+    return [im[1+(h-1)*tilesize:h*tilesize,1+(w-1)*tilesize:w*tilesize] 
+        for w in 1:nw, h in 1:nh]
+end
 
 
 
@@ -756,6 +774,9 @@ function drawInventory!(game::GameState)
     
     createSprite!(game,:cursor,:layer1,getMenuStuff("menubag/cursor",2),
         P(24+22,16+114),1; active=true)
+
+    createSprite!(game,:item,:layer1,getSlotItems(game.input.menu.menubags.bag),
+        P(100,16+8),game.trainer.inventory[game.input.menu.menubags.select])
 end
 
 

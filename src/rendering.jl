@@ -776,7 +776,13 @@ function drawInventory!(game::GameState)
         P(24+22,16+114),1; active=true)
 
     createSprite!(game,:item,:layer1,getSlotItems(game.input.menu.menubags.bag),
-        P(100,16+8),game.trainer.inventory[game.input.menu.menubags.select])
+        P(100,16+8),game.trainer.inventory[game.input.menu.menubags.bag];
+        active=true)
+
+    createSprite!(game,:back,:layer1,
+        Dict(zip([1],getGridImage("im/menubag/arrowback.png",1,1))),
+        P(100,16+8),1;
+        active = false)
 end
 
 

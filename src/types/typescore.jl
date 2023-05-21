@@ -436,10 +436,12 @@ end
 
 mutable struct MenuBags
     bag::Int
-    select::Int
+    select::Vector{Int}
+    vis::Matrix{Int}
+    slot::Int
 
     function MenuBags()
-        new(1,1)
+        new(1,ones(5),zeros(8,2),0)
     end
 end
 
@@ -878,6 +880,7 @@ abstract type NPCTrainer <:NPC end
 
 mutable struct GameState
     im::Im
+    str::Vector{Vector{String}}
     pkmndata::PkmnData
 
     trainer::Trainer

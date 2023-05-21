@@ -64,23 +64,34 @@ function getTileMap(dir::String,key::Vector{Symbol}; s=Settings())
     return tm
 end
 
-function getGridImage(dir::String,rows::Int,columns::Int)
+function getGridImage(dir::String,rows::Int,columns::Int; attachsize::Bool=true)
     im = mfb_rgb.(load(dir))
     height, width = size(im)
 
     dh = div(height,rows); dw = div(width,columns)
 
-    return [im[1+(h-1)*dh:h*dh,1+(w-1)*dw:w*dw] for w in 1:columns, h in 1:rows]
+    if attachsize
+        return [(im[1+(h-1)*dh:h*dh,1+(w-1)*dw:w*dw],P(dh,dw)) 
+            for w in 1:columns, h in 1:rows]
+    else
+        return [im[1+(h-1)*dh:h*dh,1+(w-1)*dw:w*dw] 
+            for w in 1:columns, h in 1:rows]
+    end
 end
 
-function getGridImage(dir::String,tilesize::Int)
+function getGridImage(dir::String,tilesize::Int; attachsize::Bool=true)
     im = mfb_rgb.(load(dir))
     height, width = size(im)
 
     nh = div(height,tilesize); nw = div(width,tilesize)
 
-    return [im[1+(h-1)*tilesize:h*tilesize,1+(w-1)*tilesize:w*tilesize] 
-        for w in 1:nw, h in 1:nh]
+    if attachsize
+        return [(im[1+(h-1)*tilesize:h*tilesize,1+(w-1)*tilesize:w*tilesize],
+            P(tilesize,tilesize)) for w in 1:nw, h in 1:nh]
+    else
+        return [im[1+(h-1)*tilesize:h*tilesize,1+(w-1)*tilesize:w*tilesize] 
+            for w in 1:nw, h in 1:nh]
+    end
 end
 
 
@@ -751,14 +762,16 @@ function drawInventory!(game::GameState)
     game.im.layers.layer1[24+1:24+160,16+1:16+240] =
         mfb_rgb.(load("im/menubag/background1.png"))
 
+    m = game.input.menu.menubags
+
     createSprite!(game,:slotmarker,:layer1,getMenuStuff("menubag/slotmarker1",1),
-        P(24+27,16+34+game.input.menu.menubags.bag*8),1; active=true)
+        P(24+27,16+34+m.bag*8),1; active=true)
 
     createSprite!(game,:slot,:layer1,getMenuStuff("menubag/slots",5),
-        P(24+8,16+24),game.input.menu.menubags.bag; active=true)
+        P(24+8,16+24),m.bag; active=true)
 
     createSprite!(game,:bag,:layer1,getMenuStuff("menubag/bags1",6),
-        P(24+34,16+40),game.input.menu.menubags.bag; active=true)
+        P(24+34,16+40),m.bag; active=true)
 
     createSprite!(game,:arrowleft,:layer1,getMenuStuff("menubag/arrowleft",1),
         P(24+8,16+22),1; active=true)
@@ -775,17 +788,63 @@ function drawInventory!(game::GameState)
     createSprite!(game,:cursor,:layer1,getMenuStuff("menubag/cursor",2),
         P(24+22,16+114),1; active=true)
 
-    createSprite!(game,:item,:layer1,getSlotItems(game.input.menu.menubags.bag),
-        P(100,16+8),game.trainer.inventory[game.input.menu.menubags.bag];
+    println(m.bag); println(m.select);
+    println(Int(getInvSlotID(game)))
+
+    createSprite!(game,:item,:layer1,getItemIcons(m.bag),
+        P(96,16+8),Int(getInvSlotID(game));
         active=true)
 
     createSprite!(game,:back,:layer1,
         Dict(zip([1],getGridImage("im/menubag/arrowback.png",1,1))),
-        P(100,16+8),1;
+        P(96,16+8),1;
         active = false)
+
+    
+    # drawInventoryTextInit!(game)
+    setVisibleItems!(game)
 end
 
+function setVisibleItems!(game::GameState)
+    m = game.input.menu.menubags
+    nitems = game.trainer.inventory[-m.bag]
 
+    m.vis .= 0
+    s = m.select[m.bag]
+
+    up = m.select
+    down = game.trainer.inventory[-m.bag]-m.select
+
+    if 3 <= m.select <= nitems-5
+        for i in (s-min(3,s)+1):(s-min(3,s)+8)
+            if i > nitems
+                println("i > n")
+                break
+            end
+    
+            println(i)
+        end
+    else
+
+    end
+
+    println(m.vis)
+end
+
+function drawInventoryTextInit!(game::GameState)
+    m = game.input.menu.menubags
+    nitems = game.trainer.inventory[-m.bag]
+
+    # (min(s+5,nitems))
+end
+
+function drawSlotSwitch!(game::GameState)
+    
+end
+
+function drawBagSwitch!(game::GameState)
+    
+end
 
 
 

@@ -13,23 +13,23 @@ items = Dict{Int,Item}(
     30 => MedicineHealth(50,false,0),   # energiestaub
     31 => MedicineHealth(200,false,0),  # kraftwurzel
 
-    31 => MedicineHealth(0,false,1),    # gegengift
-    32 => MedicineHealth(0,false,2),    # feuerheiler
-    33 => MedicineHealth(0,false,3),    # paraheiler
-    34 => MedicineHealth(0,false,4),    # aufwecker
-    35 => MedicineHealth(0,false,5),    # eisheiler
-    36 => MedicineHealth(0,false,6),    # hyperheiler
-    37 => MedicineHealth(0,false,6),    # heilpuder
-    38 => MedicineHealth(0,false,6),    # lavakeks
+    32 => MedicineHealth(0,false,1),    # gegengift
+    33 => MedicineHealth(0,false,2),    # feuerheiler
+    34 => MedicineHealth(0,false,3),    # paraheiler
+    35 => MedicineHealth(0,false,4),    # aufwecker
+    36 => MedicineHealth(0,false,5),    # eisheiler
+    37 => MedicineHealth(0,false,6),    # hyperheiler
+    38 => MedicineHealth(0,false,6),    # heilpuder
+    39 => MedicineHealth(0,false,6),    # lavakeks
 
-    39 => MedicineHealth(50,true,7),    # beleber
-    40 => MedicineHealth(100,true,7),   # top beleber
-    41 => MedicineHealth(100,true,7),   # vitalkraut
+    40 => MedicineHealth(50,true,7),    # beleber
+    41 => MedicineHealth(100,true,7),   # top beleber
+    42 => MedicineHealth(100,true,7),   # vitalkraut
 
-    42 => MedicineAP(10,false),         # äther
-    43 => MedicineAP(100,false),        # top äther
-    44 => MedicineAP(10,true),          # elixier
-    45 => MedicineAP(100,true),         # top-elixier
+    43 => MedicineAP(10,false),         # äther
+    44 => MedicineAP(100,false),        # top äther
+    45 => MedicineAP(10,true),          # elixier
+    46 => MedicineAP(100,true),         # top-elixier
 )
 
 

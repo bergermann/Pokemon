@@ -38,6 +38,7 @@ function main()
 
     game = GameState(
         Im(),
+        [],
         PkmnData(),
 
         Trainer("Void",0x0000,0x02,ArrayList(Pkmn,6),Inventory(),[],
@@ -93,8 +94,8 @@ function main()
     state = mfb_update(w, b)
     
     while true
-        # begin
-        @time begin
+        begin
+        # @time begin
             game.n.frame += 0x01
 
             writeToBuffer!(b,game)

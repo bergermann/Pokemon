@@ -28,19 +28,19 @@ mutable struct Inventory
 end
 
 function Base.getindex(inv::Inventory,ind)
-    # if ind == -5
-    #     return inv.nkeys
-    # elseif ind == -4
-    #     return inv.nberries
-    # elseif ind == -3
-    #     return inv.nmachines
-    # elseif ind == -2
-    #     return inv.nballs
-    # elseif ind == -1
-    #     return inv.nitems
-    # elseif ind == 0
-    #     return inv.cash
-    if ind == 1
+    if ind == -5
+        return inv.nkeys
+    elseif ind == -4
+        return inv.nberries
+    elseif ind == -3
+        return inv.nmachines
+    elseif ind == -2
+        return inv.nballs
+    elseif ind == -1
+        return inv.nitems
+    elseif ind == 0
+        return inv.cash
+    elseif ind == 1
         return inv.items
     elseif ind == 2
         return inv.balls
@@ -54,8 +54,8 @@ function Base.getindex(inv::Inventory,ind)
 end
 
 function setInventoryTest!(inv::Inventory)
-    inv[1][1,2] = 10; inv[1][2,2] = 5
-    inv.nitems = 2
+    inv[1][1:10,2] .= 1:10; inv[1][2,2] = 5
+    inv.nitems = 10
 
     inv[2][1,2] = 20; inv[2][2,2] = 15; inv[2][3,2] = 10
     inv.nballs = 3
@@ -177,7 +177,6 @@ abstract type Usable <: KeyItem end
 struct Rod <: Usable end
 
 struct Bike <: Usable end
-
 
 
 

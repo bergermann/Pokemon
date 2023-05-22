@@ -812,21 +812,11 @@ function setVisibleItems!(game::GameState)
     m.vis .= 0
     s = m.select[m.bag]
 
-    up = m.select
-    down = game.trainer.inventory[-m.bag]-m.select
+    i0 = max(1,(s-min(2,s)+(min(5,nitems-s+1)-5)))
 
-    if 3 <= m.select <= nitems-5
-        for i in (s-min(3,s)+1):(s-min(3,s)+8)
-            if i > nitems
-                println("i > n")
-                break
-            end
-    
-            println(i)
-        end
-    else
-
-    end
+    for i in 0:7
+        if i0+i > nitems
+            m.vis[i+1,1] = get
 
     println(m.vis)
 end

@@ -816,7 +816,12 @@ function setVisibleItems!(game::GameState)
 
     for i in 0:7
         if i0+i > nitems
-            m.vis[i+1,1] = get
+
+            break
+        end
+
+        m.vis[i+1,:] = getInvSlot(game,m.bag,i0+iw)
+    end
 
     println(m.vis)
 end

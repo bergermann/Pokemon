@@ -44,6 +44,12 @@ function getInvSlot(game::GameState,bag::Int,select::Int)
     return game.trainer.inventory[bag][select,:]
 end
 
+function getInvSlot(game::GameState)
+    return game.trainer.inventory[game.input.menu.menubags.bag][
+        game.input.menu.menubags.select[game.input.menu.menubags.bag],:
+    ]
+end
+
 function getInvSlotID(game::GameState,bag::Int,select::Int)
     return game.trainer.inventory[bag][select,1]
 end

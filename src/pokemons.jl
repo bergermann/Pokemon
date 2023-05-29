@@ -8,7 +8,7 @@ function getStatsBase()
 end
 
 function getNames(lang::String)
-    return readlines("str/names_"*lang*".txt")
+    return readlines("str/"*lang*"/pkmn_names.txt")
 end
 
 function getGender(genderweight::Vector{UInt16})

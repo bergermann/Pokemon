@@ -121,6 +121,31 @@ function shiftLayerRight!(l::Matrix{UInt32})
     end
 end
 
+function shiftLayerUp!(l::Matrix{UInt32},n::Int)
+    @inbounds for j in 1:272, i in 1:208-n
+        l[i,j] = l[i+n,j]
+    end
+end
+
+function shiftLayerDown!(l::Matrix{UInt32},n::Int)
+    @inbounds for j in 1:272, i in 208:-1:1+n
+        l[i,j] = l[i-n,j]
+    end
+end
+
+function shiftLayerLeft!(l::Matrix{UInt32},n::Int)
+    @inbounds for j in 1:272-n, i in 1:208
+        l[i,j] = l[i,j+n]
+    end
+end
+
+function shiftLayerRight!(l::Matrix{UInt32},n::Int)
+    @inbounds for j in 272:-1:1+n, i in 1:208
+        l[i,j] = l[i,j-n]
+    end
+end
+
+
 function drawMap!(game::GameState; s=Settings())
     dh,dw = div(s.Nh-0x01,0x02),div(s.Nw-0x01,0x02)
 
@@ -786,7 +811,7 @@ function drawInventory!(game::GameState)
         P(24+26,16+40),1; active=false)
     
     createSprite!(game,:cursor,:layer1,getMenuStuff("menubag/cursor",2),
-        P(24+22,16+114),1; active=true)
+        P(24+21,16+114),1; active=true)
 
     println(m.bag); println(m.select);
     println(Int(getInvSlotID(game)))
@@ -800,9 +825,8 @@ function drawInventory!(game::GameState)
         P(96,16+8),1;
         active = false)
 
-    
-    # drawInventoryTextInit!(game)
     setVisibleItems!(game)
+    drawInventoryText!(game)
 end
 
 function setVisibleItems!(game::GameState)
@@ -815,26 +839,55 @@ function setVisibleItems!(game::GameState)
     i0 = max(1,(s-min(2,s)+(min(5,nitems-s+1)-5)))
 
     for i in 0:7
-        if i0+i > nitems
+        if i0+i == s
+            m.slot = i+1
+        elseif i0+i > nitems
+            m.vis[i+1,1] = -1
 
             break
         end
 
-        m.vis[i+1,:] = getInvSlot(game,m.bag,i0+iw)
+        m.vis[i+1,:] = getInvSlot(game,m.bag,i0+i)
     end
 
-    println(m.vis)
+    display(m.vis); display(s)
 end
 
-function drawInventoryTextInit!(game::GameState)
-    m = game.input.menu.menubags
-    nitems = game.trainer.inventory[-m.bag]
+function drawInventoryText!(game::GameState)
+    vis = game.input.menu.menubags.vis
 
-    # (min(s+5,nitems))
+    for i in 1:8
+        if vis[i,1] == -1
+            drawText!(game,:layer2,game.str[1][6],UInt(2),
+                P(24+18+15*(i-1),16+121),0x010101,0xd6d6ce)
+
+            break
+        end
+
+        drawText!(game,:layer2,game.str[2][vis[i,1]],UInt(2),
+            P(24+18+15*(i-1),16+121),0x010101,0xd6d6ce)
+
+        drawText!(game,:layer2,"×",UInt(1),
+            P(24+21+15*(i-1),16+210),0x010101,0xd6d6ce)
+
+        drawText!(game,:layer2,string(vis[i,2]),UInt(2),
+            P(24+18+15*(i-1),16+217),0x010101,0xd6d6ce)
+
+    end
 end
 
-function drawSlotSwitch!(game::GameState)
-    
+function drawSlotSwitchDown!(game::GameState)
+    flushLayer!(game,:layer2,P(24+10,16+120),P(10,140))
+    shiftLayerUp!(game.im.layers.layer2,15)
+
+    drawText!(game,:layer2,game.str[2][vis[8,1]],UInt(2),
+        P(24+18+15*8,16+121),0x010101,0xd6d6ce)
+
+    drawText!(game,:layer2,"×",UInt(1),
+        P(24+21+15*8,16+210),0x010101,0xd6d6ce)
+
+    drawText!(game,:layer2,string(vis[8,2]),UInt(2),
+        P(24+18+15*8,16+217),0x010101,0xd6d6ce)
 end
 
 function drawBagSwitch!(game::GameState)

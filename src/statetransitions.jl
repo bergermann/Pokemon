@@ -283,6 +283,7 @@ function stateMenuBagsOpen!(game::GameState)
     createCC!(game,:bagswitch,animBagSwitch!,(); n=1)
     createCallback!(game,:wiggle,true,animArrowsMenu!,())
 
+    loadInventoryStrings!(game)
     drawInventory!(game)
 end
 

@@ -40,14 +40,21 @@ function getItemIcons(slot::Int)
     end
 end
 
+function getSelect(game::GameState)
+    return game.input.menu.menubags.select[game.input.menu.menubags.bag]
+end
+
+function getAmountItems(game::GameState)
+    return game.trainer.inventory[-game.input.menu.menubags.bag]
+end
+
 function getInvSlot(game::GameState,bag::Int,select::Int)
     return game.trainer.inventory[bag][select,:]
 end
 
 function getInvSlot(game::GameState)
     return game.trainer.inventory[game.input.menu.menubags.bag][
-        game.input.menu.menubags.select[game.input.menu.menubags.bag],:
-    ]
+        game.input.menu.menubags.select[game.input.menu.menubags.bag],:]
 end
 
 function getInvSlotID(game::GameState,bag::Int,select::Int)
@@ -56,8 +63,7 @@ end
 
 function getInvSlotID(game::GameState)
     return game.trainer.inventory[game.input.menu.menubags.bag][
-        game.input.menu.menubags.select[game.input.menu.menubags.bag],1
-    ]
+        game.input.menu.menubags.select[game.input.menu.menubags.bag],1]
 end
 
 function getInvSlotAmount(game::GameState,bag::Int,select::Int)
@@ -66,13 +72,15 @@ end
 
 function getInvSlotAmount(game::GameState)
     return game.trainer.inventory[game.input.menu.menubags.bag][
-        game.input.menu.menubags.select[game.input.menu.menubags.bag],2
-    ]
+        game.input.menu.menubags.select[game.input.menu.menubags.bag],2]
 end
 
 function loadInventoryStrings!(game::GameState)
     game.str = []
     
-    push!(game.str,readlines("str/itemnames.txt"))
-    push!(game.str,readlines("str/itemtexts.txt"))
+    push!(game.str,readlines("str/ger/system_bag.txt"))
+    push!(game.str,readlines("str/ger/item_names.txt"))
+    push!(game.str,readlines("str/ger/item_texts.txt"))
 end
+
+

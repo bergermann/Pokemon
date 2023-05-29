@@ -403,13 +403,30 @@ function inputMenuBags!(game::GameState,input::Input)
 
         return
     elseif input._down
-        if game.input.menu.menubags.select == 8
-            game.input.menu.menubags.select = 1
+        if getSelect(game) == getAmountItems(game)+1
+            game.input.menu.menubags.select[game.input.menu.menubags.bag] = 1
+            game.input.menu.menubags.slot = 1
+
+            setVisibleItems!(game)
+
+            flushLayer!(game,:layer2)
+            drawInventoryText!(game)
+        elseif game.input.menu.menubags.slot == 6 &&
+                getSelect(game)+2 < getAmountItems(game)
+            
+            game.input.menu.menubags.select[game.input.menu.menubags.bag] += 1
+
+            game.input.menu.menubags.vis[1:7,:] = game.input.menu.menubags.vis[2:8,:]
+            game.input.menu.menubags.vis[8,:] = getSelect(game)+2 < getAmountItems(game) ?
+                getInvSlot(game,game.input.menu.menubags.bag,getSelect(game)+2) : (-1,0)
+
+            drawSlotSwitchDown!(game)
         else
-            game.input.menu.menubags.select += 1
+            game.input.menu.menubags.slot += 1
+            game.input.menu.menubags.select[game.input.menu.menubags.bag] += 1
         end
         
-        setPos!(game.im.sprites[:cursor].pos,24+22+12*game.input.menu.menubags.select,16+114)
+        setPos!(game.im.sprites[:cursor].pos,24+22+15*game.input.menu.menubags.slot,16+114)
     elseif input._up
         if game.input.menu.menubags.select == 1
             game.input.menu.menubags.select = 8

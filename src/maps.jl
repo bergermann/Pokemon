@@ -3,7 +3,7 @@
 
 
 function loadMapStrings(mapid::Integer)
-    return readlines("str/m$mapid.txt")
+    return readlines("str/ger/m$mapid.txt")
 end
 
 map0 = Map(0x00)

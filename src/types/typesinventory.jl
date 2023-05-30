@@ -66,8 +66,8 @@ function setInventoryTest!(inv::Inventory)
     inv[4][1,2] = 5
     inv.nberries = 1
 
-    inv[1][1,2] = 1
-    inv.nkeys = 1
+    # inv[5][1,2] = 1
+    inv.nkeys = 0
 
     inv.cash = 10000
 end

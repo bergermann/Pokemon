@@ -6,13 +6,13 @@ export main
 
 using MiniFB, Images, DelimitedFiles
 
-include("types/typesitems.jl")
+include("types/typesinventory.jl")
 include("types/typespkmn.jl")
 include("types/typescore.jl")
 include("types/typesbattle.jl")
 include("types/typesnpc.jl")
 
-include("items.jl")
+include("inventory.jl")
 include("parser.jl")
 include("pokemons.jl")
 include("core.jl")

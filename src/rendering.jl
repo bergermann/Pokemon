@@ -64,6 +64,16 @@ function getTileMap(dir::String,key::Vector{Symbol}; s=Settings())
     return tm
 end
 
+function getImage(dir::String; attachsize::Bool=false)
+    im = mfb_rgb.(load(dir))
+
+    if attachsize
+        return im, P(size(im)...)
+    else
+        return im
+    end
+end
+
 function getGridImage(dir::String,rows::Int,columns::Int; attachsize::Bool=true)
     im = mfb_rgb.(load(dir))
     height, width = size(im)
@@ -809,39 +819,47 @@ function drawInventory!(game::GameState)
     
     createSprite!(game,:arrowdown,:layer1,getMenuStuff("menubag/arrowdown",1),
         P(24+26,16+40),1; active=false)
-    
-    createSprite!(game,:cursor,:layer1,getMenuStuff("menubag/cursor",2),
-        P(24+21,16+114),1; active=true)
 
-    println(m.bag); println(m.select);
-    println(Int(getInvSlotID(game)))
-
-    createSprite!(game,:item,:layer1,getItemIcons(m.bag),
+    createSprite!(game,:icon,:layer1,getItemIcons(m.bag),
         P(96,16+8),Int(getInvSlotID(game));
         active=true)
 
-    createSprite!(game,:back,:layer1,
-        Dict(zip([1],getGridImage("im/menubag/arrowback.png",1,1))),
-        P(96,16+8),1;
-        active = false)
+    game.im.sprites[:icon].dict[-1] = getImage("im/menubag/arrowback.png"; attachsize=true)
 
     setVisibleItems!(game)
     drawInventoryText!(game)
+    drawItemText!(game)
+    
+    createSprite!(game,:cursor,:layer1,getMenuStuff("menubag/cursor",2),
+        P(24+7+15*m.slot,16+114),1; active=true)
+end
+
+function setInventoryItemIcon!(game::GameState)
+    updateSprite!(game.im.sprites[:icon],
+        Int(game.input.menu.menubags.vis[game.input.menu.menubags.slot]))
 end
 
 function setVisibleItems!(game::GameState)
     m = game.input.menu.menubags
     nitems = game.trainer.inventory[-m.bag]
 
+    # println("n: ",nitems)
+    # println("inv: ",game.trainer.inventory[m.bag])
+    # display(game.trainer.inventory[m.bag])
+
     m.vis .= 0
     s = m.select[m.bag]
 
     i0 = max(1,(s-min(2,s)+(min(5,nitems-s+1)-5)))
 
+    m.slot = 1  # fix?
+
     for i in 0:7
         if i0+i == s
             m.slot = i+1
-        elseif i0+i > nitems
+        end
+        
+        if i0+i > nitems
             m.vis[i+1,1] = -1
 
             break
@@ -850,7 +868,7 @@ function setVisibleItems!(game::GameState)
         m.vis[i+1,:] = getInvSlot(game,m.bag,i0+i)
     end
 
-    display(m.vis); display(s)
+    # display(m.vis); display(s)
 end
 
 function drawInventoryText!(game::GameState)
@@ -859,39 +877,72 @@ function drawInventoryText!(game::GameState)
     for i in 1:8
         if vis[i,1] == -1
             drawText!(game,:layer2,game.str[1][6],UInt(2),
-                P(24+18+15*(i-1),16+121),0x010101,0xd6d6ce)
+                P(24+19+15*(i-1),16+121),0x010101,0xd6d6ce)
 
             break
         end
 
         drawText!(game,:layer2,game.str[2][vis[i,1]],UInt(2),
-            P(24+18+15*(i-1),16+121),0x010101,0xd6d6ce)
+            P(24+19+15*(i-1),16+121),0x010101,0xd6d6ce)
 
         drawText!(game,:layer2,"×",UInt(1),
-            P(24+21+15*(i-1),16+210),0x010101,0xd6d6ce)
+            P(24+22+15*(i-1),16+210),0x010101,0xd6d6ce)
 
         drawText!(game,:layer2,string(vis[i,2]),UInt(2),
-            P(24+18+15*(i-1),16+217),0x010101,0xd6d6ce)
+            P(24+19+15*(i-1),16+217),0x010101,0xd6d6ce)
+    end
+end
 
+function drawItemText!(game::GameState)
+    vis = game.input.menu.menubags.vis
+
+    flushLayer!(game,:layer2,P(24+105,16+2),P(40,103))
+
+    if vis[8,1] == -1
+        drawText!(game,:layer2,game.str[1][7],
+            UInt(2),P(24+103,16+3),0x010101,0xd6d6ce)
+    else
+        drawText!(game,:layer2,game.str[3][vis[8,1]],UInt(2),
+            P(24+19+105,16+121),0x010101,0xd6d6ce)
     end
 end
 
 function drawSlotSwitchDown!(game::GameState)
-    flushLayer!(game,:layer2,P(24+10,16+120),P(10,140))
+    vis = game.input.menu.menubags.vis
+
+    flushLayer!(game,:layer2,P(24+21,16+120),P(14,110))
     shiftLayerUp!(game.im.layers.layer2,15)
 
-    drawText!(game,:layer2,game.str[2][vis[8,1]],UInt(2),
-        P(24+18+15*8,16+121),0x010101,0xd6d6ce)
+    if vis[8,1] == -1
+        drawText!(game,:layer2,game.str[1][6],UInt(2),
+            P(24+19+105,16+121),0x010101,0xd6d6ce)
+    else
+        drawText!(game,:layer2,game.str[2][vis[8,1]],UInt(2),
+            P(24+19+105,16+121),0x010101,0xd6d6ce)
+    
+        drawText!(game,:layer2,"×",UInt(1),
+            P(24+22+105,16+210),0x010101,0xd6d6ce)
+    
+        drawText!(game,:layer2,string(vis[8,2]),UInt(2),
+            P(24+19+105,16+217),0x010101,0xd6d6ce)
 
-    drawText!(game,:layer2,"×",UInt(1),
-        P(24+21+15*8,16+210),0x010101,0xd6d6ce)
-
-    drawText!(game,:layer2,string(vis[8,2]),UInt(2),
-        P(24+18+15*8,16+217),0x010101,0xd6d6ce)
+    end
 end
 
-function drawBagSwitch!(game::GameState)
-    
+function drawSlotSwitchUp!(game::GameState)
+    vis = game.input.menu.menubags.vis
+
+    flushLayer!(game,:layer2,P(24+21+105,16+120),P(10,130))
+    shiftLayerDown!(game.im.layers.layer2,15)
+
+    drawText!(game,:layer2,game.str[2][vis[1,1]],UInt(2),
+        P(24+19,16+121),0x010101,0xd6d6ce)
+
+    drawText!(game,:layer2,"×",UInt(1),
+        P(24+22,16+210),0x010101,0xd6d6ce)
+
+    drawText!(game,:layer2,string(vis[1,2]),UInt(2),
+        P(24+19,16+217),0x010101,0xd6d6ce)
 end
 
 

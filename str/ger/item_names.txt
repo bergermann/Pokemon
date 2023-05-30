@@ -98,8 +98,8 @@ Top-Elixier
 
 
 
-Tackle
-Rankenhieb
+TM01 Power-Punch
+TM02 Aquawelle
 
 
 

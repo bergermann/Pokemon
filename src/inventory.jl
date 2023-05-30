@@ -11,7 +11,7 @@ function getItems()
 end
 
 function getPokeballs()
-    return Dict(zip(1:12,getGridImage("im/menubag/items.png",24)))
+    return Dict(zip(1:12,getGridImage("im/menubag/balls.png",24)))
 end
 
 function getMachines()
@@ -23,20 +23,34 @@ function getBerries()
 end
 
 function getKeys()
-    return  Dict(zip(301:352,getGridImage("im/menubag/machines.png",24)[1:52]))
+    return  Dict(zip(301:352,getGridImage("im/menubag/keys.png",24)[1:52]))
 end
 
-function getItemIcons(slot::Int)
-    if slot == 1
+function getItemIcons(bag::Int)
+    if bag == 1
         return getItems()
-    elseif slot == 2
+    elseif bag == 2
         return getPokeballs()
-    elseif slot == 3
+    elseif bag == 3
         return getMachines()
-    elseif slot == 4
+    elseif bag == 4
         return getBerries()
     else
+        return getKeys()
+    end
+end
+
+function getItemIcons(game::GameState)
+    if game.input.menu.menubags.bag == 1
+        return getItems()
+    elseif game.input.menu.menubags.bag == 2
         return getPokeballs()
+    elseif game.input.menu.menubags.bag == 3
+        return getMachines()
+    elseif game.input.menu.menubags.bag == 4
+        return getBerries()
+    else
+        return getKeys()
     end
 end
 

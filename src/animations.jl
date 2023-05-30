@@ -366,10 +366,15 @@ function animBagSwitch!(game::GameState)
     if game.n.c[:bagswitch].c == 8
         game.im.sprites[:arrowleft].active = true
         game.im.sprites[:arrowright].active = true
+        game.im.sprites[:cursor].active = true
+        game.im.sprites[:icon].active = true
 
         game.input.inputlock = false
         game.n.c[:bagswitch].c = 1
         game.callbacks[:bagswitch].active = false
+
+        drawInventoryText!(game)
+        drawItemText!(game)
 
         return
     end

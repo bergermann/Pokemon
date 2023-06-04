@@ -521,6 +521,21 @@ mutable struct Menu
     end
 end
 
+mutable struct Choice
+    active::Bool
+    exit::Bool
+    sel::Int
+    max::Int
+
+    layer::Symbol
+
+    callback::CallbackFunction
+
+    function Choice()
+        new(false,false,0,0,:layer6,CallbackFunction())
+    end
+end
+
 mutable struct InputState
     inputlock::Bool
     textlock::Bool
@@ -531,8 +546,7 @@ mutable struct InputState
 
     menu::Menu
 
-    choice::Bool
-    choicesel::Int
+    choice::Choice
 
     dialogue::Bool
 
@@ -556,8 +570,7 @@ mutable struct InputState
 
             Menu(),
 
-            false,
-            1,
+            Choice(),
 
             false,
 

@@ -985,13 +985,16 @@ end
 
 function drawChoiceMenu!(game::GameState,layer::Symbol,strs::Vector{String},
         width::Int,pos::Position)
+
+    game.input.choice.max = length(strs)
+    game.input.choice.layer = layer
     
     drawFrame!(game,layer,2+length(strs)*2,width,pos)
 
     createSprite!(game,:ccursor,layer,getMenuStuff("menubag/cursor",2),
         posAdd(pos,P(11,9)),1; active=true)
     
-    game.im.sprites[:cursor].pos.h += 16*(game.input.choicesel-1)
+    game.im.sprites[:cursor].pos.h += 16*(game.input.choice.sel-1)
     
     posAdd!(pos,-8,17)
 

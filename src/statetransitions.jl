@@ -302,4 +302,5 @@ function stateMenuBagsClose!(game::GameState)
 
     stateInitDrawMap!(game)
     drawMenu!(game)
+    
 end

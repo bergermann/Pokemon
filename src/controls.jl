@@ -393,7 +393,21 @@ end
 
 function inputMenuBags!(game::GameState,input::Input)
     if input._A
-        return
+        if getSelect(game) == getAmountItems(game)+1
+            game.input.inputlock = true
+            game.input.menu.bags = false
+    
+            createCC!(game,:scenet,sceneTransition!,(16,8,
+                stateMenuBagsClose!,(),stateMenuMainOpen!,()); active=true,n=1)
+    
+            return
+        end
+
+        updateSprite!(game,:cursor,2)
+        game.input.choice = true
+        game.input.choicesel = 1
+
+        drawChoiceMenu!(game,:layer4,getInvChoiceStr(game),7,P(120,192))
     elseif input._B
         game.input.inputlock = true
         game.input.menu.bags = false

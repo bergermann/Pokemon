@@ -1,15 +1,15 @@
-Pokéball
-Superball
-Hyperball
-Meisterball
-Tauchball
-Luxusball
-Nestball
-Netzball
-Premierball
-Wiederball
-Safariball
-Zeitball
+Damit fängst du\wilde Pokémon.
+Ball mit guter Er-\folgsquote. Besser\als ein Pokéball.
+Ball mit hoher Er-\folgsquote. Besser\als ein Superball.
+Der beste Ball.\Fängt ein Pokémon\garantiert.
+Ball fängt besser\Pokémon auf dem\Meeresgrund.
+Behaglicher Ball,\der Pokémon\freundlicher macht.
+Ball mit höherer\Erfolgsquote bei\schwachen Pokémon.
+Ball fängt Pokémon\des Typs Wasser\und Käfer besser.
+Seltener Ball, als\Remineszenz an ir-\gendein Ereignis.
+Ball fängt besser\bereits gefangene\Pokémon.
+Ein Ball, der nur\in der Safarizone\eingesetzt wird.
+Ball wird effektiver,\je länger der\Kampf dauert.
 
 
 
@@ -18,41 +18,32 @@ Zeitball
 
 
 
-Trank
-Supertrank
-Hypertrank
-Top-Trank
-Top-Genesung
-Tafelwasser
-Sprudel
-Limonade
-Kuhmuh-Milch
-Energiestaub
-Kraftwurzel
-Gegengift
-Feuerheiler
-Paraheiler
-Aufwecker
-Eisheiler
-Hyperheiler
-Heilpuder
-Lavakeks
-Beleber
-Top-Beleber
-Vitalkraut
-Äther
-Top-Äther
-Elixier
-Top-Elixier
-
-
-
-
-
-
-
-
-
+Füllt die KP eines\Pokémon um\20 Punkte auf.
+Füllt die KP eines\Pokémon um\50 Punkte auf.
+Füllt die KP eines\Pokémon um\200 Punkte auf.
+Füllt die KP\vollständig auf.
+Stell KP und Status\wieder her.
+Ein stilles Wasser,\das die KP um 50\Punkte auffüllt.
+Ein Mineralwasser,\das die KP um 60\Punkte auffüllt.
+Ein süßes Getränk,\das die KP um 80\Punkte auffüllt.
+Milch, die die\KP um 100 Punkte\auffüllt.
+Ein bitteres Pulver,\das die KP um 50\Punkte auffüllt.
+Eine Wurzel, die\die KP um 200\Punkte auffüllt.
+Heilt Vergiftungen\bei Pokémon.
+Heilt Verbrennun\-gen bei Pokémon.
+Heilt Paralyse\eines Pokémon.
+Weckt schlafendes\Pokémon auf.
+Taut Pokémon\wieder auf.
+Beseitigt alle\Statusprobleme\eines Pokémon.
+Ein bitteres Pulver,\das alle Status-\probleme heilt.
+Eine regionale Spe-\zialität. Heilt alle\Statusprobleme.
+Belebt ein Pokémon\und füllt die KP zur\Hälfte wieder auf.
+Belebt ein Pokémon\und füllt die KP voll-\ständig wieder auf.
+Ein bitteres Kraut,\das besiegte\Pokémon belebt.
+Füllt die AP einer aus-\gewählten Attacke\um 10 Punkte auf.
+Füllt die AP einer aus-\gewählten Attacke\vollständig auf.
+Füllt alle AP eines\Pokémon um 10\Punkte auf.
+Füllt alle AP eines\Pokémon voll-\ständig auf.
 
 
 
@@ -98,7 +89,16 @@ Top-Elixier
 
 
 
-TM01 Power-Punch
+
+
+
+
+
+
+
+
+
+Stark. Pokémon er-\schrickt vielleicht\bei gegn. Attacke.
 TM02 Aquawelle
 
 
@@ -198,8 +198,8 @@ TM02 Aquawelle
 
 
 
-Sinelbeere
-Amrenabeere
+Item (Tragen) füllt\KP im Kampf um\10 Punkte auf.
+Item (Tragen) be-\wirkt Selbstheilung\bei Paralyse.
 
 
 
@@ -298,8 +298,8 @@ Amrenabeere
 
 
 
-Eilrad
-Kelleröffner
+Klapprad, das dop-\pelt so schnell ist\wie ein Fußgänger.
+Schlüssel
 
 
 

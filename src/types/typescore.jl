@@ -13,9 +13,11 @@ mutable struct Position
     end
 end
 
-Base.println(p::Position) = println("P($(p.h),$(p.w))")
-
 const P = Position
+
+Base.copy(p::Position) = Position(p.h,p.w)
+
+Base.println(p::Position) = println("P($(p.h),$(p.w))")
 
 function Base.isequal(p1::Position,p2::Position)
     return (p1.h == p2.h) && (p1.w == p2.w)
@@ -801,7 +803,7 @@ end
 
 mutable struct Im
     font::Font
-    frames::Dict
+    frame::Dict{Int,Matrix{UInt32}}
     diabox::Dict
 
     tilesext::Dict
@@ -821,7 +823,7 @@ mutable struct Im
     function Im()
         new(
             Font(),
-            getFrames("frames"),
+            getFrame(1),
             getDialogueBox("dialogue"),
             
             getTiles("tiles_exterior"),

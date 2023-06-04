@@ -97,4 +97,16 @@ function loadInventoryStrings!(game::GameState)
     push!(game.str,readlines("str/ger/item_texts.txt"))
 end
 
-
+function getInvChoiceStr(game::GameState)
+    if game.input.menu.menubags == 1
+        return game.str[1][[9,10,12]]
+    elseif game.input.menu.menubags == 2
+        return game.str[1][[10,12]]
+    elseif game.input.menu.menubags == 3
+        return game.str[1][[9,10,12]]
+    elseif game.input.menu.menubags == 4
+        return game.str[1][[9,10,12]]
+    else
+        return game.str[1][[9,11,12]]
+    end
+end

@@ -9,7 +9,7 @@ Netzball
 Premierball
 Wiederball
 Safariball
-Zeitball
+Timerball
 
 
 

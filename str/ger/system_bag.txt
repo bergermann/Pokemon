@@ -4,10 +4,9 @@ TM/VM
 Beeren
 Basis-Items
 Beutel schließen
-Zurück zum\Hauptmenü.
+Zurück zum Hauptmenü.
 Was möchtest\du tun?
-O.k.
+O.K.
 Geben
-Müll
-Zurück
 Wählen
+Zurück

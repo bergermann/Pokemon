@@ -4,7 +4,7 @@ include("input/inputgeneral.jl")
 include("input/inputmap.jl")
 include("input/inputmenu.jl")
 include("input/inputpkmn.jl")
-include("input/inputmenu.jl")
+include("input/inputbags.jl")
 
 
 

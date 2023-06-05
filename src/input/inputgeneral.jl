@@ -105,6 +105,5 @@ function inputDialogue!(game::GameState,input::Input)
         game.input.npclock = false
         
         flushLayer!(game,:textbox,P(24+112,16),P(48,240))
-        # flushLayer!(game,:textbox)
     end
 end

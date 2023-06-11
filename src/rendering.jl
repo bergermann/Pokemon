@@ -727,10 +727,10 @@ function drawMenuPkmn!(game::GameState)
     createSprite!(game,:ballexit,:layer1,copy(b),
         P(24+132,16+184),1; active=true)
 
-    drawText!(game,game.im.sprites[:exit].dict[1][1],"ZURUCK",UInt(1),Position(2,18),
-        0xffffff,0x737373)
-    drawText!(game,game.im.sprites[:exit].dict[2][1],"ZURUCK",UInt(1),Position(2,18),
-        0xffffff,0x737373)
+    drawText!(game,game.im.sprites[:exit].dict[1][1],game.str[1][1],UInt(1),
+        Position(2,18),0xffffff,0x737373)
+    drawText!(game,game.im.sprites[:exit].dict[2][1],game.str[1][1],UInt(1),
+        Position(2,18),0xffffff,0x737373)
 
     updateSprite!(game.im.sprites[:exit])
     
@@ -792,7 +792,8 @@ function switchSlot!(game::GameState,from::Int,to::Int)
         updateSprite!(game.im.sprites[:exit],1)
         updateSprite!(game.im.sprites[:ballexit],1)
     else
-        updateSprite!(game.im.sprites[Symbol(:slot,from)],1)
+        updateSprite!(game.im.sprites[Symbol(:slot,from)],1+2*(
+            game.input.menu.menupkmn.swap==from))
         updateSprite!(game.im.sprites[Symbol(:ball,from)],1)
     end
 
@@ -800,11 +801,10 @@ function switchSlot!(game::GameState,from::Int,to::Int)
         updateSprite!(game.im.sprites[:exit],2)
         updateSprite!(game.im.sprites[:ballexit],2)
     else
-        updateSprite!(game.im.sprites[Symbol(:slot,to)],2)
+        updateSprite!(game.im.sprites[Symbol(:slot,to)],2+2*(
+            game.input.menu.menupkmn.swap!=0))
         updateSprite!(game.im.sprites[Symbol(:ball,to)],2)
     end
-    
-    game.input.menu.menupkmn.select = to
 end
 
 function drawHealthBar!(im::Matrix{UInt32},value::Int,pos::Position)
@@ -939,10 +939,10 @@ function drawItemText!(game::GameState)
 
     if vis == -1
         drawText!(game,:layer3,game.str[1][7],UInt(2),
-            P(24+103,16+3),0x010101,0xd6d6ce)
+            P(24+103,16+4),0x010101,0xd6d6ce)
     else
         drawText!(game,:layer3,game.str[3][vis],UInt(2),
-            P(24+103,16+3),0x010101,0xd6d6ce)
+            P(24+103,16+4),0x010101,0xd6d6ce)
     end
 end
 
@@ -983,8 +983,12 @@ function drawSlotSwitchUp!(game::GameState)
         P(24+19,16+217),0x010101,0xd6d6ce)
 end
 
+
+
+
+
 function drawChoiceMenu!(game::GameState,layer::Symbol,strs::Vector{String},
-        width::Int,pos::Position)
+        width::Int,pos::Position; c1::UInt32=0x010101,c2::UInt32=0xd6d6ce)
 
     game.input.choice.max = length(strs)
     game.input.choice.layer = layer
@@ -994,14 +998,14 @@ function drawChoiceMenu!(game::GameState,layer::Symbol,strs::Vector{String},
     createSprite!(game,:ccursor,layer,getMenuStuff("menubag/cursor",2),
         posAdd(pos,P(11,9)),1; active=true)
     
-    game.im.sprites[:cursor].pos.h += 16*(game.input.choice.sel-1)
+    game.im.sprites[:ccursor].pos.h += 16*(game.input.choice.sel-1)
     
     posAdd!(pos,-8,17)
 
     for i in eachindex(strs)
         pos.h += 16
 
-        drawText!(game,layer,strs[i],UInt(2),pos,0x010101,0xd6d6ce)
+        drawText!(game,layer,strs[i],UInt(2),pos,c1,c2)
     end
 end
 
@@ -1291,7 +1295,6 @@ function drawBattle!(game::GameState; s=Settings())
         drawBattleMenu2!(game)
     end
 
-    #initDrawMap!(game)
     return
 end
 
@@ -1310,10 +1313,6 @@ function drawGame!(game::GameState; s=Settings())
         drawBattle!(game; s=s)
     end
 
-    # if game.draw.battleoutro
-    #     drawBattleExit!(game; s=s)
-    # end
-    
     combineLayers!(game,game.im.L; s=s)
 
     if game.im.weather.active

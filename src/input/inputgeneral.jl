@@ -46,11 +46,10 @@ function inputChoice!(game::GameState,input::Input)
         flushLayer!(game,game.input.choice.layer)
         killSprite!(game,:ccursor)
 
-        game.input.choice.callback.func(game,game.input.choice.callback.args...)
+        game.input.choice.func(game,game.input.choice.args...)
     elseif input._B
         if game.input.choice.exit
-            game.input.choice.active = false
-            game.input.choice.sel = 0
+            resetChoice!(game)
 
             flushLayer!(game,game.input.choice.layer)
             killSprite!(game,:ccursor)
@@ -85,6 +84,7 @@ function inputChoice!(game::GameState,input::Input)
         game.im.sprites[:ccursor].pos.h += 16
     end
 end
+
 
 
 function inputDialogue!(game::GameState,input::Input)

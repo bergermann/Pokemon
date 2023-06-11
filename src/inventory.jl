@@ -98,15 +98,29 @@ function loadInventoryStrings!(game::GameState)
 end
 
 function getInvChoiceStr(game::GameState)
-    if game.input.menu.menubags == 1
+    if game.input.menu.menubags.bag == 1
         return game.str[1][[9,10,12]]
-    elseif game.input.menu.menubags == 2
-        return game.str[1][[10,12]]
-    elseif game.input.menu.menubags == 3
+    elseif game.input.menu.menubags.bag == 2
+        return game.str[1][[10,13,12]]
+    elseif game.input.menu.menubags.bag == 3
         return game.str[1][[9,10,12]]
-    elseif game.input.menu.menubags == 4
+    elseif game.input.menu.menubags.bag == 4
         return game.str[1][[9,10,12]]
     else
         return game.str[1][[9,11,12]]
+    end
+end
+
+function getItem(id::Int)
+    if 1 <= id <= 20
+        return pokeballs[id]
+    elseif id <= 100
+        return items[id]
+    elseif id <= 200
+        return machines[id]
+    elseif id <= 300
+        return berries[id]
+    else
+        return keys[id]
     end
 end

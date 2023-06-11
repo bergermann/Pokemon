@@ -86,7 +86,7 @@ struct MedicineHealth <: Item
     amount::Int
     fraction::Bool
 
-    status::Int
+    status::UInt8
 end
 
 struct MedicineAP <: Item

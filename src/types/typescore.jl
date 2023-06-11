@@ -336,6 +336,12 @@ function Base.popfirst!(a::ArrayList)
     a.idx -= 1
 end
 
+function swap!(a::ArrayList,idx1::Int,idx2::Int)
+    a[idx1], a[idx2] = a[idx2], a[idx1]
+
+    return
+end
+
 
 
 
@@ -424,11 +430,17 @@ end
 
 mutable struct MenuPkmn
     select::Int
+
+    swapping::Bool
     swap::Int
-    choice::Int
+    # choice::Int
+
+    sub::Bool
+    # subslot::Int
+    # submode::Int
 
     function MenuPkmn()
-        new(1,1,1)
+        new(1,false,0,false)
     end
 end
 
@@ -446,8 +458,12 @@ mutable struct MenuBags
     vis::Matrix{Int}
     slot::Int
 
+    sub::Bool
+    subslot::Int
+    submode::Int
+
     function MenuBags()
-        new(1,ones(5),zeros(8,2),0)
+        new(1,ones(5),zeros(8,2),0,false,0,0)
     end
 end
 
@@ -533,10 +549,11 @@ mutable struct Choice
 
     layer::Symbol
 
-    callback::CallbackFunction
+    func::Function
+    args::Tuple
 
     function Choice()
-        new(false,false,0,0,:layer6,CallbackFunction())
+        new(false,false,0,0,:layer6,(() -> nothing),())
     end
 end
 

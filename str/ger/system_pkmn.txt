@@ -1,0 +1,22 @@
+ZURÜCK
+Wähle ein Pokémon.
+Was tun mit 
+An wessen Stelle setzen?
+
+Bericht
+Tausch
+Item
+Zurück
+
+Zerschneider
+Fliegen
+Surfer
+Stärke
+Blitz
+Zertrümmerer
+Kaskade
+Taucher
+
+Was willst du mit dem Item?
+Geben
+Nehmen

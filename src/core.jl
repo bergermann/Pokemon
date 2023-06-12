@@ -175,40 +175,29 @@ end
 
 
 
-function setChoice!(game::GameState,exit::Bool,sel::Int)
-    game.input.choice.active = true
-    game.input.choice.exit = exit
-    game.input.choice.sel = sel
-    game.input.choice.callback = CallbackFunction()
-end
-
-function setChoice!(game::GameState,exit::Bool,sel::Int,callback::CallbackFunction)
-    game.input.choice.active = true
-    game.input.choice.exit = exit
-    game.input.choice.sel = sel
-    game.input.choice.callback = callback
-end
-
-function setChoice!(game::GameState,active::Bool,exit::Bool,sel::Int,
-        callback::CallbackFunction)
-
+function setChoice!(game::GameState,exit::Bool,sel::Int; active=true)
     game.input.choice.active = active
     game.input.choice.exit = exit
     game.input.choice.sel = sel
-    game.input.choice.callback = callback
+    game.input.choice.func = emptyCallback
+    game.input.choice.args = ()
 end
 
-function setChoice!(game::GameState,active::Bool,exit::Bool,sel::Int)
+function setChoice!(game::GameState,exit::Bool,sel::Int,func::Function,
+        args::Tuple; active=true)
+    
     game.input.choice.active = active
     game.input.choice.exit = exit
     game.input.choice.sel = sel
-    game.input.choice.callback = CallbackFunction()
+    game.input.choice.func = func
+    game.input.choice.args = args
 end
 
 function resetChoice!(game::GameState)
     game.input.choice.active = false
     game.input.choice.exit = false
-    game.input.choice.sel = 0
+    game.input.choice.sel = -1
     game.input.choice.max = 0
-    game.input.choice.callback = CallbackFunction()
+    game.input.choice.func = emptyCallback
+    game.input.choice.args = ()
 end

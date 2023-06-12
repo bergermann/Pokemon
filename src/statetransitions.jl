@@ -252,6 +252,7 @@ function stateMenuPkmnOpen!(game::GameState)
 
     createCallback!(game,:wiggle,animMenuPkmnWiggle!,(); active=true)
 
+    loadTeamStrings!(game)
     drawMenuPkmn!(game)
 end
 
@@ -302,5 +303,36 @@ function stateMenuBagsClose!(game::GameState)
 
     stateInitDrawMap!(game)
     drawMenu!(game)
-    
+end
+
+
+
+function stateMenuPkmnSubOpen!(game::GameState)
+    popall!(game.im.sprites)
+
+    killCC!(game,:bagswitch)
+
+    killCallback!(game,:wiggle)
+    createCallback!(game,:wiggle,animMenuPkmnWiggle!,(); active=true)
+
+    drawMenuPkmn!(game)
+end
+
+function stateMenuPkmnSubCtrls!(game::GameState)
+    game.input.inputlock = false
+    game.input.menu.menubags.sub = true
+    game.input.menu.menubags.subslot = 1
+end
+
+function stateMenuPkmnSubClose!(game::GameState)
+    popall!(game.im.sprites)
+    game.input.inputlock = true
+
+    killSpriteAll!(game)
+    killCallback!(game,:wiggle)
+
+    createCC!(game,:bagswitch,animBagSwitch!,(); n=1)
+    createCallback!(game,:wiggle,true,animArrowsMenu!,())
+
+    drawInventory!(game)
 end

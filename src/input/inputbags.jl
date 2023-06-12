@@ -23,7 +23,7 @@ function inputBags!(game::GameState,input::Input)
         end
 
         updateSprite!(game,:cursor,2)
-        setChoice!(game,true,1,itemAction,())
+        setChoice!(game,true,1,F(itemAction,()))
 
         drawChoiceMenu!(game,:layer4,getInvChoiceStr(game),7,P(120,192))
     elseif input._B

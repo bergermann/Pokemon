@@ -113,6 +113,8 @@ mutable struct CallbackFunction
     end
 end
 
+const F = CallbackFunction
+
 mutable struct Counter
     id::Symbol
     c::Int

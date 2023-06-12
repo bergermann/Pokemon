@@ -1241,7 +1241,7 @@ function drawBattleMenu1!(game::GameState)
     drawText!(game,:layer4,"Was soll\\$(pkmnName(game,game.battle.state.pkmn1.pkmn)) tun?",UInt(2),
         Position(144,32),0xffffff,0x6b5a73)
 
-    drawFrame!(game,:layer4,UInt(6),UInt(16),Position(24+112,16+112))
+    drawFrame!(game,:layer4,6,16,Position(24+112,16+112))
 
     drawText!(game,:layer4,"KAMPF",UInt(3),Position(145,144),0x4a4a4a,0xd6d6ce)
     drawText!(game,:layer4,"BEUTEL",UInt(3),Position(145,202),0x4a4a4a,0xd6d6ce)
@@ -1250,8 +1250,8 @@ function drawBattleMenu1!(game::GameState)
 end
 
 function drawBattleMenu2!(game::GameState)
-    drawFrame!(game,:layer5,UInt(6),UInt(20),Position(24+112,16))
-    drawFrame!(game,:layer5,UInt(6),UInt(10),Position(24+112,176))
+    drawFrame!(game,:layer5,6,20,Position(24+112,16))
+    drawFrame!(game,:layer5,6,10,Position(24+112,176))
 
     drawText!(game,:layer5,"/",UInt(3),Position(145,230),0x4a4a4a,0xd6d6ce)
     drawText!(game,:layer5,

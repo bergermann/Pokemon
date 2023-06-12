@@ -96,8 +96,6 @@ function main()
     while true
         begin
         # @time begin
-            println(game.input.menu.menupkmn.swap)
-
             game.n.frame += 0x01
 
             writeToBuffer!(b,game)

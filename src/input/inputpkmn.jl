@@ -27,13 +27,8 @@ function inputMenuPkmn!(game::GameState,input::Input)
                 return
             end
 
-            println("swap pokemons")
-
-            # animSwapPokemons!()
-            swap!(game.trainer.pokemon,game.input.menu.menupkmn.swap,
-                game.input.menu.menupkmn.select)
-            
-            game.input.menu.menupkmn.swap = 0
+            game.input.inputlock = true
+            createCC!(game,:pkmnswap,animMenuPkmnSwap!,(); active=true,n=1)
 
             return
         elseif input._B

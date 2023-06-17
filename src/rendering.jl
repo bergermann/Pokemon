@@ -709,8 +709,6 @@ function drawMenuPkmn!(game::GameState)
 
     drawSlotMain!(game,b)
 
-    # m = getMenuStuff("slotside",6)
-
     for i in 2:game.trainer.pokemon.idx
         drawSlotSide!(game,i,b)
     end
@@ -742,7 +740,7 @@ function drawSlotMain!(game::GameState,b::Dict)
     createSprite!(game,:slot1,:layer1,getMenuStuff("menupokemon/slotmain",6),
         P(24+24,16+8),2; active=true)
 
-    for i in 1:4
+    for i in 1:6
         drawHealthBar!(game.im.sprites[:slot1].dict[i][1],
             getHealthBar(game.trainer.pokemon[1]),Position(34,24))
         
@@ -751,7 +749,7 @@ function drawSlotMain!(game::GameState,b::Dict)
             string(game.trainer.pokemon[1].stats.level),UInt(1),
             P(10,24),0xffffff,0x737373; lineoffset = -3)
         
-        drawText!(game,game.im.sprites[1].dict[i][1],
+        drawText!(game,game.im.sprites[:slot1].dict[i][1],
             string(game.trainer.pokemon[1].stats.hp)*"/"*
             string(game.trainer.pokemon[1].stats.rv[1]),UInt(1),
             P(36,36),0xffffff,0x737373)
@@ -766,7 +764,7 @@ function drawSlotSide!(game::GameState,slot::Int,b)
     createSprite!(game,Symbol("slot$slot"),:layer1,getMenuStuff("menupokemon/slotside",6),
         P(24+10+(slot-2)*24,16+96),1; active=true)
 
-    for i in 1:4
+    for i in 1:6
         drawHealthBar!(game.im.sprites[Symbol("slot$slot")].dict[i][1],
             getHealthBar(game.trainer.pokemon[slot]),P(9,88))
 

@@ -395,3 +395,45 @@ function animMenuPkmnWiggle!(game::GameState)
         updateSprite!(game.im.sprites[0+i],div(game.n.frame%30,15)+1)   #fix this
     end
 end
+
+function animMenuPkmnSwap!(game::GameState)
+    if game.n.c[:pkmnswap].c == 1
+        p1 = game.input.menu.menupkmn.swap
+        p2 = game.input.menu.menupkmn.select
+        
+        swap!(game.trainer.pokemon,p1,p2)
+
+        println("swapped")
+
+        if p1 == 1 || p2 == 1
+            println("killing sprites")
+
+            killSprite!(game,Symbol("slot$p1"))
+            killSprite!(game,Symbol("slot$p2"))
+
+            b = getMenuStuff("menupokemon/pokeballs",2)
+
+            drawSlotMain!(game,b)
+            drawSlotSide!(game,p1 == 1 ? p2 : p1,b)
+        else
+            swap!(game.im.sprites[Symbol("slot$p1")].pos,
+                game.im.sprites[Symbol("slot$p2")].pos)
+        end
+
+        sortHorizontal!(game.im.sprites)
+    elseif game.n.c[:pkmnswap].c == 2
+        killCC!(game,:pkmnswap)
+
+        updateSprite!(game.im.sprites[Symbol("slot$p1")],1+
+            4*(game.trainer.pokemon[p1].stats.rv[1]==0))
+        updateSprite!(game.im.sprites[Symbol("slot$p2")],1+
+            4*(game.trainer.pokemon[p1].stats.rv[1]==0))
+
+        game.input.menu.menupkmn.swap = 0
+        game.input.inputlock = false
+
+        return
+    end
+
+    game.n.c[:pkmnswap].c += 1
+end

@@ -107,7 +107,6 @@ function main()
             
             # @time updateGame!(game,input; s=settings)
             updateGame!(game,input; s=settings)
-            
 
             # @time drawGame!(game; s=settings)
             drawGame!(game; s=settings)

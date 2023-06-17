@@ -84,7 +84,12 @@ function setPos!(pos::Position,h::Int,w::Int)
     return
 end
 
+function swap!(p1::Position,p2::Position)
+    p1.h, p2.h = p2.h, p1.h
+    p1.w, p2.w = p2.w, p1.w
 
+    return
+end
 
 
 

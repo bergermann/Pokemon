@@ -349,6 +349,25 @@ function swap!(a::ArrayList,idx1::Int,idx2::Int)
     return
 end
 
+function swap!(a::ArrayList,id1::Symbol,id2::Symbol)
+    a[id1], a[id2] = a[id2], a[id1]
+
+    return
+end
+
+function swapfields!(struct1,struct2,fieldname::Symbol)
+    x = getfield(struct1,fieldname); y = getfield(struct2,fieldname)
+    setfield!(struct1,fieldname,y); setfield!(struct2,fieldname,x)
+
+    return
+end
+
+function swapfields!(a::ArrayList,fieldname::Symbol,id1::Symbol,id2::Symbol)
+    swapfields!(a[id1],a[id2],fieldname)
+
+    return
+end
+
 
 
 

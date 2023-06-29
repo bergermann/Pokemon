@@ -171,6 +171,19 @@ end
 
 
 
+function bthrowBall!(game::GameState)
+    if game.n.c[:throwball].c <= 54
+        game.im.sprites[:throwball].pos.w += 4
+        game.im.sprites[:throwball].pos.h =
+            trunc(Int,0.00343*(game.im.sprites[:ballcatch].pos.w-108)^2+44)
+    elseif game.n.c[:throwball].c == 55
+        game.im.sprites[:pkmn2].active = false
+    elseif game.n.c[:throwball].c <= 55+30
+        game.im.sprites[:throwball].pos.h -= 1
+    end
+end
+
+
 
 
 
@@ -180,6 +193,7 @@ end
 
 function bmoveHorizontal!(game::GameState,distance::Int,speed::Int,
         target::Symbol,kill::Bool)
+    
     if distance%speed != 0
         error("Distance needs to integer multiple of speed.")
     end

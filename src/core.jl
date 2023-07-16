@@ -83,6 +83,12 @@ end
 
 
 
+function discreteGaussian(type::Type,dims; μ::Real=0.,σ::Real=1.)
+    return round.(type,σ*randn(Float64,dims).+μ)
+end
+
+
+
 
 
 

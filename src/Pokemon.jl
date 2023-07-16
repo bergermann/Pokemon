@@ -11,6 +11,7 @@ include("types/typespkmn.jl")
 include("types/typescore.jl")
 include("types/typesbattle.jl")
 include("types/typesnpc.jl")
+include("types/typesrendering.jl")
 
 include("inventory.jl")
 include("parser.jl")

@@ -1,53 +1,46 @@
 
 
 
-function getBattlers()
-    img = mfb_rgb.(load("im/battlers gen1.png"))
+function getBattlerFront(id::UInt16,shiny::Bool)
+    ima = deserialize("im/pkmn/$id/front_a.im")
+    imb = deserialize("im/pkmn/$id/front_b.im")
 
-    d1 = Dict{UInt,Matrix{UInt32}}(
-        zip(Vector{UInt}(1:151),[(img[
-            1+64*div(i,10):64+64*div(i,10),1+64*i%10:64+64*i%10
-        ],P(64,64)) for i in 0:150])
+    if shiny
+        palette = deserialize("im/pkmn/$id/front_shiny.p")
+    else
+        palette = deserialize("im/pkmn/$id/front_normal.p")
+    end
+
+    return (
+        Dict{Int,Tuple{Matrix{Image},Position}}(1=>(ima,P(64,64)),2=>(imb,P(64,64))),
+        palette
     )
-
-    return merge(d1,)
 end
 
-function getBattlerFront(id::Int)
-    img = mfb_rgb.(load("im/battlers/front/normal/$id.png"))
+getBattlerFront(pkmn::Pkmn) = getBattlerFront(pkmn.id,pkmn.shiny)
 
-    return Dict{Int,Tuple{Matrix{UInt32},Position}}(1=>(img[:,1:64],P(64,64)),2=>(img[:,65:128],P(64,64)))
-end
 
-function getBattlerFront(pkmn::Pkmn)
-    if !pkmn.shiny
-        img = mfb_rgb.(load("im/battlers/front/normal/$(pkmn.id).png"))
 
-        return Dict{Int,Tuple{Matrix{UInt32},Position}}(1=>(img[:,1:64],P(64,64)),2=>(img[:,65:128],P(64,64)))
+function getBattlerBack(id::Int,shiny::Bool)
+    im = deserialize("im/pkmn/$id/back.im")
+
+    if shiny
+        palette = deserialize("im/pkmn/$id/back_shiny.p")
     else
-        img = mfb_rgb.(load("im/battlers/front/shiny/$(pkmn.id).png"))
-
-        return Dict{Int,Tuple{Matrix{UInt32},Position}}(1=>(img[:,1:64],P(64,64)),2=>(img[:,65:128],P(64,64)))
+        palette = deserialize("im/pkmn/$id/back_normal.p")
     end
+
+    return (
+        Dict{Int,Tuple{Matrix{Image},Position}}(1=>(im,P(64,64))),
+        palette
+    )
 end
 
-function getBattlerBack(id::Int)
-    img = mfb_rgb.(load("im/battlers/back/normal/$id.png"))
+getBattlerBack(pkmn::Pkmn) = getBattlerBack(pkmn.id,pkmn.shiny)
 
-    return Dict{Int,Tuple{Matrix{UInt32},Position}}(1=>(img[:,1:64],P(64,64)))
-end
 
-function getBattlerBack(pkmn::Pkmn)
-    if !pkmn.shiny
-        img = mfb_rgb.(load("im/battlers/back/normal/$(pkmn.id).png"))
 
-        return Dict{Int,Tuple{Matrix{UInt32},Position}}(1=>(img,P(64,64)))
-    else
-        img = mfb_rgb.(load("im/battlers/back/shiny/$(pkmn.id).png"))
 
-        return Dict{Int,Tuple{Matrix{UInt32},Position}}(1=>(img,P(64,64)))
-    end
-end
 
 function getBattleBack(str::String)
     return mfb_rgb.(load("im/battlebacks/$str.png"))

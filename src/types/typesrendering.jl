@@ -11,6 +11,52 @@ end
     
 
 
+mutable struct Sprite
+    id::Symbol
+
+    active::Bool
+
+    hreverse::Bool
+    vreverse::Bool
+
+    layer::Symbol
+    pos::Position
+    size::Position
+
+    frame::Int
+    dict::Dict{Int,Tuple{Image,Position}}
+
+    im::Image
+    palette::Palette
+
+    function Sprite()
+        new(
+            Symbol(),
+
+            false,
+
+            false,
+            false,
+
+            Symbol(),
+            Position(0,0),
+            Position(0,0),
+
+            0,
+            Dict{Int,Tuple{Matrix{UInt32},Position}}(),
+
+            zeros(UInt32,0,0)
+        )
+    end
+
+    function Sprite(id,active,hreverse,vreverse,layer,pos,size,frame,dict,im)
+        new(id,active,hreverse,vreverse,layer,pos,size,frame,dict,im)
+    end
+
+    function Sprite(id,layer,pos,dict)
+        new(id,true,false,false,layer,pos,Position(0,0),0,dict,zeros(UInt32,0,0))
+    end
+end
 
 
 mutable struct Layer

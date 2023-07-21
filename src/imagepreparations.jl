@@ -2,6 +2,9 @@ using Images, ImageIO
 using Serialization
 using MiniFB
 
+# include("types/typescore.jl")
+# include("types/typesrendering.jl")
+
 function fixBG!(img::Matrix{RGBA{N0f8}})
     bg = img[1]
 
@@ -33,34 +36,6 @@ function fixBG!(img::Matrix{RGB{N0f8}})
         end
     end
 end
-
-# key = """1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,\
-#     28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,\
-#     53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,\
-#     78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,\
-#     102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,\
-#     121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,\
-#     140,141,142,143,144,145,146,147,148,149,150,151"""
-
-# for id in split(key,',')
-#     println(id)
-#     f1 = load("im/battlers/front/shiny/frame1/"*id*".png")
-#     f2 = load("im/battlers/front/shiny/frame2/"*id*".png")
-
-#     fc = hcat(f1,f2)
-
-#     save("im/battlers/front/shiny/"*id*".png",fc)
-# end
-
-# for id in split(key,',')
-#     print(id,",")
-
-#     img = load("im/battlers/back/normal/"*id*".png")
-
-#     fixBG!(img)
-#     save("im/battlers/back/normal/"*id*".png",img)
-# end
-
 
 function transformImage(image::Matrix{UInt32})
     palette = unique(image)
@@ -101,79 +76,149 @@ function transformImage(image::Matrix{UInt32},palette::Palette)
 end
 
 
-for i in 1:151
-    im1 = getImage("images/battlers/front/normal/frame1/$i.png")
-    im2 = getImage("images/battlers/front/normal/frame2/$i.png")
+# for i in 1:151
+#     im1 = getImage("images/battlers/front/normal/frame1/$i.png")
+#     im2 = getImage("images/battlers/front/normal/frame2/$i.png")
 
-    p1 = Set(unique(im1))
-    p2 = Set(unique(im2))
+#     p1 = Set(unique(im1))
+#     p2 = Set(unique(im2))
 
-    p = union(p1,p2)
+#     p = union(p1,p2)
 
-    delete!(p,0x000000)
+#     delete!(p,0x000000)
 
-    p = sort!(collect(p))
+#     p = sort!(collect(p))
         
 
-    im1_ = transformImage(im1,Palette(p))
-    im2_ = transformImage(im2,Palette(p))
+#     im1_ = transformImage(im1,Palette(p))
+#     im2_ = transformImage(im2,Palette(p))
 
-    serialize("im/pkmn/$i/front_a.im",Image(im1_))
-    serialize("im/pkmn/$i/front_b.im",Image(im2_))
-    serialize("im/pkmn/$i/front_normal.p",Palette(p))
+#     serialize("im/pkmn/$i/front_a.im",Image(im1_))
+#     serialize("im/pkmn/$i/front_b.im",Image(im2_))
+#     serialize("im/pkmn/$i/front_normal.p",Palette(p))
 
-    im3 = getImage("images/battlers/front/shiny/frame1/$i.png")
-    im4 = getImage("images/battlers/front/shiny/frame2/$i.png")
+#     im3 = getImage("images/battlers/front/shiny/frame1/$i.png")
+#     im4 = getImage("images/battlers/front/shiny/frame2/$i.png")
 
-    p_ = copy(p)
+#     p_ = copy(p)
 
-    for i in eachindex(im3)
-        if im3[i] != 0x000000
-            p_[im1_[i]] = im3[i]
-        end
-    end
+#     for i in eachindex(im3)
+#         if im3[i] != 0x000000
+#             p_[im1_[i]] = im3[i]
+#         end
+#     end
 
-    for i in eachindex(im4)
-        if im4[i] != 0x000000
-            p_[im2_[i]] = im4[i]
-        end
-    end
+#     for i in eachindex(im4)
+#         if im4[i] != 0x000000
+#             p_[im2_[i]] = im4[i]
+#         end
+#     end
 
-    serialize("im/pkmn/$i/front_shiny.p",Palette(p))
+#     serialize("im/pkmn/$i/front_shiny.p",Palette(p))
+# end
+
+
+
+# for i in 1:151
+#     im1 = getImage("images/battlers/back/normal/$i.png")
+
+#     p = Set(unique(im1))
+#     delete!(p,0x000000)
+
+#     p = sort!(collect(p))
+
+#     im1_ = transformImage(im1,Palette(p))
+
+#     serialize("im/pkmn/$i/back.im",Image(im1_))
+#     serialize("im/pkmn/$i/back_normal.p",Palette(p))
+
+#     im3 = getImage("images/battlers/back/shiny/$i.png")
+
+#     p_ = copy(p)
+
+#     for i in eachindex(im3)
+#         if im3[i] != 0x000000
+#             p_[im1_[i]] = im3[i]
+#         end
+#     end
+
+#     serialize("im/pkmn/$i/back_shiny.p",Palette(p))
+# end
+
+function replaceImage(dir::String)
+    im = getImage(dir*".png")
+
+    p = Set(unique(im)); delete!(p,0x000000); p = Palette(sort!(collect(p))); 
+
+    im_ = transformImage(im,p)
+
+    serialize(dir*".im",ImageP(im_,p))
+
+    rm(dir*".png")
 end
 
+function replaceImages(dir::String)
+    for file in readdir(dir)
+        f = file[1:end-4]
+        im = getImage(dir*"/"*f*".png")
 
+        p = Set(unique(im)); delete!(p,0x000000); p = Palette(sort!(collect(p))); 
 
-for i in 1:151
-    im1 = getImage("images/battlers/back/normal/$i.png")
+        im_ = transformImage(im,p)
 
-    p = Set(unique(im1))
+        # serialize(dir*"/"*f*".im",Image(im_))
+        # serialize(dir*"/"*f*".p",p)
+        serialize(dir*"/"*f*".imp",ImageP(im_,p))
 
-    delete!(p,0x000000)
+        rm(dir*"/"*f*".png")
+    end
+end
 
-    p = sort!(collect(p))
+function replaceImage(dir::String,nh::Int,nw::Int,name::String,newname::String)
+    im = getImage(dir*"/"*name*".png")
 
-    im1_ = transformImage(im1,Palette(p))
+    dh,dw = size(im); dh = Int(dh/nh); dw = Int(dw/nw)
 
-    serialize("im/pkmn/$i/back.im",Image(im1_))
-    serialize("im/pkmn/$i/back_normal.p",Palette(p))
+    for i in 1:nh
+        for j in 1:nw
+            imsub = im[dh*(i-1)+1:dh*i,dw*(j-1)+1:dw*j]
 
-    im3 = getImage("images/battlers/back/shiny/$i.png")
+            psub = Set(unique(imsub)); delete!(psub,0x000000); psub = Palette(sort!(collect(psub))); 
+        
+            imsub_ = transformImage(imsub,psub)
 
-    p_ = copy(p)
+            if all(isequal(0x00),imsub_)
+                continue
+            end
 
-    for i in eachindex(im3)
-        if im3[i] != 0x000000
-            p_[im1_[i]] = im3[i]
+            serialize(dir*"/$newname"*"$(nw*(i-1)+j).imp",ImageP(imsub_,psub))
         end
     end
 
-    serialize("im/pkmn/$i/back_shiny.p",Palette(p))
+    rm(dir*"/"*name*".png")    
 end
 
+function replaceSprite(dir::String,nh::Int,nw::Int)
+    im = getImage(dir*".png")
 
+    dh,dw = size(im); dh = Int(dh/nh); dw = Int(dw/nw)
 
+    p = Set(unique(im)); delete!(p,0x000000); p = Palette(sort!(collect(p))); 
 
+    im_ = transformImage(im,p)
+
+    for i in 1:nh
+        for j in 1:nw
+            imsub = im_[dh*(i-1)+1:dh*i,dw*(j-1)+1:dw*j]
+
+            serialize(dir*"$(nw*(i-1)+j).im",imsub)
+        end
+    end
+
+    serialize(dir*".p",p)
+
+    rm(dir*".png")
+end
 
 
 

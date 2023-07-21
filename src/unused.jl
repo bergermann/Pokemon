@@ -1930,3 +1930,19 @@
     #     drawText!(game,:menu2,"Wähle ein Pokémon.",UInt(2),Position(24+136,24))
     #     drawText!(game,:menu2,"ZURUCK",UInt(1),Position(24+137,16+204))
     # end
+
+
+
+    
+### remove if doesnt cause issues
+# function getBattlers()
+#     img = mfb_rgb.(load("im/battlers gen1.png"))
+
+#     d1 = Dict{UInt,Matrix{UInt32}}(
+#         zip(Vector{UInt}(1:151),[(img[
+#             1+64*div(i,10):64+64*div(i,10),1+64*i%10:64+64*i%10
+#         ],P(64,64)) for i in 0:150])
+#     )
+
+#     return merge(d1,)
+# end

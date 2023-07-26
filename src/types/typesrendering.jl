@@ -24,7 +24,7 @@ mutable struct Sprite
     size::Position
 
     frame::Int
-    dict::Dict{Int,Tuple{Image,Position}}
+    dict::Dict{Int,Image}
 
     im::Image
     palette::Palette
@@ -43,18 +43,20 @@ mutable struct Sprite
             Position(0,0),
 
             0,
-            Dict{Int,Tuple{Matrix{UInt32},Position}}(),
+            Dict{Int,Image}(),
 
-            zeros(UInt32,0,0)
+            zeros(UInt8,0,0),
+            Palette(0x00)
         )
     end
 
-    function Sprite(id,active,hreverse,vreverse,layer,pos,size,frame,dict,im)
-        new(id,active,hreverse,vreverse,layer,pos,size,frame,dict,im)
+    function Sprite(id,active,hreverse,vreverse,layer,pos,size,frame,dict,im,palette)
+        new(id,active,hreverse,vreverse,layer,pos,size,frame,dict,im,palette)
     end
 
-    function Sprite(id,layer,pos,dict)
-        new(id,true,false,false,layer,pos,Position(0,0),0,dict,zeros(UInt32,0,0))
+    function Sprite(id,layer,pos,dict,palette)
+        new(id,true,false,false,layer,pos,Position(0,0),0,dict,zeros(UInt8,0,0),
+            palette)
     end
 end
 

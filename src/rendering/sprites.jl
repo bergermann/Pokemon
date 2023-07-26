@@ -60,8 +60,10 @@ function drawSprites!(game::GameState; s=Settings())
         sprite = game.im.sprites.data[i]
         l = getfield(game.im.layers,sprite.layer)
 
-        v = view(l, sprite.pos.h+1:sprite.pos.h+sprite.size.h,
-            sprite.pos.w+1:sprite.pos.w+sprite.size.w)
+        s = size(sprite.im)
+
+        v = view(l, sprite.pos.h+1:sprite.pos.h+s[1],
+            sprite.pos.w+1:sprite.pos.w+s[2])
 
         @inbounds for i in eachindex(v)
             if sprite.im[i] != 0x00

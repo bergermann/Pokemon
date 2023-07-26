@@ -8,7 +8,7 @@ mutable struct ImageP
     im::Image
     palette::Palette
 end
-    
+
 
 
 mutable struct Sprite

@@ -220,6 +220,35 @@ function replaceSprite(dir::String,nh::Int,nw::Int)
     rm(dir*".png")
 end
 
+function replaceSprites(dir::String,nh::Int,nw::Int)
+    for file in readdir(dir)
+        d = joinpath(dir,file)
+
+        f = mkdir(joinpath(dir,file[1:end-3]))
+
+        im = getImage(d)
+
+        dh,dw = size(im); dh = Int(dh/nh); dw = Int(dw/nw)
+
+        p = Set(unique(im)); delete!(p,0x000000); p = Palette(sort!(collect(p))); 
+
+        im_ = transformImage(im,p)
+
+        for i in 1:nh
+            for j in 1:nw
+                imsub = im_[dh*(i-1)+1:dh*i,dw*(j-1)+1:dw*j]
+
+                serialize(joinpath(f,"$(nw*(i-1)+j).im"),imsub)
+            end
+        end
+
+        serialize(joinpath(f,"palette.p"),p)
+
+        rm(d)
+    end
+end
+
+
 
 
 

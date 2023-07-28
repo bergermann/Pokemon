@@ -86,6 +86,43 @@ end
 
 
 
+# function combineLayers!(game::GameState,layers::Vector{Symbol};
+#         s::Settings=Settings())
+
+#     l = game.im.layer
+
+#     @inbounds for k in layers
+#         ls = getproperty(game.im.layers,k)
+
+#         @inbounds for i in eachindex(l)
+#             @views if ls[i] != 0x000000
+#                 l[i] = ls[i]
+#             end
+#         end
+
+#         @inbounds for j in 1:game.im.sprites.idx
+#             if game.im.sprites[j].layer != k || !game.im.sprites[j].active
+#                 continue
+#             end
+
+#             s = game.im.sprites[j]
+#             v = view(
+#                 l,
+#                 s.pos.h+1:s.pos.h+s.size.h,
+#                 s.pos.w+1:s.pos.w+s.size.w
+#             )
+
+#             @inbounds for i in eachindex(v)
+#                 if s.im[i] != 0x000000
+#                     v[i] = s.im[i]
+#                 end
+#             end
+#         end
+#     end
+
+#     return
+# end
+
 function combineLayers!(game::GameState,layers::Vector{Symbol};
         s::Settings=Settings())
 
@@ -105,16 +142,22 @@ function combineLayers!(game::GameState,layers::Vector{Symbol};
                 continue
             end
 
-            s = game.im.sprites[j]
+            sprite = game.im.sprites[j]
+            sh,sw = size(sprite.im)
+
             v = view(
                 l,
-                s.pos.h+1:s.pos.h+s.size.h,
-                s.pos.w+1:s.pos.w+s.size.w
+                sprite.hreverse ? 
+                    (min(1,sprite.pos.h+1):max(s.height,sprite.pos.h+sprite.size.h)) :
+                    (max(s.height,sprite.pos.h+sprite.size.h):-1:min(1,sprite.pos.h+1)),
+                sprite.vreverse ?
+                    (min(1,sprite.pos.w+1):max(s.width,sprite.pos.w+sprite.size.w)) :
+                    (max(s.width,sprite.pos.w+sprite.size.w):-1:min(1,sprite.pos.w+1))
             )
 
             @inbounds for i in eachindex(v)
-                if s.im[i] != 0x000000
-                    v[i] = s.im[i]
+                if sprite.im[i] != 0x00
+                    v[i] = sprite.palette[sprite.im[i]]
                 end
             end
         end

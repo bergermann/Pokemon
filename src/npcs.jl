@@ -59,38 +59,46 @@ function loadNPCs!(game::GameState,mapid)
     end
 end
 
-function getSpriteNPC(id::Int)
-    if id == 0
-        return Dict{Int,Tuple{Matrix{UInt32},Position}}(
-            0 => (Array{Int}(undef,0,0),P(0,0)))
-    end
+# function getSpriteNPC(id::Int)
+#     if id == 0
+#         return Dict{Int,Tuple{Matrix{UInt32},Position}}(
+#             0 => (Array{Int}(undef,0,0),P(0,0)))
+#     end
 
-    img = mfb_rgb.(load("im/npcs/$id.png"))
+#     img = mfb_rgb.(load("im/npcs/$id.png"))
 
-    d = Dict{Int,Tuple{Matrix{UInt32},Position}}(
-        zip([2,1,3,6,10,5,9,7,11],
-        [(img[:,1+16*i:16+16*i], P(32,16)) for i in 0:8])
-    )
+#     d = Dict{Int,Tuple{Matrix{UInt32},Position}}(
+#         zip([2,1,3,6,10,5,9,7,11],
+#         [(img[:,1+16*i:16+16*i], P(32,16)) for i in 0:8])
+#     )
 
-    d[4] = (reverse(d[3][1]; dims=2),d[3][2])
-    d[8] = (reverse(d[7][1]; dims=2),d[7][2])
-    d[12] = (reverse(d[11][1]; dims=2),d[11][2])
+#     d[4] = (reverse(d[3][1]; dims=2),d[3][2])
+#     d[8] = (reverse(d[7][1]; dims=2),d[7][2])
+#     d[12] = (reverse(d[11][1]; dims=2),d[11][2])
 
-    return d
-end
+#     return d
+# end
 
 function loadSpritesNPCs!(game::GameState)
     for i in 1:game.npcstatic.idx
         npc = game.npcstatic[i]
-        createSprite!(game,npc.spriteid,:layer2,getSpriteNPC(npc.sprite),
-            P(80+16*(npc.pos.h-game.pos.h),128+16*(npc.pos.w-game.pos.w)),npc.dir)
+
+        createSprite!(game,npc.spriteid,:layer2,
+            P(80+16*(npc.pos.h-game.pos.h),128+16*(npc.pos.w-game.pos.w)),
+            min(3,npc.dir),
+            getSprite("im/sprites/npcs/$(npc.sprite)");
+            vreverse=(npc.dir==4))
     end
 
     for i in 1:game.npcmove.idx
         npc = game.npcmove[i]
-        createSprite!(game,npc.spriteid,:layer2,getSpriteNPC(npc.sprite),
+
+        createSprite!(game,npc.spriteid,:layer2,
             posAddMult(P(80+16*(npc.pos.h-game.pos.h),128+16*(npc.pos.w-game.pos.w)),
-            dirs[npc.dir],-npc.c1),npc.dir)
+            dirs[npc.dir],-npc.c1),
+            min(3,npc.dir),
+            getSprite("im/sprites/npcs/$(npc.sprite)");
+            vreverse=(npc.dir==4))
     end
 
     checkProximityNPCs!(game)
@@ -173,7 +181,7 @@ function manageStaticNPC!(game::GameState,npc::NPCStatic)
         end
         
         npc.dir = npc.pattern
-        updateSprite!(game.im.sprites[npc.spriteid],npc.pattern)
+        updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
 
         return
     elseif npc.pattern == 5     # linear
@@ -181,7 +189,11 @@ function manageStaticNPC!(game::GameState,npc::NPCStatic)
             npc.dir = dirsinv[npc.dir]
             npc.c = 0
             
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+            
+            if npc.dir == 4
+                game.im.sprites[npc.spriteid].vreverse = true
+            end
         end
 
         npc.c += 1
@@ -191,12 +203,20 @@ function manageStaticNPC!(game::GameState,npc::NPCStatic)
         if npc.c == npc.parg
             npc.dir = dirsturnright[npc.dir]
 
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+            
+            if npc.dir == 4
+                game.im.sprites[npc.spriteid].vreverse = true
+            end
         elseif npc.c == 2*npc.parg
             npc.dir = dirsturnleft[npc.dir]
             npc.c = 0
 
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+            
+            if npc.dir == 4
+                game.im.sprites[npc.spriteid].vreverse = true
+            end
         end
 
         npc.c += 1
@@ -206,20 +226,36 @@ function manageStaticNPC!(game::GameState,npc::NPCStatic)
         if npc.c == npc.parg
             npc.dir = dirsturnright[npc.dir]
 
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+            
+            if npc.dir == 4
+                game.im.sprites[npc.spriteid].vreverse = true
+            end
         elseif npc.c == 2*npc.parg
             npc.dir = dirsturnright[npc.dir]
 
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+            
+            if npc.dir == 4
+                game.im.sprites[npc.spriteid].vreverse = true
+            end
         elseif npc.c == 3*npc.parg
             npc.dir = dirsturnleft[npc.dir]
 
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+            
+            if npc.dir == 4
+                game.im.sprites[npc.spriteid].vreverse = true
+            end
         elseif npc.c == 4*npc.parg
             npc.dir = dirsturnleft[npc.dir]
             npc.c = 0
 
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+            
+            if npc.dir == 4
+                game.im.sprites[npc.spriteid].vreverse = true
+            end
         end
 
         npc.c += 1
@@ -229,16 +265,28 @@ function manageStaticNPC!(game::GameState,npc::NPCStatic)
         if npc.c == npc.parg
             npc.dir = dirsturnright[npc.dir]
 
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+            
+            if npc.dir == 4
+                game.im.sprites[npc.spriteid].vreverse = true
+            end
         elseif npc.c == 2*npc.parg
             npc.dir = dirsturnright[npc.dir]
 
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+            
+            if npc.dir == 4
+                game.im.sprites[npc.spriteid].vreverse = true
+            end
         elseif npc.c == 3*npc.parg
             npc.dir = dirsinv[npc.dir]
             npc.c = 0
 
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+            
+            if npc.dir == 4
+                game.im.sprites[npc.spriteid].vreverse = true
+            end
         end
 
         npc.c += 1
@@ -248,16 +296,28 @@ function manageStaticNPC!(game::GameState,npc::NPCStatic)
         if npc.c == npc.parg
             npc.dir = dirsturnleft[npc.dir]
 
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+            
+            if npc.dir == 4
+                game.im.sprites[npc.spriteid].vreverse = true
+            end
         elseif npc.c == 2*npc.parg
             npc.dir = dirsturnleft[npc.dir]
 
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+            
+            if npc.dir == 4
+                game.im.sprites[npc.spriteid].vreverse = true
+            end
         elseif npc.c == 3*npc.parg
             npc.dir = dirsinv[npc.dir]
             npc.c = 0
 
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+            
+            if npc.dir == 4
+                game.im.sprites[npc.spriteid].vreverse = true
+            end
         end
 
         npc.c += 1
@@ -267,7 +327,11 @@ function manageStaticNPC!(game::GameState,npc::NPCStatic)
         if npc.c >= npc.parg
             npc.dir = dirsturnright[npc.dir]
 
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+            
+            if npc.dir == 4
+                game.im.sprites[npc.spriteid].vreverse = true
+            end
 
             npc.c = 0
         end
@@ -279,7 +343,11 @@ function manageStaticNPC!(game::GameState,npc::NPCStatic)
         if npc.c >= npc.parg
             npc.dir = dirsturnleft[npc.dir]
 
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+            
+            if npc.dir == 4
+                game.im.sprites[npc.spriteid].vreverse = true
+            end
 
             npc.c = 0
         end
@@ -291,7 +359,11 @@ function manageStaticNPC!(game::GameState,npc::NPCStatic)
         if rand(UInt8) < npc.parg && npc.c >= 30
             npc.dir = rand(1:4)
 
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+            
+            if npc.dir == 4
+                game.im.sprites[npc.spriteid].vreverse = true
+            end
 
             npc.c = 0
         else
@@ -347,7 +419,7 @@ function moveLinearNPC!(game::GameState,npc::NPC)
         end
 
         if isequal(npc.pos,game.pos,dirs[npc.dir])
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
 
             return
         else
@@ -355,12 +427,16 @@ function moveLinearNPC!(game::GameState,npc::NPC)
         end
         
         if npc.pos.h%2 == npc.pos.w%2
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir+4)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir)+3)
         else
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir+8)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir)+6)
         end
     elseif npc.c1 == 8
-        updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+        updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+    end
+
+    if npc.dir == 4
+        game.im.sprites[npc.spriteid].vreverse = true
     end
 
     posAdd!(game.im.sprites[npc.spriteid].pos,dirs[npc.dir])
@@ -390,7 +466,7 @@ function moveAngleNPC!(game::GameState,npc::NPC)
         end
 
         if isequal(npc.pos,game.pos,dirs[npc.dir])
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
 
             return
         else
@@ -398,12 +474,16 @@ function moveAngleNPC!(game::GameState,npc::NPC)
         end
         
         if npc.pos.h%2 == npc.pos.w%2
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir+4)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir)+3)
         else
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir+8)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir)+6)
         end
     elseif npc.c1 == 8
-        updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+        updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+    end
+
+    if npc.dir == 4
+        game.im.sprites[npc.spriteid].vreverse = true
     end
 
     posAdd!(game.im.sprites[npc.spriteid].pos,dirs[npc.dir])
@@ -434,7 +514,7 @@ function moveRectangleNPC!(game::GameState,npc::NPC,turns::Base.ImmutableDict)
         end
 
         if isequal(npc.pos,game.pos,dirs[npc.dir])
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
 
             return
         else
@@ -442,12 +522,16 @@ function moveRectangleNPC!(game::GameState,npc::NPC,turns::Base.ImmutableDict)
         end
         
         if npc.pos.h%2 == npc.pos.w%2
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir+4)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir)+3)
         else
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir+8)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir)+6)
         end
     elseif npc.c1 == 8
-        updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+        updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+    end
+
+    if npc.dir == 4
+        game.im.sprites[npc.spriteid].vreverse = true
     end
 
     posAdd!(game.im.sprites[npc.spriteid].pos,dirs[npc.dir])
@@ -479,7 +563,7 @@ function moveRandomNPC!(game::GameState,npc::NPC)
         # println("dw: ",dw)
 
         if rand(1:2) == 1
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
 
             npc.c2 = 1
 
@@ -492,7 +576,7 @@ function moveRandomNPC!(game::GameState,npc::NPC)
         if !(0 <= dh <= npc.parg2 && 0 <= dw <= npc.parg2) ||
                 isequal(npc.pos,game.pos,dirs[npc.dir])
             
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
 
             return
         else
@@ -500,12 +584,16 @@ function moveRandomNPC!(game::GameState,npc::NPC)
         end
         
         if npc.pos.h%2 == npc.pos.w%2
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir+4)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir)+3)
         else
-            updateSprite!(game.im.sprites[npc.spriteid],npc.dir+8)
+            updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir)+6)
         end
     elseif npc.c1 == 8
-        updateSprite!(game.im.sprites[npc.spriteid],npc.dir)
+        updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+    end
+
+    if npc.dir == 4
+        game.im.sprites[npc.spriteid].vreverse = true
     end
 
     posAdd!(game.im.sprites[npc.spriteid].pos,dirs[npc.dir])

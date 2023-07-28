@@ -25,9 +25,9 @@ mutable struct Sprite
 
     frame::Int
     dict::Dict{Int,Image}
+    palette::Palette
 
     im::Image
-    palette::Palette
 
     function Sprite()
         new(
@@ -44,19 +44,19 @@ mutable struct Sprite
 
             0,
             Dict{Int,Image}(),
+            Palette(0x00),
 
             zeros(UInt8,0,0),
-            Palette(0x00)
         )
     end
 
-    function Sprite(id,active,hreverse,vreverse,layer,pos,size,frame,dict,im,palette)
-        new(id,active,hreverse,vreverse,layer,pos,size,frame,dict,im,palette)
+    function Sprite(id,active,hreverse,vreverse,layer,pos,size,frame,dict,palette,im)
+        new(id,active,hreverse,vreverse,layer,pos,size,frame,dict,palette,im)
     end
 
     function Sprite(id,layer,pos,dict,palette)
-        new(id,true,false,false,layer,pos,Position(0,0),0,dict,zeros(UInt8,0,0),
-            palette)
+        new(id,true,false,false,layer,pos,Position(0,0),0,dict,palette,
+            zeros(UInt8,0,0))
     end
 end
 
@@ -86,7 +86,7 @@ mutable struct Layers
 
     textbox::Matrix{UInt32}    
 
-    function Layers(; s::Settings=Settings())
+    function Layers(; s=Settings())
         new([zeros(UInt32,UInt16(s.Nh)*UInt16(s.tilesize),
             UInt16(s.Nw)*UInt16(s.tilesize)) for _ in eachindex(fieldnames(Layers))]...)
     end
@@ -112,7 +112,7 @@ end
 
 mutable struct Im
     font::Font
-    frame::Dict{Int,Matrix{UInt32}}
+    frame::Dict{Int,Matrix{UInt8}}
     diabox::Dict
 
     tilesext::Dict

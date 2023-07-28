@@ -119,7 +119,6 @@ function startWindow(settings::Settings)
                 MiniFB.WF_RESIZABLE)
     mfb_set_target_fps(settings.fps)
     
-    
     buffer = zeros(UInt32,settings.width,settings.height)
 
     return window, buffer

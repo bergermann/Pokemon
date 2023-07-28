@@ -140,6 +140,8 @@ function killCC!(game::GameState,idc::Symbol,idcb::Symbol)
     killCallback!(game,idcb)
 end
 
+
+
 function setDialogue!(game::GameState,str::String)
     game.dialogue.d = true
     game.dialogue.n = 1
@@ -150,33 +152,6 @@ function setBattleDialogue!(game::GameState,str::String)
     game.battle.dialogue.d = true
     game.battle.dialogue.n = 1
     game.battle.dialogue.str = str
-end
-
-function createSprite!(game::GameState,id::Symbol,layer::Symbol,
-        dict::Dict{Int,Tuple{Matrix{UInt32},Position}},pos::Position,frame::Int;
-        active=false,hreverse=false,vreverse=false)
-    
-    push!(game.im.sprites,Sprite(
-        id,
-        active,
-        hreverse,
-        vreverse,
-        layer,
-        pos,
-        dict[frame][2],
-        frame,
-        dict,
-        copy(dict[frame][1])
-        )
-    )
-end
-
-function killSprite!(game::GameState,id::Symbol)
-    popat!(game.im.sprites,id)
-end
-
-function killSpriteAll!(game::GameState)
-    popall!(game.im.sprites)
 end
 
 

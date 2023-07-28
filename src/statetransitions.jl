@@ -222,8 +222,12 @@ function stateInitDrawMap!(game::GameState)
     drawMap!(game)
     game.overworld = true
     
-    createSprite!(game,:main,:layer2,getSpriteMain("sprite"),Position(80,128),
-        11; active=true)
+    createSprite!(game,:main,:layer2,Position(80,128),min(3,game.direction),
+        getSprite("im/sprites/main1",18); active=true)
+    
+    if game.direction == 4
+        game.im.sprites[:main].vreverse = true
+    end
 
     createCounter!(game,:movemain,0)
     createCallback!(game,:movemain,false,moveMain!,(game.direction,-1))

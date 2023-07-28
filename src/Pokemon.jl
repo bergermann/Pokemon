@@ -6,20 +6,21 @@ export main
 
 using MiniFB, Images, DelimitedFiles
 
+include("types/typescore.jl")
 include("types/typesinventory.jl")
 include("types/typespkmn.jl")
-include("types/typescore.jl")
+include("types/typesrendering.jl")
+include("types/typesgame.jl")
 include("types/typesbattle.jl")
 include("types/typesnpc.jl")
-include("types/typesrendering.jl")
 
+include("rendering/rendering.jl")
 include("inventory.jl")
 include("parser.jl")
 include("pokemons.jl")
 include("core.jl")
 include("battle.jl")
 include("statetransitions.jl")
-include("rendering.jl")
 include("npcs.jl")
 include("maps.jl")
 include("controls.jl")
@@ -42,8 +43,7 @@ function main()
         [],
         PkmnData(),
 
-        Trainer("Void",0x0000,0x02,ArrayList(Pkmn,6),Inventory(),[],
-            falses(151),getSpriteMain("sprite"; s=settings)),
+        Trainer("Void",0x0000,0x02,ArrayList(Pkmn,6),Inventory(),[],falses(151)),
 
         map1,
         Position(0x00006e,0x000013),

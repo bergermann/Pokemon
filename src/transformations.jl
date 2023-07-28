@@ -376,9 +376,7 @@ end
 
 function shift!(A::Matrix,shift::Tuple{Int,Int})
     cs = CartesianIndex(shift)
-    for i in eachindex(view(A,
-            1:height(A),
-            1:width(A)))
+    for i in eachindex(view(A,1:height(A),1:width(A)))
         if !checkbounds(Bool,A,i-cs)
             continue
         end

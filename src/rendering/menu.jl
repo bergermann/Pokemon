@@ -1,145 +1,109 @@
 
 
-function getFrame(id::Int)
-    frame = mfb_rgb.(load("im/frames/$id.png"))
 
-    s = div(size(frame,1),3)
-
-    return Dict{Int,Matrix{UInt32}}(
-        1 => frame[1:s,1:s],
-        2 => frame[1:s,s+1:2s],
-        3 => frame[1:s,2s+1:3s],
-
-        4 => frame[s+1:2s,1:s],
-        6 => frame[s+1:2s,2s+1:3s],
-
-        7 => frame[2s+1:3s,1:s],
-        8 => frame[2s+1:3s,s+1:2s],
-        9 => frame[2s+1:3s,2s+1:3s],
-    )
-end
-
-function loadFrame!(game::GameState,id::Int)
-    frame = mfb_rgb.(load("im/frames/$id.png"))
-
-    s = div(size(frame,1),3)
-
-    game.im.frame = Dict{Int,Matrix{UInt32}}(
-        1 => frame[1:s,1:s],
-        2 => frame[1:s,s+1:2s],
-        3 => frame[1:s,2s+1:3s],
-
-        4 => frame[s+1:2s,1:s],
-        6 => frame[s+1:2s,2s+1:3s],
-
-        7 => frame[2s+1:3s,1:s],
-        8 => frame[2s+1:3s,s+1:2s],
-        9 => frame[2s+1:3s,2s+1:3s],
-    )
+function loadFrame(id::Int)
+    return deserialize("im/menu/frames/$id.imp")
 end
 
 
 
 function drawFrame!(game::GameState,layer::Symbol,height::Int,width::Int,pos::P)
-    s = size(game.im.frame[1],1)
-
-
     v = view(getfield(game.im.layers,layer),
-        pos.h+1:pos.h+s*height,pos.w+1:pos.w+s*width)
+        pos.h+1:pos.h+8*height,pos.w+1:pos.w+8*width)
 
-    v[1:s,1:s] = game.im.frame[1]
-    v[1:s,end-s+1:end] = game.im.frame[3]
-    v[end-s+1:end,1:s] = game.im.frame[7]
-    v[end-s+1:end,end-s+1:end] = game.im.frame[9]
+    v[1:8,1:8] = game.im.frame.palette[view(game.im.frame.im,1:8,1:8)]
+    v[1:8,end-8+1:end] = game.im.frame.palette[view(game.im.frame.im,1:8,17:24)]
+    v[end-8+1:end,1:8] = game.im.frame.palette[view(game.im.frame.im,17:24,1:8)]
+    v[end-8+1:end,end-8+1:end] = game.im.frame.palette[view(game.im.frame.im,17:24,17:24)]
 
     for i in 2:width-1
-        v[1:s,s*(i-1)+1:s*i] = game.im.frame[2]
-        v[end-s+1:end,s*(i-1)+1:s*i] = game.im.frame[8]
+        v[1:8,8*(i-1)+1:8*i] = game.im.frame.palette[view(game.im.frame.im,1:8,9:16)]
+        v[end-8+1:end,8*(i-1)+1:8*i] = game.im.frame.palette[view(game.im.frame.im,17:24,9:16)]
     end
 
     for i in 2:height-1
-        v[s*(i-1)+1:s*i,1:s] = game.im.frame[4]
-        v[s*(i-1)+1:s*i,end-s+1:end] = game.im.frame[6]
+        v[s*(i-1)+1:s*i,1:s] = game.im.frame.palette[view(game.im.frame.im,9:16,1:8)]
+        v[s*(i-1)+1:s*i,end-s+1:end] = game.im.frame.palette[view(game.im.frame.im,9:16,17:24)]
     end
 
-    v[s+1:end-s,s+1:end-s] .= 0xffffff
+    v[8+1:end-8,8+1:end-8] .= 0xffffff
 end
 
 
-function drawFrame1!(game::GameState,layer::Symbol,height::UInt,width::UInt,
-        pos::Position)
+# function drawFrame1!(game::GameState,layer::Symbol,height::UInt,width::UInt,
+#         pos::Position)
     
-    l = getfield(game.im.layers,layer)
-    # f = game.im.frames[game.options.frame]
-    f = game.im.frame
+#     l = getfield(game.im.layers,layer)
+#     # f = game.im.frames[game.options.frame]
+#     f = game.im.frame
     
-    @inbounds for i in 1:height, j in 1:width
-        if i != 1 && i != height && j != 1 && j != width
-            l[1+pos.h+(i-1)*8:pos.h+i*8,
-                1+pos.w+(j-1)*8:pos.w+j*8] = f[5]
-        elseif i == 1 && j == 1
-            l[1+pos.h+(i-1)*8:pos.h+i*8,
-                1+pos.w+(j-1)*8:pos.w+j*8] = f[1]
-        elseif i == 1 && j != 1 && j != width
-            l[1+pos.h+(i-1)*8:pos.h+i*8,
-                1+pos.w+(j-1)*8:pos.w+j*8] = f[2]
-        elseif i == 1 && j == width
-            l[1+pos.h+(i-1)*8:pos.h+i*8,
-                1+pos.w+(j-1)*8:pos.w+j*8] = f[3]
-        elseif i != 1 && i != height && j == 1
-            l[1+pos.h+(i-1)*8:pos.h+i*8,
-                1+pos.w+(j-1)*8:pos.w+j*8] = f[4]
-        elseif i != 1 && i != height && j == width
-            l[1+pos.h+(i-1)*8:pos.h+i*8,
-                1+pos.w+(j-1)*8:pos.w+j*8] = f[6]
-        elseif i == height && j == 1
-            l[1+pos.h+(i-1)*8:pos.h+i*8,
-                1+pos.w+(j-1)*8:pos.w+j*8] = f[7]
-        elseif i == height && j != 1 && j != width
-            l[1+pos.h+(i-1)*8:pos.h+i*8,
-                1+pos.w+(j-1)*8:pos.w+j*8] = f[8]
-        else
-            l[1+pos.h+(i-1)*8:pos.h+i*8,
-                1+pos.w+(j-1)*8:pos.w+j*8] = f[9]
-        end
-    end
-end
+#     @inbounds for i in 1:height, j in 1:width
+#         if i != 1 && i != height && j != 1 && j != width
+#             l[1+pos.h+(i-1)*8:pos.h+i*8,
+#                 1+pos.w+(j-1)*8:pos.w+j*8] = f[5]
+#         elseif i == 1 && j == 1
+#             l[1+pos.h+(i-1)*8:pos.h+i*8,
+#                 1+pos.w+(j-1)*8:pos.w+j*8] = f[1]
+#         elseif i == 1 && j != 1 && j != width
+#             l[1+pos.h+(i-1)*8:pos.h+i*8,
+#                 1+pos.w+(j-1)*8:pos.w+j*8] = f[2]
+#         elseif i == 1 && j == width
+#             l[1+pos.h+(i-1)*8:pos.h+i*8,
+#                 1+pos.w+(j-1)*8:pos.w+j*8] = f[3]
+#         elseif i != 1 && i != height && j == 1
+#             l[1+pos.h+(i-1)*8:pos.h+i*8,
+#                 1+pos.w+(j-1)*8:pos.w+j*8] = f[4]
+#         elseif i != 1 && i != height && j == width
+#             l[1+pos.h+(i-1)*8:pos.h+i*8,
+#                 1+pos.w+(j-1)*8:pos.w+j*8] = f[6]
+#         elseif i == height && j == 1
+#             l[1+pos.h+(i-1)*8:pos.h+i*8,
+#                 1+pos.w+(j-1)*8:pos.w+j*8] = f[7]
+#         elseif i == height && j != 1 && j != width
+#             l[1+pos.h+(i-1)*8:pos.h+i*8,
+#                 1+pos.w+(j-1)*8:pos.w+j*8] = f[8]
+#         else
+#             l[1+pos.h+(i-1)*8:pos.h+i*8,
+#                 1+pos.w+(j-1)*8:pos.w+j*8] = f[9]
+#         end
+#     end
+# end
 
-function drawFrame1!(game::GameState,layer::Symbol,height::Int,width::Int,
-        pos::Position)
+# function drawFrame1!(game::GameState,layer::Symbol,height::Int,width::Int,
+#         pos::Position)
     
-    l = getproperty(game.im.layers,layer)
-    f = game.im.frames[game.options.frame]
+#     l = getproperty(game.im.layers,layer)
+#     f = game.im.frames[game.options.frame]
     
-    @time @inbounds for i in 1:height, j in 1:width
-        @views l_ = l[1+pos.h+(i-1)*8:pos.h+i*8,1+pos.w+(j-1)*8:pos.w+j*8]
-        if i == 1
-            if j == 1
-                @views l_ = f[1:8,1:8]
-            elseif j == width
-                @views l_ = f[1:8,1:8]
-            else
-                @views l_ = f[1:8,1:8]
-            end
-        elseif i == height
-            if j == 1
-                @views l_ = f[1:8,1:8]
-            elseif j == width
-                @views l_ = f[1:8,1:8]
-            else
-                @views l_ = f[1:8,1:8]
-            end
-        else
-            if j == 1
-                @views l_ = f[1:8,1:8]
-            elseif j == width
-                @views l_ = f[1:8,1:8]
-            else
-                @views l_ = f[1:8,1:8]
-            end
-        end
-    end
-end
+#     @time @inbounds for i in 1:height, j in 1:width
+#         @views l_ = l[1+pos.h+(i-1)*8:pos.h+i*8,1+pos.w+(j-1)*8:pos.w+j*8]
+#         if i == 1
+#             if j == 1
+#                 @views l_ = f[1:8,1:8]
+#             elseif j == width
+#                 @views l_ = f[1:8,1:8]
+#             else
+#                 @views l_ = f[1:8,1:8]
+#             end
+#         elseif i == height
+#             if j == 1
+#                 @views l_ = f[1:8,1:8]
+#             elseif j == width
+#                 @views l_ = f[1:8,1:8]
+#             else
+#                 @views l_ = f[1:8,1:8]
+#             end
+#         else
+#             if j == 1
+#                 @views l_ = f[1:8,1:8]
+#             elseif j == width
+#                 @views l_ = f[1:8,1:8]
+#             else
+#                 @views l_ = f[1:8,1:8]
+#             end
+#         end
+#     end
+# end
 
 function drawMenu!(game::GameState)
     drawFrame!(game,:layer5,20,10,Position(24,176))

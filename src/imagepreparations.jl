@@ -2,6 +2,16 @@ using Images, ImageIO
 using Serialization
 using MiniFB
 
+const Image = Matrix{UInt8}
+
+const Palette{N} = NTuple{N,UInt32}
+
+mutable struct ImageP
+    im::Image
+    palette::Palette
+end
+
+
 # include("types/typescore.jl")
 # include("types/typesrendering.jl")
 
@@ -59,7 +69,7 @@ function transformImage(image::Matrix{UInt32})
     return Image(bytemap,palette)
 end
 
-function transformImage(image::Matrix{UInt32},palette::Palette)
+function transformImage(image::Matrix{UInt32},palette::Pokemon.Palette)
     bytemap = Matrix{UInt8}(undef,size(image))
 
     for i in eachindex(image)
@@ -160,15 +170,15 @@ end
 function replaceImages(dir::String)
     for file in readdir(dir)
         f = file[1:end-4]
-        im = getImage(dir*"/"*f*".png")
+        im = Pokemon.getImage(dir*"/"*f*".png")
 
-        p = Set(unique(im)); delete!(p,0x000000); p = Palette(sort!(collect(p))); 
+        p = Set(unique(im)); delete!(p,0x000000); p = Pokemon.Palette(sort!(collect(p))); 
 
         im_ = transformImage(im,p)
 
         # serialize(dir*"/"*f*".im",Image(im_))
         # serialize(dir*"/"*f*".p",p)
-        serialize(dir*"/"*f*".imp",ImageP(im_,p))
+        serialize(dir*"/"*f*".imp",Pokemon.ImageP(im_,p))
 
         rm(dir*"/"*f*".png")
     end
@@ -257,3 +267,56 @@ end
 # for i in 1:151
 #     mkdir("im/pkmn/$i")
 # end
+for dir in readdir("im/sprites/npcs")
+    path = joinpath("im/sprites/npcs",dir)
+
+    for file in readdir(path)
+        if occursin(".im",file)
+            im = deserialize(joinpath(path,file))
+            im_ = Pokemon.Image(im)
+        
+            serialize(joinpath(path,file), im)
+        else
+            p = deserialize(joinpath(path,file))
+            p_ = Pokemon.Palette(p)
+        end
+    end 
+end
+
+for dir in readdir("im/sprites/npcs")
+    path = joinpath("im/sprites/npcs",dir)
+
+    for file in readdir(path)
+        if occursin(".p",file)
+            continue
+        end
+
+        mv(joinpath(path,file),joinpath(path,"_"*file))
+    end
+
+    for file in readdir(path)
+        if occursin(".p",file)
+            continue
+        end
+
+        if occursin('1',file)
+            mv(joinpath(path,file),joinpath(path,"2.im"))
+        elseif occursin('2',file)
+            mv(joinpath(path,file),joinpath(path,"1.im"))
+        elseif occursin('3',file)
+            mv(joinpath(path,file),joinpath(path,"3.im"))
+        elseif occursin('4',file)
+            mv(joinpath(path,file),joinpath(path,"5.im"))
+        elseif occursin('5',file)
+            mv(joinpath(path,file),joinpath(path,"8.im"))
+        elseif occursin('6',file)
+            mv(joinpath(path,file),joinpath(path,"4.im"))
+        elseif occursin('7',file)
+            mv(joinpath(path,file),joinpath(path,"7.im"))
+        elseif occursin('8',file)
+            mv(joinpath(path,file),joinpath(path,"6.im"))
+        elseif occursin('9',file)
+            mv(joinpath(path,file),joinpath(path,"9.im"))
+        end
+    end
+end

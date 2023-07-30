@@ -4,12 +4,12 @@ module Pokemon
 
 export main
 
-using MiniFB, Images, DelimitedFiles
+using MiniFB, Serialization, Images, DelimitedFiles
 
 include("types/typescore.jl")
+include("types/typesrendering.jl")
 include("types/typesinventory.jl")
 include("types/typespkmn.jl")
-include("types/typesrendering.jl")
 include("types/typesgame.jl")
 include("types/typesbattle.jl")
 include("types/typesnpc.jl")

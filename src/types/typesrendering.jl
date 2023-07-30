@@ -1,8 +1,7 @@
 
+const Image = Matrix{UInt8}
 
 const Palette{N} = NTuple{N,UInt32}
-
-const Image = Matrix{UInt8}
 
 mutable struct ImageP
     im::Image
@@ -106,14 +105,15 @@ mutable struct Font
     end
 end
 
-mutable struct Frame
-    frame::Dict{Int,Dict{Int,Matrix{UInt32}}}
-end
+# delete if safe
+# mutable struct Frame
+#     frame::Dict{Int,Dict{Int,Matrix{UInt32}}}
+# end
 
 mutable struct Im
     font::Font
-    frame::Dict{Int,Matrix{UInt8}}
-    diabox::Dict
+    frame::ImageP
+    diabox::ImageP
 
     tilesext::Dict
     tilesint::Dict
@@ -132,8 +132,8 @@ mutable struct Im
     function Im()
         new(
             Font(),
-            getFrame(1),
-            getDialogueBox("dialogue"),
+            loadFrame(1),
+            loadDialogue(2),
             
             getTiles("tiles_exterior"),
             Dict(),

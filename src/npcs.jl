@@ -86,7 +86,7 @@ function loadSpritesNPCs!(game::GameState)
         createSprite!(game,npc.spriteid,:layer2,
             P(80+16*(npc.pos.h-game.pos.h),128+16*(npc.pos.w-game.pos.w)),
             min(3,npc.dir),
-            getSprite("im/sprites/npcs/$(npc.sprite)");
+            getSprite("im/sprites/npcs/$(npc.sprite)",9);
             vreverse=(npc.dir==4))
     end
 
@@ -97,7 +97,7 @@ function loadSpritesNPCs!(game::GameState)
             posAddMult(P(80+16*(npc.pos.h-game.pos.h),128+16*(npc.pos.w-game.pos.w)),
             dirs[npc.dir],-npc.c1),
             min(3,npc.dir),
-            getSprite("im/sprites/npcs/$(npc.sprite)");
+            getSprite("im/sprites/npcs/$(npc.sprite)",9);
             vreverse=(npc.dir==4))
     end
 
@@ -420,6 +420,7 @@ function moveLinearNPC!(game::GameState,npc::NPC)
 
         if isequal(npc.pos,game.pos,dirs[npc.dir])
             updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+            game.im.sprites[npc.spriteid].vreverse = (npc.dir == 4)
 
             return
         else
@@ -428,15 +429,14 @@ function moveLinearNPC!(game::GameState,npc::NPC)
         
         if npc.pos.h%2 == npc.pos.w%2
             updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir)+3)
+            game.im.sprites[npc.spriteid].vreverse = (npc.dir == 4)
         else
             updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir)+6)
+            game.im.sprites[npc.spriteid].vreverse = (npc.dir == 4)
         end
     elseif npc.c1 == 8
         updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
-    end
-
-    if npc.dir == 4
-        game.im.sprites[npc.spriteid].vreverse = true
+        game.im.sprites[npc.spriteid].vreverse = (npc.dir == 4)
     end
 
     posAdd!(game.im.sprites[npc.spriteid].pos,dirs[npc.dir])

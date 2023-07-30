@@ -143,21 +143,26 @@ function combineLayers!(game::GameState,layers::Vector{Symbol};
             end
 
             sprite = game.im.sprites[j]
-            sh,sw = size(sprite.im)
 
             v = view(
                 l,
                 sprite.hreverse ? 
-                    (min(1,sprite.pos.h+1):max(s.height,sprite.pos.h+sprite.size.h)) :
-                    (max(s.height,sprite.pos.h+sprite.size.h):-1:min(1,sprite.pos.h+1)),
+                (min(s.height,sprite.pos.h+sprite.size.h):-1:max(1,sprite.pos.h+1)) :
+                    (max(1,sprite.pos.h+1):min(s.height,sprite.pos.h+sprite.size.h)),
                 sprite.vreverse ?
-                    (min(1,sprite.pos.w+1):max(s.width,sprite.pos.w+sprite.size.w)) :
-                    (max(s.width,sprite.pos.w+sprite.size.w):-1:min(1,sprite.pos.w+1))
+                (min(s.width,sprite.pos.w+sprite.size.w):-1:max(1,sprite.pos.w+1)) :
+                    (max(1,sprite.pos.w+1):min(s.width,sprite.pos.w+sprite.size.w))
+            )
+
+            vs = view(
+                sprite.im,
+                max(1,-sprite.pos.h):min(sprite.size.h,s.height-sprite.pos.h),
+                max(1,-sprite.pos.w):min(sprite.size.w,s.width-sprite.pos.w)
             )
 
             @inbounds for i in eachindex(v)
-                if sprite.im[i] != 0x00
-                    v[i] = sprite.palette[sprite.im[i]]
+                if vs[i] != 0x00
+                    v[i] = sprite.palette[vs[i]]
                 end
             end
         end

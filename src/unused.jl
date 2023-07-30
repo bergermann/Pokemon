@@ -2018,3 +2018,34 @@ function getSpriteMain(set::String; s=Settings())
 end
 
 
+function getFrame(id::Int)
+    frame = mfb_rgb.(load("im/frames/$id.png"))
+
+    s = div(size(frame,1),3)
+
+    return Dict{Int,Matrix{UInt32}}(
+        1 => frame[1:s,1:s],
+        2 => frame[1:s,s+1:2s],
+        3 => frame[1:s,2s+1:3s],
+
+        4 => frame[s+1:2s,1:s],
+        6 => frame[s+1:2s,2s+1:3s],
+
+        7 => frame[2s+1:3s,1:s],
+        8 => frame[2s+1:3s,s+1:2s],
+        9 => frame[2s+1:3s,2s+1:3s],
+    )
+end
+
+function getDialogueBox(set::String; s=Settings())
+    boxes = mfb_rgb.(load("im/$set.png"))
+
+    key::Vector{Tuple{Int,Int,UInt8}} = [
+        (1,48,0x01),
+        (49,48,0x02)
+    ]
+
+    return Dict{UInt8,Matrix{UInt32}}(
+        zip([k[3] for k in key],[boxes[k[1]:k[1]+k[2]-1,:] for k in key])
+    )
+end

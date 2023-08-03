@@ -63,6 +63,20 @@ function getSprite(dir::String,len::Int)
     return dict, palette
 end
 
+function getSprite(dir::String,len::Int,palette::String)
+    dict = Dict{Int,Image}()
+
+    for i in 1:len
+        dict[i] = deserialize(joinpath(dir,"$i.im"))
+    end
+
+    palette = deserialize(joinpath(dir,"$palette.p"))
+
+    return dict, palette
+end
+
+
+
 
 
 function createSprite!(game::GameState,id::Symbol,layer::Symbol,
@@ -85,7 +99,7 @@ function createSprite!(game::GameState,id::Symbol,layer::Symbol,
 end
 
 function createSprite!(game::GameState,id::Symbol,layer::Symbol,
-        pos::Position,frame::Int,(dict,palette);
+        pos::Position,frame::Int,(dict,palette)::Tuple{Dict,Palette};
         kwargs...)
     createSprite!(game,id,layer,pos,frame,dict,palette; kwargs...)
 end

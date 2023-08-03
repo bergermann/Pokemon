@@ -132,7 +132,7 @@ function combineLayers!(game::GameState,layers::Vector{Symbol};
         ls = getproperty(game.im.layers,k)
 
         @inbounds for i in eachindex(l)
-            @views if ls[i] != 0x000000
+            if ls[i] != 0x000000
                 l[i] = ls[i]
             end
         end
@@ -171,22 +171,26 @@ function combineLayers!(game::GameState,layers::Vector{Symbol};
     return
 end
 
-function combineLayers!(game::GameState; s::Settings=Settings())
-    l = game.im.layer
 
-    @inbounds for k in fieldnames(Layers)
-        ls = getproperty(game.im.layers,k)
 
-        if !ls.active
-            continue
-        end
+# remove if works
 
-        @inbounds for i in eachindex(l)
-            @views if ls.layer[i] != 0x000000
-                l[i] = ls.layer[i]
-            end
-        end
-    end
+# function combineLayers!(game::GameState; s::Settings=Settings())
+#     l = game.im.layer
 
-    return
-end
+#     @inbounds for k in fieldnames(Layers)
+#         ls = getproperty(game.im.layers,k)
+
+#         if !ls.active
+#             continue
+#         end
+
+#         @inbounds for i in eachindex(l)
+#             @views if ls.layer[i] != 0x000000
+#                 l[i] = ls.layer[i]
+#             end
+#         end
+#     end
+
+#     return
+# end

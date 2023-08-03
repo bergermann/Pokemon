@@ -2049,3 +2049,80 @@ function getDialogueBox(set::String; s=Settings())
         zip([k[3] for k in key],[boxes[k[1]:k[1]+k[2]-1,:] for k in key])
     )
 end
+
+
+
+# function drawFrame1!(game::GameState,layer::Symbol,height::UInt,width::UInt,
+#         pos::Position)
+    
+#     l = getfield(game.im.layers,layer)
+#     # f = game.im.frames[game.options.frame]
+#     f = game.im.frame
+    
+#     @inbounds for i in 1:height, j in 1:width
+#         if i != 1 && i != height && j != 1 && j != width
+#             l[1+pos.h+(i-1)*8:pos.h+i*8,
+#                 1+pos.w+(j-1)*8:pos.w+j*8] = f[5]
+#         elseif i == 1 && j == 1
+#             l[1+pos.h+(i-1)*8:pos.h+i*8,
+#                 1+pos.w+(j-1)*8:pos.w+j*8] = f[1]
+#         elseif i == 1 && j != 1 && j != width
+#             l[1+pos.h+(i-1)*8:pos.h+i*8,
+#                 1+pos.w+(j-1)*8:pos.w+j*8] = f[2]
+#         elseif i == 1 && j == width
+#             l[1+pos.h+(i-1)*8:pos.h+i*8,
+#                 1+pos.w+(j-1)*8:pos.w+j*8] = f[3]
+#         elseif i != 1 && i != height && j == 1
+#             l[1+pos.h+(i-1)*8:pos.h+i*8,
+#                 1+pos.w+(j-1)*8:pos.w+j*8] = f[4]
+#         elseif i != 1 && i != height && j == width
+#             l[1+pos.h+(i-1)*8:pos.h+i*8,
+#                 1+pos.w+(j-1)*8:pos.w+j*8] = f[6]
+#         elseif i == height && j == 1
+#             l[1+pos.h+(i-1)*8:pos.h+i*8,
+#                 1+pos.w+(j-1)*8:pos.w+j*8] = f[7]
+#         elseif i == height && j != 1 && j != width
+#             l[1+pos.h+(i-1)*8:pos.h+i*8,
+#                 1+pos.w+(j-1)*8:pos.w+j*8] = f[8]
+#         else
+#             l[1+pos.h+(i-1)*8:pos.h+i*8,
+#                 1+pos.w+(j-1)*8:pos.w+j*8] = f[9]
+#         end
+#     end
+# end
+
+# function drawFrame1!(game::GameState,layer::Symbol,height::Int,width::Int,
+#         pos::Position)
+    
+#     l = getproperty(game.im.layers,layer)
+#     f = game.im.frames[game.options.frame]
+    
+#     @time @inbounds for i in 1:height, j in 1:width
+#         @views l_ = l[1+pos.h+(i-1)*8:pos.h+i*8,1+pos.w+(j-1)*8:pos.w+j*8]
+#         if i == 1
+#             if j == 1
+#                 @views l_ = f[1:8,1:8]
+#             elseif j == width
+#                 @views l_ = f[1:8,1:8]
+#             else
+#                 @views l_ = f[1:8,1:8]
+#             end
+#         elseif i == height
+#             if j == 1
+#                 @views l_ = f[1:8,1:8]
+#             elseif j == width
+#                 @views l_ = f[1:8,1:8]
+#             else
+#                 @views l_ = f[1:8,1:8]
+#             end
+#         else
+#             if j == 1
+#                 @views l_ = f[1:8,1:8]
+#             elseif j == width
+#                 @views l_ = f[1:8,1:8]
+#             else
+#                 @views l_ = f[1:8,1:8]
+#             end
+#         end
+#     end
+# end

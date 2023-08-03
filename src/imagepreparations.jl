@@ -2,14 +2,14 @@ using Images, ImageIO
 using Serialization
 using MiniFB
 
-const Image = Matrix{UInt8}
+# const Image = Matrix{UInt8}
 
-const Palette{N} = NTuple{N,UInt32}
+# const Palette{N} = NTuple{N,UInt32}
 
-mutable struct ImageP
-    im::Image
-    palette::Palette
-end
+# mutable struct ImageP
+#     im::Image
+#     palette::Palette
+# end
 
 
 # include("types/typescore.jl")
@@ -158,11 +158,11 @@ end
 function replaceImage(dir::String)
     im = getImage(dir*".png")
 
-    p = Set(unique(im)); delete!(p,0x000000); p = Palette(sort!(collect(p))); 
+    p = Set(unique(im)); delete!(p,0x000000); p = Pokemon.Palette(sort!(collect(p))); 
 
     im_ = transformImage(im,p)
 
-    serialize(dir*".im",ImageP(im_,p))
+    serialize(dir*".im",Pokemon.ImageP(im_,p))
 
     rm(dir*".png")
 end
@@ -172,7 +172,8 @@ function replaceImages(dir::String)
         f = file[1:end-4]
         im = Pokemon.getImage(dir*"/"*f*".png")
 
-        p = Set(unique(im)); delete!(p,0x000000); p = Pokemon.Palette(sort!(collect(p))); 
+        p = Set(unique(im)); delete!(p,0x000000);
+        p = Pokemon.Palette(sort!(collect(p))); 
 
         im_ = transformImage(im,p)
 
@@ -193,7 +194,8 @@ function replaceImage(dir::String,nh::Int,nw::Int,name::String,newname::String)
         for j in 1:nw
             imsub = im[dh*(i-1)+1:dh*i,dw*(j-1)+1:dw*j]
 
-            psub = Set(unique(imsub)); delete!(psub,0x000000); psub = Palette(sort!(collect(psub))); 
+            psub = Set(unique(imsub)); delete!(psub,0x000000); 
+            psub = Pokemon.Palette(sort!(collect(psub))); 
         
             imsub_ = transformImage(imsub,psub)
 
@@ -201,7 +203,7 @@ function replaceImage(dir::String,nh::Int,nw::Int,name::String,newname::String)
                 continue
             end
 
-            serialize(dir*"/$newname"*"$(nw*(i-1)+j).imp",ImageP(imsub_,psub))
+            serialize(dir*"/$newname"*"$(nw*(i-1)+j).imp",Pokemon.ImageP(imsub_,psub))
         end
     end
 
@@ -209,11 +211,11 @@ function replaceImage(dir::String,nh::Int,nw::Int,name::String,newname::String)
 end
 
 function replaceSprite(dir::String,nh::Int,nw::Int)
-    im = getImage(dir*".png")
+    im = Pokemon.getImage(dir*".png")
 
     dh,dw = size(im); dh = Int(dh/nh); dw = Int(dw/nw)
 
-    p = Set(unique(im)); delete!(p,0x000000); p = Palette(sort!(collect(p))); 
+    p = Set(unique(im)); delete!(p,0x000000); p = Pokemon.Palette(sort!(collect(p))); 
 
     im_ = transformImage(im,p)
 
@@ -221,7 +223,7 @@ function replaceSprite(dir::String,nh::Int,nw::Int)
         for j in 1:nw
             imsub = im_[dh*(i-1)+1:dh*i,dw*(j-1)+1:dw*j]
 
-            serialize(dir*"$(nw*(i-1)+j).im",imsub)
+            serialize(dir*"$(nw*(i-1)+j).im",Pokemon.Image(imsub))
         end
     end
 
@@ -240,7 +242,8 @@ function replaceSprites(dir::String,nh::Int,nw::Int)
 
         dh,dw = size(im); dh = Int(dh/nh); dw = Int(dw/nw)
 
-        p = Set(unique(im)); delete!(p,0x000000); p = Palette(sort!(collect(p))); 
+        p = Set(unique(im)); delete!(p,0x000000);
+        p = Pokemon.Palette(sort!(collect(p))); 
 
         im_ = transformImage(im,p)
 
@@ -248,7 +251,7 @@ function replaceSprites(dir::String,nh::Int,nw::Int)
             for j in 1:nw
                 imsub = im_[dh*(i-1)+1:dh*i,dw*(j-1)+1:dw*j]
 
-                serialize(joinpath(f,"$(nw*(i-1)+j).im"),imsub)
+                serialize(joinpath(f,"$(nw*(i-1)+j).im"),Pokemon.Image(imsub))
             end
         end
 
@@ -267,56 +270,63 @@ end
 # for i in 1:151
 #     mkdir("im/pkmn/$i")
 # end
-for dir in readdir("im/sprites/npcs")
-    path = joinpath("im/sprites/npcs",dir)
+# for dir in readdir("im/sprites/npcs")
+#     path = joinpath("im/sprites/npcs",dir)
 
-    for file in readdir(path)
-        if occursin(".im",file)
-            im = deserialize(joinpath(path,file))
-            im_ = Pokemon.Image(im)
+#     for file in readdir(path)
+#         if occursin(".im",file)
+#             im = deserialize(joinpath(path,file))
+#             im_ = Pokemon.Image(im)
         
-            serialize(joinpath(path,file), im)
-        else
-            p = deserialize(joinpath(path,file))
-            p_ = Pokemon.Palette(p)
-        end
-    end 
-end
+#             serialize(joinpath(path,file), im)
+#         else
+#             p = deserialize(joinpath(path,file))
+#             p_ = Pokemon.Palette(p)
+#         end
+#     end 
+# end
 
-for dir in readdir("im/sprites/npcs")
-    path = joinpath("im/sprites/npcs",dir)
+# for dir in readdir("im/sprites/npcs")
+#     path = joinpath("im/sprites/npcs",dir)
 
-    for file in readdir(path)
-        if occursin(".p",file)
-            continue
-        end
+#     for file in readdir(path)
+#         if occursin(".p",file)
+#             continue
+#         end
 
-        mv(joinpath(path,file),joinpath(path,"_"*file))
-    end
+#         mv(joinpath(path,file),joinpath(path,"_"*file))
+#     end
 
-    for file in readdir(path)
-        if occursin(".p",file)
-            continue
-        end
+#     for file in readdir(path)
+#         if occursin(".p",file)
+#             continue
+#         end
 
-        if occursin('1',file)
-            mv(joinpath(path,file),joinpath(path,"2.im"))
-        elseif occursin('2',file)
-            mv(joinpath(path,file),joinpath(path,"1.im"))
-        elseif occursin('3',file)
-            mv(joinpath(path,file),joinpath(path,"3.im"))
-        elseif occursin('4',file)
-            mv(joinpath(path,file),joinpath(path,"5.im"))
-        elseif occursin('5',file)
-            mv(joinpath(path,file),joinpath(path,"8.im"))
-        elseif occursin('6',file)
-            mv(joinpath(path,file),joinpath(path,"4.im"))
-        elseif occursin('7',file)
-            mv(joinpath(path,file),joinpath(path,"7.im"))
-        elseif occursin('8',file)
-            mv(joinpath(path,file),joinpath(path,"6.im"))
-        elseif occursin('9',file)
-            mv(joinpath(path,file),joinpath(path,"9.im"))
-        end
-    end
-end
+#         if occursin('1',file)
+#             mv(joinpath(path,file),joinpath(path,"2.im"))
+#         elseif occursin('2',file)
+#             mv(joinpath(path,file),joinpath(path,"1.im"))
+#         elseif occursin('3',file)
+#             mv(joinpath(path,file),joinpath(path,"3.im"))
+#         elseif occursin('4',file)
+#             mv(joinpath(path,file),joinpath(path,"5.im"))
+#         elseif occursin('5',file)
+#             mv(joinpath(path,file),joinpath(path,"8.im"))
+#         elseif occursin('6',file)
+#             mv(joinpath(path,file),joinpath(path,"4.im"))
+#         elseif occursin('7',file)
+#             mv(joinpath(path,file),joinpath(path,"7.im"))
+#         elseif occursin('8',file)
+#             mv(joinpath(path,file),joinpath(path,"6.im"))
+#         elseif occursin('9',file)
+#             mv(joinpath(path,file),joinpath(path,"9.im"))
+#         end
+#     end
+# end
+
+# for dir in readdir("im/sprites/npcs")
+#     p = deserialize(joinpath("im/sprites/npcs",dir,"palette.p"))
+#     p_ = collect(UInt32,p)
+
+#     serialize(joinpath("im/sprites/npcs",dir,"palette.p"),Pokemon.Palette(p_))
+# end

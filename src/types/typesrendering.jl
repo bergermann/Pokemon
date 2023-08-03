@@ -1,7 +1,9 @@
 
 const Image = Matrix{UInt8}
 
-const Palette{N} = NTuple{N,UInt32}
+const Palette = Vector{UInt32}
+
+# const Palette{N} = NTuple{N,UInt32}
 
 mutable struct ImageP
     im::Image

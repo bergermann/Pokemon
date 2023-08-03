@@ -108,15 +108,9 @@ end
 
 
 function checkProximityNPCs!(game::GameState)
-    # for i in 1:game.npcstatic.idx
-    #     if -11 < game.pos.h-game.npcstatic[i].pos < 11
-    #         game.im
-    #     end
-    # end
-
     for i in 1:game.im.sprites.idx
-        if (0 < game.im.sprites[i].pos.h <= 184) &&
-                (0 < game.im.sprites[i].pos.w <= 248)
+        if (-32 < game.im.sprites[i].pos.h <= 216) &&
+                (-16 < game.im.sprites[i].pos.w <= 264)
             game.im.sprites[i].active = true
         else
             game.im.sprites[i].active = false
@@ -467,6 +461,7 @@ function moveAngleNPC!(game::GameState,npc::NPC)
 
         if isequal(npc.pos,game.pos,dirs[npc.dir])
             updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+            game.im.sprites[npc.spriteid].vreverse = (npc.dir == 4)
 
             return
         else
@@ -475,15 +470,14 @@ function moveAngleNPC!(game::GameState,npc::NPC)
         
         if npc.pos.h%2 == npc.pos.w%2
             updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir)+3)
+            game.im.sprites[npc.spriteid].vreverse = (npc.dir == 4)
         else
             updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir)+6)
+            game.im.sprites[npc.spriteid].vreverse = (npc.dir == 4)
         end
     elseif npc.c1 == 8
         updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
-    end
-
-    if npc.dir == 4
-        game.im.sprites[npc.spriteid].vreverse = true
+        game.im.sprites[npc.spriteid].vreverse = (npc.dir == 4)
     end
 
     posAdd!(game.im.sprites[npc.spriteid].pos,dirs[npc.dir])
@@ -515,6 +509,7 @@ function moveRectangleNPC!(game::GameState,npc::NPC,turns::Base.ImmutableDict)
 
         if isequal(npc.pos,game.pos,dirs[npc.dir])
             updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+            game.im.sprites[npc.spriteid].vreverse = (npc.dir == 4)
 
             return
         else
@@ -523,15 +518,14 @@ function moveRectangleNPC!(game::GameState,npc::NPC,turns::Base.ImmutableDict)
         
         if npc.pos.h%2 == npc.pos.w%2
             updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir)+3)
+            game.im.sprites[npc.spriteid].vreverse = (npc.dir == 4)
         else
             updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir)+6)
+            game.im.sprites[npc.spriteid].vreverse = (npc.dir == 4)
         end
     elseif npc.c1 == 8
         updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
-    end
-
-    if npc.dir == 4
-        game.im.sprites[npc.spriteid].vreverse = true
+        game.im.sprites[npc.spriteid].vreverse = (npc.dir == 4)
     end
 
     posAdd!(game.im.sprites[npc.spriteid].pos,dirs[npc.dir])
@@ -558,12 +552,9 @@ function moveRandomNPC!(game::GameState,npc::NPC)
             return
         end
 
-        # print("pos: "); println(npc.pos)
-        # println("dh: ",dh)
-        # println("dw: ",dw)
-
         if rand(1:2) == 1
             updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+            game.im.sprites[npc.spriteid].vreverse = (npc.dir == 4)
 
             npc.c2 = 1
 
@@ -577,6 +568,7 @@ function moveRandomNPC!(game::GameState,npc::NPC)
                 isequal(npc.pos,game.pos,dirs[npc.dir])
             
             updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
+            game.im.sprites[npc.spriteid].vreverse = (npc.dir == 4)
 
             return
         else
@@ -585,15 +577,14 @@ function moveRandomNPC!(game::GameState,npc::NPC)
         
         if npc.pos.h%2 == npc.pos.w%2
             updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir)+3)
+            game.im.sprites[npc.spriteid].vreverse = (npc.dir == 4)
         else
             updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir)+6)
+            game.im.sprites[npc.spriteid].vreverse = (npc.dir == 4)
         end
     elseif npc.c1 == 8
         updateSprite!(game.im.sprites[npc.spriteid],min(3,npc.dir))
-    end
-
-    if npc.dir == 4
-        game.im.sprites[npc.spriteid].vreverse = true
+        game.im.sprites[npc.spriteid].vreverse = (npc.dir == 4)
     end
 
     posAdd!(game.im.sprites[npc.spriteid].pos,dirs[npc.dir])

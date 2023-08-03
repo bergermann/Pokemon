@@ -45,7 +45,7 @@ mutable struct Sprite
 
             0,
             Dict{Int,Image}(),
-            Palette(0x00),
+            Palette(),
 
             zeros(UInt8,0,0),
         )

@@ -84,45 +84,6 @@ end
 
 
 
-
-
-# function combineLayers!(game::GameState,layers::Vector{Symbol};
-#         s::Settings=Settings())
-
-#     l = game.im.layer
-
-#     @inbounds for k in layers
-#         ls = getproperty(game.im.layers,k)
-
-#         @inbounds for i in eachindex(l)
-#             @views if ls[i] != 0x000000
-#                 l[i] = ls[i]
-#             end
-#         end
-
-#         @inbounds for j in 1:game.im.sprites.idx
-#             if game.im.sprites[j].layer != k || !game.im.sprites[j].active
-#                 continue
-#             end
-
-#             s = game.im.sprites[j]
-#             v = view(
-#                 l,
-#                 s.pos.h+1:s.pos.h+s.size.h,
-#                 s.pos.w+1:s.pos.w+s.size.w
-#             )
-
-#             @inbounds for i in eachindex(v)
-#                 if s.im[i] != 0x000000
-#                     v[i] = s.im[i]
-#                 end
-#             end
-#         end
-#     end
-
-#     return
-# end
-
 function combineLayers!(game::GameState,layers::Vector{Symbol};
         s::Settings=Settings())
 
@@ -144,25 +105,31 @@ function combineLayers!(game::GameState,layers::Vector{Symbol};
 
             sprite = game.im.sprites[j]
 
-            v = view(
-                l,
-                sprite.hreverse ? 
-                (min(s.height,sprite.pos.h+sprite.size.h):-1:max(1,sprite.pos.h+1)) :
-                    (max(1,sprite.pos.h+1):min(s.height,sprite.pos.h+sprite.size.h)),
-                sprite.vreverse ?
-                (min(s.width,sprite.pos.w+sprite.size.w):-1:max(1,sprite.pos.w+1)) :
-                    (max(1,sprite.pos.w+1):min(s.width,sprite.pos.w+sprite.size.w))
-            )
+            lh, lw = size(l)
 
             vs = view(
                 sprite.im,
-                max(1,-sprite.pos.h):min(sprite.size.h,s.height-sprite.pos.h),
-                max(1,-sprite.pos.w):min(sprite.size.w,s.width-sprite.pos.w)
+                max(1,-sprite.pos.h):min(sprite.size.h,lh-sprite.pos.h),
+                max(1,-sprite.pos.w):min(sprite.size.w,lw-sprite.pos.w)
             )
 
-            @inbounds for i in eachindex(v)
-                if vs[i] != 0x00
-                    v[i] = sprite.palette[vs[i]]
+            p = sprite.palette
+
+            @views @inbounds if sprite.vreverse
+                for j in max(1,-sprite.pos.w):min(sprite.size.w,lw-sprite.pos.w),
+                        i in max(1,-sprite.pos.h):min(sprite.size.h,lh-sprite.pos.h)
+                    
+                    if vs[i,j] != 0x00
+                        l[i+sprite.pos.h,1+sprite.pos.w+sprite.size.w-j] = p[vs[i,j]]
+                    end
+                end
+            else
+                for j in max(1,-sprite.pos.w):min(sprite.size.w,lw-sprite.pos.w),
+                        i in max(1,-sprite.pos.h):min(sprite.size.h,lh-sprite.pos.h)
+
+                    if vs[i,j] != 0x00
+                        l[i+sprite.pos.h,j+sprite.pos.w] = p[vs[i,j]]
+                    end
                 end
             end
         end
@@ -171,26 +138,3 @@ function combineLayers!(game::GameState,layers::Vector{Symbol};
     return
 end
 
-
-
-# remove if works
-
-# function combineLayers!(game::GameState; s::Settings=Settings())
-#     l = game.im.layer
-
-#     @inbounds for k in fieldnames(Layers)
-#         ls = getproperty(game.im.layers,k)
-
-#         if !ls.active
-#             continue
-#         end
-
-#         @inbounds for i in eachindex(l)
-#             @views if ls.layer[i] != 0x000000
-#                 l[i] = ls.layer[i]
-#             end
-#         end
-#     end
-
-#     return
-# end

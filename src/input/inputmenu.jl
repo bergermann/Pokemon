@@ -8,7 +8,7 @@ function inputMenu!(game::GameState,input::Input)
 
     if input._down
         game.input.menu.select = (game.input.menu.select+0x01)%0x08
-        game.im.sprites[:cursor].pos = P(40+(game.input.menu.select)*17,185)
+        game.im.sprites[:cursor].pos = P(41+(game.input.menu.select)*17,185)
     elseif input._up
         if game.input.menu.select == 0x00
             game.input.menu.select = 0x07
@@ -16,7 +16,7 @@ function inputMenu!(game::GameState,input::Input)
             game.input.menu.select -= 0x01
         end
 
-        game.im.sprites[:cursor].pos = P(40+(game.input.menu.select)*17,185)
+        game.im.sprites[:cursor].pos = P(41+(game.input.menu.select)*17,185)
     elseif input._A
         inputMenuSelector!(game)
     elseif (input._start || input._B)

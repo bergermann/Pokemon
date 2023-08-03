@@ -42,9 +42,9 @@ getBattlerBack(pkmn::Pkmn) = getBattlerBack(pkmn.id,pkmn.shiny)
 
 
 
-function getBattleBack(str::String)
-    return mfb_rgb.(load("im/battlebacks/$str.png"))
-end
+# function getBattleBack(str::String)
+#     return mfb_rgb.(load("im/battlebacks/$str.png"))
+# end
 
 function getBattleIntro(str::String)
     return mfb_rgb.(load("im/battleintro/$str.png"))
@@ -114,8 +114,11 @@ function drawBattleIntro!(game::GameState; s=Settings())
         flushLayer!(game,:layer3)
         flushLayer!(game,:layer4)
 
-        game.im.layers.layer1[24+1:24+112,16+1:16+240] = getBattleBack("grass1")
-        game.im.layers.layer3[24+1+112:24+160,16+1:16+240] = getDialogue("battle")
+        bg = deserialize("im/battle/backgrounds/grass1.imp")
+        game.im.layers.layer1[24+1:24+112,16+1:16+240] = bg.palette[bg.im]
+
+        dia = deserialize("im/menu/dialogue/1.imp")
+        game.im.layers.layer3[24+1+112:24+160,16+1:16+240] = dia.palette[dia.im]
 
         createSprite!(game,:pkmn1,:layer2,getBattlerBack(game.battle.state.pkmn1.pkmn),
             Position(90,40),1; active=true)

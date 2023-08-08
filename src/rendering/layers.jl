@@ -115,7 +115,7 @@ function combineLayers!(game::GameState,layers::Vector{Symbol};
 
             p = sprite.palette
 
-            @views @inbounds if sprite.vreverse
+            @views @inbounds if sprite.hreverse
                 for j in max(1,-sprite.pos.w):min(sprite.size.w,lw-sprite.pos.w),
                         i in max(1,-sprite.pos.h):min(sprite.size.h,lh-sprite.pos.h)
                     
@@ -138,3 +138,16 @@ function combineLayers!(game::GameState,layers::Vector{Symbol};
     return
 end
 
+
+
+
+
+function drawView!(imbase::SubArray,im::SubArray,palette::Palette)
+    for i in eachindex(im)
+        if im[i] == 0x00
+            continue
+        end
+
+        imbase[i] = palette[im[i]]
+    end
+end

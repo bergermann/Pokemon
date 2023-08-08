@@ -5,18 +5,6 @@ function loadFrame(id::Int)
     return deserialize("im/menu/frames/$id.imp")
 end
 
-
-
-function drawView!(imbase::SubArray,im::SubArray,palette::Palette)
-    for i in eachindex(im)
-        if im[i] == 0x00
-            continue
-        end
-
-        imbase[i] = palette[im[i]]
-    end
-end
-
 function drawFrame!(game::GameState,layer::Symbol,height::Int,width::Int,pos::P)
     v = view(getfield(game.im.layers,layer),
         pos.h+1:pos.h+8*height,pos.w+1:pos.w+8*width)
@@ -45,26 +33,6 @@ function drawFrame!(game::GameState,layer::Symbol,height::Int,width::Int,pos::P)
         end
 
         v[8+1:end-8,8+1:end-8] .= game.im.frame.palette[game.im.frame.im[9,9]]
-
-        # delete below if works
-
-        # v[1:8,1:8] = game.im.frame.palette[view(game.im.frame.im,1:8,1:8)]
-        # v[1:8,end-8+1:end] = game.im.frame.palette[view(game.im.frame.im,1:8,17:24)]
-        # v[end-8+1:end,1:8] = game.im.frame.palette[view(game.im.frame.im,17:24,1:8)]
-        # v[end-8+1:end,end-8+1:end] = game.im.frame.palette[view(game.im.frame.im,17:24,17:24)]
-
-        # for i in 2:width-1
-        #     v[1:8,8*(i-1)+1:8*i] = game.im.frame.palette[view(game.im.frame.im,1:8,9:16)]
-        #     v[end-8+1:end,8*(i-1)+1:8*i] = game.im.frame.palette[view(game.im.frame.im,17:24,9:16)]
-        # end
-
-        # for i in 2:height-1
-        #     v[s*(i-1)+1:s*i,1:s] = game.im.frame.palette[view(game.im.frame.im,9:16,1:8)]
-        #     v[s*(i-1)+1:s*i,end-s+1:end] = game.im.frame.palette[view(game.im.frame.im,9:16,17:24)]
-        # end
-
-        # v[8+1:end-8,8+1:end-8] .= 0xffffff
-
     end
 end
 
@@ -88,20 +56,12 @@ end
 
 
 
-function getMenuStuff(str::String,partitions::Int)
-    img = mfb_rgb.(load("im/"*str*".png"))
-
-    dh = Int(size(img)[1]/partitions)
-    dw = size(img)[2]
-
-    return Dict(zip(1:partitions,[(img[1+dh*(i-1):dh*i,:],P(dh,dw)) for i in 1:partitions]))
-end
-
 function drawMenuPkmn!(game::GameState)
-    game.im.layers.layer1[24+1:24+160,16+1:16+240] = 
-        mfb_rgb.(load("im/menupokemon/background.png"))
+    bg = deserialize("im/menu/pkmn/background")
 
-    b = getMenuStuff("menupokemon/pokeballs",2)
+    game.im.layers.layer1[24+1:24+160,16+1:16+240] = bg.palette[bg.im]
+
+    b = getSprite("im/menu/pkmm/pokeballs",2)
 
     drawSlotMain!(game,b)
 
@@ -114,12 +74,10 @@ function drawMenuPkmn!(game::GameState)
             16+96+1:16+96+142] = mfb_rgb.(load("im/menupokemon/slotempty.png"))
     end
 
-    createSprite!(game,:exit,:layer1,
-        getMenuStuff("menupokemon/exit",2),
-        P(24+136,16+186),1; active=true)
+    createSprite!(game,:exit,:layer1,P(24+136,16+186),1,
+        getSprite("im/menu/pkmn/exit",2); active=true)
     
-    createSprite!(game,:ballexit,:layer1,copy(b),
-        P(24+132,16+184),1; active=true)
+    createSprite!(game,:ballexit,:layer1,P(24+132,16+184),1,copy(b); active=true)
 
     drawText!(game,game.im.sprites[:exit].dict[1][1],game.str[1][1],UInt(1),
         Position(2,18),0xffffff,0x737373)
@@ -132,7 +90,7 @@ function drawMenuPkmn!(game::GameState)
     drawText!(game,:layer2,"Wähle ein Pokémon.",UInt(2),Position(24+138,24))
 end
 
-function drawSlotMain!(game::GameState,b::Dict)
+function drawSlotMain!(game::GameState,b::Tuple{Dict,Palette})
     createSprite!(game,:slot1,:layer1,getMenuStuff("menupokemon/slotmain",6),
         P(24+24,16+8),2; active=true)
 
@@ -244,53 +202,68 @@ end
 
 
 
+function getItemIcon(m::MenuBags)
+    id = Int(m.vis[m.slot])
 
+    if id == -1
+        return getSprite("im/menu/bag/arrowback.imp")
+    elseif m.bag == 1
+        return getSprite("im/menu/bag/items/$(id-20).imp")
+    elseif m.bag == 2
+        return getSprite("im/menu/bag/balls/$id.imp")
+    elseif m.bag == 3
+        return getSprite("im/menu/bag/machines/$(id-100).imp")
+    elseif m.bag == 4
+        return getSprite("im/menu/bag/berries/$(id-200).imp")
+    elseif m.bag == 5
+        return getSprite("im/menu/bag/keys/$(id-200).imp")
+    end
+end
 
 function drawInventory!(game::GameState)
-    game.im.layers.layer1[24+1:24+160,16+1:16+240] =
-        mfb_rgb.(load("im/menubag/background1.png"))
+    bg = deserialize("im/menu/bag/background1.imp")
+
+    game.im.layers.layer1[24+1:24+160,16+1:16+240] = bg.palette[bg.im]
 
     m = game.input.menu.menubags
 
-    createSprite!(game,:slotmarker,:layer1,getMenuStuff("menubag/slotmarker1",1),
-        P(24+27,16+34+m.bag*8),1; active=true)
+    createSprite!(game,:slotmarker,:layer1,P(24+27,16+34+m.bag*8),1,
+        getSprite("im/menu/bag/slotmarker1.imp"); active=true)
 
-    createSprite!(game,:slot,:layer1,getMenuStuff("menubag/slots",5),
-        P(24+8,16+24),m.bag; active=true)
+    createSprite!(game,:slot,:layer1,P(24+8,16+24),m.bag,
+        getSprite("im/menu/bag/slots",5); active=true)
 
-    createSprite!(game,:bag,:layer1,getMenuStuff("menubag/bags1",6),
-        P(24+34,16+40),m.bag; active=true)
+    createSprite!(game,:bag,:layer1,P(24+34,16+40),m.bag,
+        getSprite("im/menu/bag/bag1",6); active=true)
 
-    createSprite!(game,:arrowleft,:layer1,getMenuStuff("menubag/arrowleft",1),
-        P(24+8,16+22),1; active=true)
+    createSprite!(game,:arrowleft,:layer1,P(24+8,16+22),1,
+        getSprite("im/menu/bag/arrowhor.imp"); active=true)
     
-    createSprite!(game,:arrowright,:layer1,getMenuStuff("menubag/arrowright",1),
-        P(24+8,16+90),1; active=true)
+    createSprite!(game,:arrowright,:layer1,P(24+8,16+90),1,
+        getSprite("im/menu/bag/arrowhor.imp"); active=true,hreverse=true)
 
-    createSprite!(game,:arrowup,:layer1,getMenuStuff("menubag/arrowup",1),
-        P(24+26,16+40),1; active=false)
-    
-    createSprite!(game,:arrowdown,:layer1,getMenuStuff("menubag/arrowdown",1),
-        P(24+26,16+40),1; active=false)
+    createSprite!(game,:arrowup,:layer1,P(24+26,16+40),1,
+        getSprite("im/menu/bag/arrowvert.imp"); active=false)
+
+    createSprite!(game,:arrowdown,:layer1,P(24+26,16+40),1,
+        getSprite("im/menu/bag/arrowvert.imp"); active=false,vreverse=true)
     
     setVisibleItems!(game)
     drawInventoryText!(game)
     drawItemText!(game)
 
-    createSprite!(game,:icon,:layer1,merge!(getItemIcons(m.bag),
-            Dict{Int, Tuple{Matrix{UInt32}, Main.Pokemon.Position}}(
-                -1=>getImage("im/menubag/arrowback.png"; attachsize=true))),
-        P(96,16+8),
-        Int(game.input.menu.menubags.vis[game.input.menu.menubags.slot]);
-        active=true)
+    createSprite!(game,:icon,:layer1,P(96,16+8),1,getItemIcon(m); active=true)
 
-    createSprite!(game,:cursor,:layer1,getMenuStuff("menubag/cursor",2),
-        P(24+7+15*m.slot,16+114),1; active=true)
+    createSprite!(game,:cursor,:layer1,P(24+7+15*m.slot,16+114),1,
+        getSprite("im/sprites/cursor",1,"black"); active=true)
 end
 
 function setInventoryItemIcon!(game::GameState)
-    updateSprite!(game.im.sprites[:icon],
-        Int(game.input.menu.menubags.vis[game.input.menu.menubags.slot]))
+    s = game.im.sprites[:icon]
+    
+    s.dict, s.palette = getItemIcon(game.input.menu.menubags)
+
+    updateSprite!(s)
 end
 
 function setVisibleItems!(game::GameState)
@@ -317,8 +290,6 @@ function setVisibleItems!(game::GameState)
 
         m.vis[i+1,:] = getInvSlot(game,m.bag,i0+i)
     end
-
-    # display(m.vis); display(s)
 end
 
 function drawInventoryText!(game::GameState)

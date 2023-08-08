@@ -156,13 +156,13 @@ end
 # end
 
 function replaceImage(dir::String)
-    im = getImage(dir*".png")
+    im = Pokemon.getImage(dir*".png")
 
     p = Set(unique(im)); delete!(p,0x000000); p = Pokemon.Palette(sort!(collect(p))); 
 
     im_ = transformImage(im,p)
 
-    serialize(dir*".im",Pokemon.ImageP(im_,p))
+    serialize(dir*".imp",Pokemon.ImageP(im_,p))
 
     rm(dir*".png")
 end
@@ -186,7 +186,7 @@ function replaceImages(dir::String)
 end
 
 function replaceImage(dir::String,nh::Int,nw::Int,name::String,newname::String)
-    im = getImage(dir*"/"*name*".png")
+    im = Pokemon.getImage(dir*"/"*name*".png")
 
     dh,dw = size(im); dh = Int(dh/nh); dw = Int(dw/nw)
 

@@ -149,7 +149,7 @@ end
 
 function moveStop!(game::GameState,dir::Int)
     updateSprite!(game.im.sprites[:main],min(3,dir))
-    game.im.sprites[:main].vreverse = (dir == 4)
+    game.im.sprites[:main].hreverse = (dir == 4)
 
     game.input.move = true
 
@@ -160,10 +160,10 @@ end
 function moveTurn!(game::GameState,dir::Int)
     if game.n.c[:movemain].c == 0
         updateSprite!(game.im.sprites[:main],min(3,dir)+3)
-        game.im.sprites[:main].vreverse = (dir == 4)
+        game.im.sprites[:main].hreverse = (dir == 4)
     elseif game.n.c[:movemain].c == 5
         updateSprite!(game.im.sprites[:main],min(3,dir))
-        game.im.sprites[:main].vreverse = (dir == 4)
+        game.im.sprites[:main].hreverse = (dir == 4)
     elseif game.n.c[:movemain].c == 9
         game.input.move = true
 
@@ -187,14 +187,14 @@ function moveWalk!(game::GameState,dir::Int)
         if (game.pos.h%2 == 0 && game.pos.w%2 == 0) || (game.pos.h%2 == 1 && game.pos.w%2 == 1)
             
             updateSprite!(game.im.sprites[:main],min(3,dir)+3)
-            game.im.sprites[:main].vreverse = (dir == 4)
+            game.im.sprites[:main].hreverse = (dir == 4)
         else
             updateSprite!(game.im.sprites[:main],min(3,dir)+6)
-            game.im.sprites[:main].vreverse = (dir == 4)
+            game.im.sprites[:main].hreverse = (dir == 4)
         end
     elseif game.n.c[:movemain].c == 8
         updateSprite!(game.im.sprites[:main],min(3,dir))
-        game.im.sprites[:main].vreverse = (dir == 4)
+        game.im.sprites[:main].hreverse = (dir == 4)
     elseif game.n.c[:movemain].c == 15
         posAddMult!(game.screenoffset,dirs[dir],-16)
         posAddMult!(game.im.sprites[:main].pos,dirs[dir],-16)
@@ -222,14 +222,14 @@ function moveWalkWall!(game::GameState,dir::Int)
     if game.n.c[:movemain].c%32 == 0
         if div(game.n.c[:movemain].c,32)%2 == 0
             updateSprite!(game.im.sprites[:main],min(3,dir)+3)
-            game.im.sprites[:main].vreverse = (dir == 4)
+            game.im.sprites[:main].hreverse = (dir == 4)
         else
             updateSprite!(game.im.sprites[:main],min(3,dir)+6)
-            game.im.sprites[:main].vreverse = (dir == 4)
+            game.im.sprites[:main].hreverse = (dir == 4)
         end
     elseif game.n.c[:movemain].c%32 == 15
         updateSprite!(game.im.sprites[:main],min(3,dir))
-        game.im.sprites[:main].vreverse = (dir == 4)
+        game.im.sprites[:main].hreverse = (dir == 4)
 
         updateMovePos!(game,dir)
     end
@@ -246,14 +246,14 @@ function moveRun!(game::GameState,dir::Int)
         if (game.pos.h%2 == 0 && game.pos.w%2 == 0) || (game.pos.h%2 == 1 && game.pos.w%2 == 1)
             
             updateSprite!(game.im.sprites[:main],min(3,dir)+12)
-            game.im.sprites[:main].vreverse = (dir == 4)
+            game.im.sprites[:main].hreverse = (dir == 4)
         else
             updateSprite!(game.im.sprites[:main],min(3,dir)+15)
-            game.im.sprites[:main].vreverse = (dir == 4)
+            game.im.sprites[:main].hreverse = (dir == 4)
         end
     elseif game.n.c[:movemain].c == 4
         updateSprite!(game.im.sprites[:main],min(3,dir)+9)
-        game.im.sprites[:main].vreverse = (dir == 4)
+        game.im.sprites[:main].hreverse = (dir == 4)
     elseif game.n.c[:movemain].c == 7
         posAddMult!(game.screenoffset,dirs[dir],-16)
         posAddMult!(game.im.sprites[:main].pos,dirs[dir],-16)

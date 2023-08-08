@@ -117,9 +117,6 @@ function inputBags!(game::GameState,input::Input)
             24+7+15*game.input.menu.menubags.slot,16+114)
 
         game.im.sprites[:icon].active = false
-        filter!(p -> p.first < 0, game.im.sprites[:icon].dict)
-        merge!(game.im.sprites[:icon].dict,getItemIcons(game))
-            
         setInventoryItemIcon!(game)
 
         game.input.inputlock = true
@@ -139,9 +136,6 @@ function inputBags!(game::GameState,input::Input)
             24+7+15*game.input.menu.menubags.slot,16+114)
 
         game.im.sprites[:icon].active = false
-        filter!(p -> p.first < 0, game.im.sprites[:icon].dict)
-        merge!(game.im.sprites[:icon].dict,getItemIcons(game))
-            
         setInventoryItemIcon!(game)
 
         game.input.inputlock = true

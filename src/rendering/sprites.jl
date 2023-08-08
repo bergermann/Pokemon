@@ -75,6 +75,16 @@ function getSprite(dir::String,len::Int,palette::String)
     return dict, palette
 end
 
+function getSprite(dir::String)
+    dict = Dict{Int,Image}()
+
+    imp = deserialize(dir)
+
+    dict[1] = imp.im
+
+    return dict, imp.palette
+end
+
 
 
 

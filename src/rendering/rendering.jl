@@ -6,6 +6,7 @@ include("map.jl")
 include("menu.jl")
 include("dialogue.jl")
 include("battle.jl")
+include("parser.jl")
 
 
 

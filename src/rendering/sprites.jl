@@ -89,6 +89,27 @@ end
 
 
 
+function expandPalette!(sprite::Sprite,colors::UInt32...)
+    idxs = Vector{UInt8}(undef,length(colors))
+
+    for i in eachindex(colors)
+        idx = findfirst(isequal(colors[i]),sprite.palette)
+    
+        if isnothing(idx)
+            push!(sprite.palette,colors[i])
+            idx = length(sprite.palette)
+        end
+
+        idxs[i] = idx
+    end
+
+    return idxs
+end
+
+
+
+
+
 function createSprite!(game::GameState,id::Symbol,layer::Symbol,
         pos::Position,frame::Int,dict::Dict{Int,Image},palette::Palette;
         active=false,hreverse=false,vreverse=false)
@@ -123,28 +144,6 @@ function killSpriteAll!(game::GameState)
 end
 
 
-
-# function drawSprites!(game::GameState; s=Settings())
-#     @inbounds for i in 1:game.im.sprites.idx
-#         if !game.im.sprites[i].active
-#             continue
-#         end
-        
-#         sprite = game.im.sprites.data[i]
-#         l = getfield(game.im.layers,sprite.layer)
-
-#         sh,sw = size(sprite.im)
-
-#         v = view(l, sprite.pos.h+1:sprite.pos.h+sh,
-#             sprite.pos.w+1:sprite.pos.w+sw)
-
-#         @inbounds for i in eachindex(v)
-#             if sprite.im[i] != 0x00
-#                 v[i] = sprite.palette[sprite.im[i]]
-#             end
-#         end
-#     end
-# end
 
 function drawSprites!(game::GameState; s=Settings())
     @inbounds for i in 1:game.im.sprites.idx

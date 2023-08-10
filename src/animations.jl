@@ -423,7 +423,7 @@ function animMenuPkmnSwap!(game::GameState)
             killSprite!(game,Symbol("ball$p1"))
             killSprite!(game,Symbol("ball$p2"))
 
-            b = getMenuStuff("menupokemon/pokeballs",2)
+            b = getSprite("im/menu/pkmn/pokeballs",2)
 
             drawSlotMain!(game,b)
             drawSlotSide!(game,p1 == 1 ? p2 : p1,b)

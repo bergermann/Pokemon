@@ -57,11 +57,11 @@ end
 
 
 function drawMenuPkmn!(game::GameState)
-    bg = deserialize("im/menu/pkmn/background")
+    bg = deserialize("im/menu/pkmn/background.imp")
 
     game.im.layers.layer1[24+1:24+160,16+1:16+240] = bg.palette[bg.im]
 
-    b = getSprite("im/menu/pkmm/pokeballs",2)
+    b = getSprite("im/menu/pkmn/pokeballs",2)
 
     drawSlotMain!(game,b)
 
@@ -69,20 +69,23 @@ function drawMenuPkmn!(game::GameState)
         drawSlotSide!(game,i,b)
     end
 
-    for i in game.trainer.pokemon.idx+1:6
-        game.im.layers.layer1[24+10+1+(i-2)*24:24+10+22+(i-2)*24,
-            16+96+1:16+96+142] = mfb_rgb.(load("im/menupokemon/slotempty.png"))
+    if game.trainer.pokemon.idx < 6
+        slotempty = deserialize("im/menu/pkmn/slotempty.imp")
+
+        for i in game.trainer.pokemon.idx+1:6
+            game.im.layers.layer1[24+10+1+(i-2)*24:24+10+22+(i-2)*24,
+                16+96+1:16+96+142] = slotempty.palette[slotempty.im]
+        end
     end
 
     createSprite!(game,:exit,:layer1,P(24+136,16+186),1,
         getSprite("im/menu/pkmn/exit",2); active=true)
     
-    createSprite!(game,:ballexit,:layer1,P(24+132,16+184),1,copy(b); active=true)
+    createSprite!(game,:ballexit,:layer1,P(24+132,16+184),1,
+        copy(b[1]), copy(b[2]); active=true)
 
-    drawText!(game,game.im.sprites[:exit].dict[1][1],game.str[1][1],UInt(1),
-        Position(2,18),0xffffff,0x737373)
-    drawText!(game,game.im.sprites[:exit].dict[2][1],game.str[1][1],UInt(1),
-        Position(2,18),0xffffff,0x737373)
+    drawText!(game,game.im.sprites[:exit],game.str[1][1],UInt(1),
+        Position(2,18),0xffffff,0x737373,[1,2])
 
     updateSprite!(game.im.sprites[:exit])
     
@@ -91,50 +94,47 @@ function drawMenuPkmn!(game::GameState)
 end
 
 function drawSlotMain!(game::GameState,b::Tuple{Dict,Palette})
-    createSprite!(game,:slot1,:layer1,getMenuStuff("menupokemon/slotmain",6),
-        P(24+24,16+8),2; active=true)
+    createSprite!(game,:slot1,:layer1,P(24+24,16+8),2,
+        getSprite("im/menu/pkmn/slotmain",6); active=true)
 
-    for i in 1:6
-        drawHealthBar!(game.im.sprites[:slot1].dict[i][1],
-            getHealthBar(game.trainer.pokemon[1]),Position(34,24))
-        
-        drawText!(game,game.im.sprites[:slot1].dict[i][1],
-            pkmnName(game,game.trainer.pokemon[1])*"\\  Lv."*
-            string(game.trainer.pokemon[1].stats.level),UInt(1),
-            P(10,24),0xffffff,0x737373; lineoffset = -3)
-        
-        drawText!(game,game.im.sprites[:slot1].dict[i][1],
-            string(game.trainer.pokemon[1].stats.hp)*"/"*
-            string(game.trainer.pokemon[1].stats.rv[1]),UInt(1),
-            P(36,36),0xffffff,0x737373)
-    end
+    drawHealthBar!(game.im.sprites[:slot1],
+        getHealthBar(game.trainer.pokemon[1]),Position(34,24),[1,2,3,4,5,6])
+    
+    drawText!(game,game.im.sprites[:slot1],
+        pkmnName(game,game.trainer.pokemon[1])*"\\  Lv."*
+        string(game.trainer.pokemon[1].stats.level),UInt(1),
+        P(10,24),0xffffff,0x737373,[1,2,3,4,5,6]; lineoffset = -3)
+    
+    drawText!(game,game.im.sprites[:slot1],
+        string(game.trainer.pokemon[1].stats.hp)*"/"*
+        string(game.trainer.pokemon[1].stats.rv[1]),UInt(1),
+        P(36,36),0xffffff,0x737373,[1,2,3,4,5,6])
 
-    createSprite!(game,:ball1,:layer1,copy(b),P(24+16,16+2),2; active=true)
+    createSprite!(game,:ball1,:layer1,P(24+16,16+2),2,
+        copy(b[1]), copy(b[2]); active=true)
 
     updateSprite!(game.im.sprites[:slot1])
 end
 
 function drawSlotSide!(game::GameState,slot::Int,b)
-    createSprite!(game,Symbol("slot$slot"),:layer1,getMenuStuff("menupokemon/slotside",6),
-        P(24+10+(slot-2)*24,16+96),1; active=true)
+    createSprite!(game,Symbol("slot$slot"),:layer1,P(24+10+(slot-2)*24,16+96),1,
+        getSprite("im/menu/pkmn/slotside",6); active=true)
 
-    for i in 1:6
-        drawHealthBar!(game.im.sprites[Symbol("slot$slot")].dict[i][1],
-            getHealthBar(game.trainer.pokemon[slot]),P(9,88))
+    drawHealthBar!(game.im.sprites[Symbol("slot$slot")],
+        getHealthBar(game.trainer.pokemon[slot]),P(9,88),[1,2,3,4,5,6])
 
-        drawText!(game,game.im.sprites[Symbol("slot$slot")].dict[i][1],
-            pkmnName(game,game.trainer.pokemon[slot])*"\\  Lv."*
-            string(game.trainer.pokemon[slot].stats.level),UInt(1),
-            P(2,20),0xffffff,0x737373; lineoffset = -3)
+    drawText!(game,game.im.sprites[Symbol("slot$slot")],
+        pkmnName(game,game.trainer.pokemon[slot])*"\\  Lv."*
+        string(game.trainer.pokemon[slot].stats.level),UInt(1),
+        P(2,20),0xffffff,0x737373,[1,2,3,4,5,6]; lineoffset = -3)
+    
+    drawText!(game,game.im.sprites[Symbol("slot$slot")],
+        string(game.trainer.pokemon[slot].stats.hp)*"/"*
+        string(game.trainer.pokemon[slot].stats.rv[1]),UInt(1),
+        P(11,100),0xffffff,0x737373,[1,2,3,4,5,6])
         
-        drawText!(game,game.im.sprites[Symbol("slot$slot")].dict[i][1],
-            string(game.trainer.pokemon[slot].stats.hp)*"/"*
-            string(game.trainer.pokemon[slot].stats.rv[1]),UInt(1),
-            P(11,100),0xffffff,0x737373)
-    end
-        
-    createSprite!(game,Symbol("ball$slot"),:layer1,copy(b),
-        P(24+9+(slot-2)*24,16+88),1; active=true)
+    createSprite!(game,Symbol("ball$slot"),:layer1,P(24+9+(slot-2)*24,16+88),1,
+        copy(b[1]), copy(b[2]); active=true)
 
     updateSprite!(game.im.sprites[Symbol("slot$slot")])
 end
@@ -190,6 +190,33 @@ function drawHealthBar!(im::Matrix{UInt32},value::Int,pos::Position)
 
     im[pos.h,pos.w+value+1:pos.w+48] .= 0x4a425a
     im[pos.h+1:pos.h+2,pos.w+value+1:pos.w+48] .= 0x526b5a
+    
+    return
+end
+
+function drawHealthBar!(sprite::Sprite,value::Int,pos::Position,
+        frames::Vector{Int})
+        
+    idx = expandPalette!(sprite,0x5ad684,0x73ffad,0xcead08,0xffe739,
+        0xad424a,0xff5a39,0x4a425a,0x526b5a)
+
+    @views for frame in frames
+        if value > 24
+            sprite.dict[frame][pos.h,pos.w+1:pos.w+value] .= idx[1]
+            sprite.dict[frame][pos.h+1:pos.h+2,pos.w+1:pos.w+value] .= idx[2]
+        elseif value > 12
+            sprite.dict[frame][pos.h,pos.w+1:pos.w+value] .= idx[3]
+            sprite.dict[frame][pos.h+1:pos.h+2,pos.w+1:pos.w+value] .= idx[4]
+        else
+            sprite.dict[frame][pos.h,pos.w+1:pos.w+value] .= idx[5]
+            sprite.dict[frame][pos.h+1:pos.h+2,pos.w+1:pos.w+value] .= idx[6]
+        end
+    
+        sprite.dict[frame][pos.h,pos.w+value+1:pos.w+48] .= idx[7]
+        sprite.dict[frame][pos.h+1:pos.h+2,pos.w+value+1:pos.w+48] .= idx[8]
+    end
+
+    return
 end
 
 function drawXpBar!(game::GameState,im::Matrix{UInt32},value::Int,pos::Position)
@@ -377,8 +404,8 @@ function drawChoiceMenu!(game::GameState,layer::Symbol,strs::Vector{String},
     
     drawFrame!(game,layer,2+length(strs)*2,width,pos)
 
-    createSprite!(game,:ccursor,layer,getMenuStuff("menubag/cursor",2),
-        posAdd(pos,P(11,9)),1; active=true)
+    createSprite!(game,:ccursor,layer,posAdd(pos,P(11,9)),1,
+        getSprite("im/sprites/cursor",1,"black"); active=true)
     
     game.im.sprites[:ccursor].pos.h += 16*(game.input.choice.sel-1)
     

@@ -16,7 +16,6 @@ include("types/typesnpc.jl")
 
 include("rendering/rendering.jl")
 include("inventory.jl")
-include("parser.jl")
 include("pokemons.jl")
 include("core.jl")
 include("battle.jl")
@@ -93,7 +92,7 @@ function main()
     mfb_set_target_fps(settings.fps)
 
     state = mfb_update(w, b)
-    
+
     while true
         begin
         # @time begin

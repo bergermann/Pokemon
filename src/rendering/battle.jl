@@ -12,7 +12,7 @@ function getBattlerFront(id::UInt16,shiny::Bool)
     end
 
     return (
-        Dict{Int,Tuple{Matrix{Image},Position}}(1=>(ima,P(64,64)),2=>(imb,P(64,64))),
+        Dict{Int,Image}(1=>ima,2=>imb),
         palette
     )
 end
@@ -21,7 +21,7 @@ getBattlerFront(pkmn::Pkmn) = getBattlerFront(pkmn.id,pkmn.shiny)
 
 
 
-function getBattlerBack(id::Int,shiny::Bool)
+function getBattlerBack(id::UInt16,shiny::Bool)
     im = deserialize("im/pkmn/$id/back.im")
 
     if shiny
@@ -31,7 +31,7 @@ function getBattlerBack(id::Int,shiny::Bool)
     end
 
     return (
-        Dict{Int,Tuple{Matrix{Image},Position}}(1=>(im,P(64,64))),
+        Dict{Int,Image}(1=>im),
         palette
     )
 end
@@ -46,62 +46,64 @@ getBattlerBack(pkmn::Pkmn) = getBattlerBack(pkmn.id,pkmn.shiny)
 #     return mfb_rgb.(load("im/battlebacks/$str.png"))
 # end
 
-function getBattleIntro(str::String)
-    return mfb_rgb.(load("im/battleintro/$str.png"))
-end
+# function getBattleIntro(str::String)
+#     return mfb_rgb.(load("im/battleintro/$str.png"))
+# end
 
-function getBattleTags()
-    img = mfb_rgb.(load("im/battlestuff.png"))
+# remove if works
 
-    tagopp = img[1:32,1:102]
-    tagown = img[33:72,1:106]
+# function getBattleTags()
+#     img = mfb_rgb.(load("im/battlestuff.png"))
 
-    return Dict(1=>(tagown,P(size(tagown)...))), Dict(1=>(tagopp,P(size(tagopp)...)))
-end
+#     tagopp = img[1:32,1:102]
+#     tagown = img[33:72,1:106]
 
-function getBattleTagOwn()
-    img = mfb_rgb.(load("im/battlestuff.png"))
+#     return Dict(1=>(tagown,P(size(tagown)...))), Dict(1=>(tagopp,P(size(tagopp)...)))
+# end
 
-    tagown = img[33:72,1:106]
+# function getBattleTagOwn()
+#     img = mfb_rgb.(load("im/battlestuff.png"))
 
-    return Dict(1=>(tagown,P(size(tagown)...)))
-end
+#     tagown = img[33:72,1:106]
 
-function getBattleTagOpp()
-    img = mfb_rgb.(load("im/battlestuff.png"))
+#     return Dict(1=>(tagown,P(size(tagown)...)))
+# end
 
-    tagopp = img[1:32,1:102]
+# function getBattleTagOpp()
+#     img = mfb_rgb.(load("im/battlestuff.png"))
 
-    return Dict(1=>(tagopp,P(size(tagopp)...)))
-end
+#     tagopp = img[1:32,1:102]
 
-function getCursor()
-    img = mfb_rgb.(load("im/battlestuff.png"))
+#     return Dict(1=>(tagopp,P(size(tagopp)...)))
+# end
 
-    cursor = img[17:30,113:120]
+# function getCursor()
+#     img = mfb_rgb.(load("im/battlestuff.png"))
 
-    return Dict(1=>(cursor,P(size(cursor)...)))
-end
+#     cursor = img[17:30,113:120]
+
+#     return Dict(1=>(cursor,P(size(cursor)...)))
+# end
 
 
 
 
-function drawBattleTagOwn!(game::GameState,pkmn::Pkmn,im::Matrix{UInt32})
-    drawHealthBar!(im,getHealthBar(pkmn),P(20,49))
-    drawXpBar!(game,im,getXpBar(pkmn,0),P(36,33))
+function drawBattleTagOwn!(game::GameState,pkmn::Pkmn,sprite::Sprite)
+    drawHealthBar!(sprite,getHealthBar(pkmn),P(20,49))
+    # drawXpBar!(game,im,getXpBar(pkmn,0),P(36,33))
 
-    drawText!(game,im,pkmnName(game,pkmn),UInt(1),Position(4,17),0x424242,0xded6b5)
-    drawText!(game,im,string(pkmn.stats.level),UInt(1),Position(4,86),0x424242,0xded6b5)
-    drawText!(game,im,"/",UInt(1),Position(22,76),0x424242,0xded6b5)
-    drawText!(game,im,string(pkmn.stats.rv[1]),UInt(1),Position(22,81),0x424242,0xded6b5)
-    drawText!(game,im,string(pkmn.stats.hp),UInt(1),Position(22,66),0x424242,0xded6b5)
+    drawText!(game,sprite,pkmnName(game,pkmn),UInt(1),Position(4,17),0x424242,0xded6b5)
+    drawText!(game,sprite,string(pkmn.stats.level),UInt(1),Position(4,86),0x424242,0xded6b5)
+    drawText!(game,sprite,"/",UInt(1),Position(22,76),0x424242,0xded6b5)
+    drawText!(game,sprite,string(pkmn.stats.rv[1]),UInt(1),Position(22,81),0x424242,0xded6b5)
+    drawText!(game,sprite,string(pkmn.stats.hp),UInt(1),Position(22,66),0x424242,0xded6b5)
 end
 
 function drawBattleTagOpp!(game::GameState,pkmn::Pkmn,im::Matrix{UInt32})
-    drawHealthBar!(im,getHealthBar(pkmn),P(20,40))
+    drawHealthBar!(sprite,getHealthBar(pkmn),P(20,40))
         
-    drawText!(game,im,pkmnName(game,pkmn),UInt(1),Position(4,10),0x424242,0xded6b5)
-    drawText!(game,im,string(pkmn.stats.level),UInt(1),Position(4,76),0x424242,0xded6b5)
+    drawText!(game,sprite,pkmnName(game,pkmn),UInt(1),Position(4,10),0x424242,0xded6b5)
+    drawText!(game,sprite,string(pkmn.stats.level),UInt(1),Position(4,76),0x424242,0xded6b5)
 end
 
 function drawBattleIntro!(game::GameState; s=Settings())
@@ -120,20 +122,20 @@ function drawBattleIntro!(game::GameState; s=Settings())
         dia = deserialize("im/menu/dialogue/1.imp")
         game.im.layers.layer3[24+1+112:24+160,16+1:16+240] = dia.palette[dia.im]
 
-        createSprite!(game,:pkmn1,:layer2,getBattlerBack(game.battle.state.pkmn1.pkmn),
-            Position(90,40),1; active=true)
-        createSprite!(game,:pkmn2,:layer2,getBattlerFront(game.battle.state.pkmn2.pkmn),
-            Position(32,160),1; active=true)
+        createSprite!(game,:pkmn1,:layer2,Position(90,40),1,
+            getBattlerBack(game.battle.state.pkmn1.pkmn); active=true)
+        createSprite!(game,:pkmn2,:layer2,Position(32,160),1,
+            getBattlerFront(game.battle.state.pkmn2.pkmn); active=true)
         
-        createSprite!(game,:cursor1,:layer4,getCursor(),
-            Position(146,136),1)
-        createSprite!(game,:cursor2,:layer5,getCursor(),
-            Position(146,24),1)
+        createSprite!(game,:cursor1,:layer4,Position(146,136),1,
+            getSprite("im/battle/cursor.imp"))
+        createSprite!(game,:cursor2,:layer5,Position(146,24),1,
+            getSprite("im/battle/cursor.imp"))
         
-        createSprite!(game,:tag1,:layer3,getBattleTagOwn(),
-            Position(72+24,126+16),1; active=true)
-        createSprite!(game,:tag2,:layer3,getBattleTagOpp(),
-            Position(14+24,12+16),1; active=true)
+        createSprite!(game,:tag1,:layer3,Position(72+24,126+16),1,
+            getSprite("im/battle/tagown.imp"); active=true)
+        createSprite!(game,:tag2,:layer3,Position(14+24,12+16),1,
+            getSprite("im/battle/tagopp.imp"); active=true)
 
         drawBattleTagOwn!(game,game.battle.state.pkmn1.pkmn,game.im.sprites[:tag1].im)
         drawBattleTagOpp!(game,game.battle.state.pkmn2.pkmn,game.im.sprites[:tag2].im)

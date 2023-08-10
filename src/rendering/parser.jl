@@ -205,4 +205,85 @@ function drawText!(game::GameState,im::Matrix{UInt32},str::String,style::UInt,
     end
 end
 
+function drawText!(game::GameState,sprite::Sprite,str::String,style::UInt,
+        pos::Position,color1::UInt32,color2::UInt32;
+        lineoffset::Int=0,charoffset::Int=0)
+
+    idx1, idx2 = expandPalette!(sprite,color1,color2)
+
+    game.im.font.h_ = game.im.font.heights[style]
+    game.im.font.h = 0
+    game.im.font.w = 0
+
+    @inbounds for c in str
+        if c != '\\'
+            game.im.font.char = game.im.font.fonts[style][c]
+            game.im.font.w_ = size(game.im.font.char,2)
+        else
+            game.im.font.h += game.im.font.h_+lineoffset
+            game.im.font.w = 0
+
+            continue
+        end
+
+        v = view(sprite.im,
+            pos.h+game.im.font.h+1:pos.h+game.im.font.h+game.im.font.h_,
+            pos.w+game.im.font.w+1:pos.w+game.im.font.w+game.im.font.w_)
+
+        @inbounds for i in eachindex(v)
+            if game.im.font.char[i] == 0x000000
+                continue
+            elseif game.im.font.char[i] == 0x606060
+                v[i] = idx1
+            else
+                v[i] = idx2
+            end
+        end
+
+        game.im.font.w += game.im.font.w_+charoffset
+    end
+end
+
+
+function drawText!(game::GameState,sprite::Sprite,str::String,style::UInt,
+        pos::Position,color1::UInt32,color2::UInt32,frames::Vector{Int};
+        lineoffset::Int=0,charoffset::Int=0)
+
+    idx1, idx2 = expandPalette!(sprite,color1,color2)
+
+    game.im.font.h_ = game.im.font.heights[style]
+    game.im.font.h = 0
+    game.im.font.w = 0
+
+    @inbounds for c in str
+        if c != '\\'
+            game.im.font.char = game.im.font.fonts[style][c]
+            game.im.font.w_ = size(game.im.font.char,2)
+        else
+            game.im.font.h += game.im.font.h_+lineoffset
+            game.im.font.w = 0
+
+            continue
+        end
+
+        for frame in frames
+            v = view(sprite.dict[frame],
+                pos.h+game.im.font.h+1:pos.h+game.im.font.h+game.im.font.h_,
+                pos.w+game.im.font.w+1:pos.w+game.im.font.w+game.im.font.w_)
+
+            @inbounds for i in eachindex(v)
+                if game.im.font.char[i] == 0x000000
+                    continue
+                elseif game.im.font.char[i] == 0x606060
+                    v[i] = idx1
+                else
+                    v[i] = idx2
+                end
+            end
+        end
+
+        game.im.font.w += game.im.font.w_+charoffset
+    end
+end
+
 ;

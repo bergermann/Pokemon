@@ -2,14 +2,14 @@ using Images, ImageIO
 using Serialization
 using MiniFB
 
-# const Image = Matrix{UInt8}
+const Image = Matrix{UInt8}
 
-# const Palette{N} = NTuple{N,UInt32}
+const Palette{N} = NTuple{N,UInt32}
 
-# mutable struct ImageP
-#     im::Image
-#     palette::Palette
-# end
+mutable struct ImageP
+    im::Image
+    palette::Palette
+end
 
 
 # include("types/typescore.jl")
@@ -330,3 +330,19 @@ end
 
 #     serialize(joinpath("im/sprites/npcs",dir,"palette.p"),Pokemon.Palette(p_))
 # end
+
+for i in 1:151
+    dir = "im/pkmn/$i"
+
+    for f in readdir(dir)
+        if occursin(".p",f)
+            p = deserialize(joinpath(dir,f))
+
+            serialize(joinpath(dir,f),Pokemon.Palette(collect(p)))
+        elseif occursin(".im",f)
+            p = deserialize(joinpath(dir,f))
+
+            serialize(joinpath(dir,f),Pokemon.Image(p))
+        end
+    end
+end

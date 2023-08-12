@@ -89,21 +89,32 @@ getBattlerBack(pkmn::Pkmn) = getBattlerBack(pkmn.id,pkmn.shiny)
 
 
 function drawBattleTagOwn!(game::GameState,pkmn::Pkmn,sprite::Sprite)
-    drawHealthBar!(sprite,getHealthBar(pkmn),P(20,49))
+    drawHealthBar!(sprite,getHealthBar(pkmn),P(20,49),[1])
     # drawXpBar!(game,im,getXpBar(pkmn,0),P(36,33))
 
-    drawText!(game,sprite,pkmnName(game,pkmn),UInt(1),Position(4,17),0x424242,0xded6b5)
-    drawText!(game,sprite,string(pkmn.stats.level),UInt(1),Position(4,86),0x424242,0xded6b5)
-    drawText!(game,sprite,"/",UInt(1),Position(22,76),0x424242,0xded6b5)
-    drawText!(game,sprite,string(pkmn.stats.rv[1]),UInt(1),Position(22,81),0x424242,0xded6b5)
-    drawText!(game,sprite,string(pkmn.stats.hp),UInt(1),Position(22,66),0x424242,0xded6b5)
+    drawText!(game,sprite,pkmnName(game,pkmn),UInt(1),Position(4,17),
+        0x424242,0xded6b5,[1])
+    drawText!(game,sprite,string(pkmn.stats.level),UInt(1),Position(4,86),
+        0x424242,0xded6b5,[1])
+    drawText!(game,sprite,"/",UInt(1),Position(22,76),
+        0x424242,0xded6b5,[1])
+    drawText!(game,sprite,string(pkmn.stats.rv[1]),UInt(1),Position(22,81),
+        0x424242,0xded6b5,[1])
+    drawText!(game,sprite,string(pkmn.stats.hp),UInt(1),Position(22,66),
+        0x424242,0xded6b5,[1])
+
+    updateSprite!(sprite)
 end
 
-function drawBattleTagOpp!(game::GameState,pkmn::Pkmn,im::Matrix{UInt32})
-    drawHealthBar!(sprite,getHealthBar(pkmn),P(20,40))
+function drawBattleTagOpp!(game::GameState,pkmn::Pkmn,sprite::Sprite)
+    drawHealthBar!(sprite,getHealthBar(pkmn),P(20,40),[1])
         
-    drawText!(game,sprite,pkmnName(game,pkmn),UInt(1),Position(4,10),0x424242,0xded6b5)
-    drawText!(game,sprite,string(pkmn.stats.level),UInt(1),Position(4,76),0x424242,0xded6b5)
+    drawText!(game,sprite,pkmnName(game,pkmn),UInt(1),Position(4,10),
+        0x424242,0xded6b5,[1])
+    drawText!(game,sprite,string(pkmn.stats.level),UInt(1),Position(4,76),
+        0x424242,0xded6b5,[1])
+    
+    updateSprite!(sprite)
 end
 
 function drawBattleIntro!(game::GameState; s=Settings())
@@ -137,8 +148,8 @@ function drawBattleIntro!(game::GameState; s=Settings())
         createSprite!(game,:tag2,:layer3,Position(14+24,12+16),1,
             getSprite("im/battle/tagopp.imp"); active=true)
 
-        drawBattleTagOwn!(game,game.battle.state.pkmn1.pkmn,game.im.sprites[:tag1].im)
-        drawBattleTagOpp!(game,game.battle.state.pkmn2.pkmn,game.im.sprites[:tag2].im)
+        drawBattleTagOwn!(game,game.battle.state.pkmn1.pkmn,game.im.sprites[:tag1])
+        drawBattleTagOpp!(game,game.battle.state.pkmn2.pkmn,game.im.sprites[:tag2])
 
         # drawHealthBarBattle!(game.im.sprites[:tag1].im,
         #     getHealthBar(game.battle.state.pkmn1.pkmn),P(20,49))

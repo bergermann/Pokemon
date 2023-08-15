@@ -13,29 +13,31 @@ end
 
 function bhpAnim!(game::GameState,target::Int)
     if target == 1
-        createCC!(game,:hp,bhpAnim!,(2,1,:tag1,P(20,49)); active=true,n=1)
+        createCC!(game,:hp,bhpAnim!,(2,1,:tag1,P(18,48)); active=true,n=1)
     else
-        createCC!(game,:hp,bhpAnim!,(1,2,:tag2,P(20,40)); active=true,n=1)
+        createCC!(game,:hp,bhpAnim!,(1,2,:tag2,P(18,39)); active=true,n=1)
     end
 end
 
-function bhpAnim!(game::GameState,user::Int,target::Int,tag::Symbol,pos::Position)
+function bhpAnim!(game::GameState,user::Int,target::Int,tag::Symbol,
+        pos::Position)
+    
     p = game.battle.state[target].pkmn
     dmg = min(game.battle.state[user].dmg,p.stats.hp)
 
     b1 = getHealthBar(p,p.stats.hp)
     b2 = getHealthBar(p,p.stats.hp-dmg)
 
-    drawHealthBar!(game.im.sprites[tag].im,
+    drawHealthBar!(game.im.sprites[tag],
         b1-trunc(Int,(b1-b2)*game.n.c[:hp].c/48),pos)
-    
 
     if target == 1
-        game.im.sprites[:tag1].im[25:32,60:76] .= 0xf8f8d6
+        game.im.sprites[:tag1].im[23:30,60:76] .= 0x0f
         
-        drawText!(game,game.im.sprites[:tag1].im,
-            string(game.battle.state[1].pkmn.stats.hp-trunc(Int,dmg*(game.n.c[:hp].c+1)/48)),
-            UInt(1),Position(22,66),0x424242,0xded6b5)
+        drawText!(game,game.im.sprites[:tag1],
+            string(game.battle.state[1].pkmn.stats.hp-
+                trunc(Int,dmg*(game.n.c[:hp].c+1)/48)),
+            UInt(1),Position(20,65),0x424242,0xded6b5)
     end
     
     if game.n.c[:hp].c == 48
@@ -103,20 +105,23 @@ end
 
 function bxpAnim!(game::GameState,xp::Int)
     createCC!(game,:xp,bxpAnimXp!,(
-        xp,
-        xpFormulas(game.battle.state.pkmn1.pkmn.stats.level+1,game.battle.state.pkmn1.pkmn.xptype)-
-        (game.battle.state.pkmn1.pkmn.stats.xp-calcXpDrop1(game.battle.state,
-            game.battle.state.pkmn1,game.battle.state.pkmn2)),
-        xpFormulas(game.battle.state.pkmn1.pkmn.stats.level+1,game.battle.state.pkmn1.pkmn.xptype)-
-        xpFormulas(game.battle.state.pkmn1.pkmn.stats.level,game.battle.state.pkmn1.pkmn.xptype)
-    ); active=true)
+            xp,
+            xpFormulas(game.battle.state.pkmn1.pkmn.stats.level+1,
+                game.battle.state.pkmn1.pkmn.xptype)-
+            (game.battle.state.pkmn1.pkmn.stats.xp-calcXpDrop1(game.battle.state,
+                game.battle.state.pkmn1,game.battle.state.pkmn2)),
+            xpFormulas(game.battle.state.pkmn1.pkmn.stats.level+1,
+                game.battle.state.pkmn1.pkmn.xptype)-
+            xpFormulas(game.battle.state.pkmn1.pkmn.stats.level,
+                game.battle.state.pkmn1.pkmn.xptype)
+        ); active=true)
 end
 
 function bxpAnimXp!(game::GameState,xp::Int,xpnext::Int,xplevel::Int)
     val = trunc(Int,64*(1-(xpnext+xp)/xplevel))+
         trunc(Int,64*xp/xplevel*(1-game.n.c[:xp].c/30))
 
-    drawXpBar!(game,game.im.sprites[:tag1].im,val,P(36,33))
+    drawXpBar!(game.im.sprites[:tag1],val,P(34,32))
 
     if game.n.c[:xp].c == 30
         killCC!(game,:xp)
@@ -129,25 +134,34 @@ end
 
 function bxpAnimLvUp!(game::GameState,levelups::Int)
     createCC!(game,:xp,bxpAnimLevelUp!,(
-        levelups,
-        xpFormulas(game.battle.state.pkmn1.pkmn.stats.level+1,game.battle.state.pkmn1.pkmn.xptype)-
-        (game.battle.state.pkmn1.pkmn.stats.xp-
-            calcXpDrop1(game.battle.state,game.battle.state.pkmn1,game.battle.state.pkmn2)),
-        xpFormulas(game.battle.state.pkmn1.pkmn.stats.level+1,game.battle.state.pkmn1.pkmn.xptype)-
-        xpFormulas(game.battle.state.pkmn1.pkmn.stats.level,game.battle.state.pkmn1.pkmn.xptype)
-    ); active=true,n=1)
+            levelups,
+            xpFormulas(game.battle.state.pkmn1.pkmn.stats.level+1,
+                game.battle.state.pkmn1.pkmn.xptype)-
+            (game.battle.state.pkmn1.pkmn.stats.xp-
+                calcXpDrop1(game.battle.state,game.battle.state.pkmn1,
+                    game.battle.state.pkmn2)),
+            xpFormulas(game.battle.state.pkmn1.pkmn.stats.level+1,
+                game.battle.state.pkmn1.pkmn.xptype)-
+            xpFormulas(game.battle.state.pkmn1.pkmn.stats.level,
+                game.battle.state.pkmn1.pkmn.xptype)
+        ); active=true,n=1)
 end
 
 function bxpAnimLevelUp!(game::GameState,levelups::Int,xpnext::Int,xplevel::Int)
     if 1 <= game.n.c[:xp].c <= 30
         val = trunc(Int,64-64*xpnext/xplevel*(1-game.n.c[:xp].c/30))
 
-        drawXpBar!(game,game.im.sprites[:tag1].im,val,P(36,33))
-    elseif 30 < game.n.c[:xp].c <= 48
-        scaleColorTransparent!(game.im.sprites[:tag1].im,0xf5eeee,0x20,UInt8(game.n.c[:xp].c-30))
+        drawXpBar!(game.im.sprites[:tag1],val,P(34,32))
+    elseif game.n.c[:xp].c == 31
+        game.im.sprites[:tag1].colortransform.active = true
+        game.im.sprites[:tag1].colortransform.func = scaleColor
+        game.im.sprites[:tag1].colortransform.args = (0xfff9e8,0x12,0x01)
+    elseif 31 < game.n.c[:xp].c <= 46
+        game.im.sprites[:tag1].colortransform.args = (0xfff9e8,0x12,
+            UInt8(game.n.c[:xp].c-30))
     end
     
-    if game.n.c[:xp].c == 48
+    if game.n.c[:xp].c == 46
         evdrop = rand(0x00:0x03,6)   # fix this
         diffhp = calcHp(game.battle.state.pkmn1.pkmn,UInt8(levelups),evdrop[1])-
             game.battle.state.pkmn1.pkmn.stats.rv[1]
@@ -158,8 +172,10 @@ function bxpAnimLevelUp!(game::GameState,levelups::Int,xpnext::Int,xplevel::Int)
 
         updateStats!(game.battle.state.pkmn1.pkmn)
 
+        game.im.sprites[:tag1].colortransform.active = false
         updateSprite!(game.im.sprites[:tag1])
-        drawBattleTagOwn!(game,game.battle.state.pkmn1.pkmn,game.im.sprites[:tag1].im)
+
+        drawBattleTagOwn!(game,game.battle.state.pkmn1.pkmn,game.im.sprites[:tag1])
 
         killCC!(game,:xp)
 
@@ -215,6 +231,7 @@ end
 
 function bmoveVertical!(game::GameState,distance::Int,speed::Int,
         target::Symbol,kill::Bool)
+
     if distance%speed != 0
         error("Distance needs to integer multiple of speed.")
     end

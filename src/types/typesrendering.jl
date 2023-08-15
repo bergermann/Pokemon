@@ -30,6 +30,9 @@ mutable struct Sprite
 
     im::Image
 
+    colortransform::CallbackFunction
+    shapetransform::CallbackFunction
+
     function Sprite()
         new(
             Symbol(),
@@ -48,16 +51,21 @@ mutable struct Sprite
             Palette(),
 
             zeros(UInt8,0,0),
+
+            CallbackFunction(),
+            CallbackFunction()
         )
     end
 
-    function Sprite(id,active,hreverse,vreverse,layer,pos,size,frame,dict,palette,im)
-        new(id,active,hreverse,vreverse,layer,pos,size,frame,dict,palette,im)
+    function Sprite(id,active,hreverse,vreverse,layer,pos,size,frame,dict,
+            palette,im,colortransform,shapetransform)
+        new(id,active,hreverse,vreverse,layer,pos,size,frame,dict,
+            palette,im,colortransform,shapetransform)
     end
 
     function Sprite(id,layer,pos,dict,palette)
         new(id,true,false,false,layer,pos,Position(0,0),0,dict,palette,
-            zeros(UInt8,0,0))
+            zeros(UInt8,0,0),emptyCallback,emptyCallback)
     end
 end
 

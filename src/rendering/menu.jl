@@ -219,8 +219,38 @@ function drawHealthBar!(sprite::Sprite,value::Int,pos::Position,
     return
 end
 
-function drawXpBar!(game::GameState,im::Matrix{UInt32},value::Int,pos::Position)
+
+function drawHealthBar!(sprite::Sprite,value::Int,pos::Position)
+    idx = expandPalette!(sprite,0x5ad684,0x73ffad,0xcead08,0xffe739,
+        0xad424a,0xff5a39,0x4a425a,0x526b5a)
+
+    if value > 24
+        sprite.im[pos.h,pos.w+1:pos.w+value] .= idx[1]
+        sprite.im[pos.h+1:pos.h+2,pos.w+1:pos.w+value] .= idx[2]
+    elseif value > 12
+        sprite.im[pos.h,pos.w+1:pos.w+value] .= idx[3]
+        sprite.im[pos.h+1:pos.h+2,pos.w+1:pos.w+value] .= idx[4]
+    else
+        sprite.im[pos.h,pos.w+1:pos.w+value] .= idx[5]
+        sprite.im[pos.h+1:pos.h+2,pos.w+1:pos.w+value] .= idx[6]
+    end
+
+    sprite.im[pos.h,pos.w+value+1:pos.w+48] .= idx[7]
+    sprite.im[pos.h+1:pos.h+2,pos.w+value+1:pos.w+48] .= idx[8]
+
+    return
+end
+
+function drawXpBar!(im::Matrix{UInt32},value::Int,pos::Position)
     im[pos.h:pos.h+1,pos.w+1:pos.w+value] .= 0x42ceff
+    # im[pos.h:pos.h+1,pos.w+64:-2:pos.w+value+1] .= 0xd8d0b0
+    # im[pos.h:pos.h+1,pos.w+63:-2:pos.w+value+1] .= 0xc0b870
+end
+
+function drawXpBar!(sprite::Sprite,value::Int,pos::Position)
+    idx = expandPalette!(sprite,0x42ceff)
+
+    sprite.im[pos.h:pos.h+1,pos.w+1:pos.w+value] .= idx[1]
     # im[pos.h:pos.h+1,pos.w+64:-2:pos.w+value+1] .= 0xd8d0b0
     # im[pos.h:pos.h+1,pos.w+63:-2:pos.w+value+1] .= 0xc0b870
 end

@@ -89,49 +89,71 @@ function combineLayers!(game::GameState,layers::Vector{Symbol};
 
     l = game.im.layer
 
-    @inbounds for k in layers
+    @views @inbounds for k in layers
         ls = getproperty(game.im.layers,k)
 
-        @inbounds for i in eachindex(l)
+        for i in eachindex(l)
             if ls[i] != 0x000000
                 l[i] = ls[i]
             end
         end
 
-        @inbounds for j in 1:game.im.sprites.idx
+        for j in 1:game.im.sprites.idx
             if game.im.sprites[j].layer != k || !game.im.sprites[j].active
                 continue
             end
 
-            sprite = game.im.sprites[j]
-
-            lh, lw = size(l)
-
-            vs = view(
-                sprite.im,
-                max(1,-sprite.pos.h):min(sprite.size.h,lh-sprite.pos.h),
-                max(1,-sprite.pos.w):min(sprite.size.w,lw-sprite.pos.w)
-            )
-
-            p = sprite.palette
-
-            @views @inbounds if sprite.hreverse
-                for j in max(1,-sprite.pos.w):min(sprite.size.w,lw-sprite.pos.w),
-                        i in max(1,-sprite.pos.h):min(sprite.size.h,lh-sprite.pos.h)
-                    
-                    if vs[i,j] != 0x00
-                        l[i+sprite.pos.h,1+sprite.pos.w+sprite.size.w-j] = p[vs[i,j]]
-                    end
-                end
+            if game.im.sprites[j].colortransform.active
+                p = game.im.sprites[j].colortransform.func(game.im.sprites[j].palette,
+                    game.im.sprites[j].colortransform.args)
             else
-                for j in max(1,-sprite.pos.w):min(sprite.size.w,lw-sprite.pos.w),
-                        i in max(1,-sprite.pos.h):min(sprite.size.h,lh-sprite.pos.h)
-
-                    if vs[i,j] != 0x00
-                        l[i+sprite.pos.h,j+sprite.pos.w] = p[vs[i,j]]
-                    end
-                end
+                p = game.im.sprites[j].palette
             end
+
+            if !game.im.sprites[j].hreverse
+                drawSprite!(l,game.im.sprites[j],p)
+            else
+                drawSpriteReverse!(l,game.im.sprites[j],p)
+            end
+        end
+    end
+
+    return
+end
+
+function drawSprite!(layer::Matrix{UInt32},sprite::Sprite,palette::Palette)
+    lh, lw = size(layer)
+
+    mw1 = max(1,-(sprite.pos.w-1))
+    mw2 = min(sprite.size.w,lw-(sprite.pos.w+1))
+    
+    mh1 = max(1,-(sprite.pos.h-1))
+    mh2 = min(sprite.size.h,lh-(sprite.pos.h+1))
+
+    for j in mw1:mw2, i in mh1:mh2
+        if sprite.im[i,j] != 0x00
+            layer[i+sprite.pos.h,j+sprite.pos.w] = palette[sprite.im[i,j]]
+        end
+    end
+
+    return
+end
+
+function drawSpriteReverse!(layer::Matrix{UInt32},sprite::Sprite,palette::Palette)
+    lh, lw = size(layer)
+
+    mw1 = max(1,-(sprite.pos.w-1))
+    mw2 = min(sprite.size.w,lw-(sprite.pos.w+1))
+    
+    mh1 = max(1,-(sprite.pos.h-1))
+    mh2 = min(sprite.size.h,lh-(sprite.pos.h+1))
+
+    w = sprite.size.w
+    ph = sprite.pos.h; pw = sprite.pos.w
+
+    for j in mw1:mw2, i in mh1:mh2
+        if sprite.im[i,1+w-j] != 0x00
+            layer[i+ph,j+pw] = palette[sprite.im[i,1+w-j]]
         end
     end
 

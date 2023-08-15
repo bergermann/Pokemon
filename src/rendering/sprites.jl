@@ -125,7 +125,9 @@ function createSprite!(game::GameState,id::Symbol,layer::Symbol,
         frame,
         dict,
         palette,
-        copy(dict[frame]))
+        copy(dict[frame]),
+        CallbackFunction(),
+        CallbackFunction())
     )
 end
 

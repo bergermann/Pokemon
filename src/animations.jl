@@ -1,4 +1,5 @@
-include("transformations.jl")
+
+
 
 function animEmpty!(game::GameState)
     return
@@ -361,7 +362,8 @@ end
 function animBagSwitch!(game::GameState)
     if game.n.c[:bagswitch].c == 1
         updateSprite!(game.im.sprites[:slot],game.input.menu.menubags.bag)
-        setPos!(game.im.sprites[:slotmarker].pos,24+27,16+34+game.input.menu.menubags.bag*8)
+        setPos!(game.im.sprites[:slotmarker].pos,
+            24+27,16+34+game.input.menu.menubags.bag*8)
 
         updateSprite!(game.im.sprites[:bag],6)
 

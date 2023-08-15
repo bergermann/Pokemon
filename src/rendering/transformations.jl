@@ -211,15 +211,35 @@ end
 
 
 
-
-function scaleColor!(imbase::Matrix{UInt32},color::UInt32,
+function scaleColor(imbase::Array{UInt32},color::UInt32,
         denom::UInt8,num::UInt8)
 
     if denom < num
         return error("ArgumentError: Fraction must be between 0 and 1.")
     end
 
-    color_ = div(color,denom)*num
+    im_ = copy(imbase)
+    color_ = scaleChannels(color,denom,num) #div(color,denom)*num
+
+    @inbounds for i in eachindex(imbase)
+        im_[i] -= scaleChannels(imbase[i],denom,num)
+        im_[i] += color_
+    end
+
+    return im_
+end
+
+scaleColor(imbase::Array{UInt32},(color,denom,num)::Tuple{UInt32,UInt8,UInt8}) =
+    scaleColor(imbase,color,denom,num)
+
+function scaleColor!(imbase::Array{UInt32},color::UInt32,
+        denom::UInt8,num::UInt8)
+
+    if denom < num
+        return error("ArgumentError: Fraction must be between 0 and 1.")
+    end
+
+    color_ = scaleChannels(color,denom,num) #div(color,denom)*num
 
     @inbounds for i in eachindex(imbase)
         imbase[i] -= scaleChannels(imbase[i],denom,num)

@@ -15,17 +15,15 @@ include("types/typesbattle.jl")
 include("types/typesnpc.jl")
 
 include("rendering/rendering.jl")
+include("battle/battle.jl")
 include("inventory.jl")
 include("pokemons.jl")
 include("core.jl")
-include("battle.jl")
 include("statetransitions.jl")
 include("npcs.jl")
 include("maps.jl")
 include("controls.jl")
 include("animations.jl")
-include("attackanimations.jl")
-include("battlenpc.jl")
 include("npcs.jl")
 
 # @time foreach(names(@__MODULE__, all=true)) do s

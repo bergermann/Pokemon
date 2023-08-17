@@ -1,5 +1,8 @@
 #battle manager stuff
 
+include("attackanimations.jl")
+include("battlenpc.jl")
+
 function initBattleWild!(game::GameState)
     stateInitBattle!(game)
 

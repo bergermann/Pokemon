@@ -277,12 +277,10 @@ function getItemIcon(m::MenuBags)
     end
 end
 
-function drawInventory!(game::GameState)
+function drawInventory!(game::GameState,m::MenuBags)
     bg = deserialize("im/menu/bag/background1.imp")
 
     game.im.layers.layer1[24+1:24+160,16+1:16+240] = bg.palette[bg.im]
-
-    m = game.input.menu.menubags
 
     createSprite!(game,:slotmarker,:layer1,P(24+27,16+34+m.bag*8),1,
         getSprite("im/menu/bag/slotmarker1.imp"); active=true)
@@ -305,9 +303,9 @@ function drawInventory!(game::GameState)
     createSprite!(game,:arrowdown,:layer1,P(24+26,16+40),1,
         getSprite("im/menu/bag/arrowvert.imp"); active=false,vreverse=true)
     
-    setVisibleItems!(game)
-    drawInventoryText!(game)
-    drawItemText!(game)
+    setVisibleItems!(game,m)
+    drawInventoryText!(game,m)
+    drawItemText!(game,m)
 
     createSprite!(game,:icon,:layer1,P(96,16+8),1,getItemIcon(m); active=true)
 
@@ -315,16 +313,17 @@ function drawInventory!(game::GameState)
         getSprite("im/sprites/cursor",1,"black"); active=true)
 end
 
-function setInventoryItemIcon!(game::GameState)
+drawInventory!(game::GameState) = drawInventory!(game,game.input.menu.menubags)
+
+function setInventoryItemIcon!(game::GameState,m::MenuBags)
     s = game.im.sprites[:icon]
     
-    s.dict, s.palette = getItemIcon(game.input.menu.menubags)
+    s.dict, s.palette = getItemIcon(m)
 
     updateSprite!(s)
 end
 
-function setVisibleItems!(game::GameState)
-    m = game.input.menu.menubags
+function setVisibleItems!(game::GameState,m::MenuBags)
     nitems = game.trainer.inventory[-m.bag]
 
     m.vis .= 0
@@ -349,8 +348,8 @@ function setVisibleItems!(game::GameState)
     end
 end
 
-function drawInventoryText!(game::GameState)
-    vis = game.input.menu.menubags.vis
+function drawInventoryText!(game::GameState,m::MenuBags)
+    vis = m.vis
 
     for i in 1:8
         if vis[i,1] == -1
@@ -371,8 +370,8 @@ function drawInventoryText!(game::GameState)
     end
 end
 
-function drawItemText!(game::GameState)
-    vis = game.input.menu.menubags.vis[game.input.menu.menubags.slot,1]
+function drawItemText!(game::GameState,m::MenuBags)
+    vis = m.vis[m.slot,1]
 
     flushLayer!(game,:layer3,P(24+100,16+2),P(50,103))
 
@@ -385,8 +384,8 @@ function drawItemText!(game::GameState)
     end
 end
 
-function drawSlotSwitchDown!(game::GameState)
-    vis = game.input.menu.menubags.vis
+function drawSlotSwitchDown!(game::GameState,m::MenuBags)
+    vis = m.vis
 
     flushLayer!(game,:layer2,P(24+21,16+120),P(14,110))
     shiftLayerUp!(game.im.layers.layer2,15)
@@ -406,8 +405,8 @@ function drawSlotSwitchDown!(game::GameState)
     end
 end
 
-function drawSlotSwitchUp!(game::GameState)
-    vis = game.input.menu.menubags.vis
+function drawSlotSwitchUp!(game::GameState,m::MenuBags)
+    vis = m.vis
 
     flushLayer!(game,:layer2,P(24+21+105,16+120),P(14,130))
     shiftLayerDown!(game.im.layers.layer2,15)

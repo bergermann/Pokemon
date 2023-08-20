@@ -139,6 +139,10 @@ function inputBattle!(game::GameState,input::Input)
 
         return
     end
+
+    if game.input.battlebag
+        inputBattleInventory!(game,input)
+    end
 end
 
 function inputBattleDialogue!(game::GameState,input::Input)
@@ -173,7 +177,15 @@ function inputBattleMenuSelector!(game::GameState)
         flushLayer!(game,:layer4,Position(24+1+112,16+1),Position(48,240),
             0x4a4252)
     elseif game.input.battle1menu.select == 1
-        return
+        stateQuitBattlePhase!(game)
+
+        game.input.inputlock = true
+
+        game.draw.battle1 = false
+
+        createCC!(game,:scenet,sceneTransition!,
+            (16,8,stateBattleBagsOpen!,(),stateBattleBagsCtrls!,());
+            active=true,n=1)
     elseif game.input.battle1menu.select == 2
         return
     else

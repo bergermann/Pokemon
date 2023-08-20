@@ -12,7 +12,7 @@ end
 
 mutable struct CommandItem <: BattleCommand
     target::UInt
-    #item::Item
+    item::ItemType
 end
 
 mutable struct CommandFlee <: BattleCommand

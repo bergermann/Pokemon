@@ -69,44 +69,51 @@ function drawBattleTagOpp!(game::GameState,pkmn::Pkmn,sprite::Sprite)
         0x424242,0xded6b5)
 end
 
+function drawBattleBase!(game::GameState; s=Settings())
+    flushLayer!(game)
+    flushLayer!(game,:layer1)
+    flushLayer!(game,:layer2)
+    flushLayer!(game,:layer3)
+    flushLayer!(game,:layer4)
+
+    createCC!(game,:wiggle,animWiggleBattle!,(); active=false)
+    createCC!(game,:animbattle,animBattlePhaseWild!,(); active=false,n=-1)
+
+    bg = deserialize("im/battle/backgrounds/grass1.imp")
+    game.im.layers.layer1[24+1:24+112,16+1:16+240] = bg.palette[bg.im]
+
+    dia = deserialize("im/menu/dialogue/1.imp")
+    game.im.layers.layer3[24+1+112:24+160,16+1:16+240] = dia.palette[dia.im]
+
+    createSprite!(game,:pkmn1,:layer2,Position(90,40),1,
+        getBattlerBack(game.battle.state.pkmn1.pkmn); active=true)
+    createSprite!(game,:pkmn2,:layer2,Position(32,160),1,
+        getBattlerFront(game.battle.state.pkmn2.pkmn); active=true)
+    
+    createSprite!(game,:cursor1,:layer4,Position(146,136),1,
+        getSprite("im/battle/cursor.imp"))
+    createSprite!(game,:cursor2,:layer5,Position(146,24),1,
+        getSprite("im/battle/cursor.imp"))
+    
+    createSprite!(game,:tag1,:layer3,Position(72+24,126+16),1,
+        getSprite("im/battle/tagown.imp"); active=true)
+    createSprite!(game,:tag2,:layer3,Position(14+24,12+16),1,
+        getSprite("im/battle/tagopp.imp"); active=true)
+
+    drawBattleTagOwn!(game,game.battle.state.pkmn1.pkmn,game.im.sprites[:tag1])
+    drawBattleTagOpp!(game,game.battle.state.pkmn2.pkmn,game.im.sprites[:tag2])
+end
+
 function drawBattleIntro!(game::GameState; s=Settings())
     if game.n.c[:battleintro].c == 0
         stateSetupBattle!(game)
-        
-        flushLayer!(game)
-        flushLayer!(game,:layer1)
-        flushLayer!(game,:layer2)
-        flushLayer!(game,:layer3)
-        flushLayer!(game,:layer4)
-
-        bg = deserialize("im/battle/backgrounds/grass1.imp")
-        game.im.layers.layer1[24+1:24+112,16+1:16+240] = bg.palette[bg.im]
-
-        dia = deserialize("im/menu/dialogue/1.imp")
-        game.im.layers.layer3[24+1+112:24+160,16+1:16+240] = dia.palette[dia.im]
-
-        createSprite!(game,:pkmn1,:layer2,Position(90,40),1,
-            getBattlerBack(game.battle.state.pkmn1.pkmn); active=true)
-        createSprite!(game,:pkmn2,:layer2,Position(32,160),1,
-            getBattlerFront(game.battle.state.pkmn2.pkmn); active=true)
-        
-        createSprite!(game,:cursor1,:layer4,Position(146,136),1,
-            getSprite("im/battle/cursor.imp"))
-        createSprite!(game,:cursor2,:layer5,Position(146,24),1,
-            getSprite("im/battle/cursor.imp"))
-        
-        createSprite!(game,:tag1,:layer3,Position(72+24,126+16),1,
-            getSprite("im/battle/tagown.imp"); active=true)
-        createSprite!(game,:tag2,:layer3,Position(14+24,12+16),1,
-            getSprite("im/battle/tagopp.imp"); active=true)
-
-        drawBattleTagOwn!(game,game.battle.state.pkmn1.pkmn,game.im.sprites[:tag1])
-        drawBattleTagOpp!(game,game.battle.state.pkmn2.pkmn,game.im.sprites[:tag2])
+            
+        drawBattleBase!(game; s=s)
     elseif game.n.c[:battleintro].c <= 32
         game.im.postprocess.args = (24+80,game.n.c[:battleintro].c)
     elseif game.n.c[:battleintro].c <= 56
         game.im.postprocess.args = (24+80,2*game.n.c[:battleintro].c-32)
-    elseif game.n.c[:battleintro].c == 81
+    elseif game.n.c[:battleintro].c == 82
         killCounter!(game,:battleintro)
 
         game.im.postprocess.active = false
@@ -137,8 +144,9 @@ function drawBattleDialogue!(game::GameState)
 end
 
 function drawBattleMenu1!(game::GameState)
-    drawText!(game,:layer4,"Was soll\\$(pkmnName(game,game.battle.state.pkmn1.pkmn)) tun?",UInt(2),
-        Position(144,32),0xffffff,0x6b5a73)
+    drawText!(game,:layer4,
+        "Was soll\\$(pkmnName(game,game.battle.state.pkmn1.pkmn)) tun?",
+        UInt(2),Position(144,32),0xffffff,0x6b5a73)
 
     drawFrame!(game,:layer4,6,16,Position(24+112,16+112))
 
@@ -190,8 +198,10 @@ function drawBattle!(game::GameState; s=Settings())
 
     if game.draw.battle1
         drawBattleMenu1!(game)
+        game.draw.battle1 = false
     elseif game.draw.battle2
         drawBattleMenu2!(game)
+        game.draw.battle2 = false
     end
 
     return

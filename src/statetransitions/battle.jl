@@ -1,11 +1,3 @@
-# general functions that transition some state into another
-
-
-function stateSetInput!(game::GameState,args::Tuple{Symbol,Bool}...)
-    for arg in args
-        setfield!(game.input,arg[1],arg[2])
-    end
-end
 
 function stateBattleStage!(game::GameState,stage::Int)
     game.battle.state.stage = stage
@@ -39,9 +31,6 @@ function stateSetupBattle!(game::GameState)
     game.im.postprocess.active = true
     game.im.postprocess.func = shutterHorizontal!
     game.im.postprocess.args = (24+80,0)
-
-    createCC!(game,:wiggle,animWiggleBattle!,(); active=true)
-    createCC!(game,:animbattle,animBattlePhaseWild!,(); active=false,n=-1)
 end
 
 function stateBattleIntroDialogue!(game::GameState)
@@ -84,7 +73,32 @@ function stateBattleAttackSelected!(game::GameState)
     game.n.c[:animbattle].c = -1
 
     queueSetupActions!(game,game.battle.state)
-    # createCC!(game,:animbattle,animBattlePhaseWild!,(); active=true,n=-1)
+end
+
+function stateBattleItemSelected!(game::GameState,target::UInt,item::ItemType)
+    stateBattleStage!(game,10)
+
+    game.battle.state.pkmn1.command = CommandItem(target,item)
+    game.battle.state.pkmn2.command = battleChoiceWild(game)
+    
+    game.input.battle1 = false
+    game.input.battle2 = false
+    game.input.battle1menu.select = 0
+
+    game.draw.battle1 = false
+    game.draw.battle2 = false
+
+    game.im.sprites[:cursor1].active = false
+    game.im.sprites[:cursor2].active = false 
+            
+    flushLayer!(game,:layer4,Position(24+1+112,16+1),Position(48,240))
+    flushLayer!(game,:layer5,Position(24+1+112,16+1),Position(48,240))
+
+    game.callbacks[:wiggle].active = false
+    game.callbacks[:animbattle].active = true
+    game.n.c[:animbattle].c = -1
+
+    queueSetupActions!(game,game.battle.state)
 end
 
 function stateEndBattlePhase!(game::GameState)
@@ -112,7 +126,6 @@ function stateQuitBattlePhase!(game::GameState)
 end
 
 function stateBattleFlee!(game::GameState)
-
     game.input.battle1 = false
 
     game.im.sprites[:cursor1].active = false
@@ -211,132 +224,33 @@ end
 
 
 
-function stateInitMapCtrls!(game::GameState)
-    game.input.inputlock = false
-
-    game.input.map = true
-    game.input.move = true
-end
-
-function stateInitDrawMap!(game::GameState)
-    drawMap!(game)
-    game.overworld = true
+function stateBattleBagsOpen!(game::GameState)    
+    game.input.battlebag = true
     
-    createSprite!(game,:main,:layer2,Position(80,128),min(3,game.direction),
-        getSprite("im/sprites/main1",18); active=true)
-    
-    if game.direction == 4
-        game.im.sprites[:main].vreverse = true
-    end
-
-    createCounter!(game,:movemain,0)
-    createCallback!(game,:movemain,false,moveMain!,(game.direction,-1))
-
-    loadSpritesNPCs!(game)
-end
-
-
-
-
-
-function stateMenuMainOpen!(game::GameState)
-    game.input.inputlock = false
-    game.input.menu.main = true
-end
-
-
-
-
-
-function stateMenuPkmnOpen!(game::GameState)
     popall!(game.im.sprites)
-    game.overworld = false
+    flushLayer!(game,:layer4)
 
-    killCC!(game,:movemain)
-
-    createCallback!(game,:wiggle,animMenuPkmnWiggle!,(); active=true)
-
-    loadTeamStrings!(game)
-    drawMenuPkmn!(game)
-end
-
-function stateMenuPkmnCtrls!(game::GameState)
-    game.input.inputlock = false
-    game.input.menu.pkmn = true
-end
-
-function stateMenuPkmnClose!(game::GameState)
-    game.input.inputlock = true
-
-    killSpriteAll!(game)
-    killCallback!(game,:wiggle)
-
-    stateInitDrawMap!(game)
-    drawMenu!(game)
-end
-
-
-
-
-
-function stateMenuBagsOpen!(game::GameState)
-    popall!(game.im.sprites)
-    game.overworld = false
-
-    killCC!(game,:movemain)
-
-    createCC!(game,:bagswitch,animBagSwitch!,(); n=1)
-    createCallback!(game,:wiggle,true,animArrowsMenu!,())
+    createCC!(game,:bagswitch,animBattleBagSwitch!,(); n=1)
+    createCallback!(game,:arrows,true,animArrowsMenu!,())
 
     loadInventoryStrings!(game)
-    drawInventory!(game)
+    drawInventory!(game,game.input.battlebags)
 end
 
-function stateMenuBagsCtrls!(game::GameState)
+function stateBattleBagsCtrls!(game::GameState)
     game.input.inputlock = false
-    game.input.menu.bags = true
+    game.input.battlebag = true
 end
 
-function stateMenuBagsClose!(game::GameState)
-    game.input.inputlock = true
-    
+function stateBattleBagsClose!(game::GameState)
     popall!(game.im.sprites)
 
-    killCallback!(game,:wiggle)
-    killCC!(game,:bagswitch)
-
-    stateInitDrawMap!(game)
-    drawMenu!(game)
-end
-
-
-
-function stateMenuPkmnSubOpen!(game::GameState)
-    popall!(game.im.sprites)
+    flushLayer!(game,:layer4)
 
     killCC!(game,:bagswitch)
+    killCallback!(game,:arrows)
 
-    killCallback!(game,:wiggle)
-    createCallback!(game,:wiggle,animMenuPkmnWiggle!,(); active=true)
-
-    drawMenuPkmn!(game)
+    drawBattleBase!(game)
 end
 
-function stateMenuPkmnSubCtrls!(game::GameState)
-    game.input.inputlock = false
-    game.input.menu.menubags.sub = true
-    game.input.menu.menubags.subslot = 1
-end
 
-function stateMenuPkmnSubClose!(game::GameState)
-    popall!(game.im.sprites)
-    game.input.inputlock = true
-
-    killSpriteAll!(game)
-    killCallback!(game,:wiggle)
-
-    createCC!(game,:bagswitch,animBagSwitch!,(); n=1)
-    createCallback!(game,:wiggle,true,animArrowsMenu!,())
-
-    drawInventory!(game)
-end

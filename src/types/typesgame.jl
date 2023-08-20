@@ -257,6 +257,8 @@ mutable struct InputState
     battle1menu::MenuBattle
     battle2::Bool
     battle2menu::MenuBattle
+    battlebag::Bool
+    battlebags::MenuBags
 
     worldmap::Bool
 
@@ -281,6 +283,8 @@ mutable struct InputState
             MenuBattle(),
             false,
             MenuBattle(),
+            false,
+            MenuBags(),
 
             false
         )

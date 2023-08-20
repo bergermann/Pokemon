@@ -389,8 +389,47 @@ function animBagSwitch!(game::GameState)
         game.n.c[:bagswitch].c = 1
         game.callbacks[:bagswitch].active = false
 
-        drawInventoryText!(game)
-        drawItemText!(game)
+        drawInventoryText!(game,game.input.menu.menubags)
+        drawItemText!(game,game.input.menu.menubags)
+
+        return
+    end
+
+    game.n.c[:bagswitch].c += 1
+end
+
+function animBattleBagSwitch!(game::GameState)
+    if game.n.c[:bagswitch].c == 1
+        updateSprite!(game.im.sprites[:slot],game.input.battlebags.bag)
+        setPos!(game.im.sprites[:slotmarker].pos,
+            24+27,16+34+game.input.battlebags.bag*8)
+
+        updateSprite!(game.im.sprites[:bag],6)
+
+        game.im.sprites[:arrowleft].active = false
+        game.im.sprites[:arrowright].active = false
+    end
+
+    if game.n.c[:bagswitch].c < 4
+        setPos!(game.im.sprites[:bag].pos,24+34-game.n.c[:bagswitch].c+1,16+40)
+    elseif game.n.c[:bagswitch].c == 4
+        updateSprite!(game.im.sprites[:bag],game.input.battlebags.bag)
+    elseif game.n.c[:bagswitch].c <= 8
+        setPos!(game.im.sprites[:bag].pos,24+34-4+game.n.c[:bagswitch].c-4,16+40)
+    end
+
+    if game.n.c[:bagswitch].c == 8
+        game.im.sprites[:arrowleft].active = true
+        game.im.sprites[:arrowright].active = true
+        game.im.sprites[:cursor].active = true
+        game.im.sprites[:icon].active = true
+
+        game.input.inputlock = false
+        game.n.c[:bagswitch].c = 1
+        game.callbacks[:bagswitch].active = false
+
+        drawInventoryText!(game,game.input.battlebags)
+        drawItemText!(game,game.input.battlebags)
 
         return
     end

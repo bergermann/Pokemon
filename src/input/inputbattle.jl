@@ -177,11 +177,8 @@ function inputBattleMenuSelector!(game::GameState)
         flushLayer!(game,:layer4,Position(24+1+112,16+1),Position(48,240),
             0x4a4252)
     elseif game.input.battle1menu.select == 1
-        stateQuitBattlePhase!(game)
-
         game.input.inputlock = true
-
-        game.draw.battle1 = false
+        game.input.battle1 = false
 
         createCC!(game,:scenet,sceneTransition!,
             (16,8,stateBattleBagsOpen!,(),stateBattleBagsCtrls!,());

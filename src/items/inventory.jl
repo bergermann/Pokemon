@@ -1,10 +1,10 @@
 # # item and inventory stuff
 
-include("items/items.jl")
-include("items/pokeballs.jl")
-include("items/machines.jl")
-include("items/berries.jl")
-include("items/keys.jl")
+include("items.jl")
+include("pokeballs.jl")
+include("machines.jl")
+include("berries.jl")
+include("keys.jl")
 
 
 
@@ -59,8 +59,8 @@ function getInvSlotAmount(game::GameState)
         game.input.menu.menubags.select[game.input.menu.menubags.bag],2]
 end
 
-function loadInventoryStrings!(game::GameState)
-    game.str = []
+function loadInventoryStrings!(game::GameState; reset::Bool=true)
+    reset && (game.str = [])
     
     push!(game.str,readlines("str/ger/system_bag.txt"))
     push!(game.str,readlines("str/ger/item_names.txt"))

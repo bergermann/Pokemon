@@ -177,7 +177,7 @@ function itemBattleActionBalls!(game::GameState)
     if game.input.choice.sel == 1
         createCC!(game,:scenet,sceneTransition!,
             (16,8,stateBattleBagsClose!,(),stateBattleItemSelected!,
-            (UInt(0),getItem(game,game.input.battlebags)));
+            (UInt(2),getItem(game,game.input.battlebags)));
             active=true,n=1)
     end
     

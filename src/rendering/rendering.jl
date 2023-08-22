@@ -40,49 +40,6 @@ function getTileMap(dir::String,key::Vector{Symbol}; s=Settings())
     return tm
 end
 
-function getImage(dir::String; attachsize::Bool=false)
-    im = mfb_rgb.(load(dir))
-
-    if attachsize
-        return im, P(size(im)...)
-    else
-        return im
-    end
-end
-
-function getGridImage(dir::String,rows::Int,columns::Int; attachsize::Bool=true)
-    im = mfb_rgb.(load(dir))
-    height, width = size(im)
-
-    dh = div(height,rows); dw = div(width,columns)
-
-    if attachsize
-        return [(im[1+(h-1)*dh:h*dh,1+(w-1)*dw:w*dw],P(dh,dw)) 
-            for w in 1:columns, h in 1:rows]
-    else
-        return [im[1+(h-1)*dh:h*dh,1+(w-1)*dw:w*dw] 
-            for w in 1:columns, h in 1:rows]
-    end
-end
-
-function getGridImage(dir::String,tilesize::Int; attachsize::Bool=true)
-    im = mfb_rgb.(load(dir))
-    height, width = size(im)
-
-    nh = div(height,tilesize); nw = div(width,tilesize)
-
-    if attachsize
-        return [(im[1+(h-1)*tilesize:h*tilesize,1+(w-1)*tilesize:w*tilesize],
-            P(tilesize,tilesize)) for w in 1:nw, h in 1:nh]
-    else
-        return [im[1+(h-1)*tilesize:h*tilesize,1+(w-1)*tilesize:w*tilesize] 
-            for w in 1:nw, h in 1:nh]
-    end
-end
-
-
-
-
 
 
 

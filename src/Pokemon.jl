@@ -2,7 +2,7 @@
 
 module Pokemon
 
-export main
+export play, g
 
 using MiniFB, Serialization, Images, DelimitedFiles
 
@@ -17,7 +17,7 @@ include("types/typesnpc.jl")
 include("rendering/rendering.jl")
 include("battle/battle.jl")
 include("statetransitions/general.jl")
-include("inventory.jl")
+include("items/inventory.jl")
 include("pokemons.jl")
 include("core.jl")
 include("npcs.jl")
@@ -30,7 +30,7 @@ include("npcs.jl")
 #     @eval export $s
 # end
 
-function main()
+function play()
     settings = Settings()
 
     global input = Input()
@@ -92,27 +92,35 @@ function main()
     state = mfb_update(w, b)
 
     while true
-        begin
-        # @time begin
-            game.n.frame += 0x01
+        try
+            begin
+            # @time begin
+                game.n.frame += 0x01
 
-            writeToBuffer!(b,game)
-            state = mfb_update(w, b)
+                writeToBuffer!(b,game)
+                state = mfb_update(w, b)
 
-            if state != MiniFB.STATE_OK
-                break
+                if state != MiniFB.STATE_OK
+                    break
+                end
+                
+                # @time updateGame!(game,input; s=settings)
+                updateGame!(game,input; s=settings)
+
+                # @time drawGame!(game; s=settings)
+                drawGame!(game; s=settings)
+                resetInput!(input)
             end
-            
-            # @time updateGame!(game,input; s=settings)
-            updateGame!(game,input; s=settings)
-
-            # @time drawGame!(game; s=settings)
-            drawGame!(game; s=settings)
-            resetInput!(input)
+        catch e
+            println(e)
+            display(stacktrace(catch_backtrace()))
+            return game
         end
     end
+
+    return game
 end
 
-main()
+g = play();
 
 end

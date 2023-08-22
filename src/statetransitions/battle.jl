@@ -224,8 +224,11 @@ end
 
 
 
-function stateBattleBagsOpen!(game::GameState)    
-    game.input.battlebag = true
+function stateBattleBagsOpen!(game::GameState)
+    game.draw.battle1 = false
+
+    killCC!(game,:animbattle)
+    killCC!(game,:wiggle)
     
     popall!(game.im.sprites)
     flushLayer!(game,:layer4)

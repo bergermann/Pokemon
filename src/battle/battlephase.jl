@@ -76,7 +76,7 @@ function getCrit(attacker::PkmnBattle,defender::PkmnBattle)
 end
 
 function getCommandPriority(state::BattleState,target::Int)
-    if typeof(state[target].command) == CommandAttack
+    if state[target].command isa CommandAttack
         return state[target].pkmn.attacks[state[target].command.n].priority
     else
         return 6

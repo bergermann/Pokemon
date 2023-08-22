@@ -129,6 +129,7 @@ end
 struct Pokeball <: ItemType
     catchrate::Float64
     effect::Int
+    id::Int
 end
 
 

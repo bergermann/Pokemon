@@ -185,18 +185,43 @@ function bxpAnimLevelUp!(game::GameState,levelups::Int,xpnext::Int,xplevel::Int)
     game.n.c[:xp].c += 1
 end
 
+function bthrowBall!(game::GameState,w::Int)
+    createSprite!(game,:ball,:layer4,P(65+24,0*20+16),1,
+        getSprite("im/battle/balls/$(game.battle.state[1].command.item.id)",2);
+        active=true)
 
+    createCC!(game,:throwball,bthrowBall!,();
+        active=true,n=1)
+end
 
 function bthrowBall!(game::GameState)
-    if game.n.c[:throwball].c <= 54
-        game.im.sprites[:throwball].pos.w += 4
-        game.im.sprites[:throwball].pos.h =
-            trunc(Int,0.00343*(game.im.sprites[:ballcatch].pos.w-108)^2+44)
-    elseif game.n.c[:throwball].c == 55
+    if game.n.c[:throwball].c <= 37+5
+        game.im.sprites[:ball].pos.w += 4
+        game.im.sprites[:ball].pos.h =
+            trunc(Int,(game.im.sprites[:ball].pos.w-(135+16))^2/300+(21+24))
+    elseif game.n.c[:throwball].c == 60
+        updateSprite!(game.im.sprites[:ball],2)
+    elseif game.n.c[:throwball].c == 70
         game.im.sprites[:pkmn2].active = false
-    elseif game.n.c[:throwball].c <= 55+30
-        game.im.sprites[:throwball].pos.h -= 1
+    elseif game.n.c[:throwball].c == 90
+        updateSprite!(game.im.sprites[:ball],1)
+    elseif 100 < game.n.c[:throwball].c <= 110
+        game.im.sprites[:ball].pos.h += 3
+    elseif 110 < game.n.c[:throwball].c <= 120
+        game.im.sprites[:ball].pos.h -= 2
+    elseif 120 < game.n.c[:throwball].c <= 130
+        game.im.sprites[:ball].pos.h += 2
+    elseif 130 < game.n.c[:throwball].c <= 140
+        game.im.sprites[:ball].pos.h -= 1
+    elseif 140 < game.n.c[:throwball].c <= 150
+        game.im.sprites[:ball].pos.h += 1
+    elseif game.n.c[:throwball].c == 240
+        killCC!(game,:throwball)
+
+        return
     end
+
+    game.n.c[:throwball].c += 1
 end
 
 

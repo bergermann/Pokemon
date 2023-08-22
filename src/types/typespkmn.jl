@@ -109,6 +109,15 @@ mutable struct Attack
     end
 end
 
+#= status
+0x00
+0x01 -> gift
+0x02 -> verbrannt
+0x03 -> paralyse
+0x04 -> schlaf
+0x05 -> gefroren
+=#
+
 mutable struct Pkmn
     id::UInt16
     name::String

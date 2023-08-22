@@ -176,7 +176,7 @@ mutable struct PkmnBattle
     name::String
     xpdrop::UInt32
     
-    buffs::Vector{Int8}     #at,def,spat,spdef,init,acc,eva,crit #CHECK THIS LATER
+    buffs::Vector{Int8}     #at,def,spat,spdef,init,acc,eva,crit # FIX CHECK THIS LATER
 
     secstatus::SecStatus
     factors::DmgFactors

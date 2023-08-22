@@ -2,18 +2,63 @@ using Images, ImageIO
 using Serialization
 using MiniFB
 
-const Image = Matrix{UInt8}
+# const Image = Matrix{UInt8}
 
-const Palette{N} = NTuple{N,UInt32}
+# const Palette{N} = NTuple{N,UInt32}
 
-mutable struct ImageP
-    im::Image
-    palette::Palette
-end
+# mutable struct ImageP
+#     im::Image
+#     palette::Palette
+# end
 
 
 # include("types/typescore.jl")
 # include("types/typesrendering.jl")
+
+
+function getImage(dir::String; attachsize::Bool=false)
+    im = mfb_rgb.(load(dir))
+
+    if attachsize
+        return im, P(size(im)...)
+    else
+        return im
+    end
+end
+
+function getGridImage(dir::String,rows::Int,columns::Int; attachsize::Bool=true)
+    im = mfb_rgb.(load(dir))
+    height, width = size(im)
+
+    dh = div(height,rows); dw = div(width,columns)
+
+    if attachsize
+        return [(im[1+(h-1)*dh:h*dh,1+(w-1)*dw:w*dw],P(dh,dw)) 
+            for w in 1:columns, h in 1:rows]
+    else
+        return [im[1+(h-1)*dh:h*dh,1+(w-1)*dw:w*dw] 
+            for w in 1:columns, h in 1:rows]
+    end
+end
+
+function getGridImage(dir::String,tilesize::Int; attachsize::Bool=true)
+    im = mfb_rgb.(load(dir))
+    height, width = size(im)
+
+    nh = div(height,tilesize); nw = div(width,tilesize)
+
+    if attachsize
+        return [(im[1+(h-1)*tilesize:h*tilesize,1+(w-1)*tilesize:w*tilesize],
+            P(tilesize,tilesize)) for w in 1:nw, h in 1:nh]
+    else
+        return [im[1+(h-1)*tilesize:h*tilesize,1+(w-1)*tilesize:w*tilesize] 
+            for w in 1:nw, h in 1:nh]
+    end
+end
+
+
+
+
 
 function fixBG!(img::Matrix{RGBA{N0f8}})
     bg = img[1]
@@ -211,7 +256,7 @@ function replaceImage(dir::String,nh::Int,nw::Int,name::String,newname::String)
 end
 
 function replaceSprite(dir::String,nh::Int,nw::Int)
-    im = Pokemon.getImage(dir*".png")
+    im = getImage(dir*".png")
 
     dh,dw = size(im); dh = Int(dh/nh); dw = Int(dw/nw)
 
@@ -236,7 +281,8 @@ function replaceSprites(dir::String,nh::Int,nw::Int)
     for file in readdir(dir)
         d = joinpath(dir,file)
 
-        f = mkdir(joinpath(dir,file[1:end-3]))
+        f = joinpath(dir,file[1:end-3])
+        mkdir(f)
 
         im = getImage(d)
 
@@ -331,18 +377,18 @@ end
 #     serialize(joinpath("im/sprites/npcs",dir,"palette.p"),Pokemon.Palette(p_))
 # end
 
-for i in 1:151
-    dir = "im/pkmn/$i"
+# for i in 1:151
+#     dir = "im/pkmn/$i"
 
-    for f in readdir(dir)
-        if occursin(".p",f)
-            p = deserialize(joinpath(dir,f))
+#     for f in readdir(dir)
+#         if occursin(".p",f)
+#             p = deserialize(joinpath(dir,f))
 
-            serialize(joinpath(dir,f),Pokemon.Palette(collect(p)))
-        elseif occursin(".im",f)
-            p = deserialize(joinpath(dir,f))
+#             serialize(joinpath(dir,f),Pokemon.Palette(collect(p)))
+#         elseif occursin(".im",f)
+#             p = deserialize(joinpath(dir,f))
 
-            serialize(joinpath(dir,f),Pokemon.Image(p))
-        end
-    end
-end
+#             serialize(joinpath(dir,f),Pokemon.Image(p))
+#         end
+#     end
+# end

@@ -17,13 +17,13 @@ function queueSetupActions!(game::GameState,state::BattleStateWild)
 
     sortPriority!(state.actionqueue,state.env.room.trick)
 
-    if typeof(state[1].command) == CommandAttack
+    if state[1].command isa CommandAttack
         state[1].attack = state[1].pkmn.attacks[state[1].command.n]
     else
         state[1].attack = Attack()
     end
 
-    if typeof(state[2].command) == CommandAttack
+    if state[2].command isa CommandAttack
         state[2].attack = state[2].pkmn.attacks[state[2].command.n]
     else
         state[2].attack = Attack()
@@ -32,18 +32,26 @@ end
 
 function queueSetupAnimation!(game::GameState,state::BattleStateWild)
     command  = state[state.actionqueue[1].user].command
-
-    if typeof(command) == CommandAttack
+    
+    if command isa CommandAttack
         queueAttack!(
-            game,state,state[state.actionqueue[1].user],
-            state[state.actionqueue[1].target],state.actionqueue[1].target,
+            game,state,
+            state[state.actionqueue[1].user],
+            state[state.actionqueue[1].target],
+            state.actionqueue[1].target,
             state.actionqueue[1].user == 1 ? :p1 : :p2
         )
-    elseif typeof(command) == CommandItem
-        queueItem!(state)
-    elseif typeof(command) == CommandSwitch
+    elseif command isa CommandItem
+        queueItem!(
+            game,state,
+            state.actionqueue[1].user,
+            state[command.target],
+            command.item,
+            state.actionqueue[1].user == 1 ? :p1 : :p2
+        )
+    elseif command isa CommandSwitch
         queueSwitch!(state)
-    else typeof(command) == CommandFlee
+    elseif command isa CommandFlee
         queueFlee!(state,state[state.actionqueue[1].user])
     end
 
@@ -53,6 +61,7 @@ end
 
 function queueAttack!(game::GameState,state::BattleState,
         attacker::PkmnBattle,defender::PkmnBattle,target::Int,id::Symbol)
+    
     attacker.hit = getHit(state,attacker,defender)
     attacker.crit = getCrit(attacker,defender)
     attacker.eff = getEff(attacker,defender)
@@ -126,9 +135,76 @@ function queueStatusCond!(state::BattleState)
     end
 end
 
-function queueItem!(state::BattleState)
-    0
+
+
+
+
+function queueItem!(game::GameState,state::BattleState,
+        user::Int,target::PkmnBattle,item::ItemType,id::Symbol)
+    
+    push!(state.animqueue,BattleAnimation(
+        id,30,"$(game.trainer.name) setzt\\"*
+            "$(game.str[2][getInvSlotID(game,game.input.battlebags)]) ein.",
+        banimEmpty!,0
+    ))
+
+    if item isa MedicineHealth
+        queueMedicine!(game,state,user,target,item,id)
+    elseif item isa Pokeball
+        queueBall!(game,state,target,item,id)
+    end
 end
+
+function queueBall!(game::GameState,state::BattleState,target::PkmnBattle,
+        ball::ItemType,id::Symbol)
+
+    push!(state.animqueue,BattleAnimation(
+        id,240,"$(game.trainer.name) setzt\\"*
+            "$(game.str[2][getInvSlotID(game,game.input.battlebags)]) ein.",
+        bthrowBall!,2
+    ))
+
+    x = *(
+        3*target.pkmn.stats.hp-2*target.pkmn.stats.rv[1],
+        100,    # catchrate FIX
+        ball.catchrate,
+        1+0.5*in(target.pkmn.status,[0x01,0x02,0x03])
+            +1*in(target.pkmn.status,[0x04,0x05]),
+        1/(3*target.pkmn.stats.hp)
+    )
+
+    y = trunc(UInt16,65535/sqrt(sqrt(255/x)))
+
+    w = 0
+
+    for _ in 1:4
+        if y <= rand(UInt16)
+            break
+        end
+        
+        w += 1
+    end
+
+    success = (w == 4)
+
+    # push!(state.animqueue,BattleAnimation(
+    #     id,60*w,"",bwiggleBall!,2
+    # ))
+
+    # if success
+    #     push!(state.animqueue,BattleAnimation(
+    #         id,60*w,"",bcaught!,2
+    #     ))
+    # else
+    #     push!(state.animqueue,BattleAnimation(
+    #         id,60*w,"",bescape!,2
+    #     ))
+    # end
+end
+
+
+
+
 
 function queueSwitch!(state::BattleState)
     0

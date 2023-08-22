@@ -111,9 +111,9 @@ function drawBattleIntro!(game::GameState; s=Settings())
         drawBattleBase!(game; s=s)
     elseif game.n.c[:battleintro].c <= 32
         game.im.postprocess.args = (24+80,game.n.c[:battleintro].c)
-    elseif game.n.c[:battleintro].c <= 56
+    elseif game.n.c[:battleintro].c <= 58
         game.im.postprocess.args = (24+80,2*game.n.c[:battleintro].c-32)
-    elseif game.n.c[:battleintro].c == 82
+    elseif game.n.c[:battleintro].c == 80
         killCounter!(game,:battleintro)
 
         game.im.postprocess.active = false

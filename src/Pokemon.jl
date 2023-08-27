@@ -93,7 +93,7 @@ function play()
 
     while true
         try
-            begin
+            begin   
             # @time begin
                 game.n.frame += 0x01
 

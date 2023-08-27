@@ -159,7 +159,7 @@ function queueBall!(game::GameState,state::BattleState,target::PkmnBattle,
         ball::ItemType,id::Symbol)
 
     push!(state.animqueue,BattleAnimation(
-        id,240,"$(game.trainer.name) setzt\\"*
+        id,160,"$(game.trainer.name) setzt\\"*
             "$(game.str[2][getInvSlotID(game,game.input.battlebags)]) ein.",
         bthrowBall!,2
     ))
@@ -181,15 +181,24 @@ function queueBall!(game::GameState,state::BattleState,target::PkmnBattle,
         if y <= rand(UInt16)
             break
         end
-        
+
         w += 1
+
+        push!(state.animqueue,BattleAnimation(
+            id,60,"",bwiggleBall!,w
+        ))
     end
 
     success = (w == 4)
 
-    # push!(state.animqueue,BattleAnimation(
-    #     id,60*w,"",bwiggleBall!,2
-    # ))
+    if !success
+        push!(state.animqueue,BattleAnimation(
+            id,60,"Mist! Das wilde Pokémon hat sich befreit.",
+            bbreakBall!,w
+        ))
+    else
+        0
+    end
 
     # if success
     #     push!(state.animqueue,BattleAnimation(

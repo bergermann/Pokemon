@@ -186,7 +186,7 @@ function bxpAnimLevelUp!(game::GameState,levelups::Int,xpnext::Int,xplevel::Int)
 end
 
 function bthrowBall!(game::GameState,w::Int)
-    createSprite!(game,:ball,:layer4,P(65+24,0*20+16),1,
+    createSprite!(game,:ball,:layer4,P(82+24,0*20+16),1,
         getSprite("im/battle/balls/$(game.battle.state[1].command.item.id)",2);
         active=true)
 
@@ -199,6 +199,9 @@ function bthrowBall!(game::GameState)
         game.im.sprites[:ball].pos.w += 4
         game.im.sprites[:ball].pos.h =
             trunc(Int,(game.im.sprites[:ball].pos.w-(135+16))^2/300+(21+24))
+        if game.n.c[:throwball].c == 1
+            println(game.im.sprites[:ball].pos.h)
+        end
     elseif game.n.c[:throwball].c == 60
         updateSprite!(game.im.sprites[:ball],2)
     elseif game.n.c[:throwball].c == 70
@@ -215,13 +218,56 @@ function bthrowBall!(game::GameState)
         game.im.sprites[:ball].pos.h -= 1
     elseif 140 < game.n.c[:throwball].c <= 150
         game.im.sprites[:ball].pos.h += 1
-    elseif game.n.c[:throwball].c == 240
+    elseif game.n.c[:throwball].c == 160
         killCC!(game,:throwball)
 
         return
     end
 
     game.n.c[:throwball].c += 1
+end
+
+function bwiggleBall!(game::GameState,w::Int)
+    createCC!(game,:wiggleball,bwiggleBall!,((w%2==0 ? Int8(1) : Int8(-1)),);
+        active=true,n=1)
+end
+
+function bwiggleBall!(game::GameState,dir::Int8)
+    if game.n.c[:wiggleball].c <= 15
+        if game.n.c[:wiggleball].c%5 == 0
+            game.im.sprites[:ball].pos.w += dir
+        end
+    elseif game.n.c[:wiggleball].c <= 30
+        if game.n.c[:wiggleball].c%5 == 0
+            game.im.sprites[:ball].pos.w -= dir
+        end
+    elseif game.n.c[:wiggleball].c == 60
+        killCC!(game,:wiggleball)
+
+        return
+    end
+
+    game.n.c[:wiggleball].c += 1
+end
+
+function bbreakBall!(game::GameState,w::Int)
+    createCC!(game,:breakball,bbreakBall!,();
+        active=true,n=1)
+end
+
+function bbreakBall!(game::GameState)
+    if game.n.c[:breakball].c == 1
+        updateSprite!(game.im.sprites[:ball],2)
+    elseif game.n.c[:breakball].c == 20
+        game.im.sprites[:pkmn2].active=true
+    elseif game.n.c[:breakball].c == 30
+        killSprite!(game,:ball)
+        killCC!(game,:breakball)
+
+        return
+    end
+
+    game.n.c[:breakball].c += 1
 end
 
 

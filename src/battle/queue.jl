@@ -183,21 +183,26 @@ function queueBall!(game::GameState,state::BattleState,target::PkmnBattle,
         end
 
         w += 1
+        
+        if w == 4
+            break
+        end
 
         push!(state.animqueue,BattleAnimation(
             id,60,"",bwiggleBall!,w
         ))
     end
 
-    success = (w == 4)
-
-    if !success
+    if w == 4
+        push!(state.animqueue,BattleAnimation(
+            id,60,"Toll! $(getPkmnName(game,target.pkmn)) wurde gefangen.",
+            bcaughtBall!,w
+        ))
+    else
         push!(state.animqueue,BattleAnimation(
             id,60,"Mist! Das wilde Pokémon hat sich befreit.",
             bbreakBall!,w
         ))
-    else
-        0
     end
 
     # if success
@@ -244,6 +249,7 @@ function queueFlee!(state::BattleState,user::PkmnBattle)
 end
 
 function queueCheckStatus!(state::BattleStateWild)
+    println("check")
     F = false
 
     if state[1].pkmn.stats.hp == 0
@@ -264,6 +270,34 @@ function queueCheckStatus!(state::BattleStateWild)
     end
 
     if state[2].pkmn.stats.hp == 0
+        F = false
+
+        for i in eachindex(findall(x->x.id==:p2,
+                state.actionqueue[1:state.actionqueue.idx]))
+            popat!(state.actionqueue,:p2)
+        end
+
+        push!(state.animqueue,BattleAnimation(
+            :p2,120,"$(state[2].name) wurde besiegt.",bfaint!,2
+        ))
+
+        push!(state.animqueue,BattleAnimation(
+            :p1,60,"$(state[1].name) erhält $(calcXpDrop1(state,state[1],state[2])) E.-Punkte.",
+            banimEmpty!,1
+        ))
+
+        state[2].pkmn.stats.hp = -1
+
+        if state[1].pkmn.stats.level < 0x64
+            queueCheckXp!(state)
+        end
+
+        state.stage = 251
+
+        F = true
+    end
+
+    if state.caught
         F = false
 
         for i in eachindex(findall(x->x.id==:p2,

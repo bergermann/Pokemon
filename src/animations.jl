@@ -84,7 +84,8 @@ function animBattlePhaseWild!(game::GameState)
             stateQuitBattlePhase!(game)
 
             createCC!(game,:scenet,sceneTransition!,
-                (32,8,stateEndBattle!,(),stateInitMapCtrls!,()); active=true,n=1)
+                (32,8,stateEndBattle!,(),stateInitMapCtrls!,());
+                active=true,n=1)
 
             return
         end

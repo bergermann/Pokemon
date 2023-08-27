@@ -334,8 +334,11 @@ mutable struct BattleStateWild <: BattleState
     animqueue::ArrayList{BattleAnimation}
     actionqueue::ArrayList{BattleAction}
 
+    caught::Bool
+
     function BattleStateWild(counters,turn,env,pkmn1,pkmn2)
-        new(counters,turn,0,env,pkmn1,pkmn2,ArrayList(BattleAnimation,32),ArrayList(BattleAction,8))
+        new(counters,turn,0,env,pkmn1,pkmn2,
+            ArrayList(BattleAnimation,32),ArrayList(BattleAction,8),false)
     end
 end
 

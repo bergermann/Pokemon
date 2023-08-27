@@ -270,6 +270,31 @@ function bbreakBall!(game::GameState)
     game.n.c[:breakball].c += 1
 end
 
+function bcaughtBall!(game::GameState,w::Int)
+    createCC!(game,:caughtball,bcaughtBall!,();
+        active=true,n=1)
+end
+
+function bcaughtBall!(game::GameState)
+    if game.n.c[:caughtball].c == 1
+        game.im.sprites[:ball].colortransform.active = true
+        game.im.sprites[:ball].colortransform.func = scaleColor
+        game.im.sprites[:ball].colortransform.args = (0x0a0a0a,0x0a,0x01)
+    elseif game.n.c[:caughtball].c <= 32
+        if game.n.c[:caughtball].c%4 == 0
+            game.im.sprites[:ball].colortransform.args =
+                (0x0a0a0a,0x0a,UInt8(game.n.c[:caughtball].c/4))
+        end
+    elseif game.n.c[:caughtball].c == 60
+        killSprite!(game,:ball)
+        killCC!(game,:caughtball)
+
+        return
+    end
+
+    game.n.c[:caughtball].c += 1
+end
+
 
 
 

@@ -34,14 +34,10 @@ function stateSetupBattle!(game::GameState)
 end
 
 function stateBattleIntroDialogue!(game::GameState)
-    game.battle.state.stage = 1
     game.dialogue.callback.func = emptyCallback
     game.dialogue.callback.args = ()
-
-    game.input.battle1 = true
-    game.draw.battle1 = true
-
-    game.im.sprites[:cursor1].active = true
+    
+    stateEndBattlePhase!(game)
 end
 
 function stateBattleOutroDialogue!(game::GameState)
@@ -104,6 +100,7 @@ end
 function stateEndBattlePhase!(game::GameState)
     stateBattleStage!(game,1)
 
+    game.input.inputlock = false
     game.input.battle1 = true
     game.draw.battle1 = true
     
@@ -115,6 +112,7 @@ end
 function stateQuitBattlePhase!(game::GameState)
     stateBattleStage!(game,0)
 
+    game.input.inputlock = true
     game.input.battle1 = false
     
     game.im.sprites[:cursor1].active = false

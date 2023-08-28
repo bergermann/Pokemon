@@ -70,7 +70,7 @@ function animBattlePhaseWild!(game::GameState)
     # -3: exit queue
 
     if game.n.c[:animbattle].c == -1
-        F = queueCheckStatus!(game.battle.state)
+        F = queueCheckStatus!(game,game.battle.state)
 
         if F
             game.n.c[:animbattle].c = 0
@@ -78,7 +78,8 @@ function animBattlePhaseWild!(game::GameState)
             return
         end
 
-        if game.battle.state.stage == 250 || game.battle.state.stage == 251
+        if game.battle.state.stage == 250 || game.battle.state.stage == 251 ||
+                game.battle.state.stage == 252
             game.input.inputlock = true
 
             stateQuitBattlePhase!(game)
@@ -120,7 +121,7 @@ function animBattlePhaseWild!(game::GameState)
         return
     end
 
-    queueCheckStatus!(game.battle.state)
+    queueCheckStatus!(game,game.battle.state)
 
     if game.n.c[:animbattle].c == 1
         if game.battle.state.animqueue[1].str != ""

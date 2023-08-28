@@ -289,6 +289,8 @@ function bcaughtBall!(game::GameState)
         killSprite!(game,:ball)
         killCC!(game,:caughtball)
 
+        game.battle.state.caught = true
+
         return
     end
 

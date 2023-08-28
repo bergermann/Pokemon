@@ -195,7 +195,7 @@ function calcXpDrop1(state::BattleState,attacker::PkmnBattle,defender::PkmnBattl
     )
 end
 
-function pkmnName(game,pkmn::Pkmn)
+function pkmnName(game::GameState,pkmn::Pkmn)
     if pkmn.name == ""
         return game.pkmndata.name[pkmn.id]
     end
@@ -203,10 +203,22 @@ function pkmnName(game,pkmn::Pkmn)
     return pkmn.name
 end
 
-getPkmnName(game,pkmn::Pkmn) = pkmnName(game,pkmn)
+getPkmnName(game::GameState,pkmn::Pkmn) = pkmnName(game,pkmn)
 
 function activePkmn(game::GameState)
     return game.trainer.pokemon[
         findfirst(x->x.stats.hp>0x0000,game.trainer.pokemon.data)
     ]
+end
+
+
+
+function addPokemon!(trainer::Trainer,pkmn::Pkmn)
+    if trainer.pokemon.idx < 6
+        push!(trainer.pokemon,pkmn)
+    else
+        b = findfirst(x->x.idx<30,trainer.boxes)
+
+        push!(trainer.boxes[b],pkmn)
+    end
 end

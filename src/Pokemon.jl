@@ -40,7 +40,8 @@ function play()
         [],
         PkmnData(),
 
-        Trainer("Void",0x0000,0x02,ArrayList(Pkmn,6),Inventory(),[],falses(151)),
+        Trainer("Void",0x0000,0x02,ArrayList(Pkmn,6),Inventory(),
+            [ArrayList(Pkmn,30) for _ in 1:8],[],falses(151)),
 
         map1,
         Position(0x00006e,0x000013),

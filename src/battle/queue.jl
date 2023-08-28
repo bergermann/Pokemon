@@ -248,8 +248,7 @@ function queueFlee!(state::BattleState,user::PkmnBattle)
     end
 end
 
-function queueCheckStatus!(state::BattleStateWild)
-    println("check")
+function queueCheckStatus!(game::GameState,state::BattleStateWild)
     F = false
 
     if state[1].pkmn.stats.hp == 0
@@ -306,21 +305,31 @@ function queueCheckStatus!(state::BattleStateWild)
         end
 
         push!(state.animqueue,BattleAnimation(
-            :p2,120,"$(state[2].name) wurde besiegt.",bfaint!,2
-        ))
-
-        push!(state.animqueue,BattleAnimation(
             :p1,60,"$(state[1].name) erhält $(calcXpDrop1(state,state[1],state[2])) E.-Punkte.",
             banimEmpty!,1
         ))
-
-        state[2].pkmn.stats.hp = -1
 
         if state[1].pkmn.stats.level < 0x64
             queueCheckXp!(state)
         end
 
-        state.stage = 251
+        if game.trainer.pokemon.idx < 6
+            push!(state.animqueue,BattleAnimation(
+                :p1,60,"$(state[2].name) wurde dem Team\\hinzugefügt.",
+                banimEmpty!,1
+            ))
+        else
+            push!(state.animqueue,BattleAnimation(
+                :p1,60,"$(state[2].name) wurde auf den PC\\übertragen.",
+                banimEmpty!,1
+            ))
+        end
+
+        state.caught = false
+
+        addPokemon!(game.trainer,state[2].pkmn)
+
+        state.stage = 252
 
         F = true
     end

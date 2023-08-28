@@ -57,7 +57,9 @@ mutable struct Trainer
     gender::UInt8
 
     pokemon::ArrayList{Pkmn}
-    inventory::Inventory   #placeholder
+    inventory::Inventory
+
+    boxes::Array{ArrayList{Pkmn}}
 
     badges::Vector{UInt8}
     pokedex::Vector{Bool}

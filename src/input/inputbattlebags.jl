@@ -171,8 +171,8 @@ function itemBattleActionItems!(game::GameState)
 end
 
 function itemBattleActionBalls!(game::GameState)
-    game.input.battlebag = false
     game.input.inputlock = true
+    game.input.battlebag = false
 
     if game.input.choice.sel == 1
         createCC!(game,:scenet,sceneTransition!,

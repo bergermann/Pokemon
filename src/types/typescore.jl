@@ -288,13 +288,19 @@ function swapfields!(a::ArrayList,fieldname::Symbol,id1::Symbol,id2::Symbol)
     return
 end
 
+function Base.permute!(a::ArrayList,p::AbstractVector)
+    @views permute!(a.data[1:a.idx],p)
+end
+
 
 
 
 function Base.print(a::ArrayList)
     println("")
     println("Type: ",eltype(a.data))
-    println("Leng: ",a.idx)
+    println("Len:  ",a.idx)
+    println("Max:  ",length(a.data))
+
     for i in 1:a.idx
         println(a.data[i])
     end

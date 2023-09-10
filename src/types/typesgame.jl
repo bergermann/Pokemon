@@ -308,8 +308,10 @@ mutable struct Battle
 
     menu::MenuBattle
 
+    teamperm::Vector{Int}
+
     function Battle()
-        new(false,Dialogue(),BattleStateNone(),MenuBattle())
+        new(false,Dialogue(),BattleStateNone(),MenuBattle(),[])
     end
 end
 
@@ -374,61 +376,15 @@ struct Options
     diabox::UInt8
     battleanim::Bool
 
+    lang::UInt8
+
     function Options()
-        new(0x01,0x01,false)
+        new(0x01,0x01,false,0x01)
     end
 end
 
 
 
-
-
-mutable struct TileMap
-    water::Matrix{UInt16}
-    layer1::Matrix{UInt16}
-    layer2::Matrix{UInt16}
-    layer3::Matrix{UInt16}
-    layer4::Matrix{UInt16}
-    
-    collision::Matrix{UInt16}
-
-    function TileMap(; s::Settings=Settings())
-        new([zeros(UInt32,s.Nh,s.Nw) for _ in eachindex(fieldnames(TileMap))]...)
-    end
-end
-
-mutable struct Map
-    id::UInt8
-    environment::Vector{Symbol}
-    path::String
-
-    areas::Vector
-    exits::Vector{Tuple{UInt8,Position}}  #(id,transform)
-    tiles::Dict{UInt16,Matrix{UInt32}}
-    tilemap::TileMap
-
-    str::Vector{String}
-
-    function Map(id::UInt8)
-        new(
-
-            id,                                                             # id
-            [:layer1,:layer2,:layer3,:layer4],      # env
-            "$id",                                                          # path
-
-            [],                                                             # area
-            [],                                                             # exits
-            getTiles("tiles_exterior"),                                     # tiles
-            getTileMap("$id",[:layer1,:layer2,:layer3,:layer4,:collision]), # tilemap
-            
-            loadMapStrings(id)                                              # str
-        )
-    end
-
-    function Map(id,environment,path,areas,exits,tiles,tilemap,str)
-        new(id,environment,path,areas,exits,tiles,tilemap,str)
-    end
-end
 
 mutable struct Locks
     move::Bool
@@ -465,7 +421,7 @@ mutable struct GameState
 
     trainer::Trainer
 
-    map::Map
+    map::Maps
     pos::Position
     movepos::Position
     direction::Int

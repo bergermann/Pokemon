@@ -8,6 +8,10 @@ function stateInitBattle!(game::GameState)
     game.input.map = false
     game.input.move = false
 
+    game.battle.teamperm = collect(1:game.trainer.pokemon.idx)
+
+    activePkmn!(game)
+
     createCounter!(game,:battleintro)
     createCallback!(game,:battleintro,true,animBattleEntry1!,())
 end
@@ -45,6 +49,10 @@ function stateBattleOutroDialogue!(game::GameState)
     game.dialogue.callback.args = ()
 end
 
+
+
+
+
 function stateBattleAttackSelected!(game::GameState)
     stateBattleStage!(game,10)
 
@@ -79,6 +87,34 @@ function stateBattleItemSelected!(game::GameState,target::UInt,item::ItemType)
     
     game.input.battle1 = false
     game.input.battle2 = false
+    # game.input.battle1menu.select = 0
+
+    game.draw.battle1 = false
+    game.draw.battle2 = false
+
+    game.im.sprites[:cursor1].active = false
+    game.im.sprites[:cursor2].active = false 
+            
+    flushLayer!(game,:layer4,Position(24+1+112,16+1),Position(48,240))
+    flushLayer!(game,:layer5,Position(24+1+112,16+1),Position(48,240))
+
+    game.callbacks[:wiggle].active = false
+    game.callbacks[:animbattle].active = true
+    game.n.c[:animbattle].c = -1
+
+    queueSetupActions!(game,game.battle.state)
+end
+
+function stateBattlePkmnSelected!(game::GameState)
+    stateBattleStage!(game,10)
+    
+    game.battle.state.pkmn1.command = 
+        CommandSwitch(Int(game.input.menu.menupkmn.select))
+
+    game.battle.state.pkmn2.command = battleChoiceWild(game)
+    
+    game.input.battle1 = false
+    game.input.battle2 = false
     game.input.battle1menu.select = 0
 
     game.draw.battle1 = false
@@ -96,6 +132,10 @@ function stateBattleItemSelected!(game::GameState,target::UInt,item::ItemType)
 
     queueSetupActions!(game,game.battle.state)
 end
+
+
+
+
 
 function stateEndBattlePhase!(game::GameState)
     stateBattleStage!(game,1)
@@ -120,7 +160,7 @@ function stateQuitBattlePhase!(game::GameState)
     game.callbacks[:animbattle].active = false
     
     killCC!(game,:animbattle)
-    killCC!(game,:wiggle)
+    killCallback!(game,:wiggle)
 end
 
 function stateBattleFlee!(game::GameState)
@@ -149,8 +189,6 @@ function flee!(game::GameState,state::BattleStateWild)
     end
     
     stateBattleStage!(game,10)
-
-    game.callbacks[:wiggle].active = false
 
     state.pkmn1.command = CommandFlee(
         (state.pkmn1.pkmn.stats.rv[6]*128/max(state.pkmn2.pkmn.stats.rv[6],1)+
@@ -213,9 +251,29 @@ function stateEndBattle!(game::GameState)   #,state::BattleStateWild)
     popall!(game.battle.state.actionqueue)
     popall!(game.battle.state.animqueue)
 
+    println("resetting team order")
+    println(game.trainer.pokemon)
+    # permute!(game.trainer.pokemon,game.battle.teamperm)
+
+    game.trainer.pokemon.data = game.trainer.pokemon.data[game.battle.teamperm]
+
+    println(game.trainer.pokemon)
+
     stateInitDrawMap!(game)
     
     game.im.sprites[:main].active = true
+end
+
+function stateBattleCtrls!(game::GameState)
+    stateBattleStage!(game,1)
+
+    game.input.inputlock = false
+    game.input.battle1 = true
+
+    game.draw.battle1 = true
+    
+    game.im.sprites[:cursor1].active = true
+    game.callbacks[:wiggle].active = true
 end
 
 
@@ -226,7 +284,7 @@ function stateBattleBagsOpen!(game::GameState)
     game.draw.battle1 = false
 
     killCC!(game,:animbattle)
-    killCC!(game,:wiggle)
+    killCallback!(game,:wiggle)
     
     popall!(game.im.sprites)
     flushLayer!(game,:layer4)
@@ -254,4 +312,36 @@ function stateBattleBagsClose!(game::GameState)
     drawBattleBase!(game)
 end
 
+
+
+
+
+function stateBattlePkmnOpen!(game::GameState)
+    game.draw.battle1 = false
+    # game.input.menupkmn = MenuPkmn()
+
+    killCC!(game,:animbattle)
+    killCallback!(game,:wiggle)
+    
+    popall!(game.im.sprites)
+    flushLayer!(game,:layer4)
+
+    createCallback!(game,:wiggle,animMenuPkmnWiggle!,(); active=true)
+
+    loadTeamStrings!(game)
+    drawMenuPkmn!(game)
+end
+
+# function stateBattlePkmnCtrls!(game::GameState)
+#     game.input.inputlock = false
+#     game.input.menu.pkmn = true
+# end
+
+function stateBattlePkmnClose!(game::GameState)
+    popall!(game.im.sprites)
+
+    killCallback!(game,:wiggle)
+
+    drawBattleBase!(game)
+end
 

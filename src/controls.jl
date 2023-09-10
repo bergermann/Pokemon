@@ -10,11 +10,6 @@ include("input/inputbattlebags.jl")
 
 
 
-# FIX: move to somewhere sensible
-mapid = Base.ImmutableDict(
-    0x00 => map0,
-    0x01 => map1
-)
 
 
 function onpress(window, button, mod, isPressed)::Cvoid
@@ -73,7 +68,7 @@ end
 
 
 function changeMap!(game::GameState,exit::Tuple{UInt8,Position})
-    game.map = mapid[exit[1]]
+    game.map = maps[exit[1]]
     game.pos = posAdd(game.pos,exit[2])
     drawMap!(game)
     # popall!(game.sp)

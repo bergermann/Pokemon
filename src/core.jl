@@ -182,3 +182,18 @@ function resetChoice!(game::GameState)
     game.input.choice.func = emptyCallback
     game.input.choice.args = ()
 end
+
+lang = Base.ImmutableDict(
+    0x01 => "ger",
+    0x02 => "eng",
+    0x03 => "fre",
+    0x04 => "esp",
+)
+
+function loadStrings!(game::GameState,paths::String...; reset::Bool=false)
+    reset && (game.str = [])
+
+    for p in paths
+        push!(game.str,readlines(joinpath("str",lang[game.options.lang],p*".txt")))
+    end
+end

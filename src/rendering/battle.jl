@@ -76,7 +76,8 @@ function drawBattleBase!(game::GameState; s=Settings())
     flushLayer!(game,:layer3)
     flushLayer!(game,:layer4)
 
-    createCC!(game,:wiggle,animWiggleBattle!,(); active=false)
+    createCallback!(game,:wiggle,animWiggleBattle!,())
+    # createCC!(game,:wiggle,animWiggleBattle!,(); active=false)
     createCC!(game,:animbattle,animBattlePhaseWild!,(); active=false,n=-1)
 
     bg = deserialize("im/battle/backgrounds/grass1.imp")

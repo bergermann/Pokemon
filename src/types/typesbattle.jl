@@ -7,11 +7,11 @@ mutable struct CommandAttack <: BattleCommand
 end
 
 mutable struct CommandSwitch <: BattleCommand
-    n::UInt
+    n::Int
 end
 
 mutable struct CommandItem <: BattleCommand
-    target::UInt
+    target::Int
     item::ItemType
 end
 

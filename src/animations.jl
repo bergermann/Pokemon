@@ -38,29 +38,19 @@ function animBattleEntry1!(game::GameState)
 end
 
 function animWiggleBattle!(game::GameState)
-    if !(game.input.battle1 || game.input.battle2)
-        if game.n.c[:wiggle].c == 0
-            return
-        end
+    # game.n.c[:wiggle].c = 0
+    # game.im.sprites[:pkmn1].pos.h = 90
+    # game.im.sprites[:tagown].pos.h = 72+24
 
-        game.n.c[:wiggle].c = 0
+    if game.n.frame%0x20 == 0x08
+        game.im.sprites[:pkmn1].pos.h = 89
+    elseif game.n.frame%0x20 == 0x10
+        game.im.sprites[:tag1].pos.h = 95
+    elseif game.n.frame%0x20 == 0x18
         game.im.sprites[:pkmn1].pos.h = 90
-        game.im.sprites[:tagown].pos.h = 72+24
+    elseif game.n.frame%0x20 == 0x00
+        game.im.sprites[:tag1].pos.h = 96
     end
-
-    if game.n.c[:wiggle].c == 7
-        game.im.sprites[:pkmn1].pos.h -= 1
-    elseif game.n.c[:wiggle].c == 15
-        game.im.sprites[:tag1].pos.h -= 1
-    elseif game.n.c[:wiggle].c == 23
-        game.im.sprites[:pkmn1].pos.h += 1
-    elseif game.n.c[:wiggle].c == 31
-        game.im.sprites[:tag1].pos.h += 1
-    elseif game.n.c[:wiggle].c == 32
-        game.n.c[:wiggle].c = 0
-    end
-
-    game.n.c[:wiggle].c += 1
 end
 
 function animBattlePhaseWild!(game::GameState)

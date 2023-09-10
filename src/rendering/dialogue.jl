@@ -1,15 +1,11 @@
 
 
 
-
 function loadDialogue(id::Int)
     return deserialize("im/menu/dialogue/$id.imp")
 end
 
 function drawDialogue!(game::GameState)
-    # game.im.layers.textbox[end-48-24+1:end-24,16+1:end-16] = 
-    #     game.im.diabox.palette[game.im.diabox.im]
-
     @views drawView!(game.im.layers.textbox[end-48-24+1:end-24,16+1:end-16],
         game.im.diabox.im[:,:],game.im.diabox.palette)
 

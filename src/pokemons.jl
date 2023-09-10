@@ -211,14 +211,32 @@ function activePkmn(game::GameState)
     ]
 end
 
+function activePkmn!(game::GameState)
+    idx = findfirst(x->x.stats.hp>0x0000,game.trainer.pokemon.data)
+
+    if idx == 1
+        return
+    end
+
+    swap!(game.trainer.pokemon,1,idx)
+    game.battle.teamperm[1], game.battle.teamperm[idx] = 
+        game.battle.teamperm[idx], game.battle.teamperm[1]
+
+    return
+end
 
 
-function addPokemon!(trainer::Trainer,pkmn::Pkmn)
-    if trainer.pokemon.idx < 6
-        push!(trainer.pokemon,pkmn)
+
+function addPokemon!(game::GameState,pkmn::Pkmn)
+    if game.trainer.pokemon.idx < 6
+        push!(game.trainer.pokemon,pkmn)
+
+        if game.battle.active
+            push!(game.battle.teamperm,length(game.battle.teamperm)+1)
+        end
     else
-        b = findfirst(x->x.idx<30,trainer.boxes)
+        b = findfirst(x->x.idx<30,game.trainer.boxes)
 
-        push!(trainer.boxes[b],pkmn)
+        push!(game.trainer.boxes[b],pkmn)
     end
 end

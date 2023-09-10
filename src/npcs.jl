@@ -41,9 +41,6 @@ function loadMoveNPCs!(game::GameState,d::Vector{Int})
             d[10]               # dialoguelen::Int
         )
     )
-
-    # createSprite!(game,Symbol("npc",d[1]),:layer2,getSpriteNPC(d[5]),
-    #     P(80+16*(d[2]-game.pos.h),128+16*(d[3]-game.pos.w)),d[4])
 end
 
 function loadNPCs!(game::GameState,mapid)
@@ -58,26 +55,6 @@ function loadNPCs!(game::GameState,mapid)
         loadMoveNPCs!(game,f2[i,:])
     end
 end
-
-# function getSpriteNPC(id::Int)
-#     if id == 0
-#         return Dict{Int,Tuple{Matrix{UInt32},Position}}(
-#             0 => (Array{Int}(undef,0,0),P(0,0)))
-#     end
-
-#     img = mfb_rgb.(load("im/npcs/$id.png"))
-
-#     d = Dict{Int,Tuple{Matrix{UInt32},Position}}(
-#         zip([2,1,3,6,10,5,9,7,11],
-#         [(img[:,1+16*i:16+16*i], P(32,16)) for i in 0:8])
-#     )
-
-#     d[4] = (reverse(d[3][1]; dims=2),d[3][2])
-#     d[8] = (reverse(d[7][1]; dims=2),d[7][2])
-#     d[12] = (reverse(d[11][1]; dims=2),d[11][2])
-
-#     return d
-# end
 
 function loadSpritesNPCs!(game::GameState)
     for i in 1:game.npcstatic.idx

@@ -50,7 +50,12 @@ function queueSetupAnimation!(game::GameState,state::BattleStateWild)
             state.actionqueue[1].user == 1 ? :p1 : :p2
         )
     elseif command isa CommandSwitch
-        queueSwitch!(state)
+        queueSwitch!(
+            game,state,
+            state.actionqueue[1].user,
+            command.n,
+            state.actionqueue[1].user == 1 ? :p1 : :p2
+        )
     elseif command isa CommandFlee
         queueFlee!(state,state[state.actionqueue[1].user])
     end
@@ -58,6 +63,10 @@ function queueSetupAnimation!(game::GameState,state::BattleStateWild)
     queueStatusCond!(state)
     queueWeather!(state)
 end
+
+
+
+
 
 function queueAttack!(game::GameState,state::BattleState,
         attacker::PkmnBattle,defender::PkmnBattle,target::Int,id::Symbol)
@@ -165,15 +174,20 @@ function queueBall!(game::GameState,state::BattleState,target::PkmnBattle,
     ))
 
     x = *(
-        3*target.pkmn.stats.hp-2*target.pkmn.stats.rv[1],
+        3*target.pkmn.stats.rv[1]-2*target.pkmn.stats.hp,
         100,    # catchrate FIX
         ball.catchrate,
         1+0.5*in(target.pkmn.status,[0x01,0x02,0x03])
             +1*in(target.pkmn.status,[0x04,0x05]),
-        1/(3*target.pkmn.stats.hp)
+        1/(3*target.pkmn.stats.rv[1])
     )
 
+    println("x: ",x)
+
+    x = min(x,255)
+
     y = trunc(UInt16,65535/sqrt(sqrt(255/x)))
+    println("y:  ",y)
 
     w = 0
 
@@ -220,9 +234,23 @@ end
 
 
 
-function queueSwitch!(state::BattleState)
-    0
+function queueSwitch!(game::GameState,state::BattleStateWild,user::Int,
+        target::Int,id::Symbol)
+    
+    push!(state.animqueue,BattleAnimation(
+        id,60,"Genug, $(getPkmnName(game,state[1].pkmn)).\\Komm zurück!",
+        bswitchOut!,user
+    ))
+    
+    push!(state.animqueue,BattleAnimation(
+        id,60,"Los, $(getPkmnName(game,game.trainer.pokemon[target])).",
+        bswitchIn!,user
+    ))
 end
+
+
+
+
 
 function queueFlee!(state::BattleState,user::PkmnBattle)
     if state.actionqueue[1].user == 1
@@ -247,6 +275,10 @@ function queueFlee!(state::BattleState,user::PkmnBattle)
         ))
     end
 end
+
+
+
+
 
 function queueCheckStatus!(game::GameState,state::BattleStateWild)
     F = false
@@ -327,7 +359,7 @@ function queueCheckStatus!(game::GameState,state::BattleStateWild)
 
         state.caught = false
 
-        addPokemon!(game.trainer,state[2].pkmn)
+        addPokemon!(game,state[2].pkmn)
 
         state.stage = 252
 

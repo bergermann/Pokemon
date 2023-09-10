@@ -301,6 +301,62 @@ end
 
 
 
+function bswitchOut!(game::GameState,user::Int)
+    createCC!(game,:switchout,bswitchOut!,();
+        active=true,n=1)
+end
+
+function bswitchOut!(game::GameState)
+    if game.n.c[:switchout].c == 30
+        killSprite!(game,:pkmn1)
+    elseif game.n.c[:switchout].c == 60
+        killSprite!(game,:tag1)
+        killCC!(game,:switchout)
+
+        return
+    end
+
+    game.n.c[:switchout].c += 1
+end
+
+function bswitchIn!(game::GameState,user::Int)
+    createCC!(game,:switchin,bswitchIn!,();
+        active=true,n=1)
+end
+
+function bswitchIn!(game::GameState)
+    if game.n.c[:switchin].c == 1
+        n = game.battle.state.pkmn1.command.n
+
+        swap!(game.trainer.pokemon,1,n)
+        game.battle.teamperm[1], game.battle.teamperm[n] = 
+            game.battle.teamperm[n], game.battle.teamperm[1]
+
+        game.battle.state.pkmn1 = PkmnBattle(game.trainer.pokemon[1],
+            getPkmnName(game,activePkmn(game)))
+
+        game.battle.state.pkmn1.command = CommandSwitch(n)
+    elseif game.n.c[:switchin].c == 30
+        createSprite!(game,:pkmn1,:layer2,Position(90,40),1,
+            getBattlerBack(game.battle.state.pkmn1.pkmn); active=true)
+
+        createSprite!(game,:tag1,:layer3,Position(72+24,126+16),1,
+            getSprite("im/battle/tagown.imp"); active=true)
+
+        drawBattleTagOwn!(game,game.battle.state.pkmn1.pkmn,
+            game.im.sprites[:tag1])
+    elseif game.n.c[:switchin].c == 60
+        killCC!(game,:switchin)
+
+        return
+    end
+
+    game.n.c[:switchin].c += 1
+end
+
+
+
+
 
 
 

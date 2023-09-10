@@ -13,6 +13,7 @@ include("types/typespkmn.jl")
 include("types/typesgame.jl")
 include("types/typesbattle.jl")
 include("types/typesnpc.jl")
+include("types/typesmap.jl")
 
 include("rendering/rendering.jl")
 include("battle/battle.jl")
@@ -43,7 +44,7 @@ function play()
         Trainer("Void",0x0000,0x02,ArrayList(Pkmn,6),Inventory(),
             [ArrayList(Pkmn,30) for _ in 1:8],[],falses(151)),
 
-        map1,
+        getMaps(0x01),
         Position(0x00006e,0x000013),
         Position(0x00006f,0x000013),
         2,

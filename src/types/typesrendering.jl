@@ -125,8 +125,7 @@ mutable struct Im
     frame::ImageP
     diabox::ImageP
 
-    tilesext::Dict
-    tilesint::Dict
+    tiles::Dict
     tile::Matrix{UInt32}
 
     sprites::ArrayList{Sprite}
@@ -146,7 +145,6 @@ mutable struct Im
             loadDialogue(2),
             
             getTiles("tiles_exterior"),
-            Dict(),
             zeros(UInt32,16,16),
 
             ArrayList(Sprite,128),
@@ -210,3 +208,18 @@ end
 
 
 
+
+
+mutable struct TileMap
+    water::Matrix{UInt16}
+    layer1::Matrix{UInt16}
+    layer2::Matrix{UInt16}
+    layer3::Matrix{UInt16}
+    layer4::Matrix{UInt16}
+    
+    collision::Matrix{UInt16}
+
+    function TileMap(; s=Settings())
+        new([zeros(UInt32,s.Nh,s.Nw) for _ in eachindex(fieldnames(TileMap))]...)
+    end
+end

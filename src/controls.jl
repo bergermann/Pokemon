@@ -67,20 +67,6 @@ end
 
 
 
-function changeMap!(game::GameState,exit::Tuple{UInt8,Position})
-    game.map = maps[exit[1]]
-    game.pos = posAdd(game.pos,exit[2])
-    drawMap!(game)
-    # popall!(game.sp)
-    # loadSpritesNPCs!(game)
-end
-
-function checkMapChange!(game::GameState)
-    if game.map.tilemap.collision[game.pos.h,game.pos.w] ∈ 0x14:0x3b
-        changeMap!(game,
-            game.map.exits[game.map.tilemap.collision[game.pos.h,game.pos.w]-19])
-    end
-end
 
 function mapAction!(game::GameState)
     b, npc = checkTileNPC(game)
@@ -129,8 +115,6 @@ function updateGame!(game::GameState,input::Input; s=Settings())
         sortHorizontal!(game.im.sprites)
 
         manageNPCs!(game)
-
-        checkMapChange!(game)
     end
 
     for i in 1:game.callbacks.idx

@@ -63,9 +63,9 @@ function checkWalkable(game::GameState,movepos::Position)
         end
     end
 
-    return (game.map.tilemap.collision[movepos.h,movepos.w] ∈ walkable ||
-        (0x14 <= game.map.tilemap.collision[movepos.h,movepos.w] <= 0x3b) ||
-        (0xc8 <= game.map.tilemap.collision[movepos.h,movepos.w] <= 0xdb))
+    return |(game.maps.map.tilemap.collision[movepos.h,movepos.w] ∈ walkable,
+        (0x14 <= game.maps.map.tilemap.collision[movepos.h,movepos.w] <= 0x3b),
+        (0xc8 <= game.maps.map.tilemap.collision[movepos.h,movepos.w] <= 0xdb))
 end
 
 function updateMovePos!(game::GameState,dir::Int)
@@ -78,7 +78,7 @@ function resetMovePos!(game::GameState)
 end
 
 function checkEncounter!(game::GameState)
-    if !(game.map.tilemap.collision[game.pos.h,game.pos.w] ∈ 0xc8:0xdb)
+    if !(game.maps.map.tilemap.collision[game.pos.h,game.pos.w] ∈ 0xc8:0xdb)
         return
     end
 
@@ -152,6 +152,8 @@ function inputMove!(game::GameState,input::Input)
 
         return
     end
+
+    checkMapChange!(game)
 
     game.n.c[:movemain].c = 0
 

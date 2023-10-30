@@ -2,20 +2,6 @@
 
 
 
-mutable struct TileMap
-    water::Matrix{UInt16}
-    layer1::Matrix{UInt16}
-    layer2::Matrix{UInt16}
-    layer3::Matrix{UInt16}
-    layer4::Matrix{UInt16}
-    
-    collision::Matrix{UInt16}
-
-    function TileMap(; s::Settings=Settings())
-        new([zeros(UInt32,s.Nh,s.Nw) for _ in eachindex(fieldnames(TileMap))]...)
-    end
-end
-
 mutable struct Exit
     targetid::UInt8
 
@@ -27,10 +13,15 @@ mutable struct Exit
     callback::CallbackFunction
 
     function Exit()
-        new(0x00,0x00,P(0,0),false,emptyCallback)
+        new(0x00,0x00,P(0,0),false,CallbackFunction())
     end
 
-    function Exit(targetid,transition,transform,absolute,callback)
+    function Exit(targetid,transition,transform,absolute,callback::Function)
+        new(targetid,transition,transform,absolute,CallbackFunction(callback))
+    end
+
+    function Exit(targetid,transition,transform,absolute,
+            callback::CallbackFunction)
         new(targetid,transition,transform,absolute,callback)
     end
 end
@@ -70,5 +61,5 @@ end
 
 mutable struct Maps
     map::Map
-    neighbours::Vector{Map}
+    neighbours::Vector{NamedTuple{(:map,:offset),Tuple{Map,Position}}}
 end

@@ -104,6 +104,10 @@ mutable struct CallbackFunction
         new(Symbol(),false,emptyCallback,())
     end
 
+    function CallbackFunction(func)
+        new(Symbol(),false,func,())
+    end
+
     function CallbackFunction(func,args)
         new(Symbol(),false,func,args)
     end

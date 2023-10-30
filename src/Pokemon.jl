@@ -10,10 +10,10 @@ include("types/typescore.jl")
 include("types/typesrendering.jl")
 include("types/typesinventory.jl")
 include("types/typespkmn.jl")
+include("types/typesmap.jl")
 include("types/typesgame.jl")
 include("types/typesbattle.jl")
 include("types/typesnpc.jl")
-include("types/typesmap.jl")
 
 include("rendering/rendering.jl")
 include("battle/battle.jl")
@@ -71,6 +71,8 @@ function play()
 
     Base.GC.@preserve game sceneTransition!
 
+    game.im.tiles[0xffff] = fill(0x010101,16,16)
+
     setInventoryTest!(game.trainer.inventory)
 
     push!(game.trainer.pokemon,generatePkmn(game,0x0001,0x14))
@@ -81,7 +83,7 @@ function play()
     game.input.move = true
 
     resetMovePos!(game)
-    loadNPCs!(game,game.map.id)
+    loadNPCs!(game,game.maps.map.id)
 
     stateInitDrawMap!(game)
 
@@ -95,8 +97,8 @@ function play()
 
     while true
         try
-            begin   
-            # @time begin
+            # begin   
+            @time begin
                 game.n.frame += 0x01
 
                 writeToBuffer!(b,game)

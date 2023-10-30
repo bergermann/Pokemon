@@ -421,7 +421,7 @@ mutable struct GameState
 
     trainer::Trainer
 
-    map::Maps
+    maps::Maps
     pos::Position
     movepos::Position
     direction::Int

@@ -153,7 +153,7 @@ function inputMove!(game::GameState,input::Input)
         return
     end
 
-    checkMapChange!(game)
+    checkMapExit!(game,game.movepos)
 
     game.n.c[:movemain].c = 0
 

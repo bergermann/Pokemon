@@ -3,9 +3,34 @@ function loadMap(game::GameState)
     # replace the map dict with these two functions
 end
 
-function getMap()
+function getMap(id::UInt8)
+    if game.maps.map.id == id
+        return game.maps.map
+    end
+
+    idx = findfirst(x.id==id,game.maps.neighbours)
+
+    if !isnothing(idx)
+        return game.maps.neighbours[idx].map
+    end
+
+    return maps[id]
     # replace the map dict with these two functions
 end
+
+function getMap(game::GameState,id::UInt8)
+    if game.maps.map.id == id
+        return game.maps.map
+    end
+
+    idx = findfirst(x.id==id,game.maps.neighbours)
+
+    if !isnothing(idx)
+        return game.maps.neighbours[idx].map
+    end
+end
+
+
 
 function getMaps(id::UInt8)
     map = maps[id]
@@ -16,15 +41,35 @@ end
 
 
 function setNeighbours!(game)
-        
+    n = game.maps.map.neighbours
+    n_ = game.maps.neighbours
+
+    idstarget = (x->x.id).(n)
+    idsstate = (x->x.map.id).(n_)
+
+    for i in eachindex(idstarget)
+        if !(idstarget[i] in idsstate)
+            push!(n_,(
+                map=getMap(idstarget[i]),
+                offset=n[i].offset
+            ))
+        end
+    end
+
+    game.maps.neighbours = game.maps.neighbours[
+        (x->findfirst(y->y.map.id==x.id,game.maps.neighbours)).(game.maps.map.neighbours)
+    ]
 end
 
 
 
 function checkMapExit!(game::GameState,movepos::Position)
+    println("Checking map exit")
+
     col = game.maps.map.tilemap.collision[movepos.h,movepos.w]
 
     if col ∈ 0x14:0x3b
+        println("Exiting map at exit $(col-0x13).")
         return game.maps.map.exits[col-0x13]
     end
 end
@@ -32,8 +77,19 @@ end
 
 
 function enterMap!(game::GameState,exit::Exit)
+    mapidx = findfirst(x->x.id==exit.targetid,
+        game.maps.neighbours)
+
+    if isnothing(mapidx)
+        game.maps = getMaps(exit.targetid)
+
+        return
+    end
+
     game.maps.map = game.maps.neighbours[
-        findfirst(x->x.id==exit.targetid,game.maps.neighbours)]
+            findfirst(x->x.id==exit.targetid,
+                game.maps.neighbours)
+        ]
 
     setNeighbours!(game)
 end

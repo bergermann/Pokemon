@@ -10,13 +10,8 @@ end
 
 function checkMapBounds(game::GameState,map::Map,i::Integer,j::Integer,k::Symbol,offset::Position)
     sh,sw = size(getfield(map.tilemap,k))
-    println("sh,sw: ",sh,", ",sw)
-
     # return (1 <= game.pos.h+i-dh-1 <= sh) && (1 <= game.pos.w+j-dw-1 <= sw)
     
-    println("h,s: ",game.pos.h+i-6-1-offset.h,", ",game.pos.w+j-8-1-offset.w)
-    println((1 <= game.pos.h+i-6-1-offset.h <= sh) &&
-        (1 <= game.pos.w+j-8-1-offset.w <= sw))
     return (1 <= game.pos.h+i-6-1-offset.h <= sh) &&
         (1 <= game.pos.w+j-8-1-offset.w <= sw)
 end

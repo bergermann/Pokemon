@@ -4,16 +4,6 @@ function loadMap(game::GameState)
 end
 
 function getMap(id::UInt8)
-    if game.maps.map.id == id
-        return game.maps.map
-    end
-
-    idx = findfirst(x.id==id,game.maps.neighbours)
-
-    if !isnothing(idx)
-        return game.maps.neighbours[idx].map
-    end
-
     return maps[id]
     # replace the map dict with these two functions
 end
@@ -28,12 +18,14 @@ function getMap(game::GameState,id::UInt8)
     if !isnothing(idx)
         return game.maps.neighbours[idx].map
     end
+
+    return getMap(id)
 end
 
 
 
 function getMaps(id::UInt8)
-    map = maps[id]
+    map = getMap(id)
 
     return Maps(map,[(map=maps[n.id],offset=n.offset) for n in map.neighbours])
 end
@@ -68,16 +60,31 @@ function checkMapExit!(game::GameState,movepos::Position)
 
     col = game.maps.map.tilemap.collision[movepos.h,movepos.w]
 
-    if col ∈ 0x14:0x3b
-        println("Exiting map at exit $(col-0x13).")
-        return game.maps.map.exits[col-0x13]
+    if col ∉ 0x14:0x3b
+        return
     end
+    
+    println("Exiting map at exit $(col-0x13).")
+
+    exitMap!(game,game.maps.map.exits[col-0x13])
+
+    return
 end
 
 
 
+function exitMap!(game::GameState,exit::Exit)
+    if exit.transition == 0x01
+        createCallback!(game,:maptrans,true,mapTransition,(exit,))
+
+        return
+    end
+
+    enterMap!(game,exit)
+end
+
 function enterMap!(game::GameState,exit::Exit)
-    mapidx = findfirst(x->x.id==exit.targetid,
+    mapidx = findfirst(x->x.map.id==exit.targetid,
         game.maps.neighbours)
 
     if isnothing(mapidx)
@@ -86,10 +93,13 @@ function enterMap!(game::GameState,exit::Exit)
         return
     end
 
-    game.maps.map = game.maps.neighbours[
-            findfirst(x->x.id==exit.targetid,
-                game.maps.neighbours)
-        ]
+    println(game.pos)
+
+    game.maps.map = game.maps.neighbours[mapidx].map
+    posAdd!(game.pos,exit.transform)
+    resetMovePos!(game)
+    
+    println(game.pos)
 
     setNeighbours!(game)
 end

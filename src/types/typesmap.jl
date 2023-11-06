@@ -6,6 +6,9 @@ mutable struct Exit
     targetid::UInt8
 
     transition::UInt8
+    # 0x00 -> open map, none 
+    # 0x01 -> building, fade out, fade in
+    # 0x02 -> cave, fade out, bright fade in?
 
     transform::Position
     absolute::Bool

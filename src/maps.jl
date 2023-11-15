@@ -56,15 +56,13 @@ end
 
 
 function checkMapExit!(game::GameState,movepos::Position)
-    println("Checking map exit")
-
     col = game.maps.map.tilemap.collision[movepos.h,movepos.w]
 
     if col ∉ 0x14:0x3b
         return
     end
     
-    println("Exiting map at exit $(col-0x13).")
+    # print("Exiting map $(game.maps.map.id) at exit $(col-0x13)")
 
     exitMap!(game,game.maps.map.exits[col-0x13])
 
@@ -75,7 +73,11 @@ end
 
 function exitMap!(game::GameState,exit::Exit)
     if exit.transition == 0x01
-        createCallback!(game,:maptrans,true,mapTransition,(exit,))
+        game.input.inputlock = true
+
+        createCC!(game,:scenet,sceneTransition!,(16,8,
+            stateMapTransition!,(exit,),x->x.input.inputlock=false,());
+            active=true,n=1)
 
         return
     end
@@ -84,22 +86,31 @@ function exitMap!(game::GameState,exit::Exit)
 end
 
 function enterMap!(game::GameState,exit::Exit)
-    mapidx = findfirst(x->x.map.id==exit.targetid,
-        game.maps.neighbours)
+    if game.maps.map.id != exit.targetid
+        mapidx = findfirst(x->x.map.id==exit.targetid,
+            game.maps.neighbours)
 
-    if isnothing(mapidx)
-        game.maps = getMaps(exit.targetid)
-
-        return
+        if isnothing(mapidx)
+            game.maps = getMaps(exit.targetid)
+        else
+            game.maps.map = game.maps.neighbours[mapidx].map
+        end
     end
 
-    println(game.pos)
+    if exit.absolute
+        println("overwriting position with ",exit.transform)
+        game.pos = copy(exit.transform)
 
-    game.maps.map = game.maps.neighbours[mapidx].map
-    posAdd!(game.pos,exit.transform)
+        if exit.dir != 0
+            game.direction = exit.dir
+        end
+    else
+        posAdd!(game.pos,exit.transform)
+    end
+
     resetMovePos!(game)
     
-    println(game.pos)
+    # println(" towards map $(game.maps.map.id)")
 
     setNeighbours!(game)
 end
@@ -111,14 +122,14 @@ map0 = Map(
     0x00,
     [:layer1,:layer2,:layer3,:layer4],
     [
-        Exit(0x03,0x01,P(0,0),true,emptyCallback),
-        Exit(0x03,0x01,P(0,0),true,emptyCallback),
-        Exit(0x03,0x01,P(0,0),true,emptyCallback),
-        Exit(0x01,0x00,P(100,16),false,emptyCallback)
+        Exit(0x01,0x00,P(118,28),0,false,emptyCallback),
+        Exit(0x03,0x01,P(0,0),0,true,emptyCallback),
+        Exit(0x03,0x01,P(0,0),0,true,emptyCallback),
+        Exit(0x03,0x01,P(0,0),0,true,emptyCallback),
     ],
     "tiles_exterior",
     getTileMap("0",[:layer1,:layer2,:layer3,:layer4,:collision]),
-    [Neighbour(0x01,P(-120,-28))]
+    [Neighbour(0x01,P(118,28))]
 )
 
 
@@ -126,17 +137,31 @@ map1 = Map(
     0x01,
     [:layer1,:layer2,:layer3,:layer4],
     [
-        Exit(0x00,0x00,P(-112,-28),false,emptyCallback),
-        Exit(0x02,0x01,P(0,0),true,emptyCallback),
+        Exit(0x00,0x00,P(-118,-28),0,false,emptyCallback),
+        Exit(0x02,0x01,P(9,8),1,true,emptyCallback),
     ],
     "tiles_exterior",
     getTileMap("1",[:layer1,:layer2,:layer3,:layer4,:collision]),
-    [Neighbour(0x00,P(120,28))]
+    [Neighbour(0x00,P(-118,-28))]
+)
+
+map2 = Map(
+    0x02,
+    [:layer1,:layer2,:layer3,:layer4],
+    [
+        Exit(0x01,0x01,P(107,44),2,true,emptyCallback),
+        Exit(0x02,0x01,P(7,24),4,true,emptyCallback),
+        Exit(0x02,0x01,P(7,2),4,true,emptyCallback),
+    ],
+    "tiles_interior1",
+    getTileMap("2",[:layer1,:layer2,:layer3,:layer4,:collision]),
+    []
 )
 
 maps = Base.ImmutableDict(
     0x00 => map0,
-    0x01 => map1
+    0x01 => map1,
+    0x02 => map2,
 )
 
 

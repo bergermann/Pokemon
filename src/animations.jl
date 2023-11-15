@@ -340,6 +340,39 @@ function sceneTransition!(game::GameState,len::Int,pause::Int,  # pause >= 1!
     game.n.c[:scenet].c += 1
 end
 
+function sceneTransition!(game::GameState,len::Int,pause::Int,  # pause >= 1!
+        state1::Function,state1args::Tuple,
+        state2::Function,state2args::Tuple,
+        fade1::Function,fade2::Function)
+    
+    if game.n.c[:scenet].c == 1
+        game.im.postprocess.active = true
+        game.im.postprocess.func = fade1
+        game.im.postprocess.args = (UInt8(len),0x01,)
+    elseif game.n.c[:scenet].c <= len
+        game.im.postprocess.args = (UInt8(len),UInt8(game.n.c[:scenet].c),)
+    elseif game.n.c[:scenet].c == len+1
+        Base.GC.gc()
+        flushLayers!(game)
+        flushLayer!(game)
+
+        state1(game,state1args...)
+    elseif len+pause+1 <= game.n.c[:scenet].c <= 2*len+pause
+        game.im.postprocess.func = fade2
+        game.im.postprocess.args = (UInt8(len),UInt8(2*len+pause-game.n.c[:scenet].c),)
+    elseif game.n.c[:scenet].c == 2*len+pause+1
+        game.im.postprocess.active = false
+        game.im.postprocess.func = emptyCallback
+        state2(game,state2args...)
+
+        killCC!(game,:scenet)
+
+        return
+    end
+   
+    game.n.c[:scenet].c += 1
+end
+
 function animArrowsMenu!(game::GameState)
     if (game.n.frame%48) < 24
         game.im.sprites[:arrowleft].pos = P(24+8,16+22-div((game.n.frame%24),6))

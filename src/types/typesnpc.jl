@@ -30,7 +30,7 @@ mutable struct NPCStatic <: NPCNormal
     # 12 rand
 
     function NPCStatic()
-        new(0,P(0,0),1,Symbol(),0,0,0,0,0)
+        new(0,P(0,0),1,0,Symbol(),0,0,0,0,0)
     end
 
     function NPCStatic(id,pos,dir,sprite,spriteid,pattern,parg,c,dialogue,dialoguelen)
@@ -62,6 +62,12 @@ mutable struct NPCMove <: NPCNormal
     # 3         rect cw     ax1     ax2
     # 4         rect ccw    ax1     ax2
     # 5         rand        freq    max
+
+    
+    function NPCMove()
+        
+        new(0,P(0,0),P(0,0),1,0,Symbol(),0,0,0,0,0,0,0)
+    end
 
     function NPCMove(id,pos,homepos,dir,sprite,spriteid,pattern,parg1,parg2,
             c1,c2,dialogue,dialoguelen)

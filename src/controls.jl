@@ -100,6 +100,8 @@ function mapAction!(game::GameState)
         game.dialogue.str = game.map.str[tile-59]
 
         drawDialogue!(game)
+
+        return
     end
 end
 

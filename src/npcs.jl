@@ -2,7 +2,7 @@
 
 
 
-function loadStaticNPCs!(game::GameState,d::Vector{Int})
+function loadStaticNPC!(game::GameState,d::Vector{Int})
     push!(game.npcstatic,NPCStatic(
             d[1],                   # id
             P(d[2],d[3]),           # pos
@@ -21,7 +21,7 @@ function loadStaticNPCs!(game::GameState,d::Vector{Int})
     #     P(80+16*(d[2]-game.pos.h),128+16*(d[3]-game.pos.w)),d[4])
 end
 
-function loadMoveNPCs!(game::GameState,d::Vector{Int})
+function loadMoveNPC!(game::GameState,d::Vector{Int})
     push!(game.npcmove,NPCMove(
             d[1],               # id::UInt16
 
@@ -44,15 +44,19 @@ function loadMoveNPCs!(game::GameState,d::Vector{Int})
 end
 
 function loadNPCs!(game::GameState,mapid)
-    f1 = readdlm("maps/$mapid/npcstatic.txt",'\t',Int,'\n'; skipstart=1)
-    f2 = readdlm("maps/$mapid/npcmove.txt",'\t',Int,'\n'; skipstart=1)
+    try
+        f1 = readdlm("maps/$mapid/npcstatic.txt",'\t',Int,'\n'; skipstart=1)
+        f2 = readdlm("maps/$mapid/npcmove.txt",'\t',Int,'\n'; skipstart=1)
 
-    for i in axes(f1,1)
-        loadStaticNPCs!(game,f1[i,:])
-    end
+        for i in axes(f1,1)
+            loadStaticNPC!(game,f1[i,:])
+        end
 
-    for i in axes(f2,1)
-        loadMoveNPCs!(game,f2[i,:])
+        for i in axes(f2,1)
+            loadMoveNPC!(game,f2[i,:])
+        end
+    catch e
+        return
     end
 end
 

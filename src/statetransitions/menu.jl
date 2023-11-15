@@ -102,3 +102,4 @@ function stateMenuPkmnSubClose!(game::GameState)
 
     drawInventory!(game)
 end
+

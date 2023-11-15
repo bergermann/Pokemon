@@ -24,10 +24,14 @@ function getTiles(tileset::String; s=Settings())
     w_tiles = div(width,s.tilesize)
     n_tiles = h_tiles*w_tiles
 
-    return Dict(zip(collect(0x0000:n_tiles),
+    d = Dict(zip(collect(0x0000:n_tiles),
                 [tileset[0x0001+(h-1)*0x0010:h*0x0010,
                         0x001+(w-1)*0x0010:w*0x0010] for w in 0x0001:w_tiles,
                                                         h in 0x0001:h_tiles]))
+    
+    d[0xffff] = fill(0x010101,16,16)
+
+    return d
 end
 
 function getTileMap(dir::String,key::Vector{Symbol}; s=Settings())

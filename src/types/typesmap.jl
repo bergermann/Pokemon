@@ -11,21 +11,22 @@ mutable struct Exit
     # 0x02 -> cave, fade out, bright fade in?
 
     transform::Position
+    dir::Int
     absolute::Bool
 
     callback::CallbackFunction
 
     function Exit()
-        new(0x00,0x00,P(0,0),false,CallbackFunction())
+        new(0x00,0x00,P(0,0),0,false,CallbackFunction())
     end
 
-    function Exit(targetid,transition,transform,absolute,callback::Function)
-        new(targetid,transition,transform,absolute,CallbackFunction(callback))
+    function Exit(targetid,transition,transform,dir,absolute,callback::Function)
+        new(targetid,transition,transform,dir,absolute,CallbackFunction(callback))
     end
 
-    function Exit(targetid,transition,transform,absolute,
+    function Exit(targetid,transition,transform,dir,absolute,
             callback::CallbackFunction)
-        new(targetid,transition,transform,absolute,callback)
+        new(targetid,transition,transform,dir,absolute,callback)
     end
 end
 

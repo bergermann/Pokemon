@@ -71,8 +71,6 @@ function play()
 
     Base.GC.@preserve game sceneTransition!
 
-    game.im.tiles[0xffff] = fill(0x010101,16,16)
-
     setInventoryTest!(game.trainer.inventory)
 
     push!(game.trainer.pokemon,generatePkmn(game,0x0001,0x14))

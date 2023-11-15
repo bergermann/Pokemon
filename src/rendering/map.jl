@@ -12,8 +12,8 @@ function checkMapBounds(game::GameState,map::Map,i::Integer,j::Integer,k::Symbol
     sh,sw = size(getfield(map.tilemap,k))
     # return (1 <= game.pos.h+i-dh-1 <= sh) && (1 <= game.pos.w+j-dw-1 <= sw)
     
-    return (1 <= game.pos.h+i-6-1-offset.h <= sh) &&
-        (1 <= game.pos.w+j-8-1-offset.w <= sw)
+    return (1 <= game.pos.h+i-6-1+offset.h <= sh) &&
+        (1 <= game.pos.w+j-8-1+offset.w <= sw)
 end
 
 function getTile(game::GameState,i::Integer,j::Integer,k::Symbol)
@@ -24,8 +24,8 @@ function getTile(game::GameState,i::Integer,j::Integer,k::Symbol)
 
     for n in game.maps.neighbours
         if checkMapBounds(game,n.map,i,j,k,n.offset)
-            return getfield(n.map.tilemap,k)[game.pos.h+i-6-1-n.offset.h,
-                game.pos.w+j-8-1-n.offset.w]
+            return getfield(n.map.tilemap,k)[game.pos.h+i-6-1+n.offset.h,
+                game.pos.w+j-8-1+n.offset.w]
         end
     end
 

@@ -1,4 +1,8 @@
 
+
+
+
+
 function flushLayer!(game::GameState,layer::Symbol)
     getfield(game.im.layers,layer) .= 0x000000
 end

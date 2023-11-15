@@ -296,6 +296,13 @@ function Base.permute!(a::ArrayList,p::AbstractVector)
     @views permute!(a.data[1:a.idx],p)
 end
 
+function Base.findfirst(a::ArrayList,id::Symbol)
+    return findfirst(x->x.id==id,a[1:a.idx])
+end
+
+function Base.in(item,a::ArrayList)
+    return in(item,a.data[1:a.idx])
+end
 
 
 

@@ -24,3 +24,35 @@ function stateInitDrawMap!(game::GameState)
 
     loadSpritesNPCs!(game)
 end
+
+function stateMapTransition!(game::GameState,exit::Exit)
+    println("pos1: ",game.pos)
+
+    if game.maps.map.id != exit.targetid
+        enterMap!(game,exit)
+        
+        for npc in game.npcstatic.data[1:game.npcstatic.idx]
+            killSprite!(game,npc.spriteid)
+        end
+        
+        for npc in game.npcmove.data[1:game.npcmove.idx]
+            killSprite!(game,npc.spriteid)
+        end
+        
+        popall!(game.npcstatic)
+        popall!(game.npcmove)
+        
+        loadNPCs!(game,game.maps.map.id)
+        loadSpritesNPCs!(game)
+        
+        game.im.tiles = getTiles(game.maps.map.tileset)
+    else
+        enterMap!(game,exit)
+    end
+
+    moveStop!(game,game.direction)
+
+    println("pos2: ",game.pos)
+
+    drawMap!(game)
+end

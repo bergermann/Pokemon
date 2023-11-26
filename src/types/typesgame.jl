@@ -410,6 +410,18 @@ abstract type NPCTrainer <:NPC end
 
 
 
+mutable struct Flags
+    general::BitVector
+    progress::BitVector
+    items::BitVector
+    trainers::BitVector
+
+    function Flags()
+        new(falses(256),falses(256),falses(256),falses(256),)
+    end
+end
+
+
 
 
 
@@ -443,6 +455,8 @@ mutable struct GameState
     npcstatic::ArrayList{<:NPCNormal}
     npcmove::ArrayList{<:NPCNormal}
     # trainers::ArrayList{NPCTrainer}
+
+    flags::Flags
 
     options::Options
 end

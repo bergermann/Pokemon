@@ -240,3 +240,26 @@ function addPokemon!(game::GameState,pkmn::Pkmn)
         push!(game.trainer.boxes[b],pkmn)
     end
 end
+
+
+
+function healPkmn!(pkmn::Pkmn)
+    pkmn.stats.hp = pkmn.stats.rv[1]
+    pkmn.status = 0x00
+
+    for atk in pkmn.attacks
+        atk.ap = atk.apmax
+    end
+end
+
+
+
+function healAll!(game::GameState)
+    for pkmn in game.trainer.pokemon
+        healPkmn!(pkmn)
+    end
+
+    for box in game.trainer.boxes, pkmn in box
+        healPkmn!(pkmn)
+    end
+end

@@ -83,6 +83,8 @@ function exitMap!(game::GameState,exit::Exit)
     end
 
     enterMap!(game,exit)
+
+    return
 end
 
 function enterMap!(game::GameState,exit::Exit)
@@ -110,9 +112,19 @@ function enterMap!(game::GameState,exit::Exit)
 
     resetMovePos!(game)
     
-    # println(" towards map $(game.maps.map.id)")
-
     setNeighbours!(game)
+
+    game.flags.general[0x01] = false
+
+    # setMapSpecials!(game)
+
+    return
+end
+
+function setMapSpecials(game::GameState)
+    if 0xc8 <= game.maps.map.id <= 0xdc
+        loadStaticNPC!(game,[200,P(8,3),2,200,:heal,0,0,0,0,0])
+    end
 end
 
 
@@ -138,30 +150,30 @@ map1 = Map(
     [:layer1,:layer2,:layer3,:layer4],
     [
         Exit(0x00,0x00,P(-118,-28),0,false,emptyCallback),
-        Exit(0x02,0x01,P(9,8),1,true,emptyCallback),
+        Exit(0xc8,0x01,P(9,8),1,true,emptyCallback),
     ],
     "tiles_exterior",
     getTileMap("1",[:layer1,:layer2,:layer3,:layer4,:collision]),
     [Neighbour(0x00,P(-118,-28))]
 )
 
-map2 = Map(
-    0x02,
+map200 = Map(
+    0xc8,
     [:layer1,:layer2,:layer3,:layer4],
     [
         Exit(0x01,0x01,P(107,44),2,true,emptyCallback),
-        Exit(0x02,0x01,P(7,24),4,true,emptyCallback),
-        Exit(0x02,0x01,P(7,2),4,true,emptyCallback),
+        Exit(0xc8,0x01,P(7,24),4,true,emptyCallback),
+        Exit(0xc8,0x01,P(7,2),4,true,emptyCallback),
     ],
     "tiles_interior1",
-    getTileMap("2",[:layer1,:layer2,:layer3,:layer4,:collision]),
+    getTileMap("200",[:layer1,:layer2,:layer3,:layer4,:collision]),
     []
 )
 
 maps = Base.ImmutableDict(
     0x00 => map0,
     0x01 => map1,
-    0x02 => map2,
+    0xc8 => map200,
 )
 
 

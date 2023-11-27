@@ -252,8 +252,6 @@ function healPkmn!(pkmn::Pkmn)
     end
 end
 
-
-
 function healAll!(game::GameState)
     for pkmn in game.trainer.pokemon
         healPkmn!(pkmn)
@@ -262,4 +260,6 @@ function healAll!(game::GameState)
     for box in game.trainer.boxes, pkmn in box
         healPkmn!(pkmn)
     end
+
+    game.flags.general[0x01] = true
 end

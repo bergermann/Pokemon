@@ -66,6 +66,8 @@ function play()
         ArrayList(NPCStatic,64),
         ArrayList(NPCMove,64),
 
+        Flags(),
+
         Options()
     )
 

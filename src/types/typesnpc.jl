@@ -65,7 +65,6 @@ mutable struct NPCMove <: NPCNormal
 
     
     function NPCMove()
-        
         new(0,P(0,0),P(0,0),1,0,Symbol(),0,0,0,0,0,0,0)
     end
 

@@ -43,9 +43,11 @@ end
 function drawMenu!(game::GameState)
     drawFrame!(game,:layer5,20,10,Position(24,176))
 
-    drawText!(game,:layer5,"Pokedex\\Pokemon\\Beutel\\Pokenav\
-        \\$(game.trainer.name)\\Speichern\\Optionen\\Beenden",
+    drawText!(game,:layer5,game.str[2][1],
         UInt(2),Position(38,194); lineoffset=2)
+
+    drawText!(game,:layer5,game.trainer.name,
+        UInt(2),Position(38+4*17,194); lineoffset=2)
 
     createSprite!(game,:cursor,:layer5,
         P(41+(game.input.menu.select)*17,185),1,

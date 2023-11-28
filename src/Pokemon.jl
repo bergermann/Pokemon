@@ -14,11 +14,13 @@ include("types/typesmap.jl")
 include("types/typesgame.jl")
 include("types/typesbattle.jl")
 include("types/typesnpc.jl")
+include("types/typesevents.jl")
 
 include("rendering/rendering.jl")
 include("battle/battle.jl")
 include("statetransitions/general.jl")
 include("items/inventory.jl")
+include("dialogue/dialogue.jl")
 include("pokemons.jl")
 include("core.jl")
 include("npcs.jl")
@@ -26,6 +28,7 @@ include("maps.jl")
 include("controls.jl")
 include("animations.jl")
 include("npcs.jl")
+include("events.jl")
 
 # @time foreach(names(@__MODULE__, all=true)) do s
 #     @eval export $s

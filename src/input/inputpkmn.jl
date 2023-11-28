@@ -1,8 +1,3 @@
-function loadTeamStrings!(game::GameState; reset=true)
-    reset && (game.str = [])
-    
-    push!(game.str,readlines("str/ger/system_pkmn.txt"))
-end
 
 function inputMenuPkmn!(game::GameState,input::Input)
     if game.input.menu.menupkmn.sub

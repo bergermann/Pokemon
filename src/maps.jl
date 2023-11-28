@@ -114,7 +114,9 @@ function enterMap!(game::GameState,exit::Exit)
     
     setNeighbours!(game)
 
-    game.flags.general[0x01] = false
+    loadMapStrings!(game; reset=false)
+
+    game.flags.general[0xc8] = false
 
     # setMapSpecials!(game)
 

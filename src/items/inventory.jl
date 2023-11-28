@@ -59,14 +59,6 @@ function getInvSlotAmount(game::GameState)
         game.input.menu.menubags.select[game.input.menu.menubags.bag],2]
 end
 
-function loadInventoryStrings!(game::GameState; reset::Bool=true)
-    reset && (game.str = [])
-    
-    push!(game.str,readlines("str/ger/system_bag.txt"))
-    push!(game.str,readlines("str/ger/item_names.txt"))
-    push!(game.str,readlines("str/ger/item_texts.txt"))
-end
-
 function getInvChoiceStr(game::GameState)
     if !game.battle.active
         if game.input.menu.menubags.bag == 1

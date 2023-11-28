@@ -71,24 +71,28 @@ end
 function mapAction!(game::GameState)
     b, npc = checkTileNPC(game)
 
+    println(game.str)
+
     if b
         if npc.dialogue == 0    # FIX
             return
         end
+
+        stateSetDialogue!(game,1,npc.dialogue,npc.dialoguelen)
 
         game.input.npclock = true
         game.input.map = false
         game.input.move = false
         game.input.dialogue = true
         game.dialogue.n = 1
-        game.dialogue.str = game.map.str[npc.dialogue:npc.dialogue+npc.dialoguelen-1]
+        game.dialogue.str = game.str[1][npc.dialogue:npc.dialogue+npc.dialoguelen-1]
 
         drawDialogue!(game)
 
         return
     end
 
-    tile = game.map.tilemap.collision[game.movepos.h,game.movepos.w]
+    tile = game.maps.map.tilemap.collision[game.movepos.h,game.movepos.w]
 
     if tile ∈ [0x0000,0x0001,0x0005,0x0006,0x0007]
         return
@@ -97,7 +101,7 @@ function mapAction!(game::GameState)
         game.input.map = false
         game.input.move = false
         game.input.dialogue = true
-        game.dialogue.str = game.map.str[tile-59]
+        game.dialogue.str = game.str[1][tile-59]
 
         drawDialogue!(game)
 

@@ -23,6 +23,8 @@ function stateInitDrawMap!(game::GameState)
     createCallback!(game,:movemain,false,moveMain!,(game.direction,-1))
 
     loadSpritesNPCs!(game)
+
+    loadMapStrings!(game; reset=true)
 end
 
 function stateMapTransition!(game::GameState,exit::Exit)

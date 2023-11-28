@@ -141,12 +141,12 @@ function killCC!(game::GameState,idc::Symbol,idcb::Symbol)
 end
 
 
-
-function setDialogue!(game::GameState,str::String)
-    game.dialogue.d = true
-    game.dialogue.n = 1
-    game.dialogue.str = str
-end
+## remove if works!
+# function setDialogue!(game::GameState,str::String)
+#     game.dialogue.d = true
+#     game.dialogue.n = 1
+#     game.dialogue.str = str
+# end
 
 function setBattleDialogue!(game::GameState,str::String)
     game.battle.dialogue.d = true

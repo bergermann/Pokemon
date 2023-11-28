@@ -16,9 +16,6 @@ function loadStaticNPC!(game::GameState,d::Vector{Int})
             d[9]                    # dialogue length
         )
     )
-
-    # createSprite!(game,Symbol("npc",d[1]),:layer2,getSpriteNPC(d[5]),
-    #     P(80+16*(d[2]-game.pos.h),128+16*(d[3]-game.pos.w)),d[4])
 end
 
 function loadMoveNPC!(game::GameState,d::Vector{Int})

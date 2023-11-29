@@ -53,6 +53,7 @@ function loadNPCs!(game::GameState,mapid)
             loadMoveNPC!(game,f2[i,:])
         end
     catch e
+        println(e)
         return
     end
 end
@@ -61,10 +62,12 @@ function loadSpritesNPCs!(game::GameState)
     for i in 1:game.npcstatic.idx
         npc = game.npcstatic[i]
 
+        n = length(readdir("im/sprites/npcs/$(npc.sprite)"))-1
+
         createSprite!(game,npc.spriteid,:layer2,
             P(80+16*(npc.pos.h-game.pos.h),128+16*(npc.pos.w-game.pos.w)),
             min(3,npc.dir),
-            getSprite("im/sprites/npcs/$(npc.sprite)",9);
+            getSprite("im/sprites/npcs/$(npc.sprite)",n);
             hreverse=(npc.dir==4))
     end
 

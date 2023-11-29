@@ -14,7 +14,7 @@ function drawDialogue!(game::GameState)
 end
 
 function drawDialogueUpdate!(game::GameState)
-    flushLayer!(game,:textbox,P(144,32),P(32,160),0xffffff)
+    flushLayer!(game,:textbox,P(144,32),P(32,200),0xffffff)
     drawText!(game,:textbox,game.dialogue.str[game.dialogue.n],UInt(2),
         Position(144,32))
 end

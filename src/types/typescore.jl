@@ -304,6 +304,17 @@ function Base.in(item,a::ArrayList)
     return in(item,a.data[1:a.idx])
 end
 
+function Base.iterate(a::ArrayList)
+    return @views iterate(a.data[1:a.idx])
+end
+
+function Base.iterate(a::ArrayList,t::Tuple{Any,Any})
+    return @views iterate(a.data[1:a.idx],t)
+end
+
+function Base.length(a::ArrayList)
+    return a.idx
+end
 
 
 function Base.print(a::ArrayList)

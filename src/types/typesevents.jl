@@ -1,18 +1,25 @@
 
 
-abstract type Event end
 
-mutable struct FlagEvent <: Event
+mutable struct Event
     id::UInt8
-    flag::UInt8
-    flagtype::UInt8
+    flags::NTuple
+    flagvals::NTuple
+    flagtypes::NTuple
+    counters::NTuple
+    countervals::NTuple
     onpress::Bool
-end
+    dir::Int
 
-mutable struct CounterEvent
-    id::UInt8
-    counter::UInt8
-    threshold::UInt16
-    onpress::Bool
-end
+    function Event()
+        new(0,(),(),(),(),(),false,0)
+    end
 
+    function Event(id)
+        new(id,(),(),(),(),(),false,0)
+    end
+
+    function Event(id,flags,flagtype,flagvals,counters,countervals,onpress,dir)
+        new(id,flags,flagtype,flagvals,counters,countervals,onpress,dir)
+    end
+end

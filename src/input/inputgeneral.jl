@@ -103,6 +103,8 @@ function inputDialogue!(game::GameState,input::Input)
         game.input.map = true
         game.input.dialogue = false
         game.input.npclock = false
+
+        evalCallback(game,game.dialogue.callback)
         
         flushLayer!(game,:textbox,P(24+112,16),P(48,240))
     end

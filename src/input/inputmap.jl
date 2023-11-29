@@ -65,6 +65,7 @@ function checkWalkable(game::GameState,movepos::Position)
 
     return |(game.maps.map.tilemap.collision[movepos.h,movepos.w] ∈ walkable,
         (0x14 <= game.maps.map.tilemap.collision[movepos.h,movepos.w] <= 0x3b),
+        (0xa0 <= game.maps.map.tilemap.collision[movepos.h,movepos.w] <= 0xb3),
         (0xc8 <= game.maps.map.tilemap.collision[movepos.h,movepos.w] <= 0xdb))
 end
 

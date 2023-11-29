@@ -91,6 +91,11 @@ end
 
 
 
+function evalCallback(game::GameState,f::CallbackFunction)
+    f.func(game,f.args...)  # FIX
+
+    return
+end
 
 function emptyCallback(game::GameState)
     return

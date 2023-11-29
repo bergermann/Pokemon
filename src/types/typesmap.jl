@@ -45,6 +45,8 @@ mutable struct Map
     
     neighbours::Vector{Neighbour}
 
+    events::Vector{Event}
+
     function Map(id::UInt8)
         new(
             id,                                                             # id
@@ -54,12 +56,14 @@ mutable struct Map
             "tiles_exterior",                                               # tiles
             getTileMap("$id",[:layer1,:layer2,:layer3,:layer4,:collision]), # tilemap
 
-            []                                                              # neighbours
+            [],                                                             # neighbours
+
+            []
         )
     end
 
-    function Map(id,environment,exits,tileset,tilemap,neighbours)
-        new(id,environment,exits,tileset,tilemap,neighbours)
+    function Map(id,environment,exits,tileset,tilemap,neighbours,events)
+        new(id,environment,exits,tileset,tilemap,neighbours,events)
     end
 end
 

@@ -415,9 +415,10 @@ mutable struct Flags
     progress::BitVector
     items::BitVector
     trainers::BitVector
+    counters::Vector{UInt32}
 
     function Flags()
-        new(falses(256),falses(256),falses(256),falses(256),)
+        new(falses(256),falses(256),falses(256),falses(256),zeros(UInt32,256))
     end
 end
 

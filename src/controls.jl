@@ -71,8 +71,6 @@ end
 function mapAction!(game::GameState)
     b, npc = checkTileNPC(game)
 
-    println(game.str)
-
     if b
         if npc.dialogue == 0    # FIX
             return
@@ -80,30 +78,25 @@ function mapAction!(game::GameState)
 
         stateSetDialogue!(game,1,npc.dialogue,npc.dialoguelen)
 
-        game.input.npclock = true
-        game.input.map = false
-        game.input.move = false
-        game.input.dialogue = true
-        game.dialogue.n = 1
-        game.dialogue.str = game.str[1][npc.dialogue:npc.dialogue+npc.dialoguelen-1]
-
-        drawDialogue!(game)
-
         return
     end
 
     tile = game.maps.map.tilemap.collision[game.movepos.h,game.movepos.w]
 
-    if tile ∈ [0x0000,0x0001,0x0005,0x0006,0x0007]
-        return
-    elseif 0x003c <= tile <= 0x004f
-        game.input.npclock = true
-        game.input.map = false
-        game.input.move = false
-        game.input.dialogue = true
-        game.dialogue.str = game.str[1][tile-59]
+    if 0x003c <= tile <= 0x004f
+        stateSetDialogue!(game,1,tile-59,1)
 
-        drawDialogue!(game)
+        return
+    end
+
+    tile = game.maps.map.tilemap.collision[game.pos.h,game.pos.w]
+
+    if 0x00a0 <= tile <= 0x00b3
+        event = game.maps.map.events[tile-159]
+
+        if event.onpress
+            evalEvent(game,event)
+        end
 
         return
     end
@@ -117,10 +110,12 @@ function updateGame!(game::GameState,input::Input; s=Settings())
     inputManager!(game,input)
 
     if game.overworld
-        checkProximityNPCs!(game)
-        sortHorizontal!(game.im.sprites)
+        if !game.input.npclock
+            checkProximityNPCs!(game)
+            manageNPCs!(game)
+        end
 
-        manageNPCs!(game)
+        sortHorizontal!(game.im.sprites)
     end
 
     for i in 1:game.callbacks.idx

@@ -143,7 +143,8 @@ map0 = Map(
     ],
     "tiles_exterior",
     getTileMap("0",[:layer1,:layer2,:layer3,:layer4,:collision]),
-    [Neighbour(0x01,P(118,28))]
+    [Neighbour(0x01,P(118,28))],
+    []
 )
 
 
@@ -156,7 +157,8 @@ map1 = Map(
     ],
     "tiles_exterior",
     getTileMap("1",[:layer1,:layer2,:layer3,:layer4,:collision]),
-    [Neighbour(0x00,P(-118,-28))]
+    [Neighbour(0x00,P(-118,-28))],
+    []
 )
 
 map200 = Map(
@@ -169,7 +171,10 @@ map200 = Map(
     ],
     "tiles_interior1",
     getTileMap("200",[:layer1,:layer2,:layer3,:layer4,:collision]),
-    []
+    [],
+    [
+        Event(0xc8,(0xc8,),(false,),(:general,),(),(),true,1),
+    ]
 )
 
 maps = Base.ImmutableDict(

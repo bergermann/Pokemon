@@ -61,8 +61,6 @@ function checkMapExit!(game::GameState,movepos::Position)
     if col ∉ 0x14:0x3b
         return
     end
-    
-    # print("Exiting map $(game.maps.map.id) at exit $(col-0x13)")
 
     exitMap!(game,game.maps.map.exits[col-0x13])
 
@@ -100,7 +98,6 @@ function enterMap!(game::GameState,exit::Exit)
     end
 
     if exit.absolute
-        println("overwriting position with ",exit.transform)
         game.pos = copy(exit.transform)
 
         if exit.dir != 0
@@ -173,7 +170,7 @@ map200 = Map(
     getTileMap("200",[:layer1,:layer2,:layer3,:layer4,:collision]),
     [],
     [
-        Event(0xc8,(0xc8,),(false,),(:general,),(),(),true,1),
+        Event(0xc8,(),(),(:general,),(),(),true,1),
     ]
 )
 

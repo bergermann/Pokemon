@@ -261,5 +261,5 @@ function healAll!(game::GameState)
         healPkmn!(pkmn)
     end
 
-    game.flags.general[0x01] = true
+    game.flags.general[0xc8] = true
 end

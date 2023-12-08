@@ -110,16 +110,15 @@ end
 
 
 
-function createSprite!(game::GameState,id::Symbol,layer::Symbol,
+function createSprite!(game::GameState,id::Symbol,layer::Integer,
         pos::Position,frame::Int,dict::Dict{Int,Image},palette::Palette;
         active=false,hreverse=false,vreverse=false)
 
-    push!(game.im.sprites,Sprite(
+    push!(game.im.sprites[layer],Sprite(
         id,
         active,
         hreverse,
         vreverse,
-        layer,
         pos,
         Position(size(dict[frame])...),
         frame,
@@ -131,47 +130,52 @@ function createSprite!(game::GameState,id::Symbol,layer::Symbol,
     )
 end
 
-function createSprite!(game::GameState,id::Symbol,layer::Symbol,
+function createSprite!(game::GameState,id::Symbol,layer::Integer,
         pos::Position,frame::Int,(dict,palette)::Tuple{Dict,Palette};
         kwargs...)
     createSprite!(game,id,layer,pos,frame,dict,palette; kwargs...)
 end
 
 function killSprite!(game::GameState,id::Symbol)
-    popat!(game.im.sprites,id)
+    for k in 1:6
+        popat!(game.im.sprites[k],id)
+    end
 end
 
 function killSpriteAll!(game::GameState)
-    popall!(game.im.sprites)
-end
-
-
-
-function drawSprites!(game::GameState; s=Settings())
-    @inbounds for i in 1:game.im.sprites.idx
-        if !game.im.sprites[i].active
-            continue
-        end
-        
-        sprite = game.im.sprites.data[i]
-        l = getfield(game.im.layers,sprite.layer)
-
-        sh,sw = size(sprite.im)
-
-        v = view(
-            l,
-            sprite.hreverse ? 
-                (min(1,sprite.pos.h+1):max(s.height,sprite.pos.h+sh)) :
-                (max(s.height,sprite.pos.h+sh):-1:min(1,sprite.pos.h+1)),
-            sprite.vreverse ?
-                (min(1,sprite.pos.w+1):max(s.width,sprite.pos.w+sw)) :
-                (max(s.width,sprite.pos.w+sw):-1:min(1,sprite.pos.w+1))
-        )
-
-        @inbounds for i in eachindex(v)
-            if sprite.im[i] != 0x00
-                v[i] = sprite.palette[sprite.im[i]]
-            end
-        end
+    for k in 1:6
+        popall!(game.im.sprites[k])
     end
 end
+
+
+
+## delete if works:
+# function drawSprites!(game::GameState,layer::Integer)
+#     @inbounds for i in 1:game.im.sprites.idx
+#         if !game.im.sprites[i].active
+#             continue
+#         end
+        
+#         sprite = game.im.sprites.data[i]
+#         l = game.im.layers[sprite.layer]
+
+#         sh,sw = size(sprite.im)
+
+#         v = view(
+#             l,
+#             sprite.hreverse ? 
+#                 (min(1,sprite.pos.h+1):max(s.height,sprite.pos.h+sh)) :
+#                 (max(s.height,sprite.pos.h+sh):-1:min(1,sprite.pos.h+1)),
+#             sprite.vreverse ?
+#                 (min(1,sprite.pos.w+1):max(s.width,sprite.pos.w+sw)) :
+#                 (max(s.width,sprite.pos.w+sw):-1:min(1,sprite.pos.w+1))
+#         )
+
+#         @inbounds for i in eachindex(v)
+#             if sprite.im[i] != 0x00
+#                 v[i] = sprite.palette[sprite.im[i]]
+#             end
+#         end
+#     end
+# end

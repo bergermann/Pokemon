@@ -157,7 +157,7 @@ function Base.getindex(a::ArrayList, inds...)
 end
 
 function Base.setindex!(a::ArrayList, x, inds...)
-    setindex!(a.data,x,inds...)
+    return setindex!(a.data,x,inds...)
 end
 
 function Base.getindex(a::ArrayList,id::Symbol)
@@ -174,72 +174,87 @@ end
 
 function Base.push!(a::ArrayList, x)
     if a.idx >= length(a.data)           
-        error("ArrayList is full, can't push new element.")
+        error("ArrayList is full, can't push new element."); return
     end
 
     a.idx += 1
     a.data[a.idx] = x
+
+    return
 end
 
 function Base.pushfirst!(a::ArrayList,x)
     if a.idx >= length(a.data)
-        error("ArrayList is full, can't push new element.")
+        error("ArrayList is full, can't push new element."); return
     end
 
     a.idx += 1
     a.data[2:a.idx] = a.data[1:a.idx-1]
     a.data[1] = x
+
+    return
 end
 
 function pushat!(a::ArrayList,x,idx::Int)
     if a.idx >= length(a.data)
-        error("ArrayList is full, can't push new element.")
+        error("ArrayList is full, can't push new element."); return
     end
 
     a.idx += 1
     a.data[idx+1:a.idx] = a.data[idx:a.idx-1]
     a.data[idx] = x
+
+    return
 end
 
 function Base.pop!(a::ArrayList)
     if a.idx == 0
-        error("ArrayList is empty, can't pop element.")
+        error("ArrayList is empty, can't pop element."); return
     end
 
     a.data[a.idx] = eltype(a.data).name.wrapper()
     a.idx -= 1
+
+    return
 end
 
 function Base.popat!(a::ArrayList,id::Symbol)
     if a.idx == 0
-        error("ArrayList is empty, can't pop element.")
+        error("ArrayList is empty, can't pop element."); return
     end
 
     i = findfirst(x -> x.id==id, a.data[1:a.idx])
-    a.data[i:a.idx-1] = a.data[i+1:a.idx]
+    if isnothing(i); return; end
 
+    a.data[i:a.idx-1] = a.data[i+1:a.idx]
     a[a.idx] = eltype(a.data).name.wrapper()
 
     a.idx -= 1
+
+    return
 end
 
 function Base.popat!(a::ArrayList,ids::Symbol...)
     for id in ids
         popat!(a,id)
     end
+
+    return
 end
 
 function Base.popat!(a::ArrayList,i::Int)
     if a.idx == 0
-        error("ArrayList is empty, can't pop element.")
+        error("ArrayList is empty, can't pop element."); return
     elseif i < 1 || i > a.idx
-        error("Invalid index, can't pop element.")
+        error("Invalid index, can't pop element."); return
     end
 
     a[i] = eltype(a.data).name.wrapper()
 
     a.data[i:a.idx-1] = a.data[i+1:a.idx-1]
     a.idx -= 1
+
+    return
 end
 
 function popall!(a::ArrayList)
@@ -248,6 +263,8 @@ function popall!(a::ArrayList)
     end
 
     a.idx = 0
+
+    return
 end
 
 function Base.popfirst!(a::ArrayList)
@@ -265,6 +282,8 @@ function Base.popfirst!(a::ArrayList)
     a.data[1:a.idx-1] = a.data[2:a.idx]
     a.data[a.idx] = eltype(a.data).name.wrapper()
     a.idx -= 1
+
+    return
 end
 
 function swap!(a::ArrayList,idx1::Int,idx2::Int)
@@ -326,6 +345,8 @@ function Base.print(a::ArrayList)
     for i in 1:a.idx
         println(a.data[i])
     end
+
+    return
 end
 
 Base.println(a::ArrayList) = begin print(a); println("") end

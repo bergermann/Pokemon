@@ -37,7 +37,7 @@ end
 
 mutable struct Map
     id::UInt8
-    environment::Vector{Symbol}
+    weather::UInt8
 
     exits::Vector{Exit}
     tileset::String
@@ -50,11 +50,11 @@ mutable struct Map
     function Map(id::UInt8)
         new(
             id,                                                             # id
-            [:layer1,:layer2,:layer3,:layer4],                              # env
+            0x00,                              # env
 
             [],                                                             # exits
             "tiles_exterior",                                               # tiles
-            getTileMap("$id",[:layer1,:layer2,:layer3,:layer4,:collision]), # tilemap
+            getTileMap(id),                                              # tilemap
 
             [],                                                             # neighbours
 
@@ -62,8 +62,8 @@ mutable struct Map
         )
     end
 
-    function Map(id,environment,exits,tileset,tilemap,neighbours,events)
-        new(id,environment,exits,tileset,tilemap,neighbours,events)
+    function Map(id,weather,exits,tileset,tilemap,neighbours,events)
+        new(id,weather,exits,tileset,tilemap,neighbours,events)
     end
 end
 

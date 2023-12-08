@@ -34,12 +34,17 @@ function getTiles(tileset::String; s=Settings())
     return d
 end
 
-function getTileMap(dir::String,key::Vector{Symbol}; s=Settings())
-    tm = TileMap(; s=s)
+function getTileMap(id::UInt8)
+    tm = TileMap()
 
-    for k in key
-        setfield!(tm,k,readdlm(string("maps/",dir,"/",k,".csv"),',',UInt16,'\n'))
+    for k in 1:5
+        tm.map[k] = readdlm(joinpath("maps","$id","$(id)_$i.csv"),',',UInt16,'\n')
     end
+
+    tm.collision = readdlm(joinpath("maps","$id","$(id)_$collision.csv"),
+        ',',UInt16,'\n')
+    tm.height =readdlm(joinpath("maps","$id","$(id)_$height.csv"),
+        ',',UInt16,'\n')
 
     return tm
 end
@@ -62,7 +67,7 @@ function drawGame!(game::GameState; s=Settings())
         drawBattle!(game; s=s)
     end
 
-    combineLayers!(game,game.im.L; s=s)
+    combineLayers!(game,game.im.L)
 
     if game.im.weather.active
         game.im.weather.func(game.im.layer,game.im.weather.args...)

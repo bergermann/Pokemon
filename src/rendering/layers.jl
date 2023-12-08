@@ -3,21 +3,21 @@
 
 
 
-function flushLayer!(game::GameState,layer::Symbol)
-    getfield(game.im.layers,layer) .= 0x000000
+function flushLayer!(game::GameState,layer::Integer)
+    game.im.layers[layer] .= 0x000000
 end
 
-function flushLayer!(game::GameState,layer::Symbol,pos::Position,size::Position)
-    v = view(getfield(game.im.layers,layer),
+function flushLayer!(game::GameState,layer::Integer,pos::Position,size::Position)
+    v = view(game.im.layers[layer],
         pos.h+1:pos.h+size.h,pos.w+1:pos.w+size.w)
     
     v .= 0x000000
 end
 
-function flushLayer!(game::GameState,layer::Symbol,pos::Position,size::Position,
+function flushLayer!(game::GameState,layer::Integer,pos::Position,size::Position,
         color::UInt32)
     
-    v = view(getfield(game.im.layers,layer),
+    v = view(game.im.layers[layer],
         pos.h+1:pos.h+size.h,pos.w+1:pos.w+size.w)
     
     v .= color
@@ -28,8 +28,8 @@ function flushLayer!(game::GameState)
 end
 
 function flushLayers!(game::GameState)
-    for f in fieldnames(Layers)
-        flushLayer!(game,f)
+    for k in 1:6
+        flushLayer!(game,k)
     end
 end
 
@@ -88,13 +88,11 @@ end
 
 
 
-function combineLayers!(game::GameState,layers::Vector{Symbol};
-        s::Settings=Settings())
-
+function combineLayers!(game::GameState,layers::Vector{<:Integer})
     l = game.im.layer
 
     @views @inbounds for k in layers
-        ls = getproperty(game.im.layers,k)
+        ls = game.im.layers[k]
 
         for i in eachindex(l)
             if ls[i] != 0x000000
@@ -102,22 +100,23 @@ function combineLayers!(game::GameState,layers::Vector{Symbol};
             end
         end
 
-        for j in 1:game.im.sprites.idx
-            if game.im.sprites[j].layer != k || !game.im.sprites[j].active
+        for j in 1:game.im.sprites[k].idx
+            if !game.im.sprites[k][j].active
                 continue
             end
 
-            if game.im.sprites[j].colortransform.active
-                p = game.im.sprites[j].colortransform.func(game.im.sprites[j].palette,
-                    game.im.sprites[j].colortransform.args)
+            if game.im.sprites[k][j].colortransform.active
+                p = game.im.sprites[k][j].colortransform.func(
+                    game.im.sprites[k][j].palette,
+                    game.im.sprites[k][j].colortransform.args)
             else
-                p = game.im.sprites[j].palette
+                p = game.im.sprites[k][j].palette
             end
 
-            if !game.im.sprites[j].hreverse
-                drawSprite!(l,game.im.sprites[j],p)
+            if !game.im.sprites[k][j].hreverse
+                drawSprite!(l,game.im.sprites[k][j],p)
             else
-                drawSpriteReverse!(l,game.im.sprites[j],p)
+                drawSpriteReverse!(l,game.im.sprites[k][j],p)
             end
         end
     end

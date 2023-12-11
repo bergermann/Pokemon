@@ -129,54 +129,52 @@ end
 
 
 
-map0 = Map(
-    0x00,
-    [:layer1,:layer2,:layer3,:layer4],
-    [
-        Exit(0x01,0x00,P(118,28),0,false,emptyCallback),
-        Exit(0x03,0x01,P(0,0),0,true,emptyCallback),
-        Exit(0x03,0x01,P(0,0),0,true,emptyCallback),
-        Exit(0x03,0x01,P(0,0),0,true,emptyCallback),
-    ],
-    "tiles_exterior",
-    getTileMap("0",[:layer1,:layer2,:layer3,:layer4,:collision]),
-    [Neighbour(0x01,P(118,28))],
-    []
-)
 
 
-map1 = Map(
+const map1 = Map(
     0x01,
-    [:layer1,:layer2,:layer3,:layer4],
+    0x00,
     [
-        Exit(0x00,0x00,P(-118,-28),0,false,emptyCallback),
+        Exit(0x00,0x00,P(1-39,18-26),0,false,emptyCallback),
         Exit(0xc8,0x01,P(9,8),1,true,emptyCallback),
     ],
-    "tiles_exterior",
-    getTileMap("1",[:layer1,:layer2,:layer3,:layer4,:collision]),
-    [Neighbour(0x00,P(-118,-28))],
+    getTileMap(1),
+    [Neighbour(0x00,P(1-39,18-26))],
     []
 )
 
-map200 = Map(
-    0xc8,
-    [:layer1,:layer2,:layer3,:layer4],
+const map2 = Map(
+    0x02,
+    0x00,
     [
-        Exit(0x01,0x01,P(107,44),2,true,emptyCallback),
+        Exit(0x01,0x00,P(39-1,26-18),0,false,emptyCallback),
+        Exit(0x03,0x01,P(0,0),0,true,emptyCallback),
+        Exit(0x03,0x01,P(0,0),0,true,emptyCallback),
+        Exit(0x03,0x01,P(0,0),0,true,emptyCallback),
+    ],
+    getTileMap(2),
+    [Neighbour(0x01,P(39-1,26-18))],
+    []
+)
+
+const map200 = Map(
+    0xc8,
+    0x00,
+    [
+        Exit(0x01,0x01,P(25,29),2,true,emptyCallback),
         Exit(0xc8,0x01,P(7,24),4,true,emptyCallback),
         Exit(0xc8,0x01,P(7,2),4,true,emptyCallback),
     ],
-    "tiles_interior1",
-    getTileMap("200",[:layer1,:layer2,:layer3,:layer4,:collision]),
+    getTileMap(200),
     [],
     [
         Event(0xc8,(),(),(:general,),(),(),true,1),
     ]
 )
 
-maps = Base.ImmutableDict(
-    0x00 => map0,
+const maps = Base.ImmutableDict(
     0x01 => map1,
+    0x02 => map2,
     0xc8 => map200,
 )
 

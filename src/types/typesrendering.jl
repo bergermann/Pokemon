@@ -119,6 +119,7 @@ mutable struct Im
     diabox::ImageP
 
     tiles::Dict{UInt16,Matrix{UInt32}}
+    tilesets::BitVector
     animated::Vector
     tile::Matrix{UInt32}
 
@@ -139,13 +140,14 @@ mutable struct Im
             
             Dict{UInt16,Matrix{UInt32}}(),
             [],
+            [],
             zeros(UInt32,16,16),
 
-            [ArrayList(Sprite,64) for i in 1:6]
+            [ArrayList(Sprite,64) for _ in 1:6],
 
             falses(6),
 
-            [zeros(UInt32,208,272) for i in 1:6]
+            [zeros(UInt32,208,272) for _ in 1:6],
             zeros(UInt32,208,272),
 
             CallbackFunction(:weather,false,empty,()),
@@ -202,18 +204,3 @@ end
 
 
 
-
-
-mutable struct TileMap
-    map::Vector{Matrix{UInt32}}
-    collision::Matrix{UInt8}
-    height::Matrix{UInt8}
-
-    function TileMap()
-        new(
-            [zeros(UInt32,13,17) for _ in 1:5],
-            zeros(UInt8,13,17),
-            zeros(UInt8,13,17)
-        )
-    end
-end

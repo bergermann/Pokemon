@@ -25,6 +25,7 @@ function stateInitDrawMap!(game::GameState)
     loadSpritesNPCs!(game)
 
     loadMapStrings!(game; reset=true)
+    loadTiles!(game)
 end
 
 function stateMapTransition!(game::GameState,exit::Exit)

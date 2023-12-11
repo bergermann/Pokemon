@@ -1,6 +1,24 @@
 
 
 
+mutable struct TileMap
+    map::Vector{Matrix{UInt16}}
+    collision::Matrix{UInt8}
+    height::Matrix{UInt8}
+
+    tilesets::BitVector
+
+    function TileMap(h::Integer,w::Integer)
+        new(
+            [zeros(UInt32,h,w) for _ in 1:5],
+            zeros(UInt8,h,w),
+            zeros(UInt8,h,w),
+            falses(20)
+        )
+    end
+end
+
+
 
 mutable struct Exit
     targetid::UInt8
@@ -40,7 +58,6 @@ mutable struct Map
     weather::UInt8
 
     exits::Vector{Exit}
-    tileset::String
     tilemap::TileMap
     
     neighbours::Vector{Neighbour}
@@ -49,21 +66,20 @@ mutable struct Map
 
     function Map(id::UInt8)
         new(
-            id,                                                             # id
-            0x00,                              # env
+            id,                                                  # id
+            0x00,                                                # weather
 
-            [],                                                             # exits
-            "tiles_exterior",                                               # tiles
-            getTileMap(id),                                              # tilemap
+            [],                                                  # exits
+            getTileMap(id),                                      # tilemap
 
-            [],                                                             # neighbours
+            [],                                                  # neighbours
 
-            []
+            []                                                   # events
         )
     end
 
-    function Map(id,weather,exits,tileset,tilemap,neighbours,events)
-        new(id,weather,exits,tileset,tilemap,neighbours,events)
+    function Map(id,weather,exits,tilemap,neighbours,events)
+        new(id,weather,exits,tilemap,neighbours,events)
     end
 end
 

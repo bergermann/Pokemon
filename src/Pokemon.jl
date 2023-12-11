@@ -48,8 +48,8 @@ function play()
             [ArrayList(Pkmn,30) for _ in 1:8],[],falses(151)),
 
         getMaps(0x01),
-        Position(0x00006e,0x000013),
-        Position(0x00006f,0x000013),
+        Position(UInt32(28),UInt32(20)),
+        Position(UInt32(29),UInt32(20)),
         2,
 
         Position(0,0),

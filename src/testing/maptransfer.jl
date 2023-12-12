@@ -1,5 +1,5 @@
 
-
+using Serialization
 
 
 const tilesetordering = Dict(
@@ -73,7 +73,7 @@ function extractMaps(ids::Integer...)
         h = parse(Int,s[5][9:end])
 
         tm = Pokemon.TileMap(h,w)
-        tm.tilesets = sort(tilesets)
+        tm.tilesets[tilesets] .= true
 
         println(h,", ",w)
 

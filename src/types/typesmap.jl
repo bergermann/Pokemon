@@ -6,14 +6,14 @@ mutable struct TileMap
     collision::Matrix{UInt8}
     height::Matrix{UInt8}
 
-    tilesets::Vector{Bool}
+    tilesets::BitVector
 
     function TileMap(h::Integer,w::Integer)
         new(
             [zeros(UInt32,h,w) for _ in 1:5],
             zeros(UInt8,h,w),
             zeros(UInt8,h,w),
-            fill(false,64)
+            falses(64)
         )
     end
 end

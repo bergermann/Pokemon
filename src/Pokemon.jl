@@ -79,9 +79,10 @@ function play()
     # Base.GC.@preserve game sceneTransition!
     # Base.GC.@preserve game
 
-    # println(game.maps.map.tilemap.tilesets[1])
+    game.maps.map.tilemap.tilesets[5]
 
-    @time loadTiles!(game)
+    loadTiles!(game)
+
     setInventoryTest!(game.trainer.inventory)
 
     push!(game.trainer.pokemon,generatePkmn(game,0x0001,0x14))

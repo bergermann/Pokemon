@@ -62,17 +62,17 @@ end
 function cullTiles!(game::GameState,cull::BitVector)
     for i in eachindex(cull)
         if cull[i]
-            for tileid in tileids[i]
+            for tileid in tilesetranges[i]
                 pop!(game.im.tiles,tileid)
             end
         end
     end
 end
 
-function getTiles!(game::GameState,load::BitVector)
-    for i in eachindex(load)
-        if load[i]
-            tileset = mfb_rgb.(load(string("maps/",tilesetnames[i],".png")))
+function getTiles!(game::GameState,get::BitVector)
+    for g in eachindex(get)
+        if get[g]
+            tileset = mfb_rgb.(load(string("im/tilesets/",tilesetnames[g],".png")))
 
             height::UInt16,width::UInt16  = size(tileset)
 
@@ -80,13 +80,16 @@ function getTiles!(game::GameState,load::BitVector)
                 return error("Wrong tileset format.")
             end
             
-            h_tiles = div(height,s.tilesize)
-            w_tiles = div(width,s.tilesize)
+            h_tiles = div(height,0x0010)
+            w_tiles = div(width,0x0010)
 
-            for i in 1:h_tiles*w_tiles
-                h = div(i,h_tiles)+1
-                w = i%wtiles
-                game.im.tiles[i] = tileset[1+(h-1)*16:h*16,1+(w-1)*16:w*16]
+            offset = tilesetranges[g].start
+
+            for i in 0x0001:h_tiles*w_tiles
+                h = div(i-0x01,w_tiles)+0x01
+                w = (i-0x01)%w_tiles+0x01
+                game.im.tiles[i+offset-0x001] =
+                    tileset[0x1+(h-0x01)*0x0010:h*0x0010,0x01+(w-0x01)*0x0010:w*0x0010]
             end
         end
     end
@@ -96,31 +99,29 @@ function loadTiles!(game::GameState)
     ts = falses(64)
 
     # println(ts)
-    println(game.maps.map.tilemap.tilesets)
-    
-    error("a")
+    # println(game.maps.map.tilemap.tilesets)
 
-    for i in eachindex(game.maps.map.tilemap.tilesets)
-        if game.maps.map.tilemap.tilesets[i]
-            ts[i] = true
-        end
-    end
+    ts .|= game.maps.map.tilemap.tilesets
 
-    # error("b")
-
-    ts[game.maps.map.tilemap.tilesets] .= true
+    # error("a")
 
     for n in game.maps.neighbours
-        ts[n.map.tilemap.tilesets] .= true
+        ts .|= n.map.tilemap.tilesets
     end
 
-    cull = ts .& .~game.im.tilesets
+    println(ts)
+
+    cull = .~ts .& game.im.tilesets
+
+    println(cull)
     
-    @time cullTiles!(game,cull)
+    cullTiles!(game,cull)
 
-    load = .~ts .& game.im.tilesets
+    get = ts .& .~game.im.tilesets
 
-    @time getTiles!(game,load)
+    println(get)
+
+    getTiles!(game,get)
 
     copy!(game.im.tilesets,ts)
 

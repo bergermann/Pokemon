@@ -9,7 +9,7 @@ mutable struct Tileset
 end
 
 
-const tilesets = [
+const tilesetranges = [
     0x0000:0x0000+0x10-0x01,
     0x0010:0x0010+0x20-0x01,
     0x0030:0x0030+0x30-0x01,
@@ -56,7 +56,7 @@ const tilesetnames = [
 ]
 
 function getTileMap(id::UInt8)
-    return deserialize("maps/$id.map")
+    return deserialize("maps/$id/tilemap.map")
 end
 
 function cullTiles!(game::GameState,cull::BitVector)
@@ -93,7 +93,20 @@ function getTiles!(game::GameState,load::BitVector)
 end
 
 function loadTiles!(game::GameState)
-    ts = falses(20)
+    ts = falses(64)
+
+    # println(ts)
+    println(game.maps.map.tilemap.tilesets)
+    
+    error("a")
+
+    for i in eachindex(game.maps.map.tilemap.tilesets)
+        if game.maps.map.tilemap.tilesets[i]
+            ts[i] = true
+        end
+    end
+
+    # error("b")
 
     ts[game.maps.map.tilemap.tilesets] .= true
 
@@ -110,5 +123,10 @@ function loadTiles!(game::GameState)
     @time getTiles!(game,load)
 
     copy!(game.im.tilesets,ts)
+
+    return
 end
 
+
+
+## check type of deserialization of tilemap files

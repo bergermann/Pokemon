@@ -3,12 +3,12 @@
 include("transformations.jl")
 include("layers.jl")
 include("sprites.jl")
+include("tiles.jl")
 include("map.jl")
 include("menu.jl")
 include("dialogue.jl")
 include("battle.jl")
 include("parser.jl")
-include("tiles.jl")
 
 
 

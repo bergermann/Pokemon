@@ -35,6 +35,8 @@ include("events.jl")
 # end
 
 function play()
+    Base.GC.enable(false)
+
     settings = Settings()
 
     global input = Input()
@@ -74,8 +76,12 @@ function play()
         Options()
     )
 
-    Base.GC.@preserve game sceneTransition!
+    # Base.GC.@preserve game sceneTransition!
+    # Base.GC.@preserve game
 
+    # println(game.maps.map.tilemap.tilesets[1])
+
+    @time loadTiles!(game)
     setInventoryTest!(game.trainer.inventory)
 
     push!(game.trainer.pokemon,generatePkmn(game,0x0001,0x14))
@@ -88,6 +94,7 @@ function play()
     resetMovePos!(game)
     loadNPCs!(game,game.maps.map.id)
 
+    return game
     stateInitDrawMap!(game)
 
     w,b = startWindow(settings)

@@ -9,7 +9,9 @@ function stateInitMapCtrls!(game::GameState)
 end
 
 function stateInitDrawMap!(game::GameState)
+    loadTiles!(game)
     drawMap!(game)
+    
     game.overworld = true
     
     createSprite!(game,:main,:layer2,Position(80,128),min(3,game.direction),
@@ -25,7 +27,6 @@ function stateInitDrawMap!(game::GameState)
     loadSpritesNPCs!(game)
 
     loadMapStrings!(game; reset=true)
-    loadTiles!(game)
 end
 
 function stateMapTransition!(game::GameState,exit::Exit)

@@ -1,0 +1,2 @@
+id	h	w	dir	spr	pat	par	dia	dl
+200	3	8	1	200	0	0	0	0

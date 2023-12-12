@@ -112,6 +112,7 @@ function enterMap!(game::GameState,exit::Exit)
     setNeighbours!(game)
 
     loadMapStrings!(game; reset=false)
+    loadTiles!(game)
 
     game.flags.general[0xc8] = false
 
@@ -135,11 +136,11 @@ const map1 = Map(
     0x01,
     0x00,
     [
-        Exit(0x00,0x00,P(1-39,18-26),0,false,emptyCallback),
+        Exit(0x02,0x00,P(1-39,18-26),0,false,emptyCallback),
         Exit(0xc8,0x01,P(9,8),1,true,emptyCallback),
     ],
-    getTileMap(1),
-    [Neighbour(0x00,P(1-39,18-26))],
+    getTileMap(0x01),
+    [Neighbour(0x02,P(1-39,18-26))],
     []
 )
 
@@ -152,7 +153,7 @@ const map2 = Map(
         Exit(0x03,0x01,P(0,0),0,true,emptyCallback),
         Exit(0x03,0x01,P(0,0),0,true,emptyCallback),
     ],
-    getTileMap(2),
+    getTileMap(0x02),
     [Neighbour(0x01,P(39-1,26-18))],
     []
 )
@@ -165,7 +166,7 @@ const map200 = Map(
         Exit(0xc8,0x01,P(7,24),4,true,emptyCallback),
         Exit(0xc8,0x01,P(7,2),4,true,emptyCallback),
     ],
-    getTileMap(200),
+    getTileMap(0xc8),
     [],
     [
         Event(0xc8,(),(),(:general,),(),(),true,1),

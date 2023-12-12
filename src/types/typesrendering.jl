@@ -119,7 +119,7 @@ mutable struct Im
     diabox::ImageP
 
     tiles::Dict{UInt16,Matrix{UInt32}}
-    tilesets::BitVector
+    tilesets::Vector{Bool}
     animated::Vector
     tile::Matrix{UInt32}
 
@@ -139,7 +139,7 @@ mutable struct Im
             loadDialogue(2),
             
             Dict{UInt16,Matrix{UInt32}}(),
-            [],
+            fill(false,64),
             [],
             zeros(UInt32,16,16),
 

@@ -97,7 +97,7 @@ function getFont()
     return Dict(zip(symbols1,f1)),Dict(zip(symbols2,f2)),Dict(zip(symbols3,f3))
 end
 
-function drawText!(game::GameState,layer::Symbol,str::String,style::UInt,pos::Position;
+function drawText!(game::GameState,layer::Int,str::String,style::UInt,pos::Position;
         lineoffset::Int=0, charoffset::Int=0)
 
     game.im.font.h_ = game.im.font.heights[style]
@@ -115,7 +115,7 @@ function drawText!(game::GameState,layer::Symbol,str::String,style::UInt,pos::Po
             continue
         end
 
-        v = view(getfield(game.im.layers,layer),
+        v = view(game.im.layers[layer],
             pos.h+game.im.font.h+1:pos.h+game.im.font.h+game.im.font.h_,
             pos.w+game.im.font.w+1:pos.w+game.im.font.w+game.im.font.w_)
 
@@ -129,9 +129,11 @@ function drawText!(game::GameState,layer::Symbol,str::String,style::UInt,pos::Po
 
         game.im.font.w += game.im.font.w_+charoffset
     end
+
+    return
 end
 
-function drawText!(game::GameState,layer::Symbol,str::String,style::UInt,
+function drawText!(game::GameState,layer::Int,str::String,style::UInt,
         pos::Position,color1::UInt32,color2::UInt32;
         lineoffset::Int=0, charoffset::Int=0)
 
@@ -150,7 +152,7 @@ function drawText!(game::GameState,layer::Symbol,str::String,style::UInt,
             continue
         end
 
-        v = view(getfield(game.im.layers,layer),
+        v = view(game.im.layers[layer],
             pos.h+game.im.font.h+1:pos.h+game.im.font.h+game.im.font.h_,
             pos.w+game.im.font.w+1:pos.w+game.im.font.w+game.im.font.w_)
 
@@ -166,6 +168,8 @@ function drawText!(game::GameState,layer::Symbol,str::String,style::UInt,
 
         game.im.font.w += game.im.font.w_+charoffset
     end
+
+    return
 end
 
 function drawText!(game::GameState,im::Matrix{UInt32},str::String,style::UInt,
@@ -203,6 +207,8 @@ function drawText!(game::GameState,im::Matrix{UInt32},str::String,style::UInt,
 
         game.im.font.w += game.im.font.w_+charoffset
     end
+
+    return
 end
 
 function drawText!(game::GameState,sprite::Sprite,str::String,style::UInt,
@@ -242,6 +248,8 @@ function drawText!(game::GameState,sprite::Sprite,str::String,style::UInt,
 
         game.im.font.w += game.im.font.w_+charoffset
     end
+
+    return
 end
 
 

@@ -23,6 +23,8 @@ function updateSprite!(sprite::Sprite,frame::Int)
         sprite.im = copy(sprite.dict[frame])
         sprite.size = Position(size(sprite.im)...)
     end
+
+    return
 end
 
 function updateSprite!(sprite::Sprite)
@@ -34,10 +36,12 @@ function updateSprite!(sprite::Sprite)
         sprite.im = copy(sprite.dict[sprite.frame])
         sprite.size = Position(size(sprite.dict[sprite.frame])...)
     end
+
+    return
 end
 
-function updateSprite!(game::GameState,spriteid::Symbol,frame::Int)
-    sprite = game.im.sprites[spriteid]
+function updateSprite!(game::GameState,layer::Integer,spriteid::Symbol,frame::Int)
+    sprite = game.im.sprites[layer][spriteid]
 
     sprite.frame = frame
 
@@ -49,6 +53,8 @@ function updateSprite!(game::GameState,spriteid::Symbol,frame::Int)
         sprite.im = copy(sprite.dict[frame])
         sprite.size = Position(size(sprite.im)...)
     end
+
+    return
 end
 
 function getSprite(dir::String,len::Int)
@@ -128,54 +134,32 @@ function createSprite!(game::GameState,id::Symbol,layer::Integer,
         CallbackFunction(),
         CallbackFunction())
     )
+
+    return
 end
 
 function createSprite!(game::GameState,id::Symbol,layer::Integer,
         pos::Position,frame::Int,(dict,palette)::Tuple{Dict,Palette};
         kwargs...)
     createSprite!(game,id,layer,pos,frame,dict,palette; kwargs...)
+
+    return
 end
 
 function killSprite!(game::GameState,id::Symbol)
     for k in 1:6
         popat!(game.im.sprites[k],id)
     end
+
+    return
 end
 
 function killSpriteAll!(game::GameState)
     for k in 1:6
         popall!(game.im.sprites[k])
     end
+
+    return
 end
 
 
-
-## delete if works:
-# function drawSprites!(game::GameState,layer::Integer)
-#     @inbounds for i in 1:game.im.sprites.idx
-#         if !game.im.sprites[i].active
-#             continue
-#         end
-        
-#         sprite = game.im.sprites.data[i]
-#         l = game.im.layers[sprite.layer]
-
-#         sh,sw = size(sprite.im)
-
-#         v = view(
-#             l,
-#             sprite.hreverse ? 
-#                 (min(1,sprite.pos.h+1):max(s.height,sprite.pos.h+sh)) :
-#                 (max(s.height,sprite.pos.h+sh):-1:min(1,sprite.pos.h+1)),
-#             sprite.vreverse ?
-#                 (min(1,sprite.pos.w+1):max(s.width,sprite.pos.w+sw)) :
-#                 (max(s.width,sprite.pos.w+sw):-1:min(1,sprite.pos.w+1))
-#         )
-
-#         @inbounds for i in eachindex(v)
-#             if sprite.im[i] != 0x00
-#                 v[i] = sprite.palette[sprite.im[i]]
-#             end
-#         end
-#     end
-# end

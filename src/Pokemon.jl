@@ -76,12 +76,7 @@ function play()
         Options()
     )
 
-    # Base.GC.@preserve game sceneTransition!
-    # Base.GC.@preserve game
-
-    game.maps.map.tilemap.tilesets[5]
-
-    loadTiles!(game)
+    Base.GC.@preserve game sceneTransition!
 
     setInventoryTest!(game.trainer.inventory)
 
@@ -95,7 +90,6 @@ function play()
     resetMovePos!(game)
     loadNPCs!(game,game.maps.map.id)
 
-    return game
     stateInitDrawMap!(game)
 
     w,b = startWindow(settings)
@@ -106,10 +100,12 @@ function play()
 
     state = mfb_update(w, b)
 
+    Base.GC.gc()
+
     while true
         try
-            begin
-            # @time begin
+            # begin
+            @time begin
                 game.n.frame += 0x01
 
                 writeToBuffer!(b,game)
@@ -120,7 +116,7 @@ function play()
                 end
                 
                 # @time updateGame!(game,input; s=settings)
-                updateGame!(game,input; s=settings)
+                updateGame!(game,input)
 
                 # @time drawGame!(game; s=settings)
                 drawGame!(game; s=settings)

@@ -209,7 +209,8 @@ end
 
 function Base.pop!(a::ArrayList)
     if a.idx == 0
-        error("ArrayList is empty, can't pop element."); return
+        # error("ArrayList is empty, can't pop element.");
+        return
     end
 
     a.data[a.idx] = eltype(a.data).name.wrapper()
@@ -220,9 +221,9 @@ end
 
 function Base.popat!(a::ArrayList,id::Symbol)
     if a.idx == 0
-        error("ArrayList is empty, can't pop element."); return
+        # error("ArrayList is empty, can't pop element."); return
+        return
     end
-
     i = findfirst(x -> x.id==id, a.data[1:a.idx])
     if isnothing(i); return; end
 

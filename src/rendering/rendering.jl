@@ -27,7 +27,7 @@ function drawGame!(game::GameState; s=Settings())
         drawBattle!(game; s=s)
     end
 
-    combineLayers!(game,game.im.L)
+    combineLayers!(game)
 
     if game.im.weather.active
         game.im.weather.func(game.im.layer,game.im.weather.args...)

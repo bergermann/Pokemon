@@ -106,7 +106,7 @@ end
 
 
 
-function updateGame!(game::GameState,input::Input; s=Settings())
+function updateGame!(game::GameState,input::Input)
     inputManager!(game,input)
 
     if game.overworld
@@ -115,7 +115,9 @@ function updateGame!(game::GameState,input::Input; s=Settings())
             manageNPCs!(game)
         end
 
-        sortHorizontal!(game.im.sprites)
+        for i in 1:6
+            sortHorizontal!(game.im.sprites[i])
+        end
     end
 
     for i in 1:game.callbacks.idx
@@ -123,5 +125,4 @@ function updateGame!(game::GameState,input::Input; s=Settings())
             game.callbacks[i].func(game,game.callbacks[i].args...)
         end
     end
-
 end

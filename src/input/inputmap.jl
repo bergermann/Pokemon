@@ -1,3 +1,6 @@
+
+
+
 dirs = Base.ImmutableDict(
     1 => Position(-1,0),    #up
     2 => Position(1,0),     #down

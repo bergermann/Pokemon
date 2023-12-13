@@ -81,28 +81,32 @@ function drawBattleBase!(game::GameState; s=Settings())
     createCC!(game,:animbattle,animBattlePhaseWild!,(); active=false,n=-1)
 
     bg = deserialize("im/battle/backgrounds/grass1.imp")
-    game.im.layers.layer1[24+1:24+112,16+1:16+240] = bg.palette[bg.im]
+    game.im.layers[1][24+1:24+112,16+1:16+240] = bg.palette[bg.im]
 
     dia = deserialize("im/menu/dialogue/1.imp")
-    game.im.layers.layer3[24+1+112:24+160,16+1:16+240] = dia.palette[dia.im]
+    game.im.layers.l[3][24+1+112:24+160,16+1:16+240] = dia.palette[dia.im]
 
-    createSprite!(game,:pkmn1,:layer2,Position(90,40),1,
+    createSprite!(game,:pkmn1,2,Position(90,40),1,
         getBattlerBack(game.battle.state.pkmn1.pkmn); active=true)
-    createSprite!(game,:pkmn2,:layer2,Position(32,160),1,
+    createSprite!(game,:pkmn2,2,Position(32,160),1,
         getBattlerFront(game.battle.state.pkmn2.pkmn); active=true)
     
-    createSprite!(game,:cursor1,:layer4,Position(146,136),1,
+    createSprite!(game,:cursor1,4,Position(146,136),1,
         getSprite("im/battle/cursor.imp"))
-    createSprite!(game,:cursor2,:layer5,Position(146,24),1,
+    createSprite!(game,:cursor2,5,Position(146,24),1,
         getSprite("im/battle/cursor.imp"))
     
-    createSprite!(game,:tag1,:layer3,Position(72+24,126+16),1,
+    createSprite!(game,:tag1,3,Position(72+24,126+16),1,
         getSprite("im/battle/tagown.imp"); active=true)
-    createSprite!(game,:tag2,:layer3,Position(14+24,12+16),1,
+    createSprite!(game,:tag2,3,Position(14+24,12+16),1,
         getSprite("im/battle/tagopp.imp"); active=true)
 
-    drawBattleTagOwn!(game,game.battle.state.pkmn1.pkmn,game.im.sprites[:tag1])
-    drawBattleTagOpp!(game,game.battle.state.pkmn2.pkmn,game.im.sprites[:tag2])
+    drawBattleTagOwn!(game,game.battle.state.pkmn1.pkmn,
+        game.im.sprites[3][:tag1])
+    drawBattleTagOpp!(game,game.battle.state.pkmn2.pkmn,
+        game.im.sprites[3][:tag2])
+
+    return
 end
 
 function drawBattleIntro!(game::GameState; s=Settings())
@@ -137,53 +141,61 @@ function drawBattleIntro!(game::GameState; s=Settings())
     end
 
     game.n.c[:battleintro].c += 1
+
+    return
 end
 
 function drawBattleDialogue!(game::GameState)
-    drawText!(game,:layer3,game.dialogue.str[game.dialogue.n],UInt(2),
+    drawText!(game,3,game.dialogue.str[game.dialogue.n],UInt(2),
         P(144,32),0xffffff,0x6b5a73)
+
+    return
 end
 
 function drawBattleMenu1!(game::GameState)
-    drawText!(game,:layer4,
+    drawText!(game,4,
         "Was soll\\$(pkmnName(game,game.battle.state.pkmn1.pkmn)) tun?",
         UInt(2),Position(144,32),0xffffff,0x6b5a73)
 
-    drawFrame!(game,:layer4,6,16,Position(24+112,16+112))
+    drawFrame!(game,4,6,16,Position(24+112,16+112))
 
-    drawText!(game,:layer4,"KAMPF",UInt(3),Position(145,144),0x4a4a4a,0xd6d6ce)
-    drawText!(game,:layer4,"BEUTEL",UInt(3),Position(145,202),0x4a4a4a,0xd6d6ce)
-    drawText!(game,:layer4,"POKEMON",UInt(3),Position(161,144),0x4a4a4a,0xd6d6ce)
-    drawText!(game,:layer4,"FLUCHT",UInt(3),Position(161,202),0x4a4a4a,0xd6d6ce)
+    drawText!(game,4,"KAMPF",UInt(3),Position(145,144),0x4a4a4a,0xd6d6ce)
+    drawText!(game,4,"BEUTEL",UInt(3),Position(145,202),0x4a4a4a,0xd6d6ce)
+    drawText!(game,4,"POKEMON",UInt(3),Position(161,144),0x4a4a4a,0xd6d6ce)
+    drawText!(game,4,"FLUCHT",UInt(3),Position(161,202),0x4a4a4a,0xd6d6ce)
+
+    return
 end
 
 function drawBattleMenu2!(game::GameState)
-    drawFrame!(game,:layer5,6,20,Position(24+112,16))
-    drawFrame!(game,:layer5,6,10,Position(24+112,176))
+    drawFrame!(game,5,6,20,Position(24+112,16))
+    drawFrame!(game,5,6,10,Position(24+112,176))
 
-    drawText!(game,:layer5,"/",UInt(3),Position(145,230),0x4a4a4a,0xd6d6ce)
-    drawText!(game,:layer5,
+    drawText!(game,5,"/",UInt(3),Position(145,230),0x4a4a4a,0xd6d6ce)
+    drawText!(game,5,
         string(game.battle.state.pkmn1.pkmn.attacks[game.input.battle2menu.select+1].ap),
         UInt(3),Position(145,218),0x4a4a4a,0xd6d6ce)
-    drawText!(game,:layer5,
+    drawText!(game,5,
         string(game.battle.state.pkmn1.pkmn.attacks[game.input.battle2menu.select+1].apmax),
         UInt(3),Position(145,236),0x4a4a4a,0xd6d6ce)
 
-    drawText!(game,:layer5,"AP\\Typ:",UInt(3),Position(145,186),0x4a4a4a,0xd6d6ce;
+    drawText!(game,5,"AP\\Typ:",UInt(3),Position(145,186),0x4a4a4a,0xd6d6ce;
         lineoffset=2)
-    drawText!(game,:layer5,
+    drawText!(game,5,
         TypeNames[game.battle.state.pkmn1.pkmn.attacks[game.input.battle2menu.select+1].type],
         UInt(3),Position(161,208),0x4a4a4a,0xd6d6ce)
 
     for i in 1:length(game.battle.state.pkmn1.pkmn.attacks)
-        drawText!(game,:layer5,game.battle.state.pkmn1.pkmn.attacks[i].name,
+        drawText!(game,5,game.battle.state.pkmn1.pkmn.attacks[i].name,
             UInt(3),Position(145+div(i-1,2)*16,32+((i-1)%2)*64))
     end
 
     for i in length(game.battle.state.pkmn1.pkmn.attacks)+1:4
-        drawText!(game,:layer5,"--",
+        drawText!(game,5,"--",
             UInt(3),Position(145+div(i-1,2)*16,32+((i-1)%2)*64))
     end
+
+    return
 end
 
 

@@ -57,12 +57,14 @@ function inputChoice!(game::GameState,input::Input)
             return
         end
 
-        game.im.sprites[:ccursor].pos.h += 16*(game.input.choice.max-game.input.choice.sel)
+        game.im.sprites[game.input.choice.layer][:ccursor].pos.h += 
+            16*(game.input.choice.max-game.input.choice.sel)
 
         game.input.choice.sel = game.input.choice.max
     elseif input._up
         if game.input.choice.sel == 1
-            game.im.sprites[:ccursor].pos.h += 16*(game.input.choice.max-1)
+            game.im.sprites[game.input.choice.layer][:ccursor].pos.h +=
+                16*(game.input.choice.max-1)
 
             game.input.choice.sel = game.input.choice.max
 
@@ -70,10 +72,11 @@ function inputChoice!(game::GameState,input::Input)
         end
 
         game.input.choice.sel -= 1
-        game.im.sprites[:ccursor].pos.h -= 16
+        game.im.sprites[game.input.choice.layer][:ccursor].pos.h -= 16
     elseif input._down
         if game.input.choice.sel == game.input.choice.max
-            game.im.sprites[:ccursor].pos.h -= 16*(game.input.choice.max-1)
+            game.im.sprites[game.input.choice.layer][:ccursor].pos.h -=
+                16*(game.input.choice.max-1)
 
             game.input.choice.sel = 1
 
@@ -81,7 +84,7 @@ function inputChoice!(game::GameState,input::Input)
         end
         
         game.input.choice.sel += 1
-        game.im.sprites[:ccursor].pos.h += 16
+        game.im.sprites[game.input.choice.layer][:ccursor].pos.h += 16
     end
 end
 
@@ -106,6 +109,6 @@ function inputDialogue!(game::GameState,input::Input)
 
         evalCallback(game,game.dialogue.callback)
         
-        flushLayer!(game,:textbox,P(24+112,16),P(48,240))
+        flushLayer!(game,6,P(24+112,16),P(48,240))
     end
 end

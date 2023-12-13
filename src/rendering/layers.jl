@@ -88,10 +88,11 @@ end
 
 
 
-function combineLayers!(game::GameState,layers::Vector{<:Integer})
+# function combineLayers!(game::GameState,layers::Vector{<:Integer})
+function combineLayers!(game::GameState)
     l = game.im.layer
 
-    @views @inbounds for k in layers
+    @views @inbounds for k in 1:6
         ls = game.im.layers[k]
 
         for i in eachindex(l)

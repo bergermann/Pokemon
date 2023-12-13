@@ -35,6 +35,8 @@ function animBattleEntry1!(game::GameState)
     end
 
     game.n.c[:battleintro].c += 1
+
+    return
 end
 
 function animWiggleBattle!(game::GameState)
@@ -51,6 +53,8 @@ function animWiggleBattle!(game::GameState)
     elseif game.n.frame%0x20 == 0x00
         game.im.sprites[:tag1].pos.h = 96
     end
+
+    return
 end
 
 function animBattlePhaseWild!(game::GameState)
@@ -133,6 +137,8 @@ function animBattlePhaseWild!(game::GameState)
     end
 
     game.n.c[:animbattle].c += 1
+
+    return
 end
 
 
@@ -147,6 +153,8 @@ function moveStop!(game::GameState,dir::Int)
 
     game.n.c[:movemain].c = 0
     game.callbacks[:movemain].active = false
+
+    return
 end
 
 function moveTurn!(game::GameState,dir::Int)
@@ -168,6 +176,8 @@ function moveTurn!(game::GameState,dir::Int)
     end
 
     game.n.c[:movemain].c += 1
+
+    return
 end
 
 function moveWalk!(game::GameState,dir::Int)

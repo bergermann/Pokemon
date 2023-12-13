@@ -1,0 +1,31 @@
+  0- 19 collision
+ 20- 59 teleports
+ 60- 79 signs
+160-179 events
+180-199 items
+200-219 random enc?
+
+
+
+
+collisions
+ 0 free
+ 1 blocked
+ 2 water
+ 3 deep water
+ 4 waterfall
+ 5 ? 
+ 6 grass?
+ 7 tall grass?
+
+
+
+17 ledge left
+18 ledge down
+19 ledge right
+
+dirt slide?
+sand/snow?
+biketracks?
+berries?
+shallow water?

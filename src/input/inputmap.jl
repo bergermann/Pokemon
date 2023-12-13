@@ -75,14 +75,18 @@ end
 function updateMovePos!(game::GameState,dir::Int)
     game.movepos.h = game.pos.h+dirs[dir].h
     game.movepos.w = game.pos.w+dirs[dir].w
+
+    return
 end
 
 function resetMovePos!(game::GameState)
     game.movepos = posAdd(game.pos,dirs[game.direction])
+
+    return
 end
 
 function checkEncounter!(game::GameState)
-    if !(game.maps.map.tilemap.collision[game.pos.h,game.pos.w] ∈ 0xc8:0xdb)
+    if !(game.maps.map.tilemap.collision[game.pos.h,game.pos.w] == 0x06)
         return
     end
 
@@ -94,6 +98,8 @@ function checkEncounter!(game::GameState)
     game.callbacks[:movemain].args = (game.direction,-1)
 
     initBattleWild!(game)
+
+    return
 end
 
 function moveMain!(game::GameState,dir::Int,type::Int)
@@ -108,6 +114,8 @@ function moveMain!(game::GameState,dir::Int,type::Int)
     elseif type == 3
         moveWalkWall!(game,dir)
     end
+
+    return
 end
 
 
@@ -132,6 +140,8 @@ function inputMap!(game::GameState,input::Input)
     if game.input.move && input._A
         mapAction!(game)
     end
+
+    return
 end
 
 function inputMove!(game::GameState,input::Input)
@@ -175,4 +185,6 @@ function inputMove!(game::GameState,input::Input)
         game.direction = dir
         game.callbacks[:movemain].args = (game.direction,2)
     end
+
+    return
 end

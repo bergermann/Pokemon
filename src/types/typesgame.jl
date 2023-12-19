@@ -229,13 +229,13 @@ mutable struct Choice
     sel::Int
     max::Int
 
-    layer::Symbol
+    layer::Integer
 
     func::Function
     args::Tuple
 
     function Choice()
-        new(false,false,0,0,:layer6,(() -> nothing),())
+        new(false,false,0,0,6,(() -> nothing),())
     end
 end
 

@@ -113,6 +113,24 @@ mutable struct Font
     end
 end
 
+mutable struct AnimTile
+    h::Int16
+    w::Int16
+    tile0::UInt16
+    ntiles::UInt8
+    framelength::UInt8
+    xoffset::UInt8
+    yoffset::UInt8
+
+    function AnimTile(h,w,tile0,ntiles,framelength,xoffset,yoffset)
+        new(h,w,tile0,ntiles,framelength,xoffset,yoffset)
+    end
+    
+    function AnimTile(h,w,tile0,(ntiles,framelength,xoffset,yoffset))
+        new(h,w,tile0,ntiles,framelength,xoffset,yoffset)
+    end
+end
+
 mutable struct Im
     font::Font
     frame::ImageP
@@ -120,7 +138,9 @@ mutable struct Im
 
     tiles::Dict{UInt16,Matrix{UInt32}}
     tilesets::Vector{Bool}
-    animated::Vector
+    animated::Vector{Vector{AnimTile}}
+    animids::Vector{UInt16}
+    animdata::Matrix{UInt8}
     tile::Matrix{UInt32}
 
     sprites::Vector{ArrayList{Sprite}}
@@ -140,6 +160,8 @@ mutable struct Im
             
             Dict{UInt16,Matrix{UInt32}}(),
             fill(false,64),
+            [],
+            [],
             [],
             zeros(UInt32,16,16),
 

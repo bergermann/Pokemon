@@ -18,7 +18,7 @@ function stateInitDrawMap!(game::GameState)
         getSprite("im/sprites/main1",18); active=true)
     
     if game.direction == 4
-        game.im.sprites[:main].vreverse = true
+        game.im.sprites[3][:main].vreverse = true
     end
 
     createCounter!(game,:movemain,0)

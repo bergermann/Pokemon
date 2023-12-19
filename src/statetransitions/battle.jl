@@ -29,7 +29,10 @@ end
 function stateSetupBattle!(game::GameState)
     game.input.move = false
 
-    popall!(game.im.sprites)
+    # popall!(game.im.sprites[3])
+
+    killSpriteAll!(game)
+
     game.overworld = false
 
     game.im.postprocess.active = true
@@ -66,17 +69,19 @@ function stateBattleAttackSelected!(game::GameState)
     game.draw.battle1 = false
     game.draw.battle2 = false
 
-    game.im.sprites[:cursor1].active = false
-    game.im.sprites[:cursor2].active = false 
+    game.im.sprites[4][:cursor1].active = false
+    game.im.sprites[5][:cursor2].active = false 
             
-    flushLayer!(game,:layer4,Position(24+1+112,16+1),Position(48,240))
-    flushLayer!(game,:layer5,Position(24+1+112,16+1),Position(48,240))
+    flushLayer!(game,4,Position(24+1+112,16+1),Position(48,240))
+    flushLayer!(game,5,Position(24+1+112,16+1),Position(48,240))
 
     game.callbacks[:wiggle].active = false
     game.callbacks[:animbattle].active = true
     game.n.c[:animbattle].c = -1
 
     queueSetupActions!(game,game.battle.state)
+
+    return
 end
 
 function stateBattleItemSelected!(game::GameState,target::UInt,item::ItemType)
@@ -92,11 +97,11 @@ function stateBattleItemSelected!(game::GameState,target::UInt,item::ItemType)
     game.draw.battle1 = false
     game.draw.battle2 = false
 
-    game.im.sprites[:cursor1].active = false
-    game.im.sprites[:cursor2].active = false 
+    game.im.sprites[4][:cursor1].active = false
+    game.im.sprites[5][:cursor2].active = false 
             
-    flushLayer!(game,:layer4,Position(24+1+112,16+1),Position(48,240))
-    flushLayer!(game,:layer5,Position(24+1+112,16+1),Position(48,240))
+    flushLayer!(game,4,Position(24+1+112,16+1),Position(48,240))
+    flushLayer!(game,5,Position(24+1+112,16+1),Position(48,240))
 
     game.callbacks[:wiggle].active = false
     game.callbacks[:animbattle].active = true
@@ -120,11 +125,11 @@ function stateBattlePkmnSelected!(game::GameState)
     game.draw.battle1 = false
     game.draw.battle2 = false
 
-    game.im.sprites[:cursor1].active = false
-    game.im.sprites[:cursor2].active = false 
+    game.im.sprites[4][:cursor1].active = false
+    game.im.sprites[5][:cursor2].active = false 
             
-    flushLayer!(game,:layer4,Position(24+1+112,16+1),Position(48,240))
-    flushLayer!(game,:layer5,Position(24+1+112,16+1),Position(48,240))
+    flushLayer!(game,4,Position(24+1+112,16+1),Position(48,240))
+    flushLayer!(game,5,Position(24+1+112,16+1),Position(48,240))
 
     game.callbacks[:wiggle].active = false
     game.callbacks[:animbattle].active = true
@@ -144,7 +149,7 @@ function stateEndBattlePhase!(game::GameState)
     game.input.battle1 = true
     game.draw.battle1 = true
     
-    game.im.sprites[:cursor1].active = true
+    game.im.sprites[4][:cursor1].active = true
     game.callbacks[:wiggle].active = true
     game.callbacks[:animbattle].active = false
 end
@@ -155,7 +160,7 @@ function stateQuitBattlePhase!(game::GameState)
     game.input.inputlock = true
     game.input.battle1 = false
     
-    game.im.sprites[:cursor1].active = false
+    game.im.sprites[4][:cursor1].active = false
     game.callbacks[:wiggle].active = false
     game.callbacks[:animbattle].active = false
     
@@ -166,9 +171,9 @@ end
 function stateBattleFlee!(game::GameState)
     game.input.battle1 = false
 
-    game.im.sprites[:cursor1].active = false
+    game.im.sprites[4][:cursor1].active = false
 
-    flushLayer!(game,:layer4,P(24+1+112,16+1),P(48,240))
+    flushLayer!(game,4,P(24+1+112,16+1),P(48,240))
     
     flee!(game,game.battle.state)
 end
@@ -183,7 +188,7 @@ function flee!(game::GameState,state::BattleStateWild)
         game.input.battled = true
         game.draw.battled = true
 
-        game.im.sprites[:cursor1].active = false
+        game.im.sprites[4][:cursor1].active = false
 
         return
     end
@@ -203,11 +208,11 @@ function flee!(game::GameState,state::BattleStateWild)
     game.draw.battle1 = false
     game.draw.battle2 = false
 
-    game.im.sprites[:cursor1].active = false
-    game.im.sprites[:cursor2].active = false 
+    game.im.sprites[4][:cursor1].active = false
+    game.im.sprites[5][:cursor2].active = false 
             
-    flushLayer!(game,:layer4,Position(24+1+112,16+1),Position(48,240))
-    flushLayer!(game,:layer5,Position(24+1+112,16+1),Position(48,240))
+    flushLayer!(game,4,Position(24+1+112,16+1),Position(48,240))
+    flushLayer!(game,5,Position(24+1+112,16+1),Position(48,240))
 
     game.callbacks[:wiggle].active = false
     game.callbacks[:animbattle].active = true
@@ -225,7 +230,7 @@ function flee!(game::GameState,state::BattleStateTrainerSolo)
     game.input.battled = true
     game.draw.battled = true
 
-    game.im.sprites[:cursor1].active = false
+    game.im.sprites[4][:cursor1].active = false
 end
 
 function stateBattleFleeBlocked!(game::GameState)
@@ -235,12 +240,12 @@ function stateBattleFleeBlocked!(game::GameState)
     game.input.battle1 = true
     game.draw.battle1 = true
 
-    game.im.sprites[:cursor1].active = true
+    game.im.sprites[4][:cursor1].active = true
     game.callbacks[:wiggle].active = true
 end
 
 function stateEndBattle!(game::GameState)   #,state::BattleStateWild)
-    popall!(game.im.sprites)
+    killSpriteAll!(game)
 
     flushLayers!(game)
     flushLayer!(game)
@@ -261,7 +266,7 @@ function stateEndBattle!(game::GameState)   #,state::BattleStateWild)
 
     stateInitDrawMap!(game)
     
-    game.im.sprites[:main].active = true
+    game.im.sprites[3][:main].active = true
 end
 
 function stateBattleCtrls!(game::GameState)
@@ -272,7 +277,7 @@ function stateBattleCtrls!(game::GameState)
 
     game.draw.battle1 = true
     
-    game.im.sprites[:cursor1].active = true
+    game.im.sprites[4][:cursor1].active = true
     game.callbacks[:wiggle].active = true
 end
 
@@ -286,14 +291,16 @@ function stateBattleBagsOpen!(game::GameState)
     killCC!(game,:animbattle)
     killCallback!(game,:wiggle)
     
-    popall!(game.im.sprites)
-    flushLayer!(game,:layer4)
+    killSpriteAll!(game)
+    flushLayer!(game,4)
 
     createCC!(game,:bagswitch,animBattleBagSwitch!,(); n=1)
     createCallback!(game,:arrows,true,animArrowsMenu!,())
 
     loadInventoryStrings!(game)
     drawInventory!(game,game.input.battlebags)
+
+    return
 end
 
 function stateBattleBagsCtrls!(game::GameState)
@@ -302,14 +309,15 @@ function stateBattleBagsCtrls!(game::GameState)
 end
 
 function stateBattleBagsClose!(game::GameState)
-    popall!(game.im.sprites)
-
-    flushLayer!(game,:layer4)
+    killSpriteAll!(game)
+    flushLayer!(game,4)
 
     killCC!(game,:bagswitch)
     killCallback!(game,:arrows)
 
     drawBattleBase!(game)
+
+    return
 end
 
 
@@ -323,8 +331,8 @@ function stateBattlePkmnOpen!(game::GameState)
     killCC!(game,:animbattle)
     killCallback!(game,:wiggle)
     
-    popall!(game.im.sprites)
-    flushLayer!(game,:layer4)
+    killSpriteAll!(game)
+    flushLayer!(game,4)
 
     createCallback!(game,:wiggle,animMenuPkmnWiggle!,(); active=true)
 
@@ -338,7 +346,7 @@ end
 # end
 
 function stateBattlePkmnClose!(game::GameState)
-    popall!(game.im.sprites)
+    killSpriteAll!(game)
 
     killCallback!(game,:wiggle)
 

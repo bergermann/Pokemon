@@ -146,6 +146,12 @@ function createSprite!(game::GameState,id::Symbol,layer::Integer,
     return
 end
 
+function killSprite!(game::GameState,layer::Integer,id::Symbol)
+    popat!(game.im.sprites[layer],id)
+
+    return
+end
+
 function killSprite!(game::GameState,id::Symbol)
     for k in 1:6
         popat!(game.im.sprites[k],id)

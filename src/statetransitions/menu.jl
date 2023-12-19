@@ -11,7 +11,7 @@ end
 
 
 function stateMenuPkmnOpen!(game::GameState)
-    popall!(game.im.sprites)
+    killSpriteAll!(game)
     game.overworld = false
 
     killCC!(game,:movemain)
@@ -42,7 +42,7 @@ end
 
 
 function stateMenuBagsOpen!(game::GameState)
-    popall!(game.im.sprites)
+    killSpriteAll!(game)
     game.overworld = false
 
     killCC!(game,:movemain)
@@ -62,7 +62,7 @@ end
 function stateMenuBagsClose!(game::GameState)
     game.input.inputlock = true
     
-    popall!(game.im.sprites)
+    killSpriteAll!(game)
 
     killCallback!(game,:arrows)
     killCC!(game,:bagswitch)
@@ -74,7 +74,7 @@ end
 
 
 function stateMenuPkmnSubOpen!(game::GameState)
-    popall!(game.im.sprites)
+    killSpriteAll!(game)
 
     killCC!(game,:bagswitch)
 
@@ -91,7 +91,6 @@ function stateMenuPkmnSubCtrls!(game::GameState)
 end
 
 function stateMenuPkmnSubClose!(game::GameState)
-    popall!(game.im.sprites)
     game.input.inputlock = true
 
     killSpriteAll!(game)

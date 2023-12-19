@@ -43,15 +43,15 @@ end
 
 
 function drawMenu!(game::GameState)
-    drawFrame!(game,5,20,10,Position(24,176))
+    drawFrame!(game,6,20,10,Position(24,176))
 
-    drawText!(game,5,game.str[2][1],
+    drawText!(game,6,game.str[2][1],
         UInt(2),Position(38,194); lineoffset=2)
 
-    drawText!(game,5,game.trainer.name,
+    drawText!(game,6,game.trainer.name,
         UInt(2),Position(38+4*17,194); lineoffset=2)
 
-    createSprite!(game,:cursor,5,
+    createSprite!(game,:cursor,6,
         P(41+(game.input.menu.select)*17,185),1,
         getSprite("im/sprites/cursor",1,"black"); active=true)
 
@@ -298,7 +298,7 @@ end
 function drawInventory!(game::GameState,m::MenuBags)
     bg = deserialize("im/menu/bag/background1.imp")
 
-    game.im.layers.layer1[24+1:24+160,16+1:16+240] = bg.palette[bg.im]
+    game.im.layers[1][24+1:24+160,16+1:16+240] = bg.palette[bg.im]
 
     createSprite!(game,:slotmarker,1,P(24+27,16+34+m.bag*8),1,
         getSprite("im/menu/bag/slotmarker1.imp"); active=true)

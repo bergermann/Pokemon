@@ -162,7 +162,7 @@ const map200 = Map(
     0xc8,
     0x00,
     [
-        Exit(0x01,0x01,P(25,29),2,true,emptyCallback),
+        Exit(0x01,0x01,P(26,29),2,true,emptyCallback),
         Exit(0xc8,0x01,P(7,24),4,true,emptyCallback),
         Exit(0xc8,0x01,P(7,2),4,true,emptyCallback),
     ],

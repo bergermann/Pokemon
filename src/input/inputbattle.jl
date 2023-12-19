@@ -44,8 +44,8 @@ function inputBattle!(game::GameState,input::Input)
 
         game.input.battle1menu.select %= 4
 
-        game.im.sprites[:cursor1].pos.h = 146+div(game.input.battle1menu.select,2)*16
-        game.im.sprites[:cursor1].pos.w = 136+(game.input.battle1menu.select%2)*58
+        game.im.sprites[4][:cursor1].pos.h = 146+div(game.input.battle1menu.select,2)*16
+        game.im.sprites[4][:cursor1].pos.w = 136+(game.input.battle1menu.select%2)*58
 
         return
     end
@@ -69,11 +69,11 @@ function inputBattle!(game::GameState,input::Input)
             game.draw.battle1 = true
             game.draw.battle2 = false
 
-            game.im.sprites[:cursor1].active = true
-            game.im.sprites[:cursor2].active = false
+            game.im.sprites[4][:cursor1].active = true
+            game.im.sprites[5][:cursor2].active = false
 
-            flushLayer!(game,:layer4,Position(24+1+112,16+1),Position(48,240))
-            flushLayer!(game,:layer5,Position(24+1+112,16+1),Position(48,240))
+            flushLayer!(game,4,Position(24+1+112,16+1),Position(48,240))
+            flushLayer!(game,5,Position(24+1+112,16+1),Position(48,240))
 
             return
         end
@@ -134,8 +134,8 @@ function inputBattle!(game::GameState,input::Input)
 
         game.input.battle1menu.select %= 4
 
-        game.im.sprites[:cursor2].pos.h = 146+div(game.input.battle2menu.select,2)*16
-        game.im.sprites[:cursor2].pos.w = 24+(game.input.battle2menu.select%2)*64
+        game.im.sprites[5][:cursor2].pos.h = 146+div(game.input.battle2menu.select,2)*16
+        game.im.sprites[5][:cursor2].pos.w = 24+(game.input.battle2menu.select%2)*64
 
         return
     end
@@ -143,6 +143,8 @@ function inputBattle!(game::GameState,input::Input)
     if game.input.battlebag
         inputBattleInventory!(game,input)
     end
+
+    return
 end
 
 function inputBattleDialogue!(game::GameState,input::Input)
@@ -159,8 +161,10 @@ function inputBattleDialogue!(game::GameState,input::Input)
             game.dialogue.callback.func(game,game.dialogue.callback.args...)
         end
         
-        flushLayer!(game,:layer3,Position(24+1+120,24+1),Position(32,208),0x68a0a0)
+        flushLayer!(game,3,Position(24+1+120,24+1),Position(32,208),0x68a0a0)
     end
+
+    return
 end
 
 function inputBattleMenuSelector!(game::GameState)
@@ -171,10 +175,10 @@ function inputBattleMenuSelector!(game::GameState)
         game.draw.battle1 = false
         game.draw.battle2 = true
 
-        game.im.sprites[:cursor1].active = false
-        game.im.sprites[:cursor2].active = true    
+        game.im.sprites[4][:cursor1].active = false
+        game.im.sprites[5][:cursor2].active = true    
                 
-        flushLayer!(game,:layer4,Position(24+1+112,16+1),Position(48,240),
+        flushLayer!(game,4,Position(24+1+112,16+1),Position(48,240),
             0x4a4252)
     elseif game.input.battle1menu.select == 1
         game.input.inputlock = true
@@ -193,6 +197,8 @@ function inputBattleMenuSelector!(game::GameState)
     else
         stateBattleFlee!(game)
     end
+
+    return
 end
 
 function inputBattleAttackSelector!(game::GameState)
@@ -201,4 +207,6 @@ function inputBattleAttackSelector!(game::GameState)
     end
 
     stateBattleAttackSelected!(game)
+
+    return
 end

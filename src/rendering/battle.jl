@@ -70,11 +70,8 @@ function drawBattleTagOpp!(game::GameState,pkmn::Pkmn,sprite::Sprite)
 end
 
 function drawBattleBase!(game::GameState; s=Settings())
+    flushLayers!(game)
     flushLayer!(game)
-    flushLayer!(game,:layer1)
-    flushLayer!(game,:layer2)
-    flushLayer!(game,:layer3)
-    flushLayer!(game,:layer4)
 
     createCallback!(game,:wiggle,animWiggleBattle!,())
     # createCC!(game,:wiggle,animWiggleBattle!,(); active=false)
@@ -84,7 +81,7 @@ function drawBattleBase!(game::GameState; s=Settings())
     game.im.layers[1][24+1:24+112,16+1:16+240] = bg.palette[bg.im]
 
     dia = deserialize("im/menu/dialogue/1.imp")
-    game.im.layers.l[3][24+1+112:24+160,16+1:16+240] = dia.palette[dia.im]
+    game.im.layers[3][24+1+112:24+160,16+1:16+240] = dia.palette[dia.im]
 
     createSprite!(game,:pkmn1,2,Position(90,40),1,
         getBattlerBack(game.battle.state.pkmn1.pkmn); active=true)

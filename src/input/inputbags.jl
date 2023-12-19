@@ -10,12 +10,14 @@ function inputInventory!(game::GameState,input::Input)
     if game.input.choice.sel == -1
         game.input.choice.sel = 0
 
-        game.im.sprite[:cursor].palette[1] = 0x010101
+        game.im.sprite[1][:cursor].palette[1] = 0x010101
 
         return
     end
 
     inputBags!(game,input)
+
+    return
 end
 
 function inputBags!(game::GameState,input::Input)
@@ -30,10 +32,10 @@ function inputBags!(game::GameState,input::Input)
             return
         end
 
-        game.im.sprites[:cursor].palette[1] = 0xd0d0c8
+        game.im.sprites[1][:cursor].palette[1] = 0xd0d0c8
         setChoice!(game,true,1,itemAction!,())
 
-        drawChoiceMenu!(game,:layer4,getInvChoiceStr(game),7,P(120,192))
+        drawChoiceMenu!(game,4,getInvChoiceStr(game),7,P(120,192))
     elseif input._B
         game.input.inputlock = true
         game.input.menu.bags = false
@@ -78,10 +80,10 @@ function inputBags!(game::GameState,input::Input)
 
             setVisibleItems!(game,game.input.menu.menubags)
             game.input.menu.menubags.vis[8,1] = -1
-            setPos!(game.im.sprites[:cursor].pos,
+            setPos!(game.im.sprites[1][:cursor].pos,
                 24+22+15*(game.input.menu.menubags.slot-1),16+114)
 
-            flushLayer!(game,:layer2)
+            flushLayer!(game,2)
             drawInventoryText!(game,game.input.menu.menubags)
         elseif game.input.menu.menubags.slot == 3 &&
                 getSelect(game) > 3
@@ -97,7 +99,7 @@ function inputBags!(game::GameState,input::Input)
             game.input.menu.menubags.slot -= 1
             game.input.menu.menubags.select[game.input.menu.menubags.bag] -= 1
 
-            posAdd!(game.im.sprites[:cursor].pos,-15,0)
+            posAdd!(game.im.sprites[1][:cursor].pos,-15,0)
         end
 
         setInventoryItemIcon!(game,game.input.menu.menubags)
@@ -110,13 +112,13 @@ function inputBags!(game::GameState,input::Input)
         end
         
         setVisibleItems!(game,game.input.menu.menubags)
-        flushLayer!(game,:layer2)
+        flushLayer!(game,2)
 
-        game.im.sprites[:cursor].active = false
-        setPos!(game.im.sprites[:cursor].pos,
+        game.im.sprites[1][:cursor].active = false
+        setPos!(game.im.sprites[1][:cursor].pos,
             24+7+15*game.input.menu.menubags.slot,16+114)
 
-        game.im.sprites[:icon].active = false
+        game.im.sprites[1][:icon].active = false
         setInventoryItemIcon!(game,game.input.menu.menubags)
 
         game.input.inputlock = true
@@ -129,13 +131,13 @@ function inputBags!(game::GameState,input::Input)
         end
 
         setVisibleItems!(game,game.input.menu.menubags)
-        flushLayer!(game,:layer2)
+        flushLayer!(game,2)
 
-        game.im.sprites[:cursor].active = false
-        setPos!(game.im.sprites[:cursor].pos,
+        game.im.sprites[1][:cursor].active = false
+        setPos!(game.im.sprites[1][:cursor].pos,
             24+7+15*game.input.menu.menubags.slot,16+114)
 
-        game.im.sprites[:icon].active = false
+        game.im.sprites[1][:icon].active = false
         setInventoryItemIcon!(game,game.input.menu.menubags)
 
         game.input.inputlock = true

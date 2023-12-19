@@ -40,18 +40,14 @@ function animBattleEntry1!(game::GameState)
 end
 
 function animWiggleBattle!(game::GameState)
-    # game.n.c[:wiggle].c = 0
-    # game.im.sprites[:pkmn1].pos.h = 90
-    # game.im.sprites[:tagown].pos.h = 72+24
-
     if game.n.frame%0x20 == 0x08
-        game.im.sprites[:pkmn1].pos.h = 89
+        game.im.sprites[2][:pkmn1].pos.h = 89
     elseif game.n.frame%0x20 == 0x10
-        game.im.sprites[:tag1].pos.h = 95
+        game.im.sprites[3][:tag1].pos.h = 95
     elseif game.n.frame%0x20 == 0x18
-        game.im.sprites[:pkmn1].pos.h = 90
+        game.im.sprites[2][:pkmn1].pos.h = 90
     elseif game.n.frame%0x20 == 0x00
-        game.im.sprites[:tag1].pos.h = 96
+        game.im.sprites[3][:tag1].pos.h = 96
     end
 
     return
@@ -120,7 +116,7 @@ function animBattlePhaseWild!(game::GameState)
     if game.n.c[:animbattle].c == 1
         if game.battle.state.animqueue[1].str != ""
             drawText!(
-                game,:layer4,game.battle.state.animqueue[1].str,UInt(2),
+                game,4,game.battle.state.animqueue[1].str,UInt(2),
                 P(144,32),0xffffff,0x6b5a73
             )
         end
@@ -128,7 +124,7 @@ function animBattlePhaseWild!(game::GameState)
         game.battle.state.animqueue[1].anim(game,game.battle.state.animqueue[1].target)
     elseif game.n.c[:animbattle].c == game.battle.state.animqueue[1].l
         if game.battle.state.animqueue[1].str != ""
-            flushLayer!(game,:layer4,P(144,32),P(32,200))
+            flushLayer!(game,4,P(144,32),P(32,200))
         end
 
         game.n.c[:animbattle].c = -2
@@ -218,6 +214,8 @@ function moveWalk!(game::GameState,dir::Int)
     end
 
     game.n.c[:movemain].c += 1
+
+    return
 end
 
 function moveWalkWall!(game::GameState,dir::Int)
@@ -237,6 +235,8 @@ function moveWalkWall!(game::GameState,dir::Int)
     end
 
     game.n.c[:movemain].c += 1
+
+    return
 end
 
 function moveRun!(game::GameState,dir::Int)
@@ -277,6 +277,8 @@ function moveRun!(game::GameState,dir::Int)
     end
 
     game.n.c[:movemain].c += 1
+
+    return
 end
 
 function fadeIn!(game::GameState,len::Int)
@@ -297,6 +299,8 @@ function fadeIn!(game::GameState,len::Int)
     end
 
     game.n.c[:fadein].c += 1
+
+    return
 end
 
 function fadeOut!(game::GameState,len::Int)
@@ -348,6 +352,8 @@ function sceneTransition!(game::GameState,len::Int,pause::Int,  # pause >= 1!
     end
    
     game.n.c[:scenet].c += 1
+
+    return
 end
 
 function sceneTransition!(game::GameState,len::Int,pause::Int,  # pause >= 1!
@@ -381,43 +387,45 @@ function sceneTransition!(game::GameState,len::Int,pause::Int,  # pause >= 1!
     end
    
     game.n.c[:scenet].c += 1
+
+    return
 end
 
 function animArrowsMenu!(game::GameState)
     if (game.n.frame%48) < 24
-        game.im.sprites[:arrowleft].pos = P(24+8,16+22-div((game.n.frame%24),6))
-        game.im.sprites[:arrowright].pos = P(24+8,16+90+div((game.n.frame%24),6))
+        game.im.sprites[1][:arrowleft].pos = P(24+8,16+22-div((game.n.frame%24),6))
+        game.im.sprites[1][:arrowright].pos = P(24+8,16+90+div((game.n.frame%24),6))
     else
-        game.im.sprites[:arrowleft].pos = P(24+8,16+22-4+div((game.n.frame%24),6))
-        game.im.sprites[:arrowright].pos = P(24+8,16+90+4-div((game.n.frame%24),6))
+        game.im.sprites[1][:arrowleft].pos = P(24+8,16+22-4+div((game.n.frame%24),6))
+        game.im.sprites[1][:arrowright].pos = P(24+8,16+90+4-div((game.n.frame%24),6))
     end
 end
 
 function animBagSwitch!(game::GameState)
     if game.n.c[:bagswitch].c == 1
-        updateSprite!(game.im.sprites[:slot],game.input.menu.menubags.bag)
-        setPos!(game.im.sprites[:slotmarker].pos,
+        updateSprite!(game.im.sprites[1][:slot],game.input.menu.menubags.bag)
+        setPos!(game.im.sprites[1][:slotmarker].pos,
             24+27,16+34+game.input.menu.menubags.bag*8)
 
-        updateSprite!(game.im.sprites[:bag],6)
+        updateSprite!(game.im.sprites[1][:bag],6)
 
-        game.im.sprites[:arrowleft].active = false
-        game.im.sprites[:arrowright].active = false
+        game.im.sprites[1][:arrowleft].active = false
+        game.im.sprites[1][:arrowright].active = false
     end
 
     if game.n.c[:bagswitch].c < 4
-        setPos!(game.im.sprites[:bag].pos,24+34-game.n.c[:bagswitch].c+1,16+40)
+        setPos!(game.im.sprites[1][:bag].pos,24+34-game.n.c[:bagswitch].c+1,16+40)
     elseif game.n.c[:bagswitch].c == 4
-        updateSprite!(game.im.sprites[:bag],game.input.menu.menubags.bag)
+        updateSprite!(game.im.sprites[1][:bag],game.input.menu.menubags.bag)
     elseif game.n.c[:bagswitch].c <= 8
-        setPos!(game.im.sprites[:bag].pos,24+34-4+game.n.c[:bagswitch].c-4,16+40)
+        setPos!(game.im.sprites[1][:bag].pos,24+34-4+game.n.c[:bagswitch].c-4,16+40)
     end
 
     if game.n.c[:bagswitch].c == 8
-        game.im.sprites[:arrowleft].active = true
-        game.im.sprites[:arrowright].active = true
-        game.im.sprites[:cursor].active = true
-        game.im.sprites[:icon].active = true
+        game.im.sprites[1][:arrowleft].active = true
+        game.im.sprites[1][:arrowright].active = true
+        game.im.sprites[1][:cursor].active = true
+        game.im.sprites[1][:icon].active = true
 
         game.input.inputlock = false
         game.n.c[:bagswitch].c = 1
@@ -430,33 +438,35 @@ function animBagSwitch!(game::GameState)
     end
 
     game.n.c[:bagswitch].c += 1
+
+    return
 end
 
 function animBattleBagSwitch!(game::GameState)
     if game.n.c[:bagswitch].c == 1
-        updateSprite!(game.im.sprites[:slot],game.input.battlebags.bag)
-        setPos!(game.im.sprites[:slotmarker].pos,
+        updateSprite!(game.im.sprites[1][:slot],game.input.battlebags.bag)
+        setPos!(game.im.sprites[1][:slotmarker].pos,
             24+27,16+34+game.input.battlebags.bag*8)
 
-        updateSprite!(game.im.sprites[:bag],6)
+        updateSprite!(game.im.sprites[1][:bag],6)
 
-        game.im.sprites[:arrowleft].active = false
-        game.im.sprites[:arrowright].active = false
+        game.im.sprites[1][:arrowleft].active = false
+        game.im.sprites[1][:arrowright].active = false
     end
 
     if game.n.c[:bagswitch].c < 4
-        setPos!(game.im.sprites[:bag].pos,24+34-game.n.c[:bagswitch].c+1,16+40)
+        setPos!(game.im.sprites[1][:bag].pos,24+34-game.n.c[:bagswitch].c+1,16+40)
     elseif game.n.c[:bagswitch].c == 4
-        updateSprite!(game.im.sprites[:bag],game.input.battlebags.bag)
+        updateSprite!(game.im.sprites[1][:bag],game.input.battlebags.bag)
     elseif game.n.c[:bagswitch].c <= 8
-        setPos!(game.im.sprites[:bag].pos,24+34-4+game.n.c[:bagswitch].c-4,16+40)
+        setPos!(game.im.sprites[1][:bag].pos,24+34-4+game.n.c[:bagswitch].c-4,16+40)
     end
 
     if game.n.c[:bagswitch].c == 8
-        game.im.sprites[:arrowleft].active = true
-        game.im.sprites[:arrowright].active = true
-        game.im.sprites[:cursor].active = true
-        game.im.sprites[:icon].active = true
+        game.im.sprites[1][:arrowleft].active = true
+        game.im.sprites[1][:arrowright].active = true
+        game.im.sprites[1][:cursor].active = true
+        game.im.sprites[1][:icon].active = true
 
         game.input.inputlock = false
         game.n.c[:bagswitch].c = 1
@@ -469,6 +479,8 @@ function animBattleBagSwitch!(game::GameState)
     end
 
     game.n.c[:bagswitch].c += 1
+
+    return
 end
 
 function animMenuPkmnWiggle!(game::GameState)
@@ -483,6 +495,8 @@ function animMenuPkmnWiggle!(game::GameState)
 
         updateSprite!(game.im.sprites[0+i],div(game.n.frame%30,15)+1)   #fix this
     end
+
+    return
 end
 
 function animMenuPkmnSwap!(game::GameState)
@@ -493,18 +507,18 @@ function animMenuPkmnSwap!(game::GameState)
         swap!(game.trainer.pokemon,p1,p2)
 
         if p1 == 1 || p2 == 1
-            killSprite!(game,Symbol("slot$p1"))
-            killSprite!(game,Symbol("slot$p2"))
-            killSprite!(game,Symbol("ball$p1"))
-            killSprite!(game,Symbol("ball$p2"))
+            killSprite!(game,1,Symbol("slot$p1"))
+            killSprite!(game,1,Symbol("slot$p2"))
+            killSprite!(game,1,Symbol("ball$p1"))
+            killSprite!(game,1,Symbol("ball$p2"))
 
             b = getSprite("im/menu/pkmn/pokeballs",2)
 
             drawSlotMain!(game,b)
             drawSlotSide!(game,p1 == 1 ? p2 : p1,b)
         else
-            swapfields!(game.im.sprites,:dict,Symbol("slot$p1"),Symbol("slot$p2"))
-            swapfields!(game.im.sprites,:im,Symbol("slot$p1"),Symbol("slot$p2"))
+            swapfields!(game.im.sprites[1],:dict,Symbol("slot$p1"),Symbol("slot$p2"))
+            swapfields!(game.im.sprites[1],:im,Symbol("slot$p1"),Symbol("slot$p2"))
         end
     elseif game.n.c[:pkmnswap].c == 2
         killCC!(game,:pkmnswap)
@@ -518,4 +532,6 @@ function animMenuPkmnSwap!(game::GameState)
     end
 
     game.n.c[:pkmnswap].c += 1
+
+    return
 end

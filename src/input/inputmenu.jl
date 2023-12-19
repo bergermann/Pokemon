@@ -21,7 +21,7 @@ function inputMenu!(game::GameState,input::Input)
         inputMenuSelector!(game)
     elseif (input._start || input._B)
         flushLayer!(game,6)
-        killSprite!(game,:cursor)
+        killSprite!(game,6,:cursor)
 
         game.input.move = true
         game.input.map = true
@@ -71,6 +71,6 @@ function inputMenuSelector!(game::GameState)
         game.draw.menu1 = false
 
         flushLayer!(game,6)
-        killSprite!(game,:cursor)
+        killSprite!(game,6,:cursor)
     end
 end

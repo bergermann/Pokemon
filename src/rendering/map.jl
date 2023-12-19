@@ -42,13 +42,26 @@ end
 function drawMap!(game::GameState)
     @inbounds for k in 1:5
         @inbounds for i in 1:13, j in 1:17
-            # tile = game.im.tiles[k][i,j]
             tile = game.im.tiles[getTile(game,i,j,k)]
 
             v = view(game.im.layers[k],1+(i-1)*16:i*16,1+(j-1)*16:j*16)
             
             @inbounds for t in eachindex(v)
                 v[t] = tile[t]
+            end
+        end
+    end
+
+    @inbounds for k in 1:5
+        @inbounds for i in 1:13, j in 1:17
+            tile = game.im.tiles[getTile(game,i,j,k)]
+
+            id = findfirst(isequal(tile),game.im.animids)
+
+            if !isnothing(id)
+                g = view(game.im.animdata,1:4,id)
+                push!(game.im.animated,AnimTile(1+(i-1)*16,1+(j-1)*16,tile,
+                    g[1],g[2],g[3],g[4]))
             end
         end
     end

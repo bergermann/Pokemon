@@ -55,16 +55,58 @@ const tilesetnames = [
     "interior1",
 ]
 
+const tilesetanim = [
+    false,      #"base",
+    false,      #"ledges",
+    false,      #"edges",
+    false,      #"vegetation1",
+    false,      #"decorations1",
+    false,      #"grass1",
+    false,      #"grass2",
+    false,      #"borders1"  ,
+    false,      #"patchesgrasslight",
+    false,      #"patchesberry",
+    false,      #"pokecenter",
+    false,      #"gym1",
+    false,      #"lab1",
+    false,      #"house1",
+    false,      #"house2",
+    true,      #"water1",
+    true,      #"flowers1",
+    true,      #"flowers2",
+    true,      #"flowers3",
+    false,      #"interior1",
+]
+
+# (ntiles,framelength,xoffset,yoffset)
+const animdata = [
+    (0x00,0x00,0x00,0x00),      #"base",
+    (0x00,0x00,0x00,0x00),      #"ledges",
+    (0x00,0x00,0x00,0x00),      #"edges",
+    (0x00,0x00,0x00,0x00),      #"vegetation1",
+    (0x00,0x00,0x00,0x00),      #"decorations1",
+    (0x00,0x00,0x00,0x00),      #"grass1",
+    (0x00,0x00,0x00,0x00),      #"grass2",
+    (0x00,0x00,0x00,0x00),      #"borders1"  ,
+    (0x00,0x00,0x00,0x00),      #"patchesgrasslight",
+    (0x00,0x00,0x00,0x00),      #"patchesberry",
+    (0x00,0x00,0x00,0x00),      #"pokecenter",
+    (0x00,0x00,0x00,0x00),      #"gym1",
+    (0x00,0x00,0x00,0x00),      #"lab1",
+    (0x00,0x00,0x00,0x00),      #"house1",
+    (0x00,0x00,0x00,0x00),      #"house2",
+    (0x08,0x0b,0x00,0x00),      #"water1",
+    (0x04,0x10,0x00,0x00),      #"flowers1",
+    (0x04,0x10,0x00,0x00),      #"flowers2",
+    (0x10,0x10,0x00,0x00),      #"flowers3",
+    (0x00,0x00,0x00,0x00),      #"interior1",
+]
+
 function getTileMap(id::UInt8)
     return deserialize("maps/$id/tilemap.map")
 end
 
 function cullTiles!(game::GameState,cull::BitVector)
-    # println("cull:  ",cull)
-    # println("state: ",game.im.tilesets)
-    # for i in eachindex(tilesetranges)
-    #     println(i,": ",tilesetranges[i].start,": ",tilesetranges[i].start ∈ Base.keys(game.im.tiles))
-    # end
     for i in eachindex(cull)
         if cull[i]
             for tileid in tilesetranges[i]
@@ -88,19 +130,12 @@ function getTiles!(game::GameState,get::BitVector)
             h_tiles = div(height,0x0010)
             w_tiles = div(width,0x0010)
 
-            # println(g,": ",tilesetnames[g])
-            # println(height,", ",width)
-            # println("h: ",h_tiles)
-            # println("w: ",w_tiles)
-
             offset = tilesetranges[g].start
 
             for i in 0x0001:h_tiles*w_tiles
                 h = div(i-0x01,w_tiles)+0x01
                 w = (i-0x01)%w_tiles+0x01
 
-                # println("i:  ",i)
-                # println("id: ",i+offset-0x001)
                 game.im.tiles[i+offset-0x001] =
                     tileset[0x1+(h-0x01)*0x0010:h*0x0010,0x01+(w-0x01)*0x0010:w*0x0010]
             end
@@ -128,6 +163,27 @@ function loadTiles!(game::GameState)
     getTiles!(game,get)
 
     copy!(game.im.tilesets,ts)
+
+    setAnimTiles!(game)
+
+    return
+end
+
+function setAnimTiles!(game::GameState)
+    c = 1
+    s = sum(game.im.tilesets)
+
+    game.im.animids = Array{UInt16}(undef,s)
+    game.im.animdata = Array{UInt8}(undef,4,s)
+
+    @views for i in eachindex(game.im.tilesets)
+        if game.im.tilesets[i]
+            game.im.animids[c] = tilesetranges[i].start
+            game.im.animdata[:,c] .= animdata
+
+            c += 1
+        end
+    end
 
     return
 end

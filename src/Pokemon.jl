@@ -104,8 +104,8 @@ function play()
 
     while true
         try
-            # begin
-            @time begin
+            begin
+            # @time begin
                 game.n.frame += 0x01
 
                 writeToBuffer!(b,game)

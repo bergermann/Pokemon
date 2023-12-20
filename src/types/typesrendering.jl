@@ -162,7 +162,7 @@ mutable struct Im
             fill(false,64),
             [],
             [],
-            [],
+            zeros(UInt8,0,0),
             zeros(UInt32,16,16),
 
             [ArrayList(Sprite,64) for _ in 1:6],

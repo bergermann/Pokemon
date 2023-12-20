@@ -59,6 +59,10 @@ function drawMap!(game::GameState)
             id = findfirst(isequal(tile),game.im.animids)
 
             if !isnothing(id)
+                println("tile: ",getTile(game,i,j,k),", id: ",id)
+            end
+
+            if !isnothing(id)
                 g = view(game.im.animdata,1:4,id)
                 push!(game.im.animated,AnimTile(1+(i-1)*16,1+(j-1)*16,tile,
                     g[1],g[2],g[3],g[4]))

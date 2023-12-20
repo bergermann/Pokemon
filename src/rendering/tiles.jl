@@ -170,16 +170,20 @@ function loadTiles!(game::GameState)
 end
 
 function setAnimTiles!(game::GameState)
+    println("setting animated tiles")
+
     c = 1
     s = sum(game.im.tilesets)
+
+    println(s)
 
     game.im.animids = Array{UInt16}(undef,s)
     game.im.animdata = Array{UInt8}(undef,4,s)
 
-    @views for i in eachindex(game.im.tilesets)
-        if game.im.tilesets[i]
+    @views for i in eachindex(tilesetranges)
+        if tilesetanim[i]
             game.im.animids[c] = tilesetranges[i].start
-            game.im.animdata[:,c] .= animdata
+            game.im.animdata[:,c] .= animdata[i]
 
             c += 1
         end

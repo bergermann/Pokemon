@@ -125,4 +125,6 @@ function updateGame!(game::GameState,input::Input)
             game.callbacks[i].func(game,game.callbacks[i].args...)
         end
     end
+
+    drawAnimatedTiles!(game)
 end

@@ -1,7 +1,7 @@
 
 
 
-dirs = Base.ImmutableDict(
+const dirs = Base.ImmutableDict(
     1 => Position(-1,0),    #up
     2 => Position(1,0),     #down
     3 => Position(0,-1),    #left
@@ -9,7 +9,7 @@ dirs = Base.ImmutableDict(
     0 => Position(0,0)      #null
 )
 
-dirsinv = Base.ImmutableDict(
+const dirsinv = Base.ImmutableDict(
     1 => 2,     #up
     2 => 1,     #down
     3 => 4,     #left
@@ -17,7 +17,7 @@ dirsinv = Base.ImmutableDict(
     0 => 0      #null
 )
 
-dirsturnright = Base.ImmutableDict(
+const dirsturnright = Base.ImmutableDict(
     1 => 4,     #up
     2 => 3,     #down
     3 => 1,     #left
@@ -25,7 +25,7 @@ dirsturnright = Base.ImmutableDict(
     0 => 0      #null
 )
 
-dirsturnleft = Base.ImmutableDict(
+const dirsturnleft = Base.ImmutableDict(
     1 => 3,     #up
     2 => 4,     #down
     3 => 2,     #left
@@ -49,9 +49,9 @@ end
 
 
 
-walkable::Vector{UInt16} = [0x0000,0x0005,0x00006,0x00007]
-bikeable::Vector{UInt16} = [0x0000,0x0005,0x00006]
-swimmable::Vector{UInt16} = [0x0002,0x0003]
+const walkable::Vector{UInt16} = [0x0000,0x0005,0x00006,0x00007]
+const bikeable::Vector{UInt16} = [0x0000,0x0005,0x00006]
+const swimmable::Vector{UInt16} = [0x0002,0x0003]
 
 function checkWalkable(game::GameState,movepos::Position)
     for i in 1:game.npcstatic.idx

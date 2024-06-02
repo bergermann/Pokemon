@@ -182,7 +182,8 @@ function moveWalk!(game::GameState,dir::Int)
     posAdd!(game.im.sprites[3][:main].pos,dirs[dir])
 
     if game.n.c[:movemain].c == 0
-        if (game.pos.h%2 == 0 && game.pos.w%2 == 0) || (game.pos.h%2 == 1 && game.pos.w%2 == 1)
+        if (game.pos.h%2 == 0 && game.pos.w%2 == 0) ||
+                (game.pos.h%2 == 1 && game.pos.w%2 == 1)
             
             updateSprite!(game.im.sprites[3][:main],min(3,dir)+3)
             game.im.sprites[3][:main].hreverse = (dir == 4)

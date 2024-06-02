@@ -5,6 +5,7 @@ module Pokemon
 export play, g
 
 using MiniFB, Serialization, Images, DelimitedFiles
+# using GLFW
 
 include("types/typescore.jl")
 include("types/typesrendering.jl")
@@ -102,8 +103,8 @@ function play()
 
     Base.GC.gc()
 
-    while true
-        try
+    try
+        while true
             begin
             # @time begin
                 game.n.frame += 0x01
@@ -122,16 +123,32 @@ function play()
                 drawGame!(game; s=settings)
                 resetInput!(input)
             end
-        catch e
-            println(e)
-            display(stacktrace(catch_backtrace()))
-            return game
         end
+    catch e
+        println(e)
+        display(stacktrace(catch_backtrace()))
+        return game
     end
 
-    return game
+    return game, times
 end
 
 g = play();
+
+# window = GLFW.CreateWindow(640, 480, "GLFW.jl")
+# GLFW.MakeContextCurrent(window)
+
+# while !GLFW.WindowShouldClose(window)
+
+# 	# Render here
+
+# 	# Swap front and back buffers
+# 	GLFW.SwapBuffers(window)
+
+# 	# Poll for and process events
+# 	GLFW.PollEvents()
+# end
+
+# GLFW.DestroyWindow(window)
 
 end

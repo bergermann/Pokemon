@@ -354,13 +354,3 @@ Base.println(a::ArrayList) = begin print(a); println("") end
 
 
 
-
-
-mutable struct Counters
-    frame::UInt
-    c::ArrayList{Counter}
-
-    function Counters(n::Int)
-        new(0,ArrayList(Counter,n))
-    end
-end

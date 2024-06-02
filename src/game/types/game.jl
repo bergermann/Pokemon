@@ -349,28 +349,6 @@ end
 
 
 
-struct Settings
-    width::UInt16
-    height::UInt16
-    fps::Float16
-
-    Nh::UInt8
-    Nw::UInt8
-    tilesize::UInt8
-
-    offseth::UInt16
-    offsetw::UInt16
-
-    function Settings()
-        new(240,160,60,0x0d,0x11,0x10,0x0000,0x0000)
-    end
-
-    function Settings(width::UInt16,height::UInt16,fps::Float16,
-            Nh::UInt8,Nw::UInt8,tilesize::UInt8,offseth::UInt16,offsetw::UInt16)
-        new(width,height,fps,Nh,Nw,tilesize,offseth,offsetw)
-    end
-end
-
 struct Options
     frame::UInt8
     diabox::UInt8
@@ -425,24 +403,26 @@ end
 
 
 
-
-
-mutable struct GameState
-    im::Im
-    str::Vector{Vector{String}}
-    pkmndata::PkmnData
-
+mutable struct PlayerData
     trainer::Trainer
 
     maps::Maps
     pos::Position
     movepos::Position
     direction::Int
+end
 
-    spriteoffset::Position
-    screenoffset::Position
+mutable struct GameState
+    frame::UInt32
 
-    n::Counters
+    p::PlayerData
+    im::Im
+    ctrl::Controls
+    m::MapData
+    str::Vector{Vector{String}}
+    pkmndata::PkmnData
+
+    n::ArrayList{Counter}
     callbacks::ArrayList{CallbackFunction}
 
     dialogue::Dialogue

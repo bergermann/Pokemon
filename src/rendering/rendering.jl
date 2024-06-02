@@ -1,70 +1,72 @@
-#240x160
 
-include("transformations.jl")
-include("layers.jl")
-include("sprites.jl")
-include("tiles.jl")
-include("map.jl")
-include("menu.jl")
-include("dialogue.jl")
-include("battle.jl")
-include("parser.jl")
+using ModernGL, GLFW, GLAbstraction
+const GLA = GLAbstraction
 
+using StaticArrays, LinearAlgebra
+using Images, Serialization
 
+include("matrices.jl")
 
+include("types/types.jl")
+include("opengl/opengl.jl")
 
-
-
-
-
-
-function drawGame!(game::GameState; s=Settings())
-    if game.draw.battleintro
-        drawBattleIntro!(game; s=s)
-    end
-
-    if game.draw.battle
-        drawBattle!(game; s=s)
-    end
-
-    combineLayers!(game)
-
-    if game.im.weather.active
-        game.im.weather.func(game.im.layer,game.im.weather.args...)
-    end
-
-    if game.im.postprocess.active
-        game.im.postprocess.func(game.im.layer,game.im.postprocess.args...)
-    end
-end
+include("backgroundmanager.jl")
+include("texturemanager.jl")
+include("chunkmanager.jl")
+include("framemanager.jl")
+include("textmanager.jl")
+include("spritemanager.jl")
 
 
+const tilesets = [
+    "base",
+    "ledges",
+    "edges",
+    "vegetation1",
+    "decorations1",
+    "grass1",
+    "grass2",
+    "borders1",
+    "patchesgrasslight",
+    "patchesberry",
+    "pokecenter",
+    "gym1",
+    "lab1",
+    "house1",
+    "house2",
+    "water1",
+    "flowers1",
+    "flowers2",
+    "flowers3",
+    "interior1",
+] .* ".png"
 
 
 
-function startWindow(settings::Settings)
-    window = mfb_open_ex("Pokemon Test",settings.width,settings.height,
-                MiniFB.WF_RESIZABLE)
-    mfb_set_target_fps(settings.fps)
+
+function render(game::GameState)
+    glViewport(0,0,240,160)
+
+    glClear(GL_COLOR_BUFFER_BIT)
+
+    drawBackgrounds(game)
+
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER,game.im.l.fbo)
+    glFramebufferTexture(GL_DRAW_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,game.im.l.tex,0)
     
-    buffer = zeros(UInt32,settings.width,settings.height)
+    drawMap(game)
+    drawSprites(game)
+    drawFrames(game)
+    drawTexts(game)
 
-    return window, buffer
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER,0)
+    glViewport(0,0,game.im.windowsize.width,game.im.windowsize.height)
+
+    drawPostProcess(game)
+
+    GLFW.SwapBuffers(game.im.window); checkError("swap")
+
+    GLFW.PollEvents(); checkError("Poll")
+
+    return
 end
-
-function resizer(window,w,h)
-    s = round(minimum([w/240,h/160]); sigdigits=2)
-    mfb_set_viewport(window,0,0,round(Int,240*s),round(Int,160*s))
-
-    return nothing
-end
-
-function writeToBuffer!(buffer::Matrix{UInt32},game::GameState; s=Settings())
-    @inbounds for i in eachindex(buffer)
-        buffer[i] = game.im.layer[
-            24+1+div(i-1,s.width)+game.screenoffset.h,
-            16+1+(i-1)%s.width+game.screenoffset.w
-        ]
-    end
-end
-;

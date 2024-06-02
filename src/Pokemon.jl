@@ -4,80 +4,24 @@ module Pokemon
 
 export play, g
 
-using MiniFB, Serialization, Images, DelimitedFiles
+using Serialization, Images, DelimitedFiles
 # using GLFW
 
-include("types/typescore.jl")
-include("types/typesrendering.jl")
-include("types/typesinventory.jl")
-include("types/typespkmn.jl")
-include("types/typesevents.jl")
-include("types/typesmap.jl")
-include("types/typesgame.jl")
-include("types/typesbattle.jl")
-include("types/typesnpc.jl")
+include("rendering/types/texts.jl")
+include("game/types/types.jl")
 
 include("rendering/rendering.jl")
-include("battle/battle.jl")
-include("statetransitions/general.jl")
-include("items/inventory.jl")
-include("dialogue/dialogue.jl")
-include("pokemons.jl")
-include("core.jl")
-include("npcs.jl")
-include("maps.jl")
-include("controls.jl")
-include("animations.jl")
-include("npcs.jl")
-include("events.jl")
+include("game/game.jl")
 
 # @time foreach(names(@__MODULE__, all=true)) do s
 #     @eval export $s
 # end
 
 function play()
-    Base.GC.enable(false)
-
-    settings = Settings()
 
     global input = Input()
 
-    game = GameState(
-        Im(),
-        [],
-        PkmnData(),
-
-        Trainer("Void",0x0000,0x02,ArrayList(Pkmn,6),Inventory(),
-            [ArrayList(Pkmn,30) for _ in 1:8],[],falses(151)),
-
-        getMaps(0x01),
-        Position(UInt32(28),UInt32(20)),
-        Position(UInt32(29),UInt32(20)),
-        2,
-
-        Position(0,0),
-        Position(0,0),
-
-        Counters(128),
-        ArrayList(CallbackFunction,128),
-
-        Dialogue(),
-
-        true,
-        Battle(),
-
-        InputState(),
-        DrawState(),
-
-        ArrayList(NPCStatic,64),
-        ArrayList(NPCMove,64),
-
-        Flags(),
-
-        Options()
-    )
-
-    Base.GC.@preserve game sceneTransition!
+    # Base.GC.@preserve game sceneTransition!
 
     setInventoryTest!(game.trainer.inventory)
 
@@ -133,22 +77,48 @@ function play()
     return game, times
 end
 
+function main()
+    Base.GC.enable(false)
+
+    settings = Settings()
+
+    @time game = setupGame()
+
+
+    GLFW.SetWindowSizeCallback(game.im.window,resizeCallback)
+
+    createSprite!(game,:npctest1,:npcs,10, 7,P(-16, 8),15, 2; active=true)
+    createSprite!(game,:npctest2,:npcs, 1, 4,P(-48,40), 5, 2; active=true)
+    createSprite!(game,:mc,      :mc,   1, 4,P(  0, 8),10, 3; active=true)
+
+    createFrame!(game,:testframe,28,5,-120,24,6)
+
+    createText!(game,:test,3,-120+8,24+8,6,"ABCDEFGHIJKLMNOPQRSTUVWXYZ"*
+        " abcdefghijk/lmnopqrstuvwxyz0123456789!?.:,;%()ß",
+        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; wpad=0)
+
+    render(game)
+    
+    GLFW.DestroyWindow(game.im.window); return game
+
+    while !GLFW.WindowShouldClose(game.im.window)
+        game.frame += 0x01
+
+        # @time begin
+        begin
+            if game.ctrl.moving
+                move(game)
+            end
+
+            render(game)
+        end
+    end
+
+    GLFW.DestroyWindow(game.im.window)
+
+    return game
+end
+
 g = play();
-
-# window = GLFW.CreateWindow(640, 480, "GLFW.jl")
-# GLFW.MakeContextCurrent(window)
-
-# while !GLFW.WindowShouldClose(window)
-
-# 	# Render here
-
-# 	# Swap front and back buffers
-# 	GLFW.SwapBuffers(window)
-
-# 	# Poll for and process events
-# 	GLFW.PollEvents()
-# end
-
-# GLFW.DestroyWindow(window)
 
 end

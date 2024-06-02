@@ -1,7 +1,4 @@
 
-mutable struct PlayerData
-
-end
 
 mutable struct Controls
     dir::Int            # 1,2,3,4 = N,E,S,W

@@ -1,14 +1,5 @@
 #using MiniFB
 
-include("input/inputgeneral.jl")
-include("input/inputmap.jl")
-include("input/inputmenu.jl")
-include("input/inputpkmn.jl")
-include("input/inputbags.jl")
-include("input/inputbattle.jl")
-include("input/inputbattlebags.jl")
-
-
 
 
 

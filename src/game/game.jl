@@ -4,7 +4,6 @@ include("statetransitions/general.jl")
 include("items/inventory.jl")
 include("dialogue/dialogue.jl")
 include("pokemons.jl")
-include("core.jl")
 include("npcs.jl")
 include("maps.jl")
 # include("controls.jl")
@@ -16,6 +15,32 @@ include("events.jl")
 
 
 function setupGame(windowscale::Int=4,renderdistance::Int=2,maxtextures::Int=64;)
+    
+
+    game = GameState(
+        0,
+        PlayerData("Void",0x0000,0x02,ArrayList(Pkmn,6),Inventory(),
+            [ArrayList(Pkmn,30) for _ in 1:8],[],falses(151)),
+        im::Im
+        ctrl::Controls
+        m::MapData
+        str::Vector{Vector{String}}
+        pkmndata::PkmnData
+
+        n::ArrayList{Counter}
+        callbacks::ArrayList{CallbackFunction}
+
+        overworld::Bool
+        battle::Battle
+
+        npcstatic::ArrayList{<:NPCNormal}
+        npcmove::ArrayList{<:NPCNormal}
+        # trainers::ArrayList{NPCTrainer}
+
+        flags::Flags
+
+        options::Options
+    )
     game = GameState(
         0,
         PlayerData(),
@@ -38,6 +63,7 @@ function setupGame(windowscale::Int=4,renderdistance::Int=2,maxtextures::Int=64;
     loadSpriteSheet!(game,"main1.png",:mc,32,32,9; maxsprites=1)
 
     loadChunksAll!(game)
+    # loadNPCs!(game,game.maps.map.id)
 
     return game
 end
@@ -48,8 +74,7 @@ game = GameState(
     [],
     PkmnData(),
 
-    Trainer("Void",0x0000,0x02,ArrayList(Pkmn,6),Inventory(),
-        [ArrayList(Pkmn,30) for _ in 1:8],[],falses(151)),
+    
 
     getMaps(0x01),
     Position(UInt32(28),UInt32(20)),

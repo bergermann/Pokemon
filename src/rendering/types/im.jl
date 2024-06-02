@@ -33,6 +33,7 @@ mutable struct Im
     function Im(windowscale::Int=4,renderdistance::Int=2,maxtextures::Int=64;)
         window = genWindow(windowscale); checkError(1)
         windowsize = GLFW.GetWindowSize(window)
+        GLFW.SetWindowSizeCallback(window,resizeCallback)
     
         projection = Matn(Float32,1.,1.,1.,1.)
         # projection *= trans(Float32,-1,-1,0)

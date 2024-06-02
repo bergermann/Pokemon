@@ -1,9 +1,4 @@
 
-using ModernGL, GLFW, GLAbstraction
-const GLA = GLAbstraction
-
-using StaticArrays, LinearAlgebra
-using Images, Serialization
 
 include("matrices.jl")
 
@@ -54,7 +49,10 @@ function render(game::GameState)
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER,game.im.l.fbo)
     glFramebufferTexture(GL_DRAW_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,game.im.l.tex,0)
     
-    drawMap(game)
+    if game.overworld
+        drawMap(game)
+    end
+
     drawSprites(game)
     drawFrames(game)
     drawTexts(game)

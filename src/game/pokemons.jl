@@ -75,8 +75,8 @@ function generatePkmn(game::GameState,id::UInt16,level::UInt8)
         rand(UInt16) < 0x0010,          #shiny
         0x00,                           #form
         data[13],                       #xptype
-        game.trainer.name,              #OTrainer
-        game.trainer.id,                #OTrainer id
+        game.p.name,              #OTrainer
+        game.p.id,                #OTrainer id
         "",                             #location
         0x00,                           #ball id
         falses(5),                      #markers

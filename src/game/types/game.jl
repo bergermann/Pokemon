@@ -79,7 +79,7 @@ abstract type BattleState end
 mutable struct Battle
     active::Bool
     
-    dialogue::Dialogue
+    # dialogue::Dialogue
 
     state::BattleState
 
@@ -88,7 +88,8 @@ mutable struct Battle
     teamperm::Vector{Int}
 
     function Battle()
-        new(false,Dialogue(),BattleStateNone(),MenuBattle(),[])
+        # new(false,Dialogue(),BattleStateNone(),MenuBattle(),[])
+        new(false,BattleStateNone(),MenuBattle(),[])
     end
 end
 

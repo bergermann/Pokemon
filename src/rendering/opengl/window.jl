@@ -9,7 +9,7 @@ function genWindow(scale=1;)
         visible=true,focus=true)
 
     GLFW.MakeContextCurrent(window)
-    GLA.set_context!(window)
+    # GLA.set_context!(window)
 
     println("OpenGL version:\n",unsafe_string(glGetString(GL_VERSION)),"\n")
 

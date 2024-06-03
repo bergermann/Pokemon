@@ -2,7 +2,7 @@
 
 
 function loadImage(path::String)
-    img = transpose(load(joinpath("src","textures",path)))
+    img = transpose(load(joinpath("textures",path)))
         
     data = zeros(N0f8,length(img)*4)
     
@@ -82,7 +82,7 @@ loadTextures!(game::GameState,dir::String,files::Vector{String},
 
 
 function loadArrayImage(path::String,width::Int,height::Int)
-    img = transpose(load(joinpath("src","textures",path)))
+    img = transpose(load(joinpath("textures",path)))
 
     data = zeros(N0f8,length(img)*4)
 

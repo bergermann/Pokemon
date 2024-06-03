@@ -18,7 +18,7 @@ function getProgram(paths::AbstractString...)
         type = shadertype(file)
         id = glCreateShader(type); checkError("P.1.$i.1")
         
-        source = Vector{UInt8}(read(open(joinpath("src","shaders",file)),String))
+        source = Vector{UInt8}(read(open(joinpath("src","rendering","shaders",file)),String))
         sourceptrs = Ptr{UInt8}[pointer(source)]
         glShaderSource(id, 1, sourceptrs, Ref{GLint}(length(source)))
         checkError("P.1.$i.2")

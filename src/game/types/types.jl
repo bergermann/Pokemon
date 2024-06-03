@@ -1,6 +1,4 @@
 
-
-include("core.jl")
 include("inventory.jl")
 include("pkmn.jl")
 include("events.jl")

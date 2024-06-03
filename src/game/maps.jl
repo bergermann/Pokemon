@@ -32,28 +32,6 @@ end
 
 
 
-function setNeighbours!(game)
-    n = game.maps.map.neighbours
-    n_ = game.maps.neighbours
-
-    idstarget = (x->x.id).(n)
-    idsstate = (x->x.map.id).(n_)
-
-    for i in eachindex(idstarget)
-        if !(idstarget[i] in idsstate)
-            push!(n_,(
-                map=getMap(idstarget[i]),
-                offset=n[i].offset
-            ))
-        end
-    end
-
-    game.maps.neighbours = game.maps.neighbours[
-        (x->findfirst(y->y.map.id==x.id,game.maps.neighbours)).(game.maps.map.neighbours)
-    ]
-end
-
-
 
 function checkMapExit!(game::GameState,movepos::Position)
     col = game.maps.map.tilemap.collision[movepos.h,movepos.w]
@@ -128,56 +106,6 @@ function setMapSpecials(game::GameState)
 end
 
 
-
-
-
-
-const map1 = Map(
-    0x01,
-    0x00,
-    [
-        Exit(0x02,0x00,P(1-39,18-26),0,false,emptyCallback),
-        Exit(0xc8,0x01,P(9,8),1,true,emptyCallback),
-    ],
-    getTileMap(0x01),
-    [Neighbour(0x02,P(1-39,18-26))],
-    []
-)
-
-const map2 = Map(
-    0x02,
-    0x00,
-    [
-        Exit(0x01,0x00,P(39-1,26-18),0,false,emptyCallback),
-        Exit(0x03,0x01,P(0,0),0,true,emptyCallback),
-        Exit(0x03,0x01,P(0,0),0,true,emptyCallback),
-        Exit(0x03,0x01,P(0,0),0,true,emptyCallback),
-    ],
-    getTileMap(0x02),
-    [Neighbour(0x01,P(39-1,26-18))],
-    []
-)
-
-const map200 = Map(
-    0xc8,
-    0x00,
-    [
-        Exit(0x01,0x01,P(26,29),2,true,emptyCallback),
-        Exit(0xc8,0x01,P(7,24),4,true,emptyCallback),
-        Exit(0xc8,0x01,P(7,2),4,true,emptyCallback),
-    ],
-    getTileMap(0xc8),
-    [],
-    [
-        Event(0xc8,(),(),(:general,),(),(),true,1),
-    ]
-)
-
-const maps = Base.ImmutableDict(
-    0x01 => map1,
-    0x02 => map2,
-    0xc8 => map200,
-)
 
 
 

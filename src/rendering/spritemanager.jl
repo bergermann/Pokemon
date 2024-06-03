@@ -116,7 +116,7 @@ function setSpriteAttrib!(game::GameState,id::Symbol,attrib::Symbol,args...)
     return
 end
 
-function moveSprite(game::GameState,id::Symbol,w::Int,h::Int,absolute::Bool=false)
+function moveSprite!(game::GameState,id::Symbol,w::Int,h::Int,absolute::Bool=false)
     s = game.im.s.sprites[id]
 
     if absolute
@@ -128,7 +128,7 @@ function moveSprite(game::GameState,id::Symbol,w::Int,h::Int,absolute::Bool=fals
     return
 end
 
-function moveSpritesAll(game::GameState,d::Pos)
+function moveSpritesAll!(game::GameState,d::Pos)
     for (name,sheet) in game.im.s.sheets
         sheet.pos[1:2,:] .+= d
     end
@@ -136,13 +136,13 @@ function moveSpritesAll(game::GameState,d::Pos)
     return
 end
 
-function moveSprites(game::GameState,sheet::Symbol,d::Pos)
+function moveSprites!(game::GameState,sheet::Symbol,d::Pos)
     game.im.s.sheets[sheet].pos[1:2,:] .+= d
 
     return
 end
 
-function rotateSprite(game::GameState,id::Symbol,rotation::Float64,absolute::Bool=false)
+function rotateSprite!(game::GameState,id::Symbol,rotation::Float64,absolute::Bool=false)
     s = game.im.s.sprites[id]
 
     if absolute
@@ -154,7 +154,7 @@ function rotateSprite(game::GameState,id::Symbol,rotation::Float64,absolute::Boo
     return
 end
 
-function activateSprite(game::GameState,id::Symbol)
+function activateSprite!(game::GameState,id::Symbol)
     s = game.im.s.sprites[id]
     
     game.im.s.sheets[s.sheet].active[s.slot] = true
@@ -162,7 +162,7 @@ function activateSprite(game::GameState,id::Symbol)
     return
 end
 
-function deactivateSprite(game::GameState,id::Symbol)
+function deactivateSprite!(game::GameState,id::Symbol)
     s = game.im.s.sprites[id]
     
     game.im.s.sheets[s.sheet].active[s.slot] = false
@@ -170,7 +170,7 @@ function deactivateSprite(game::GameState,id::Symbol)
     return
 end
 
-function switchSprite(game::GameState,id::Symbol)
+function switchSprite!(game::GameState,id::Symbol)
     s = game.im.s.sprites[id]
     
     game.im.s.sheets[s.sheet].active[s.slot] = !game.im.s.sheets[s.sheet].active[s.slot]
@@ -178,15 +178,20 @@ function switchSprite(game::GameState,id::Symbol)
     return
 end
 
-function reverseSprite(game::GameState,id::Symbol,dir::Int)
+function reverseSprite!(game::GameState,id::Symbol,dir::Int,absolute::Bool=false)
     s = game.im.s.sprites[id]
     
-    game.im.s.sheets[s.sheet].rev[dir,s.slot] = !game.im.s.sheets[s.sheet].rev[dir,s.slot]
+    if absolute
+        game.im.s.sheets[s.sheet].rev[dir,s.slot] = true
+    else
+        game.im.s.sheets[s.sheet].rev[dir,s.slot] =
+            !game.im.s.sheets[s.sheet].rev[dir,s.slot]
+    end
 
     return
 end
 
-function scaleSprite(game::GameState,id::Symbol,w::Float64,h::Float64,absolute::Bool=false)
+function scaleSprite!(game::GameState,id::Symbol,w::Float64,h::Float64,absolute::Bool=false)
     s = game.im.s.sprites[id]
 
     if absolute

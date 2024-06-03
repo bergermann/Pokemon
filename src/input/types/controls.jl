@@ -46,92 +46,92 @@ mutable struct Input
     end
 end
 
-ctrls = Base.ImmutableDict(
-    MiniFB.KB_KEY_SPACE => :A,
-    MiniFB.KB_KEY_ENTER => :A,
+# ctrls = Base.ImmutableDict(
+#     MiniFB.KB_KEY_SPACE => :A,
+#     MiniFB.KB_KEY_ENTER => :A,
 
-    MiniFB.KB_KEY_LEFT_CONTROL => :B,
-    MiniFB.KB_KEY_LEFT_SHIFT => :B,
-    MiniFB.KB_KEY_BACKSPACE => :B,
+#     MiniFB.KB_KEY_LEFT_CONTROL => :B,
+#     MiniFB.KB_KEY_LEFT_SHIFT => :B,
+#     MiniFB.KB_KEY_BACKSPACE => :B,
 
-    MiniFB.KB_KEY_Q => :L,
+#     MiniFB.KB_KEY_Q => :L,
 
-    MiniFB.KB_KEY_E => :R,
+#     MiniFB.KB_KEY_E => :R,
 
-    MiniFB.KB_KEY_W => :up,
-    MiniFB.KB_KEY_UP => :up,
+#     MiniFB.KB_KEY_W => :up,
+#     MiniFB.KB_KEY_UP => :up,
 
-    MiniFB.KB_KEY_S => :down,
-    MiniFB.KB_KEY_DOWN => :down,
+#     MiniFB.KB_KEY_S => :down,
+#     MiniFB.KB_KEY_DOWN => :down,
 
-    MiniFB.KB_KEY_A => :left,
-    MiniFB.KB_KEY_LEFT => :left,
+#     MiniFB.KB_KEY_A => :left,
+#     MiniFB.KB_KEY_LEFT => :left,
 
-    MiniFB.KB_KEY_D => :right,
-    MiniFB.KB_KEY_RIGHT => :right,
+#     MiniFB.KB_KEY_D => :right,
+#     MiniFB.KB_KEY_RIGHT => :right,
 
-    MiniFB.KB_KEY_X => :start,
+#     MiniFB.KB_KEY_X => :start,
 
-    MiniFB.KB_KEY_Y => :select,
-)
+#     MiniFB.KB_KEY_Y => :select,
+# )
 
-_ctrls = Base.ImmutableDict(
-    MiniFB.KB_KEY_SPACE => :_A,
-    MiniFB.KB_KEY_ENTER => :_A,
+# _ctrls = Base.ImmutableDict(
+#     MiniFB.KB_KEY_SPACE => :_A,
+#     MiniFB.KB_KEY_ENTER => :_A,
 
-    MiniFB.KB_KEY_LEFT_CONTROL => :_B,
-    MiniFB.KB_KEY_LEFT_SHIFT => :_B,
-    MiniFB.KB_KEY_BACKSPACE => :_B,
+#     MiniFB.KB_KEY_LEFT_CONTROL => :_B,
+#     MiniFB.KB_KEY_LEFT_SHIFT => :_B,
+#     MiniFB.KB_KEY_BACKSPACE => :_B,
 
-    MiniFB.KB_KEY_Q => :_L,
+#     MiniFB.KB_KEY_Q => :_L,
 
-    MiniFB.KB_KEY_E => :_R,
+#     MiniFB.KB_KEY_E => :_R,
 
-    MiniFB.KB_KEY_W => :_up,
-    MiniFB.KB_KEY_UP => :_up,
+#     MiniFB.KB_KEY_W => :_up,
+#     MiniFB.KB_KEY_UP => :_up,
 
-    MiniFB.KB_KEY_S => :_down,
-    MiniFB.KB_KEY_DOWN => :_down,
+#     MiniFB.KB_KEY_S => :_down,
+#     MiniFB.KB_KEY_DOWN => :_down,
 
-    MiniFB.KB_KEY_A => :_left,
-    MiniFB.KB_KEY_LEFT => :_left,
+#     MiniFB.KB_KEY_A => :_left,
+#     MiniFB.KB_KEY_LEFT => :_left,
 
-    MiniFB.KB_KEY_D => :_right,
-    MiniFB.KB_KEY_RIGHT => :_right,
+#     MiniFB.KB_KEY_D => :_right,
+#     MiniFB.KB_KEY_RIGHT => :_right,
 
-    MiniFB.KB_KEY_X => :_start,
+#     MiniFB.KB_KEY_X => :_start,
 
-    MiniFB.KB_KEY_Y => :_select,
-)
+#     MiniFB.KB_KEY_Y => :_select,
+# )
 
-ctrls_ = Base.ImmutableDict(
-    MiniFB.KB_KEY_SPACE => :A_,
-    MiniFB.KB_KEY_ENTER => :A_,
+# ctrls_ = Base.ImmutableDict(
+#     MiniFB.KB_KEY_SPACE => :A_,
+#     MiniFB.KB_KEY_ENTER => :A_,
 
-    MiniFB.KB_KEY_LEFT_CONTROL => :B_,
-    MiniFB.KB_KEY_LEFT_SHIFT => :B_,
-    MiniFB.KB_KEY_BACKSPACE => :B_,
+#     MiniFB.KB_KEY_LEFT_CONTROL => :B_,
+#     MiniFB.KB_KEY_LEFT_SHIFT => :B_,
+#     MiniFB.KB_KEY_BACKSPACE => :B_,
 
-    MiniFB.KB_KEY_Q => :L_,
+#     MiniFB.KB_KEY_Q => :L_,
 
-    MiniFB.KB_KEY_E => :R_,
+#     MiniFB.KB_KEY_E => :R_,
 
-    MiniFB.KB_KEY_W => :up_,
-    MiniFB.KB_KEY_UP => :up_,
+#     MiniFB.KB_KEY_W => :up_,
+#     MiniFB.KB_KEY_UP => :up_,
 
-    MiniFB.KB_KEY_S => :down_,
-    MiniFB.KB_KEY_DOWN => :down_,
+#     MiniFB.KB_KEY_S => :down_,
+#     MiniFB.KB_KEY_DOWN => :down_,
 
-    MiniFB.KB_KEY_A => :left_,
-    MiniFB.KB_KEY_LEFT => :left_,
+#     MiniFB.KB_KEY_A => :left_,
+#     MiniFB.KB_KEY_LEFT => :left_,
 
-    MiniFB.KB_KEY_D => :right_,
-    MiniFB.KB_KEY_RIGHT => :right_,
+#     MiniFB.KB_KEY_D => :right_,
+#     MiniFB.KB_KEY_RIGHT => :right_,
 
-    MiniFB.KB_KEY_X => :start_,
+#     MiniFB.KB_KEY_X => :start_,
 
-    MiniFB.KB_KEY_Y => :select_,
-)
+#     MiniFB.KB_KEY_Y => :select_,
+# )
 
 
 
@@ -355,7 +355,29 @@ mutable struct InputState
 end
 
 
+const dirs = Base.ImmutableDict(
+    0 => P( 0, 0),
+    1 => P( 0,-1),
+    2 => P( 1, 0),
+    3 => P( 0, 1),
+    4 => P(-1, 0),
+)
 
+function invdir(dir::Int)
+    return (dir!=0)*((dir+1)%4+1)
+end
+
+function getdir(input::Input)::Int
+    if input.up
+        return 1
+    elseif input.right
+        return 2
+    elseif input.down
+        return 3
+    else
+        return 4
+    end
+end
 
 mutable struct Controls
     pos::Position
@@ -368,6 +390,6 @@ mutable struct Controls
     dialogue::Dialogue
 
     function Controls(h::Int,w::Int,ch::Int,cw::Int,dir::Int=2)
-        new(dir,P(h,w),P(ch,cw),false,0)
+        new(P(h,w),P(h,w)+dirs[dir],P(ch,cw),dir,InputState(),Dialogue())
     end
 end

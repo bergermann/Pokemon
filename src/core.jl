@@ -102,15 +102,15 @@ function emptyCallback(game::GameState)
 end
 
 function createCounter!(game::GameState,id::Symbol)
-    push!(game.n.c,Counter(id))
+    push!(game.n,Counter(id))
 end
 
 function createCounter!(game::GameState,id::Symbol,n::Int)
-    push!(game.n.c,Counter(id,n))
+    push!(game.n,Counter(id,n))
 end
 
 function killCounter!(game::GameState,id::Symbol)
-    popat!(game.n.c,id)
+    popat!(game.n,id)
 end
 
 function createCallback!(game::GameState,id::Symbol,active::Bool,func::Function,args::Tuple)
@@ -202,3 +202,8 @@ function loadStrings!(game::GameState,paths::String...; reset::Bool=false)
         push!(game.str,readlines(joinpath("str",lang[game.options.lang],p*".txt")))
     end
 end
+
+
+
+
+

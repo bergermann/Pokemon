@@ -4,14 +4,6 @@ trans2 = trans(Float32, 0,-1/240,0)
 trans3 = trans(Float32, 1/240,0,0)
 trans4 = trans(Float32,-1/240,0,0)
 
-const dirs = Base.ImmutableDict(
-    1 => P( 0,-1),
-    2 => P( 1, 0),
-    3 => P( 0, 1),
-    4 => P(-1, 0),
-)
-
-
 function move(game::GameState)
     game.ctrl.counter += 1
 

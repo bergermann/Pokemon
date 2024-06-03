@@ -1,51 +1,6 @@
 
 
 
-const dirs = Base.ImmutableDict(
-    1 => Position(-1,0),    #up
-    2 => Position(1,0),     #down
-    3 => Position(0,-1),    #left
-    4 => Position(0,1),     #right
-    0 => Position(0,0)      #null
-)
-
-const dirsinv = Base.ImmutableDict(
-    1 => 2,     #up
-    2 => 1,     #down
-    3 => 4,     #left
-    4 => 3,     #right
-    0 => 0      #null
-)
-
-const dirsturnright = Base.ImmutableDict(
-    1 => 4,     #up
-    2 => 3,     #down
-    3 => 1,     #left
-    4 => 2,     #right
-    0 => 0      #null
-)
-
-const dirsturnleft = Base.ImmutableDict(
-    1 => 3,     #up
-    2 => 4,     #down
-    3 => 2,     #left
-    4 => 1,     #right
-    0 => 0      #null
-)
-
-function finddir(input::Input)::Int
-    if input.up
-        return 1
-    elseif input.down
-        return 2
-    elseif input.left
-        return 3
-    else
-        return 4
-    end
-end
-
-
 
 
 

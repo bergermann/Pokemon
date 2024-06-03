@@ -22,7 +22,7 @@ function setupChunks(game::GameState)
     glBindTexture(GL_TEXTURE_BUFFER,game.im.c.tidxs)
     glTexBuffer(GL_TEXTURE_BUFFER,GL_R8I,game.im.c.bidxs)
 
-    ad = deserialize("src/textures/tilesets/tileanim.data")
+    ad = deserialize(joinpath("textures","tilesets","tileanim.data"))
     glBindBuffer(GL_TEXTURE_BUFFER,game.im.c.banimdata)
     glBufferData(GL_TEXTURE_BUFFER,sizeof(ad),pointer(ad),GL_DYNAMIC_DRAW)
     glBindTexture(GL_TEXTURE_BUFFER,game.im.c.tanimdata)
@@ -57,15 +57,15 @@ end
 
 
 function loadChunk!(game::GameState,target::Integer,cx::Integer,cy::Integer)
-    if !isdir("src/maps/$cx-$cy/")
+    if !isdir("maps/$cx-$cy/")
         game.m.tilemap[1+1280*(target-1):1280*target] .= 1
         game.m.chunkdata[target].height .= 0
         game.m.chunkdata[target].collision .= 0
     else
         game.m.tilemap[1+1280*(target-1):1280*target] =
-            deserialize("src/maps/$cx-$cy/tiles.tm")
-        game.m.chunkdata[target].height = deserialize("src/maps/$cx-$cy/heights.hm")
-        game.m.chunkdata[target].collision[:,:,1] = deserialize("src/maps/$cx-$cy/col.cm")
+            deserialize("maps/$cx-$cy/tiles.tm")
+        game.m.chunkdata[target].height = deserialize("maps/$cx-$cy/heights.hm")
+        game.m.chunkdata[target].collision[:,:,1] = deserialize("maps/$cx-$cy/col.cm")
     end
 
     return

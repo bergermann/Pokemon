@@ -1,6 +1,4 @@
 
-include("types/controls.jl")
-
 include("general.jl")
 include("map.jl")
 include("menu.jl")

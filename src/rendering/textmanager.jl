@@ -5,7 +5,7 @@ end
 
 function setupFonts(game::GameState)
     for i in 1:3
-        p = joinpath("src","textures","fonts","")
+        p = joinpath("textures","fonts","")
         if !isfile(p*"$i.font")
             push!(game.im.text.fonts,Font(Dict(),0,P(0,0)))
 

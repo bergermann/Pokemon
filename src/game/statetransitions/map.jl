@@ -8,25 +8,31 @@ function stateInitMapCtrls!(game::GameState)
     game.input.move = true
 end
 
-function stateInitDrawMap!(game::GameState)
-    loadTiles!(game)
-    drawMap!(game)
+function stateInitMap!(game::GameState)
+    game.overworld = true    
+    game.im.c.projection1[1:2,4] .= -game.ctrl.pos
+
+    loadChunksAll!(game)
+
+    loadArrayTexture!(game,"tilesets",tilesets,:tiles,16,16)
+    loadSpriteSheet!(game,"main1.png",:mc,32,32,9; maxsprites=1)
+    loadSpriteSheet!(game,"npcs_all.png",:npcs,16,32,9; maxsprites=2)
+
+    createSprite!(game,:mc,:mc,1,1+(game.ctrl.dir-1)*3,P(0,8),10,3; active=true)
     
-    game.overworld = true
-    
-    createSprite!(game,:main,3,Position(80,128),min(3,game.direction),
-        getSprite("im/sprites/main1",18); active=true)
-    
-    if game.direction == 4
-        game.im.sprites[3][:main].vreverse = true
+    if game.ctrl.dir == 4
+        reverseSprite!(game,:mc,1)
     end
 
+    # loadNPCs!(game)
+    # loadSpritesNPCs!(game)
+
     createCounter!(game,:movemain,0)
-    createCallback!(game,:movemain,false,moveMain!,(game.direction,-1))
+    createCallback!(game,:movemain,false,moveMain!,(game.ctrl.dir,-1))
 
-    loadSpritesNPCs!(game)
+    # loadMapStrings!(game; reset=true)
 
-    loadMapStrings!(game; reset=true)
+    return
 end
 
 function stateMapTransition!(game::GameState,exit::Exit)

@@ -1,8 +1,6 @@
 
 
-include("matrices.jl")
 
-include("types/types.jl")
 include("opengl/opengl.jl")
 
 include("backgroundmanager.jl")

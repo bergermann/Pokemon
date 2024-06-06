@@ -1,5 +1,25 @@
 # NPC related stuff
 
+# pattern directions: clockwise from starting direction
+# patterns              # static
+# 0 dont return         # none
+# 1 return              # return
+# 2 line                # line
+# 3 angle               # angle
+# 4 T                   # T rand
+# 5 T clockwise         # T cw
+# 6 T cclockwise        # T ccw
+# 7 circ clockwise      # cw
+# 8 circ cclockwise     # ccw
+# 9 rand                # rand
+
+# patterns              # dynamic
+# 0 rand                # none
+# 1 linear              # linear
+# 2 angle               # angle
+# 3 rectangle cw        # cw
+# 4 rectangle ccw       # ccw
+
 
 
 function loadStaticNPC!(game::GameState,d::Vector{Int})
@@ -136,18 +156,6 @@ function manageStaticNPCs!(game::GameState)
 end
 
 function manageStaticNPC!(game::GameState,npc::NPCStatic)
-    # patterns
-    # 0 dont return
-    # 1 2 3 4 return to
-    # 5 line 
-    # 6 angle
-    # 7 T
-    # 8 T clockwise
-    # 9 T cclockwise
-    # 10 circ clockwise
-    # 11 circ cclockwise
-    # 12 rand
-
     if npc.pattern == 0
         return
     elseif 1 <= npc.pattern <= 4
@@ -533,7 +541,7 @@ function moveRandomNPC!(game::GameState,npc::NPC)
             return
         end
 
-        if rand(1:2) == 1
+        if rand(Bool)
             updateSprite!(game.im.sprites[3][npc.spriteid],min(3,npc.dir))
             game.im.sprites[3][npc.spriteid].hreverse = (npc.dir == 4)
 

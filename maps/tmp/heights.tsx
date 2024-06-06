@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.10.2" name="heights" tilewidth="16" tileheight="16" tilecount="20" columns="10">
- <image source="../im/tilesets/heights.png" trans="ffffff" width="160" height="32"/>
-</tileset>

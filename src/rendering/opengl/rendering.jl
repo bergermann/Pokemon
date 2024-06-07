@@ -4,6 +4,10 @@ function drawBackgrounds(game::GameState)
     glUseProgram(game.im.programs[5]); checkError("B.0")
 
     for (name,b) in game.im.b.backgrounds
+        if !b.active
+            continue
+        end
+        
         glFramebufferTextureLayer(GL_DRAW_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,
             game.im.l.tex,0,Int(b.pos[3])-1)
 

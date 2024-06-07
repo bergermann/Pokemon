@@ -16,7 +16,7 @@ function genWindow(scale=1;)
     glEnable(GL_BLEND)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
-    GLFW.SwapInterval(0)
+    GLFW.SwapInterval(1)
 
     GLFW.SetKeyCallback(window,keyCallback)
     # GLFW.SetWindowSizeCallback(window,resizeCallback)

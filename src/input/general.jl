@@ -1,96 +1,96 @@
 
 
 
-function inputManager!(game::GameState,input::Input)
-    if game.input.inputlock
+function inputManager!(game::GameState,inputs::Inputs)
+    if game.ctrl.inputlock
         return
-    elseif game.input.choice.active
-        inputChoice!(game,input)
-    elseif game.input.dialogue
-        inputDialogue!(game,input)
+    elseif game.ctrl.choice.active
+        inputChoice!(game,inputs)
+    elseif game.ctrl.dialogue
+        inputDialogue!(game,inputs)
         return
-    elseif game.input.map
-        inputMap!(game,input)
+    elseif game.ctrl.map
+        inputMap!(game,inputs)
         return
-    elseif game.input.menu.main
-        inputMenu!(game,input)
+    elseif game.ctrl.menu.main
+        inputMenu!(game,inputs)
         return
-    elseif game.input.menu.pdex
+    elseif game.ctrl.menu.pdex
         return
-    elseif game.input.menu.pkmn
-        inputMenuPkmn!(game,input)
+    elseif game.ctrl.menu.pkmn
+        inputMenuPkmn!(game,inputs)
         return
-    elseif game.input.menu.bags
-        inputInventory!(game,input)
+    elseif game.ctrl.menu.bags
+        inputInventory!(game,inputs)
         return
-    elseif game.input.menu.pnav
+    elseif game.ctrl.menu.pnav
         return
-    elseif game.input.menu.self
+    elseif game.ctrl.menu.self
         return
-    elseif game.input.menu.save
+    elseif game.ctrl.menu.save
         return
-    elseif game.input.menu.optn
+    elseif game.ctrl.menu.optn
         return
-    elseif game.input.battle
-        inputBattle!(game,input)
+    elseif game.ctrl.battle
+        inputBattle!(game,inputs)
         return
     end
 end
 
 
 
-function inputChoice!(game::GameState,input::Input)
+function inputChoice!(game::GameState,inputs::Inputs)
     if input._A
-        game.input.choice.active = false
+        game.ctrl.choice.active = false
 
-        flushLayer!(game,game.input.choice.layer)
+        flushLayer!(game,game.ctrl.choice.layer)
         killSprite!(game,:ccursor)
 
-        game.input.choice.func(game,game.input.choice.args...)
+        game.ctrl.choice.func(game,game.ctrl.choice.args...)
     elseif input._B
-        if game.input.choice.exit
+        if game.ctrl.choice.exit
             resetChoice!(game)
 
-            flushLayer!(game,game.input.choice.layer)
+            flushLayer!(game,game.ctrl.choice.layer)
             killSprite!(game,:ccursor)
 
             return
         end
 
-        game.im.sprites[game.input.choice.layer][:ccursor].pos.h += 
-            16*(game.input.choice.max-game.input.choice.sel)
+        game.im.sprites[game.ctrl.choice.layer][:ccursor].pos.h += 
+            16*(game.ctrl.choice.max-game.ctrl.choice.sel)
 
-        game.input.choice.sel = game.input.choice.max
+        game.ctrl.choice.sel = game.ctrl.choice.max
     elseif input._up
-        if game.input.choice.sel == 1
-            game.im.sprites[game.input.choice.layer][:ccursor].pos.h +=
-                16*(game.input.choice.max-1)
+        if game.ctrl.choice.sel == 1
+            game.im.sprites[game.ctrl.choice.layer][:ccursor].pos.h +=
+                16*(game.ctrl.choice.max-1)
 
-            game.input.choice.sel = game.input.choice.max
+            game.ctrl.choice.sel = game.ctrl.choice.max
 
             return
         end
 
-        game.input.choice.sel -= 1
-        game.im.sprites[game.input.choice.layer][:ccursor].pos.h -= 16
+        game.ctrl.choice.sel -= 1
+        game.im.sprites[game.ctrl.choice.layer][:ccursor].pos.h -= 16
     elseif input._down
-        if game.input.choice.sel == game.input.choice.max
-            game.im.sprites[game.input.choice.layer][:ccursor].pos.h -=
-                16*(game.input.choice.max-1)
+        if game.ctrl.choice.sel == game.ctrl.choice.max
+            game.im.sprites[game.ctrl.choice.layer][:ccursor].pos.h -=
+                16*(game.ctrl.choice.max-1)
 
-            game.input.choice.sel = 1
+            game.ctrl.choice.sel = 1
 
             return
         end
         
-        game.input.choice.sel += 1
-        game.im.sprites[game.input.choice.layer][:ccursor].pos.h += 16
+        game.ctrl.choice.sel += 1
+        game.im.sprites[game.ctrl.choice.layer][:ccursor].pos.h += 16
     end
 end
 
 
 
-function inputDialogue!(game::GameState,input::Input)
+function inputDialogue!(game::GameState,inputs::Inputs)
     if !(input._A || input._B || input._down)
         return
     end
@@ -102,10 +102,10 @@ function inputDialogue!(game::GameState,input::Input)
     else
         game.dialogue.d = false
         game.dialogue.n = 1
-        game.input.move = true
-        game.input.map = true
-        game.input.dialogue = false
-        game.input.npclock = false
+        game.ctrl.move = true
+        game.ctrl.map = true
+        game.ctrl.dialogue = false
+        game.ctrl.npclock = false
 
         evalCallback(game,game.dialogue.callback)
         

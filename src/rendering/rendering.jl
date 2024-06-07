@@ -51,9 +51,9 @@ function render(game::GameState)
         drawMap(game)
     end
 
-    drawSprites(game)
     drawFrames(game)
     drawTexts(game)
+    drawSprites(game)
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER,0)
     glViewport(0,0,game.im.windowsize.width,game.im.windowsize.height)

@@ -9,12 +9,14 @@ mutable struct Background
     pos::MVector{3,Float32}
     scale::MVector{2,Float32}
 
-    function Background(x,y,l,sx=1,sy=1)
+    active::Bool
+
+    function Background(x,y,l,sx=1,sy=1; active=true)
         vao = UInt32[0]; glGenVertexArrays(1,pointer(vao))
         vbo = UInt32[0]; glGenBuffers(1,pointer(vbo))
         tex = UInt32[0]; glGenTextures(1,pointer(tex))
 
-        new(vao[1],vbo[1],tex[1],Float32[x,y,l],Float32[sx,sy])
+        new(vao[1],vbo[1],tex[1],Float32[x,y,l],Float32[sx,sy],active)
     end
 end
 

@@ -69,7 +69,7 @@ end
 
 
 function createFrame!(game::GameState,name::Symbol,width::Int,height::Int,
-        px::Int,py::Int,layer::Int,active::Bool=true)
+        px::Int,py::Int,layer::Int; active::Bool=true)
 
     game.im.f.frames[name] = (active,MVector{5,Float32}(px,py,layer,width,height))
 

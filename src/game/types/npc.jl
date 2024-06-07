@@ -5,10 +5,10 @@
 mutable struct NPCStatic <: NPCNormal
     id::UInt16
 
+    chunk::Position
     pos::Position
     dir::Int
-    sprite::Int
-    spriteid::Symbol
+    sprite::Symbol
 
     pattern::Int
     parg::Int
@@ -30,22 +30,24 @@ mutable struct NPCStatic <: NPCNormal
     # 12 rand
 
     function NPCStatic()
-        new(0,P(0,0),1,0,Symbol(),0,0,0,0,0)
+        new(0,P(0,0),P(0,0),1,Symbol(),0,0,0,0,0)
     end
 
-    function NPCStatic(id,pos,dir,sprite,spriteid,pattern,parg,c,dialogue,dialoguelen)
-        new(id,pos,dir,sprite,spriteid,pattern,parg,c,dialogue,dialoguelen)
+    function NPCStatic(id,chunk,pos,dir,spriteid,pattern,parg,c,dialogue,dialoguelen)
+        new(id,chunk,pos,dir,spriteid,pattern,parg,c,dialogue,dialoguelen)
     end
 end
 
 mutable struct NPCMove <: NPCNormal
     id::UInt16
 
+    chunk::Position
+    movechunk::Position
     pos::Position
+    movepos::Position
     homepos::Position
     dir::Int
-    sprite::Int
-    spriteid::Symbol
+    sprite::Symbol
     
     pattern::Int
     parg1::Int

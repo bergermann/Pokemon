@@ -22,9 +22,9 @@ function loadMapStrings!(game::GameState; reset=true)
     if reset
         game.str = []
 
-        push!(game.str,readlines("str/ger/m$(game.maps.map.id).txt"))
+        push!(game.str,[])
         push!(game.str,readlines("str/ger/system_main.txt"))
     else
-        game.str[1] = readlines("str/ger/m$(game.maps.map.id).txt")
+        game.str[1] = []
     end
 end

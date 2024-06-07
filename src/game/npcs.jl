@@ -108,17 +108,6 @@ end
 
 
 
-function checkProximityNPCs!(game::GameState)
-    for sprite in game.im.sprites[3]
-        if (-32 < sprite.pos.h <= 216) &&
-                (-16 < sprite.pos.w <= 264)
-            sprite.active = true
-        else
-            sprite.active = false
-        end
-    end
-end
-
 function checkTileNPC(game::GameState)
     for i in 1:game.npcstatic.idx
         if game.npcstatic[i].pos.h == game.movepos.h &&

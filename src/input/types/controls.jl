@@ -1,150 +1,70 @@
 
 
-
-
 mutable struct Input
-    input::Bool
-    _input::Bool
-    input_::Bool
+    press::Bool
+    hold::Bool
+end
 
-    A::Bool
-    _A::Bool
-    A_::Bool
-    B::Bool
-    _B::Bool
-    B_::Bool
+mutable struct Inputs
+    any::Input
 
-    L::Bool
-    _L::Bool
-    L_::Bool
-    R::Bool
-    _R::Bool
-    R_::Bool
+    A::Input
+    B::Input
 
-    up::Bool
-    _up::Bool
-    up_::Bool
-    down::Bool
-    _down::Bool
-    down_::Bool
-    left::Bool
-    _left::Bool
-    left_::Bool
-    right::Bool
-    _right::Bool
-    right_::Bool
+    L::Input
+    R::Input
 
-    start::Bool
-    _start::Bool
-    start_::Bool
-    select::Bool
-    _select::Bool
-    select_::Bool
+    up::Input
+    right::Input
+    down::Input
+    left::Input
 
-    function Input()
-        new([false for _ in fieldnames(Input)]...)
+    start::Input
+    select::Input
+
+    function Inputs()
+        new([Input(false,false) for _ in fieldnames(Inputs)]...)
     end
 end
 
-# ctrls = Base.ImmutableDict(
-#     MiniFB.KB_KEY_SPACE => :A,
-#     MiniFB.KB_KEY_ENTER => :A,
+const km = Base.ImmutableDict(
+    GLFW.KEY_SPACE => :A,
+    GLFW.KEY_ENTER => :A,
 
-#     MiniFB.KB_KEY_LEFT_CONTROL => :B,
-#     MiniFB.KB_KEY_LEFT_SHIFT => :B,
-#     MiniFB.KB_KEY_BACKSPACE => :B,
+    GLFW.KEY_LEFT_CONTROL => :B,
+    GLFW.KEY_LEFT_SHIFT => :B,
+    GLFW.KEY_BACKSPACE => :B,
 
-#     MiniFB.KB_KEY_Q => :L,
+    GLFW.KEY_Q => :L,
 
-#     MiniFB.KB_KEY_E => :R,
+    GLFW.KEY_E => :R,
 
-#     MiniFB.KB_KEY_W => :up,
-#     MiniFB.KB_KEY_UP => :up,
+    GLFW.KEY_W => :up,
+    GLFW.KEY_UP => :up,
 
-#     MiniFB.KB_KEY_S => :down,
-#     MiniFB.KB_KEY_DOWN => :down,
+    GLFW.KEY_S => :down,
+    GLFW.KEY_DOWN => :down,
 
-#     MiniFB.KB_KEY_A => :left,
-#     MiniFB.KB_KEY_LEFT => :left,
+    GLFW.KEY_A => :left,
+    GLFW.KEY_LEFT => :left,
 
-#     MiniFB.KB_KEY_D => :right,
-#     MiniFB.KB_KEY_RIGHT => :right,
+    GLFW.KEY_D => :right,
+    GLFW.KEY_RIGHT => :right,
 
-#     MiniFB.KB_KEY_X => :start,
+    GLFW.KEY_X => :start,
 
-#     MiniFB.KB_KEY_Y => :select,
-# )
+    GLFW.KEY_Y => :select,
+)
 
-# _ctrls = Base.ImmutableDict(
-#     MiniFB.KB_KEY_SPACE => :_A,
-#     MiniFB.KB_KEY_ENTER => :_A,
+function setupInputs(km)
+    inputs = Inputs()
 
-#     MiniFB.KB_KEY_LEFT_CONTROL => :_B,
-#     MiniFB.KB_KEY_LEFT_SHIFT => :_B,
-#     MiniFB.KB_KEY_BACKSPACE => :_B,
+    d = Dict(
+        key => getfield(inputs,input) for (key,input) in km
+    )
 
-#     MiniFB.KB_KEY_Q => :_L,
-
-#     MiniFB.KB_KEY_E => :_R,
-
-#     MiniFB.KB_KEY_W => :_up,
-#     MiniFB.KB_KEY_UP => :_up,
-
-#     MiniFB.KB_KEY_S => :_down,
-#     MiniFB.KB_KEY_DOWN => :_down,
-
-#     MiniFB.KB_KEY_A => :_left,
-#     MiniFB.KB_KEY_LEFT => :_left,
-
-#     MiniFB.KB_KEY_D => :_right,
-#     MiniFB.KB_KEY_RIGHT => :_right,
-
-#     MiniFB.KB_KEY_X => :_start,
-
-#     MiniFB.KB_KEY_Y => :_select,
-# )
-
-# ctrls_ = Base.ImmutableDict(
-#     MiniFB.KB_KEY_SPACE => :A_,
-#     MiniFB.KB_KEY_ENTER => :A_,
-
-#     MiniFB.KB_KEY_LEFT_CONTROL => :B_,
-#     MiniFB.KB_KEY_LEFT_SHIFT => :B_,
-#     MiniFB.KB_KEY_BACKSPACE => :B_,
-
-#     MiniFB.KB_KEY_Q => :L_,
-
-#     MiniFB.KB_KEY_E => :R_,
-
-#     MiniFB.KB_KEY_W => :up_,
-#     MiniFB.KB_KEY_UP => :up_,
-
-#     MiniFB.KB_KEY_S => :down_,
-#     MiniFB.KB_KEY_DOWN => :down_,
-
-#     MiniFB.KB_KEY_A => :left_,
-#     MiniFB.KB_KEY_LEFT => :left_,
-
-#     MiniFB.KB_KEY_D => :right_,
-#     MiniFB.KB_KEY_RIGHT => :right_,
-
-#     MiniFB.KB_KEY_X => :start_,
-
-#     MiniFB.KB_KEY_Y => :select_,
-# )
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return inputs, d
+end
 
 
 
@@ -158,8 +78,6 @@ mutable struct Dialogue
         new(false,[""],0x01,CallbackFunction())
     end
 end
-
-
 
 
 

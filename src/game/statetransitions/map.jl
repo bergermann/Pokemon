@@ -15,22 +15,30 @@ function stateInitMap!(game::GameState)
     loadChunksAll!(game)
 
     loadArrayTexture!(game,"tilesets",tilesets,:tiles,16,16)
-    loadSpriteSheet!(game,"main1.png",:mc,32,32,9; maxsprites=1)
-    loadSpriteSheet!(game,"npcs_all.png",:npcs,16,32,9; maxsprites=2)
+    loadSpriteSheet!(game,"main1.png",:mc,32,32,9; maxsprites=2)
+    loadSpriteSheet!(game,"npcs_all.png",:npcs,16,32,9; maxsprites=128)
+    loadSpriteSheet!(game,"cursors.png",:cursors,6,20,1; maxsprites=4)
 
-    createSprite!(game,:mc,:mc,1,1+(game.ctrl.dir-1)*3,P(0,8),10,3; active=true)
+    loadMapStrings!(game; reset=true)
+
+    # loadNPCs!(game)
+
+    createCounter!(game,:movemain,0)
+    createCallback!(game,:movemain,false,moveMain!,(game.ctrl.dir,-1))
+
+    createFrame!(game,:menu,7,18,48,-80,6; active=true)
+    createSprite!(game,:cursor,:cursors,1,1,65,-40+(game.ctrl.input.menu.select)*17,0,6;
+        active=true)
+    createText!(game,:menutext,3,74,-22,6,game.str[2][1],
+        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true)
+
+    createSprite!(game,:mc,:mc,1,1+(game.ctrl.dir-1)*3,0,8,10,3; active=true)
     
     if game.ctrl.dir == 4
         reverseSprite!(game,:mc,1)
     end
 
-    # loadNPCs!(game)
     # loadSpritesNPCs!(game)
-
-    createCounter!(game,:movemain,0)
-    createCallback!(game,:movemain,false,moveMain!,(game.ctrl.dir,-1))
-
-    # loadMapStrings!(game; reset=true)
 
     return
 end

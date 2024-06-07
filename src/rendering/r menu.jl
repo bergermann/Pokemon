@@ -1,63 +1,6 @@
 
 
 
-function loadFrame(id::Int)
-    return deserialize("im/menu/frames/$id.imp")
-end
-
-function drawFrame!(game::GameState,layer::Int,height::Int,width::Int,pos::P)
-    v = view(game.im.layers[layer],
-        pos.h+1:pos.h+8*height,pos.w+1:pos.w+8*width)
-
-    @views begin
-        drawView!(v[1:8,1:8],game.im.frame.im[1:8,1:8],game.im.frame.palette)
-        drawView!(v[1:8,end-8+1:end],game.im.frame.im[1:8,17:24],
-            game.im.frame.palette)
-        drawView!(v[end-8+1:end,1:8],game.im.frame.im[17:24,1:8],
-            game.im.frame.palette)
-        drawView!(v[end-8+1:end,end-8+1:end],game.im.frame.im[17:24,17:24],
-            game.im.frame.palette)
-
-        for i in 2:width-1
-            drawView!(v[1:8,8*(i-1)+1:8*i],game.im.frame.im[1:8,9:16],
-                game.im.frame.palette)
-            drawView!(v[end-8+1:end,8*(i-1)+1:8*i],game.im.frame.im[17:24,9:16],
-                game.im.frame.palette)
-        end
-
-        for i in 2:height-1
-            drawView!(v[8*(i-1)+1:8*i,1:8],game.im.frame.im[9:16,1:8],
-                game.im.frame.palette)
-            drawView!(v[8*(i-1)+1:8*i,end-8+1:end],game.im.frame.im[9:16,17:24],
-                game.im.frame.palette)
-        end
-
-        v[8+1:end-8,8+1:end-8] .= game.im.frame.palette[game.im.frame.im[9,9]]
-    end
-
-    return
-end
-
-
-
-
-
-function drawMenu!(game::GameState)
-    drawFrame!(game,6,20,10,Position(24,176))
-
-    drawText!(game,6,game.str[2][1],
-        UInt(2),Position(38,194); lineoffset=2)
-
-    drawText!(game,6,game.trainer.name,
-        UInt(2),Position(38+4*17,194); lineoffset=2)
-
-    createSprite!(game,:cursor,6,
-        P(41+(game.input.menu.select)*17,185),1,
-        getSprite("im/sprites/cursor",1,"black"); active=true)
-
-    return
-end
-
 
 
 

@@ -9,12 +9,12 @@ function setupBackgrounds(game::GameState)
     return
 end
 
-function createBackground!(game::GameState,name::Symbol,path::String,x::Int,y::Int,z::Int;
-        sx::Real=1.0,sy::Real=1.0)
+function createBackground!(game::GameState,name::Symbol,path::String,x::Int,y::Int,l::Int;
+        sx::Real=1.0,sy::Real=1.0,active::Bool=true)
 
     tex, w, h = loadImage(path); checkError("create bg 0")
 
-    b = game.im.b.backgrounds[name] = Background(x,y,z,sx,sy)
+    b = game.im.b.backgrounds[name] = Background(x,y,l,sx,sy; active=active)
     buffer = Float32[
         0,0,0,0,
         w,0,1,0,

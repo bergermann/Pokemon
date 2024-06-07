@@ -76,9 +76,9 @@ end
 
 
 
-function inputMap!(game::GameState,input::Input)
+function inputMap!(game::GameState,inputs::Inputs)
     if game.input.move
-        inputMove!(game,input)
+        inputMove!(game,inputs)
     end
 
     if game.input.move && input._start
@@ -99,7 +99,7 @@ function inputMap!(game::GameState,input::Input)
     return
 end
 
-function inputMove!(game::GameState,input::Input)
+function inputMove!(game::GameState,inputs::Inputs)
     if !(input.up || input.down || input.left || input.right)
         if game.n.c[:movemain].c != 0
             game.callbacks[:movemain].active = true

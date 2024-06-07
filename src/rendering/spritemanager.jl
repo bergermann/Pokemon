@@ -60,7 +60,7 @@ end
 function createSprite!(game::GameState,
         id::Symbol,sheetname::Symbol,
         idx::Int,frame::Int,
-        pos::Pos,z::Int,layer::Int;
+        x::Int,y::Int,z::Int,layer::Int;
         wscale::Float64=1.0,hscale::Float64=1.0,
         wreverse::Bool=false,hreverse::Bool=false,
         rot::Float64=0.0,alpha::Float64=1.0,
@@ -76,7 +76,7 @@ function createSprite!(game::GameState,
 
     sheet.idx[1,slot] = (idx-1)*sheet.nframes+1; sheet.idx[2,slot] = frame
 
-    sheet.pos[1,slot] = pos[1]; sheet.pos[2,slot] = pos[2]
+    sheet.pos[1,slot] = x; sheet.pos[2,slot] = y
     sheet.pos[3,slot] = z; sheet.pos[4,slot] = layer
 
     sheet.scale[1,slot] = wscale

@@ -1,7 +1,7 @@
 
 
 
-function inputMenu!(game::GameState,input::Input)
+function inputMenu!(game::GameState,inputs::Inputs)
     if !input._input
         return
     end

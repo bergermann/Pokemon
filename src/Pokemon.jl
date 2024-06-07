@@ -28,7 +28,9 @@ function main()
     # Base.GC.enable(false)
     # Base.GC.@preserve game sceneTransition!
 
-    input = 0
+    inputs, keymap = setupInputs(km); global keymap
+
+    include("input/callbacks.jl")
     
     @time game = setupGame()
     
@@ -47,8 +49,8 @@ function main()
     while !GLFW.WindowShouldClose(game.im.window)
         game.frame += 0x01
  
-        # @time updateGame!(game,input; s=settings)
-        # updateGame!(game,input)
+        # @time updateGame!(game,inputs)
+        # updateGame!(game,inputs)
 
         render(game)
     end

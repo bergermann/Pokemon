@@ -1,7 +1,7 @@
 
-function inputMenuPkmn!(game::GameState,input::Input)
+function inputMenuPkmn!(game::GameState,inputs::Inputs)
     if game.input.menu.menupkmn.sub
-        inputPkmnSub!(game,input)
+        inputPkmnSub!(game,inputs)
 
         return
     end
@@ -40,10 +40,10 @@ function inputMenuPkmn!(game::GameState,input::Input)
         end
     end
 
-    inputTeam!(game,input)
+    inputTeam!(game,inputs)
 end
 
-function inputTeam!(game::GameState,input::Input)
+function inputTeam!(game::GameState,inputs::Inputs)
     if input._A
         if game.battle.active
             inputTeamActionBattle!(game)
@@ -155,7 +155,7 @@ function inputTeamActionBattle!(game::GameState)
     end
 end
 
-function inputPkmnSub!(game::GameState,input::Input)
+function inputPkmnSub!(game::GameState,inputs::Inputs)
     return
 end
 

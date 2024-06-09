@@ -5,7 +5,6 @@ function inputMenu!(game::GameState,inputs::Inputs)
     if inputs.down.press
         game.ctrl.menu.select = (game.ctrl.menu.select+0x01)%0x08
         moveSprite!(game,:cursor,58,-58+(game.ctrl.input.menu.select-1)*17,true)
-
     elseif inputs.up.press
         if game.ctrl.menu.select == 0x00
             game.ctrl.menu.select = 0x07
@@ -13,7 +12,6 @@ function inputMenu!(game::GameState,inputs::Inputs)
             game.ctrl.menu.select -= 0x01
         end
 
-        game.im.sprites[6][:cursor].pos = P(41+(game.ctrl.menu.select)*17,185)
         moveSprite!(game,:cursor,58,-58+(game.ctrl.input.menu.select-1)*17,true)
     elseif input.A.press
         inputMenuSelector!(game)

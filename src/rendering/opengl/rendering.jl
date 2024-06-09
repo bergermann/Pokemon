@@ -2,14 +2,16 @@
 
 function drawBackgrounds(game::GameState)
     glUseProgram(game.im.programs[5]); checkError("B.0")
-
+    
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER,game.im.l.fbo)
+    
     for (name,b) in game.im.b.backgrounds
         if !b.active
             continue
         end
         
         glFramebufferTextureLayer(GL_DRAW_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,
-            game.im.l.tex,0,Int(b.pos[3])-1)
+            game.im.l.tex,0,Int(b.pos[3])-1); checkError("B.0.1")
 
         glUniform2f(game.im.b.ulocpos,b.pos[1],b.pos[2]); checkError("B.1")
         glUniform2f(game.im.b.ulocscale,b.scale[1],b.scale[2]); checkError("B.2")
@@ -34,6 +36,9 @@ function drawMap(game::GameState)
     r2 = (2*game.im.c.renderdistance+1)^2
 
     glUseProgram(game.im.programs[1]); checkError("C.0")
+
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER,game.im.l.fbo)
+    glFramebufferTexture(GL_DRAW_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,game.im.l.tex,0)
     
     glActiveTexture(GL_TEXTURE0); checkError("C.2")
     bindATexture(game,:tiles)
@@ -74,6 +79,9 @@ end
 function drawSprites(game::GameState)
     glUseProgram(game.im.programs[4]); checkError("S.0")
 
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER,game.im.l.fbo)
+    glFramebufferTexture(GL_DRAW_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,game.im.l.tex,0)
+
     for (name,sheet) in game.im.s.sheets
         glUniform2uiv(game.im.s.ulocsize,1,pointer(sheet.size))
 
@@ -112,6 +120,8 @@ end
 function drawFrames(game::GameState)
     glUseProgram(game.im.programs[2]); checkError("F.1")
 
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER,game.im.l.fbo)
+
     bindTexture(game,:frame)
     glBindVertexArray(game.im.f.vao); checkError("F.2")
     glBindBuffer(GL_ARRAY_BUFFER,game.im.f.vbo); checkError("F.3")
@@ -142,6 +152,8 @@ end
 function drawTexts(game::GameState)
     glUseProgram(game.im.programs[3]); checkError("T.0")
 
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER,game.im.l.fbo)
+
     for (name,text) in game.im.text.texts
         if !text.active
             continue
@@ -171,6 +183,9 @@ end
 
 function drawPostProcess(game::GameState)
     glUseProgram(game.im.programs[15])
+
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER,0)
+    glViewport(0,0,game.im.windowsize.width,game.im.windowsize.height)
 
     glBindTexture(GL_TEXTURE_2D_ARRAY,game.im.l.tex)
     glBindVertexArray(game.im.l.vao)

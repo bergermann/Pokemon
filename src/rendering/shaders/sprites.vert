@@ -27,5 +27,5 @@ void main()
 
     float z = float(position.w-1.0)/6.0;
 
-    gl_Position = vec4(position.xy,z,1.0);
+    gl_Position = vec4(position.x,-position.y,z,1.0);
 }

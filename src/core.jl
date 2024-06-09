@@ -92,7 +92,7 @@ end
 
 
 function evalCallback(game::GameState,f::CallbackFunction)
-    f.func(game,f.args...)  # FIX
+    f.func(game,f.args)  # FIX
 
     return
 end

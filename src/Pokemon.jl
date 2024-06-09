@@ -50,7 +50,7 @@ function main()
         game.frame += 0x01
  
         # @time updateGame!(game,inputs)
-        # updateGame!(game,inputs)
+        updateGame!(game,inputs)
 
         render(game)
     end

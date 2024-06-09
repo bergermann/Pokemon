@@ -12,11 +12,15 @@ function keyCallback(window::GLFW.Window,key,scancode,action,mods)
         if key == GLFW.KEY_ESCAPE
             GLFW.SetWindowShouldClose(window,true)
         else
-            keymap[key].press = true
-            keymap[key].hold = true
+            if haskey(keymap,key)
+                keymap[key].press = true
+                keymap[key].hold = true
+            end
         end
     else
-        keymap[key].hold = false
+        if haskey(keymap,key)
+            keymap[key].hold = false
+        end
     end
 
     return

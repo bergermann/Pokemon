@@ -45,16 +45,16 @@ function updateGame!(game::GameState,inputs::Inputs)
     if game.overworld
         # arrange sprites here
 
-        if !game.input.npclock
-            manageNPCs!(game)
+        if !game.ctrl.npclock
+            # manageNPCs!(game)
         end
     end
 
     for i in 1:game.callbacks.idx
         if game.callbacks[i].active
-            game.callbacks[i].func(game,game.callbacks[i].args)
+            evalCallback(game,game.callbacks[i])
         end
     end
 
-    drawAnimatedTiles!(game)
+    return
 end

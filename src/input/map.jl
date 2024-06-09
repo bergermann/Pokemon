@@ -77,22 +77,22 @@ end
 
 
 function inputMap!(game::GameState,inputs::Inputs)
-    if game.input.move
+    if game.ctrl.move
         inputMove!(game,inputs)
     end
 
-    if game.input.move && input._start
-        game.input.move = false
-        game.input.map = false
-        game.input.menu.main = true
+    if game.ctrl.move && inputs.start.press
+        game.ctrl.move = false
+        game.ctrl.map = false
+        game.ctrl.menu.main = true
 
-        game.draw.menu1 = true
-
-        drawMenu!(game)
+        game.im.f.frames[:menu].active = true
+        game.im.text.texts[:menu].active = true
+        switchSprite!(game,:cursor)
         return
     end
 
-    if game.input.move && input._A
+    if game.ctrl.move && inputs.A.press
         mapAction!(game)
     end
 
@@ -100,45 +100,45 @@ function inputMap!(game::GameState,inputs::Inputs)
 end
 
 function inputMove!(game::GameState,inputs::Inputs)
-    if !(input.up || input.down || input.left || input.right)
-        if game.n.c[:movemain].c != 0
+    if !(inputs.up.press || inputs.down.press || inputs.left.press || inputs.right.press)
+        if game.n[:movemain].c != 0
             game.callbacks[:movemain].active = true
-            game.callbacks[:movemain].args = (game.direction,-1)
+            game.callbacks[:movemain].args = (game.ctrl.dir,-1)
         end
 
         return
     end
 
-    dir = finddir(input)
+    dir = finddir(inputs)
     
     updateMovePos!(game,dir)
 
-    if !checkWalkable(game,game.movepos)
+    if !checkWalkable(game,game.ctrl.movepos)
         if game.n.c[:movemain].c == 0
             game.callbacks[:movemain].active = true
-            game.callbacks[:movemain].args = (game.direction,3)
+            game.callbacks[:movemain].args = (game.ctrl.dir,3)
         end
 
         return
     end
 
-    checkMapExit!(game,game.movepos)
+    checkTeleport!(game,game.ctrl.movepos)
 
-    game.n.c[:movemain].c = 0
+    game.n[:movemain].c = 0
 
     game.callbacks[:movemain].active = true
-    game.input.move = false
+    game.ctrl.move = false
 
-    if !input.B
-        if game.direction == dir
-            game.callbacks[:movemain].args = (game.direction,1)
+    if !input.B.hold
+        if game.ctrl.dir == dir
+            game.callbacks[:movemain].args = (game.ctrl.dir,1)
         else
-            game.direction = dir
-            game.callbacks[:movemain].args = (game.direction,0)
+            game.ctrl.dir = dir
+            game.callbacks[:movemain].args = (game.ctrl.dir,0)
         end
     else
-        game.direction = dir
-        game.callbacks[:movemain].args = (game.direction,2)
+        game.ctrl.dir = dir
+        game.callbacks[:movemain].args = (game.ctrl.dir,2)
     end
 
     return

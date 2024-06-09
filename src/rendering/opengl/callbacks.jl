@@ -8,7 +8,7 @@ function resizeCallback(window::GLFW.Window,width::Int32,height::Int32)
         println("Square!")
     end
 
-    game.im.windowsize = (width=width,height=height)
+    # game.im.windowsize = (width=width,height=height)
 
     return
 end

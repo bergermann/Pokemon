@@ -43,9 +43,6 @@ function render(game::GameState)
     glClear(GL_COLOR_BUFFER_BIT)
 
     drawBackgrounds(game)
-
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER,game.im.l.fbo)
-    glFramebufferTexture(GL_DRAW_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,game.im.l.tex,0)
     
     if game.overworld
         drawMap(game)
@@ -54,9 +51,6 @@ function render(game::GameState)
     drawFrames(game)
     drawTexts(game)
     drawSprites(game)
-
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER,0)
-    glViewport(0,0,game.im.windowsize.width,game.im.windowsize.height)
 
     drawPostProcess(game)
 

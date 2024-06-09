@@ -59,8 +59,8 @@ const km = Base.ImmutableDict(
 function setupInputs(km)
     inputs = Inputs()
 
-    d = Dict(
-        key => getfield(inputs,input) for (key,input) in km
+    d = Base.ImmutableDict(
+        [key => getfield(inputs,input) for (key,input) in km]...
     )
 
     return inputs, d

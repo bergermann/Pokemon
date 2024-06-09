@@ -130,7 +130,7 @@ end
 
 function createText!(game::GameState,name::Symbol,font::Int,x::Int,y::Int,layer::Int,
         str::String,colour1::Vector{UInt8},colour2::Vector{UInt8};
-        maxchar::Int=128,active::Bool=true,nchar::Int=-1,wpad::Int=1,hpad::Int=0,
+        maxchar::Int=128,active::Bool=true,nchar::Int=-1,wpad::Int=0,hpad::Int=0,
         colour0::Vector{UInt8}=UInt8[0,0,0,0])
 
     if nchar < 0

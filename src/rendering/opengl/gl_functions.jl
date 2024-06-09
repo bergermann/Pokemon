@@ -44,13 +44,14 @@ function validateProgram(program::UInt32)
 end
 
 function getProgramInfoLog(program::UInt32)
-    l = GLA.glGetProgramiv(program,GL_INFO_LOG_LENGTH)
+    l = UInt32[0]
+    glGetProgramiv(program,GL_INFO_LOG_LENGTH,l)
 
-    log = zeros(UInt8,l)
+    log = zeros(UInt8,l[1])
 
-    glGetProgramInfoLog(program,l,C_NULL,log)
+    glGetProgramInfoLog(program,l[1],C_NULL,log)
 
-    println(String(log[1:l-2]),"\n")
+    println(String(log[1:l[1]-2]),"\n")
 
     return
 end

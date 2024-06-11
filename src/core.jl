@@ -4,7 +4,9 @@
 
 
 
-
+function modc(x::Integer)
+    return div(x-1+16,16)-1
+end
 
 
 function quicksort!(A::Vector,lo::Int,hi::Int)

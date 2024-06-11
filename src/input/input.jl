@@ -1,5 +1,6 @@
 
 # include("callbacks.jl")
+include("camera.jl")
 include("controls.jl")
 include("general.jl")
 include("map.jl")

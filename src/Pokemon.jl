@@ -57,9 +57,9 @@ function main()
 
     GLFW.DestroyWindow(game.im.window)
 
-    return game
+    return game, inputs
 end
 
-g = main();
+game, inputs = main();
 
 end

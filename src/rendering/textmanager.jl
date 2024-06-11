@@ -195,3 +195,9 @@ function deleteText!(game::GameState,name::Symbol)
 
     return
 end
+
+function switchText!(game::GameState,name::Symbol)
+    game.im.text.texts[name].active = !game.im.text.texts[name].active
+
+    return
+end

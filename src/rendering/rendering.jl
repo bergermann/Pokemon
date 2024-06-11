@@ -40,8 +40,6 @@ const tilesets = [
 function render(game::GameState)
     glViewport(0,0,240,160)
 
-    glClear(GL_COLOR_BUFFER_BIT)
-
     drawBackgrounds(game)
     
     if game.overworld

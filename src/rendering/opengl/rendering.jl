@@ -4,6 +4,7 @@ function drawBackgrounds(game::GameState)
     glUseProgram(game.im.programs[5]); checkError("B.0")
     
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER,game.im.l.fbo)
+    glClear(GL_COLOR_BUFFER_BIT)
     
     for (name,b) in game.im.b.backgrounds
         if !b.active
@@ -127,15 +128,15 @@ function drawFrames(game::GameState)
     glBindBuffer(GL_ARRAY_BUFFER,game.im.f.vbo); checkError("F.3")
 
     for (name,frame) in game.im.f.frames
-        if !frame[1]
+        if !frame.active
             continue
         end
 
         glFramebufferTextureLayer(GL_DRAW_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,
-            game.im.l.tex,0,Int(frame[2][3])-1)
+            game.im.l.tex,0,Int(frame.pos[3])-1)
 
-        glUniform2f(game.im.f.ulocpos,frame[2][1],frame[2][2]); checkError("F.5")
-        glUniform2f(game.im.f.ulocsize,frame[2][4],frame[2][5]); checkError("F.6")
+        glUniform2f(game.im.f.ulocpos,frame.pos[1],frame.pos[2]); checkError("F.5")
+        glUniform2f(game.im.f.ulocsize,frame.pos[4],frame.pos[5]); checkError("F.6")
 
         glDrawElements(GL_TRIANGLES,54,GL_UNSIGNED_BYTE,C_NULL); checkError("F.7")
     end
@@ -186,6 +187,8 @@ function drawPostProcess(game::GameState)
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER,0)
     glViewport(0,0,game.im.windowsize.width,game.im.windowsize.height)
+
+    glClear(GL_COLOR_BUFFER_BIT)
 
     glBindTexture(GL_TEXTURE_2D_ARRAY,game.im.l.tex)
     glBindVertexArray(game.im.l.vao)

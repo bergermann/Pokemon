@@ -2,56 +2,52 @@
 
 
 function inputManager!(game::GameState,inputs::Inputs)
-    if game.ctrl.inputlock
+    if game.ctrl.input.inputlock
         return
-    elseif game.ctrl.choice.active
+    elseif game.ctrl.input.choice.active
         inputChoice!(game,inputs)
-    elseif game.ctrl.dialogue
+    elseif game.ctrl.input.dialogue
         inputDialogue!(game,inputs)
-        return
-    elseif game.ctrl.map
+    elseif game.ctrl.input.map
         inputMap!(game,inputs)
-        return
-    elseif game.ctrl.menu.main
+    elseif game.ctrl.input.menu.main
         inputMenu!(game,inputs)
-        return
-    elseif game.ctrl.menu.pdex
-        return
-    elseif game.ctrl.menu.pkmn
+    elseif game.ctrl.input.menu.pdex
+        
+    elseif game.ctrl.input.menu.pkmn
         inputMenuPkmn!(game,inputs)
-        return
-    elseif game.ctrl.menu.bags
+    elseif game.ctrl.input.menu.bags
         inputInventory!(game,inputs)
-        return
-    elseif game.ctrl.menu.pnav
-        return
-    elseif game.ctrl.menu.self
-        return
-    elseif game.ctrl.menu.save
-        return
-    elseif game.ctrl.menu.optn
-        return
-    elseif game.ctrl.battle
+    elseif game.ctrl.input.menu.pnav
+        
+    elseif game.ctrl.input.menu.self
+        
+    elseif game.ctrl.input.menu.save
+        
+    elseif game.ctrl.input.menu.optn
+        
+    elseif game.ctrl.input.battle
         inputBattle!(game,inputs)
-        return
     end
+
+    resetInputs!(inputs)
+
+    return
 end
 
 
 
 function inputChoice!(game::GameState,inputs::Inputs)
-    if input._A
+    if inputs.A.press
         game.ctrl.choice.active = false
 
-        flushLayer!(game,game.ctrl.choice.layer)
         killSprite!(game,:ccursor)
 
-        game.ctrl.choice.func(game,game.ctrl.choice.args...)
-    elseif input._B
+        game.ctrl.choice.func(game,game.ctrl.choice.args)
+    elseif input.B.press
         if game.ctrl.choice.exit
             resetChoice!(game)
 
-            flushLayer!(game,game.ctrl.choice.layer)
             killSprite!(game,:ccursor)
 
             return
@@ -91,7 +87,7 @@ end
 
 
 function inputDialogue!(game::GameState,inputs::Inputs)
-    if !(input._A || input._B || input._down)
+    if !(inputs.A.press || inputs.B.press || inputs.down.press)
         return
     end
 
@@ -111,4 +107,21 @@ function inputDialogue!(game::GameState,inputs::Inputs)
         
         flushLayer!(game,6,P(24+112,16),P(48,240))
     end
+end
+
+
+
+function resetInputs!(inputs::Inputs)
+    inputs.A.press = false
+    inputs.B.press = false
+    inputs.L.press = false
+    inputs.R.press = false
+    inputs.up.press = false
+    inputs.right.press = false
+    inputs.down.press = false
+    inputs.left.press = false
+    inputs.start.press = false
+    inputs.select.press = false
+
+    return
 end

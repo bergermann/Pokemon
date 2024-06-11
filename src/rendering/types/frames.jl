@@ -1,10 +1,15 @@
 
+mutable struct Frame
+    active::Bool
+    pos::MVector{5,Float32}
+end
+
 mutable struct Frames
     vao::UInt32
     vbo::UInt32
     ebo::UInt32
 
-    frames::Dict{Symbol,Tuple{Bool,MVector{5,Float32}}}
+    frames::Dict{Symbol,Frame}
 
     frameid::Int
 

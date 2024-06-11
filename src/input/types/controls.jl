@@ -6,8 +6,6 @@ mutable struct Input
 end
 
 mutable struct Inputs
-    any::Input
-
     A::Input
     B::Input
 
@@ -53,7 +51,7 @@ const km = Base.ImmutableDict(
 
     GLFW.KEY_X => :start,
 
-    GLFW.KEY_Y => :select,
+    GLFW.KEY_Y => :select 
 )
 
 function setupInputs(km)
@@ -300,6 +298,7 @@ end
 mutable struct Controls
     pos::Position
     mpos::Position
+    height::Int
     chunk::Position
     dir::Int            # 1,2,3,4 = N,E,S,W
 
@@ -307,7 +306,7 @@ mutable struct Controls
     
     dialogue::Dialogue
 
-    function Controls(h::Int,w::Int,ch::Int,cw::Int,dir::Int=2)
-        new(P(h,w),P(h,w)+dirs[dir],P(ch,cw),dir,InputState(),Dialogue())
+    function Controls(x::Int,y::Int,h::Int,cx::Int,cy::Int,dir::Int)
+        new(P(x,y),P(x,y),h,P(cx,cy),dir,InputState(),Dialogue())
     end
 end

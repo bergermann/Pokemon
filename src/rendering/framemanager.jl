@@ -71,7 +71,7 @@ end
 function createFrame!(game::GameState,name::Symbol,width::Int,height::Int,
         px::Int,py::Int,layer::Int; active::Bool=true)
 
-    game.im.f.frames[name] = (active,MVector{5,Float32}(px,py,layer,width,height))
+    game.im.f.frames[name] = Frame(active,MVector{5,Float32}(px,py,layer,width,height))
 
     return
 end
@@ -83,27 +83,27 @@ function removeFrame!(game::GameState,name::Symbol)
 end
 
 function moveFrame!(game::GameState,name::Symbol,dx::Int,dy::Int,dl::Int=0)
-    game.im.frames[name][2][1] += dx
-    game.im.frames[name][2][2] += dy
-    game.im.frames[name][2][3] += dl
+    game.im.f.frames[name].pos[1] += dx
+    game.im.f.frames[name].pos[2] += dy
+    game.im.f.frames[name].pos[3] += dl
 
     return
 end
 
-function activateFrame(game::GameState,name::Symbol)
-    game.im.frames[name][1] = true
+function activateFrame!(game::GameState,name::Symbol)
+    game.im.f.frames[name].active = true
 
     return
 end
 
-function deactivateFrame(game::GameState,name::Symbol)
-    game.im.frames[name][1] = false
+function deactivateFrame!(game::GameState,name::Symbol)
+    game.im.f.frames[name].active = false
 
     return
 end
 
-function switchFrame(game::GameState,name::Symbol)
-    game.im.frames[name][1] = !game.im.frames[name][1]
+function switchFrame!(game::GameState,name::Symbol)
+    game.im.f.frames[name].active = !game.im.f.frames[name].active
 
     return
 end

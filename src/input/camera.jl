@@ -1,40 +1,29 @@
 
-trans1 = trans(Float32, 0, 1/240,0)
-trans2 = trans(Float32, 0,-1/240,0)
-trans3 = trans(Float32, 1/240,0,0)
-trans4 = trans(Float32,-1/240,0,0)
+# const trans1 = trans(Float32, 0, 1/240,0)
+# const trans2 = trans(Float32, 0,-1/240,0)
+# const trans3 = trans(Float32, 1/240,0,0)
+# const trans4 = trans(Float32,-1/240,0,0)
 
-function move(game::GameState)
-    game.ctrl.counter += 1
-
-    if game.ctrl.dir == 1
-        game.im.c.projection1[2,4] += Float32(1/16)
-        moveSprites(game,:npcs,dirs[1])
-    elseif game.ctrl.dir == 2
-        game.im.c.projection1[1,4] -= Float32(1/16)
-        moveSprites(game,:npcs,dirs[4])
-    elseif game.ctrl.dir == 3
-        game.im.c.projection1[2,4] -= Float32(1/16)
-        moveSprites(game,:npcs,dirs[3])
+function moveScreen!(game::GameState,dir::Int,n::Int)
+    if dir == 1
+        game.im.c.projection1[2,4] += Float32(n/16)
+        moveSprites!(game,:npcs,dirs[1]*n)
+    elseif dir == 2
+        game.im.c.projection1[1,4] -= Float32(n/16)
+        moveSprites!(game,:npcs,dirs[4]*n)
+    elseif dir == 3
+        game.im.c.projection1[2,4] -= Float32(n/16)
+        moveSprites!(game,:npcs,dirs[3]*n)
     else
-        game.im.c.projection1[1,4] += Float32(1/16)
-        moveSprites(game,:npcs,dirs[2])
-    end
-
-    if game.ctrl.counter == 16
-        game.ctrl.moving = false
-        game.ctrl.counter = 0
-
-        game.ctrl.pos += dirs[game.ctrl.dir]
-
-        checkChunks(game,game.ctrl.dir)
+        game.im.c.projection1[1,4] += Float32(n/16)
+        moveSprites!(game,:npcs,dirs[2]*n)
     end
 
     return
 end
 
-function checkChunks(game::GameState,dir::Int)
-    @assert 1 <= dir <= 4 "Direction index out of bounds."
+function checkChunks!(game::GameState,dir::Int)
+    # @assert 1 <= dir <= 4 "Direction index out of bounds."
 
     rd = Int(game.im.c.renderdistance)
     r = 2*rd+1

@@ -120,10 +120,16 @@ function moveSprite!(game::GameState,id::Symbol,w::Int,h::Int,absolute::Bool=fal
     s = game.im.s.sprites[id]
 
     if absolute
-        game.im.s.sheets[s.sheet].pos[:,s.slot] .= w,h
+        game.im.s.sheets[s.sheet].pos[1:2,s.slot] .= w,h
     else
-        game.im.s.sheets[s.sheet].pos[:,s.slot] .+= w,h
+        game.im.s.sheets[s.sheet].pos[1:2,s.slot] .+= w,h
     end
+
+    return
+end
+
+function moveSprites!(game::GameState,sheet::Symbol,d::Pos)
+    game.im.s.sheets[sheet].pos[1:2,:] .+= d
 
     return
 end
@@ -132,12 +138,6 @@ function moveSpritesAll!(game::GameState,d::Pos)
     for (name,sheet) in game.im.s.sheets
         sheet.pos[1:2,:] .+= d
     end
-
-    return
-end
-
-function moveSprites!(game::GameState,sheet::Symbol,d::Pos)
-    game.im.s.sheets[sheet].pos[1:2,:] .+= d
 
     return
 end
@@ -199,6 +199,31 @@ function scaleSprite!(game::GameState,id::Symbol,w::Float64,h::Float64,absolute:
     else
         game.im.s.sheets[s.sheet].scale[:,s.slot] .+= w,h
     end
+
+    return
+end
+
+function setSpriteFrame!(game::GameState,id::Symbol,frame::Int)
+    s = game.im.s.sprites[id]
+    
+    game.im.s.sheets[s.sheet].idx[2,s.slot] = frame
+
+    return
+end
+
+function setSpriteIdx!(game::GameState,id::Symbol,idx::Int)
+    s = game.im.s.sprites[id]
+    
+    game.im.s.sheets[s.sheet].idx[1,s.slot] = (idx-1)*game.im.s.sheets[s.sheet].nframes+1
+
+    return
+end
+
+function setSprite!(game::GameState,id::Symbol,idx::Int,frame::Int)
+    s = game.im.s.sprites[id]
+    
+    game.im.s.sheets[s.sheet].idx[:,s.slot] .=
+        (idx-1)*game.im.s.sheets[s.sheet].nframes+1,frame
 
     return
 end

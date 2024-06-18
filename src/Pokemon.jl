@@ -2,7 +2,7 @@
 
 module Pokemon
 
-export play, g
+export game, inputs
 
 using ModernGL, GLFW#, GLAbstraction
 # const GLA = GLAbstraction

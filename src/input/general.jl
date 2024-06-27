@@ -82,6 +82,8 @@ function inputChoice!(game::GameState,inputs::Inputs)
         game.ctrl.choice.sel += 1
         game.im.sprites[game.ctrl.choice.layer][:ccursor].pos.h += 16
     end
+
+    return
 end
 
 

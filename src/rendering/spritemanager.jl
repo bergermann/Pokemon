@@ -51,6 +51,8 @@ function deleteSpriteSheet!(game::GameState,name::Symbol)
 
     glDeleteVertexArrays(1,pointer([game.im.s.sheets[name].vao]))
     glDeleteBuffers(1,pointer([game.im.s.sheets[name].vbo]))
+    
+    killSprites!(game,name)
 
     pop!(game.im.s.sheets,name)
 
@@ -91,19 +93,6 @@ function createSprite!(game::GameState,
     sheet.active[1,slot] = active
 
     sheet.slots[slot] = true
-
-    return
-end
-
-function deleteSprite!(game::GameState,id::Symbol)
-    s = game.im.s.sprites[id]
-    sheet = game.im.s.sheets[s.sheet]
-    
-    sheet.active[1,s.slot] = false
-
-    sheet.slots[s.slot] = false
-
-    pop!(game.im.s.sprites,id)
 
     return
 end
@@ -224,6 +213,47 @@ function setSprite!(game::GameState,id::Symbol,idx::Int,frame::Int)
     
     game.im.s.sheets[s.sheet].idx[:,s.slot] .=
         (idx-1)*game.im.s.sheets[s.sheet].nframes+1,frame
+
+    return
+end
+
+function killSprite!(game::GameState,id::Symbol)
+    s = game.im.s.sprites[id]
+    sheet = game.im.s.sheets[s.sheet]
+    
+    sheet.active[1,s.slot] = false
+    sheet.idx = 0
+    sheet.slots[s.slot] = false
+
+    pop!(game.im.s.sprites,id)
+
+    return
+end
+
+function killSprites!(game::GameState,sheet::Symol)
+    sheet = game.im.s.sheets[sheet]
+
+    sheet.active .= false
+    sheet.idx .= 0
+    sheet.slots[s.slot] .= false
+
+    for (id,sprite) in game.im.s.sprites
+        if sprite.sheet == sheet
+            pop!(game.im.s.sprites,id)
+        end
+    end
+
+    return
+end
+
+function killSpritesAll!(game::GameState)
+    for (name,sheet) in game.im.s.sheets
+        sheet.active .= false
+        sheet.idx .= 0
+        sheet.slots[s.slot] .= false
+    end
+
+    empty!(game.im.s.sprites)
 
     return
 end

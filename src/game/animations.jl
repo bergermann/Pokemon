@@ -283,6 +283,8 @@ function fadeOut!(game::GameState,len::Int)
     end
 
     game.n[:fadeout].c += 1
+
+    return
 end
 
 
@@ -363,6 +365,8 @@ function animArrowsMenu!(game::GameState)
         game.im.sprites[1][:arrowleft].pos = P(24+8,16+22-4+div((game.n.frame%24),6))
         game.im.sprites[1][:arrowright].pos = P(24+8,16+90+4-div((game.n.frame%24),6))
     end
+
+    return
 end
 
 function animBagSwitch!(game::GameState)

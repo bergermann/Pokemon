@@ -4,7 +4,7 @@
 
 
 
-function loadTeamStrings!(game::GameState; reset=true)
+function loadTeamStrings!(game::GameState; reset::Bool=true)
     reset && (game.str = [])
     
     push!(game.str,readlines("str/ger/system_pkmn.txt"))
@@ -22,7 +22,7 @@ function loadInventoryStrings!(game::GameState; reset::Bool=true)
     return
 end
 
-function loadMapStrings!(game::GameState; reset=true)
+function loadMapStrings!(game::GameState; reset::Bool=true)
     if reset
         game.str = []
 

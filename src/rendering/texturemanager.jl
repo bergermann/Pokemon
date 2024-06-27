@@ -21,6 +21,10 @@ end
 
 function loadTexture!(game::GameState,path::String,name::Symbol)
     @assert length(game.im.t.textures) < game.im.t.maxtextures "Max textures reached!"
+    
+    if haskey(game.im.t.textures,name)
+        @warn "Texture $name already exists. Aborting texture creation."; return
+    end
 
     tex, w, h = loadImage(path)
     
@@ -46,18 +50,23 @@ end
 const loadTex! = loadTex = loadTexture!
 
 function loadTextures!(game::GameState,paths::Vector{String},names::Vector{Symbol})
+    idxs = [!haskey(game.im.t.textures,name) for name in names]
+
+    @assert length(paths) == length(names) "Unequal lengths of pathes and names."
+
+    paths = paths[idxs]; names = names[idxs]
     n = length(paths)
 
-    @assert n == length(names) "Unequal lengths of pathes and names."
     @assert length(game.im.t.textures)+n <= game.im.t.maxtextures "Max textures reached!"
 
     ts = zeros(UInt32,n)
     glGenTextures(n,pointer(ts))
 
     for (i,path) in enumerate(paths)
+
         tex, w, h = loadImage(path)
     
-        game.im.t.textures[name[i]] = (handle=ts[i],width=w,height=h)
+        game.im.t.textures[names[i]] = (handle=ts[i],width=w,height=h)
     
         glBindTexture(GL_TEXTURE_2D,ts[i])
     
@@ -108,6 +117,10 @@ function loadArrayTexture!(game::GameState,path::String,name::Symbol,width::Int,
         addempty::Bool=false)
 
     @assert length(game.im.t.atextures) < game.im.t.maxtextures "Max textures reached!"
+
+    if haskey(game.im.t.atextures,name)
+        @warn "Texture $name already exists. Aborting texture creation."; return
+    end
 
     tex, l = loadArrayImage(path,width,height)
 

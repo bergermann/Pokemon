@@ -31,7 +31,7 @@ mutable struct Text
 end
 
 mutable struct Texts
-    texs::MVector{3,UInt32}
+    texs::MVector{4,UInt32}
 
     fonts::Vector{Font}
 
@@ -41,7 +41,7 @@ mutable struct Texts
     uloccolours::Int32
 
     function Texts()
-        texs = zeros(UInt32,3); glGenTextures(3,pointer(texs))
+        texs = zeros(UInt32,4); glGenTextures(4,pointer(texs))
 
         new(texs,[],Dict(),0,0)
     end

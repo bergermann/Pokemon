@@ -159,11 +159,12 @@ function drawTexts(game::GameState)
         if !text.active
             continue
         end
+        # println("Text: ",name)
 
         glFramebufferTextureLayer(GL_DRAW_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,
-            game.im.l.tex,0,Int(text.pos[3])-1)
+            game.im.l.tex,0,Int(text.pos[3])-1); checkError("T.0")
 
-        glUniform2f(game.im.text.ulocpos,text.pos[1],text.pos[2]); checkError("T.1.5")
+        glUniform2f(game.im.text.ulocpos,text.pos[1],text.pos[2]); checkError("T.0.1")
         glUniformMatrix3x4fv(game.im.text.uloccolours,1,false,pointer(text.colours)); checkError("T.1")
 
         glBindTexture(GL_TEXTURE_2D,game.im.text.texs[text.font]); checkError("T.2")
@@ -184,6 +185,10 @@ end
 
 function drawPostProcess(game::GameState)
     glUseProgram(game.im.programs[15])
+
+    glUniform4f(game.im.l.uloccolor,game.im.l.color[1],game.im.l.color[2],
+        game.im.l.color[3],game.im.l.color[4]); checkError("PP.1")
+    glUniform2f(game.im.l.ulocslider,game.im.l.slider[1],game.im.l.slider[2]); checkError("PP.2")
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER,0)
     glViewport(0,0,game.im.windowsize.width,game.im.windowsize.height)

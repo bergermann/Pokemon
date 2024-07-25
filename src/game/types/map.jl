@@ -32,18 +32,18 @@ mutable struct Exit
     dir::Int
     absolute::Bool
 
-    callback::CallbackFunction
+    callback::Callback
 
     function Exit()
-        new(0x00,0x00,P(0,0),0,false,CallbackFunction())
+        new(0x00,0x00,P(0,0),0,false,Callback())
     end
 
     function Exit(targetid,transition,transform,dir,absolute,callback::Function)
-        new(targetid,transition,transform,dir,absolute,CallbackFunction(callback))
+        new(targetid,transition,transform,dir,absolute,Callback(callback))
     end
 
     function Exit(targetid,transition,transform,dir,absolute,
-            callback::CallbackFunction)
+            callback::Callback)
         new(targetid,transition,transform,dir,absolute,callback)
     end
 end

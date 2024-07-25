@@ -70,10 +70,10 @@ mutable struct Dialogue
     d::Bool
     str::Vector{String}
     n::UInt8
-    callback::CallbackFunction
+    callback::Callback
 
     function Dialogue()
-        new(false,[""],0x01,CallbackFunction())
+        new(false,[""],0x01,Callback())
     end
 end
 
@@ -208,11 +208,10 @@ mutable struct Choice
 
     layer::Integer
 
-    func::Function
-    args::Tuple
+    func::Callback
 
     function Choice()
-        new(false,false,0,0,6,(() -> nothing),())
+        new(false,false,0,0,6,Callback())
     end
 end
 

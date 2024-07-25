@@ -8,6 +8,12 @@ mutable struct Layers
     vao::UInt32
     vbo::UInt32
 
+    color::MVector{4,Float32}
+    slider::MVector{2,Float32}
+
+    uloccolor::Int32
+    ulocslider::Int32
+
     function Layers()
         vao = UInt32[0]; glGenVertexArrays(1,pointer(vao))
         vbo = UInt32[0]; glGenBuffers(1,pointer(vbo))
@@ -59,6 +65,10 @@ mutable struct Layers
     
         checkError("L 11")    
 
-        new(fbo[1],tex[1],vao[1],vbo[1])
+        new(fbo[1],tex[1],vao[1],vbo[1],
+            MVector{4,Float32}(1,1,1,1),
+            MVector{2,Float32}(0,0),
+            0,0
+        )
     end
 end

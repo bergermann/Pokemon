@@ -1,54 +1,136 @@
 
-
-
 function stateMenuMainOpen!(game::GameState)
-    game.input.inputlock = false
-    game.input.menu.main = true
+    game.ctrl.input.move = false
+    game.ctrl.input.map = false
+    game.ctrl.input.menu.main = true
+    game.ctrl.input.inputlock = false
+
+    switchFrame!(game,:menu)
+    switchText!(game,:menu)
+    switchSprite!(game,:cursor)
+    moveSprite!(game,:cursor,59,-56+game.ctrl.input.menu.select*16,true)
 
     return
 end
 
+function drawSlotMain!(game::GameState)
+    createSprite!(game,:slot1,:smain,1,2,-73,-30,0,1; active=true)
+    createSprite!(game,:ball1,:balls,1,2,-108,-50,0,2; active=true)
+    createSprite!(game,:status1,:status,1,1,-88,-11,1,2; active=true)
+    createSprite!(game,:item1,:item,1,1,-99,-29,2,2; active=true)
+    # createSprite!(game,:health1,:health,1,1,-96,-56,3,2; active=false)
+    # createSprite!(game,:chibi1,:chibis,1,1,-96,-56,3,2; active=false)
+    
+    createText!(game,:name1,1,-86,-44,2,
+        pkmnName(game,game.p.pokemon[1])*"\\   Lv.$(game.p.pokemon[1].stats.level)",
+        [0xff,0xff,0xff,0xff],[0x73,0x73,0x73,0xff]; hpad=-3)
 
+    createText!(game,:health1,1,-68,-18,2,
+        string(game.p.pokemon[1].stats.hp)*"/"*
+        string(game.p.pokemon[1].stats.rv[1]),
+        [0xff,0xff,0xff,0xff],[0x73,0x73,0x73,0xff])
 
+    createSprite!(game,:exit,:exit,1,1,92,64,0,1; active=true)
+    createSprite!(game,:ballexit,:balls,1,1,74,64,0,2; active=true)
+
+    createText!(game,:health1,1,84,58,2,game.str[1][1],
+        [0xff,0xff,0xff,0xff],[0x73,0x73,0x73,0xff])
+
+    return
+end
+
+function drawSlotSide!(game::GameState)
+    for i in 2:length(game.p.pokemon)
+        createSprite!(game,Symbol(:slot,"$i"),:sside,1,1,47,-59+24*(i-2),0,1; active=true)
+        createSprite!(game,Symbol(:ball,"$i"),:balls,1,1,-22,-59+24*(i-2),0,2; active=true)
+        createSprite!(game,Symbol(:status,"$i"),:status,1,1,59,-53+24*(i-2),1,2; active=true)
+        createSprite!(game,Symbol(:item,"$i"),:item,1,1,-11,-51+24*(i-2),2,3; active=true)
+        # createSprite!(game,Symbol(:health1,"$i"),:health,1,1,-96,-56,3,2; active=false)
+        # createSprite!(game,Symbol(:chibi1,"$i"),:chibis,1,1,-96,-56,3,2; active=false)
+        
+        createText!(game,Symbol(:name,"$i"),1,0,-70+24*(i-2),2,
+            pkmnName(game,game.p.pokemon[i])*"\\   Lv.$(game.p.pokemon[1].stats.level)",
+            [0xff,0xff,0xff,0xff],[0x73,0x73,0x73,0xff]; hpad=-3)
+
+        createText!(game,Symbol(:health,"$i"),1,78,-59+24*(i-2),2,
+            string(game.p.pokemon[i].stats.hp)*"/"*
+            string(game.p.pokemon[i].stats.rv[1]),
+            [0xff,0xff,0xff,0xff],[0x73,0x73,0x73,0xff])
+    end
+
+    for i in length(game.p.pokemon)+1:6
+        createSprite!(game,Symbol(:slot,"$i"),:sside,4,1,47,-59+24*(i-2),0,1; active=true)
+    end
+
+    return
+end
 
 
 function stateMenuPkmnOpen!(game::GameState)
     stateCloseMap!(game)
 
     loadTeamStrings!(game)
+
+    loadSpriteSheet!(game,"menupkmn/slotmain.png",:smain,78,49,2; maxsprites=1)
+    loadSpriteSheet!(game,"menupkmn/slotside.png",:sside,142,22,2; maxsprites=5)
+    loadSpriteSheet!(game,"menupkmn/exit.png",:exit,52,16,2; maxsprites=1)
+    loadSpriteSheet!(game,"menupkmn/pokeballs.png",:balls,20,24,2; maxsprites=7)
+    loadSpriteSheet!(game,"menupkmn/status.png",:status,20,8,1; maxsprites=6)
+    loadSpriteSheet!(game,"menupkmn/item.png",:item,8,8,1; maxsprites=6)
+    # loadSpriteSheet!(game,"menupkmn/gender.png",:item,8,8,1; maxsprites=6)
+    # loadSpriteSheet!(game,"menupkmn/health.png",:health,1,3,3; maxsprites=6)
+    # loadSpriteSheet!(game,"menupkmn/chibis.png",:chibis,32,32,1; maxsprites=6)
     
     createBackground!(game,:menupkmn,"backgrounds/menupkmn.png",-120,-80,1; active=true)
     
-    createFrame!(game,:choose,23,2,-120,56,1; active=true)
-    createFrame!(game,:info,23,2,-120,56,1; active=false)
+    createFrame!(game,:choose,21,2,-120,48,1; active=true)
+    createFrame!(game,:info,16,2,-120,48,1; active=false)
 
-    createText!(game,:choose,2,62,-120,56,game.str[1][2],
+    createText!(game,:choose,3,-112,57,5,game.str[1][2],
         [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0)
-    createText!(game,:info,2,62,-120,56,game.str[1][3],
-        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0)
-    
-    drawText!(game,2,"Wähle ein Pokémon.",UInt(2),Position(24+138,24))
+    createText!(game,:info,3,-112,57,5,game.str[1][3],
+        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=false,hpad=0)
     
     createCallback!(game,:wiggle,animMenuPkmnWiggle!,(); active=true)
+
+    drawSlotMain!(game)
+    drawSlotSide!(game)
 
     return
 end
 
 function stateMenuPkmnCtrls!(game::GameState)
-    game.input.inputlock = false
-    game.input.menu.pkmn = true
+    game.ctrl.input.inputlock = false
+    game.ctrl.input.menu.pkmn = true
 
     return
 end
 
 function stateMenuPkmnClose!(game::GameState)
-    game.input.inputlock = true
+    game.ctrl.input.inputlock = true
 
-    killSpritesAll!(game)
     killCallback!(game,:wiggle)
+    
+    deleteSpriteSheet!(game,:smain)
+    deleteSpriteSheet!(game,:sside)
+    deleteSpriteSheet!(game,:exit)
+    deleteSpriteSheet!(game,:balls)
+    deleteSpriteSheet!(game,:status)
+    deleteSpriteSheet!(game,:item)
 
-    stateInitDrawMap!(game)
-    drawMenu!(game)
+    # deleteSpriteSheet!(game,:item)
+    # deleteSpriteSheet!(game,:health)
+    # deleteSpriteSheet!(game,:chibis)
+    deleteTextsAll!(game)
+    deleteFramesAll!(game)
+
+    killSpritesAll!(game)    
+
+    killCC!(game,:movemain)
+    
+    game.overworld = false
+
+    stateInitMap!(game)
 
     return
 end
@@ -58,10 +140,7 @@ end
 
 
 function stateMenuBagsOpen!(game::GameState)
-    killSpriteAll!(game)
-    game.overworld = false
-
-    killCC!(game,:movemain)
+    stateCloseMap!(game)
 
     createCC!(game,:bagswitch,animBagSwitch!,(); n=1)
     createCallback!(game,:arrows,true,animArrowsMenu!,())

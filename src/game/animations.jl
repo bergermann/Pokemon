@@ -287,30 +287,23 @@ function fadeOut!(game::GameState,len::Int)
     return
 end
 
-
-
-function sceneTransition!(game::GameState,len::Int,pause::Int,  # pause >= 1!
-        state1::Function,state1args::Tuple,
-        state2::Function,state2args::Tuple)
+function sceneTransition!(game::GameState, # pause >= 1!
+        (len,pause,state1,state2)::Tuple{Int,Int,Callback,Callback})
     
-    if game.n[:scenet].c == 1
-        game.im.postprocess.active = true
-        game.im.postprocess.func = fadeLinear!
-        game.im.postprocess.args = (UInt8(len),0x01,)
-    elseif game.n[:scenet].c <= len
-        game.im.postprocess.args = (UInt8(len),UInt8(game.n[:scenet].c),)
+    if game.n[:scenet].c <= len
+        game.im.l.color[4] = 1.0 - game.n[:scenet].c/len
     elseif game.n[:scenet].c == len+1
         Base.GC.gc()
-        flushLayers!(game)
-        flushLayer!(game)
 
-        state1(game,state1args...)
+        # evalCallback(game,state1)
+        state1.func(game,state1.args...)
     elseif len+pause+1 <= game.n[:scenet].c <= 2*len+pause
-        game.im.postprocess.args = (UInt8(len),UInt8(2*len+pause-game.n[:scenet].c),)
+        game.im.l.color[4] = 1.0 - (2*len+pause-game.n[:scenet].c)/len
     elseif game.n[:scenet].c == 2*len+pause+1
-        game.im.postprocess.active = false
-        game.im.postprocess.func = emptyCallback
-        state2(game,state2args...)
+        game.im.l.color[4] = 1.0
+
+        # evalCallback(game,state2)
+        state2.func(game,state2.args...)
 
         killCC!(game,:scenet)
 
@@ -322,40 +315,31 @@ function sceneTransition!(game::GameState,len::Int,pause::Int,  # pause >= 1!
     return
 end
 
-function sceneTransition!(game::GameState,len::Int,pause::Int,  # pause >= 1!
-        state1::Function,state1args::Tuple,
-        state2::Function,state2args::Tuple,
-        fade1::Function,fade2::Function)
+# function sceneTransition!(game::GameState,len::Int,pause::Int,  # pause >= 1!
+#         (len,pause,state1,state2,fade1,fade2)::Tuple{Int,Int,Callback,Callback,Function,Function})
     
-    if game.n[:scenet].c == 1
-        game.im.postprocess.active = true
-        game.im.postprocess.func = fade1
-        game.im.postprocess.args = (UInt8(len),0x01,)
-    elseif game.n[:scenet].c <= len
-        game.im.postprocess.args = (UInt8(len),UInt8(game.n[:scenet].c),)
-    elseif game.n[:scenet].c == len+1
-        Base.GC.gc()
-        flushLayers!(game)
-        flushLayer!(game)
+#     if game.n[:scenet].c == 1
+#         game.im.postprocess.args = (UInt8(len),0x01,)
+#     elseif game.n[:scenet].c <= len
+#         game.im.postprocess.args = (UInt8(len),UInt8(game.n[:scenet].c),)
+#     elseif game.n[:scenet].c == len+1
+#         Base.GC.gc()
 
-        state1(game,state1args...)
-    elseif len+pause+1 <= game.n[:scenet].c <= 2*len+pause
-        game.im.postprocess.func = fade2
-        game.im.postprocess.args = (UInt8(len),UInt8(2*len+pause-game.n[:scenet].c),)
-    elseif game.n[:scenet].c == 2*len+pause+1
-        game.im.postprocess.active = false
-        game.im.postprocess.func = emptyCallback
-        state2(game,state2args...)
+#         state1(game,state1args...)
+#     elseif len+pause+1 <= game.n[:scenet].c <= 2*len+pause
+#         game.im.postprocess.args = (UInt8(len),UInt8(2*len+pause-game.n[:scenet].c),)
+#     elseif game.n[:scenet].c == 2*len+pause+1
+#         state2(game,state2args...)
 
-        killCC!(game,:scenet)
+#         killCC!(game,:scenet)
 
-        return
-    end
+#         return
+#     end
    
-    game.n[:scenet].c += 1
+#     game.n[:scenet].c += 1
 
-    return
-end
+#     return
+# end
 
 function animArrowsMenu!(game::GameState)
     if (game.n.frame%48) < 24
@@ -451,7 +435,7 @@ function animBattleBagSwitch!(game::GameState)
     return
 end
 
-function animMenuPkmnWiggle!(game::GameState)
+function animMenuPkmnWiggle!(game::GameState,args::Tuple{})
     return
 
     for i in 1:game.trainer.pokemon.idx

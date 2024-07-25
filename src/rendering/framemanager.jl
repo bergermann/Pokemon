@@ -76,8 +76,14 @@ function createFrame!(game::GameState,name::Symbol,width::Int,height::Int,
     return
 end
 
-function removeFrame!(game::GameState,name::Symbol)
+function deleteFrame!(game::GameState,name::Symbol)
     pop!(game.im.f.frames,name)
+
+    return
+end
+
+function deleteFramesAll!(game::GameState)
+    empty!(game.im.f.frames)
 
     return
 end

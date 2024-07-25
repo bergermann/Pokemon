@@ -4,7 +4,7 @@ function getColourID(colour,colours)
 end
 
 function setupFonts(game::GameState)
-    for i in 1:3
+    for i in 1:4
         p = joinpath("textures","fonts","")
         if !isfile(p*"$i.font")
             push!(game.im.text.fonts,Font(Dict(),0,P(0,0)))
@@ -55,7 +55,7 @@ function string2buffer!(buffer::MMatrix,font::Font,str::String,maxchar::Int,
 
     c = 1; x = 0; y = 0
     for char in str
-        if char == '/'
+        if char == '\\'
             x = 0
             y += ch + hpad
 
@@ -172,7 +172,7 @@ function setText!(game::GameState,name::Symbol,str::String; nchar::Int=-1)
 
     t.nchar = nchar
 
-    buffer = MMatrix{24,maxchar}(zeros(Float32,24,maxchar))
+    buffer = MMatrix{24,t.maxchar}(zeros(Float32,24,t.maxchar))
     string2buffer!(buffer,game.im.text.fonts[t.font],str,t.maxchar,
         t.wpad,t.hpad)
 
@@ -192,6 +192,16 @@ function deleteText!(game::GameState,name::Symbol)
     glDeleteBuffers(1,pointer([game.im.text.texts[name].vbo]))
 
     pop!(game.im.text.texts,name)
+
+    return
+end
+
+function deleteTextsAll!(game::GameState)
+    v = values(game.im.text.texts)
+    glDeleteVertexArrays(length(v),pointer((v->v.vao).(v)))
+    glDeleteBuffers(length(v),pointer((v->v.vbo).(v)))
+    
+    empty!(game.im.text.texts)
 
     return
 end

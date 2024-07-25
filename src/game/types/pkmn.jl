@@ -116,6 +116,7 @@ end
 0x03 -> paralyse
 0x04 -> schlaf
 0x05 -> gefroren
+0x06 -> kampfunfähig
 =#
 
 mutable struct Pkmn

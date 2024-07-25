@@ -222,7 +222,7 @@ function killSprite!(game::GameState,id::Symbol)
     sheet = game.im.s.sheets[s.sheet]
     
     sheet.active[1,s.slot] = false
-    sheet.idx = 0
+    sheet.idx[:,s.slot] .= 0
     sheet.slots[s.slot] = false
 
     pop!(game.im.s.sprites,id)
@@ -230,12 +230,12 @@ function killSprite!(game::GameState,id::Symbol)
     return
 end
 
-function killSprites!(game::GameState,sheet::Symol)
+function killSprites!(game::GameState,sheet::Symbol)
     sheet = game.im.s.sheets[sheet]
 
     sheet.active .= false
     sheet.idx .= 0
-    sheet.slots[s.slot] .= false
+    sheet.slots .= false
 
     for (id,sprite) in game.im.s.sprites
         if sprite.sheet == sheet
@@ -250,7 +250,7 @@ function killSpritesAll!(game::GameState)
     for (name,sheet) in game.im.s.sheets
         sheet.active .= false
         sheet.idx .= 0
-        sheet.slots[s.slot] .= false
+        sheet.slots .= false
     end
 
     empty!(game.im.s.sprites)

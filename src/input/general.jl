@@ -36,51 +36,72 @@ function inputManager!(game::GameState,inputs::Inputs)
 end
 
 
+function drawChoiceMenu!(game::GameState,layer::Int,strs::Vector{String},
+        width::Int,px::Int,py::Int;
+        c1::Vector{UInt8}=[0x63,0x63,0x63,0xff],c2::Vector{UInt8}=[0xd6,0xd6,0xce,0xff])
+
+    game.ctrl.input.choice.max = length(strs)
+    game.ctrl.input.choice.layer = layer
+
+    createFrame!(game,:choice,2+length(strs)*2,width,px,py,layer)
+    createSprite!(game,:ccursor,:cursors,1,3,px+12,py+16*game.ctrl.input.choice.sel,
+        100,layer; active=true)
+
+    createText!(game,:choice,4,px+16,py+8,layer,*(strs.*"\\"...),c1,c2; hpad=3)
+
+    return
+end
+
+
 
 function inputChoice!(game::GameState,inputs::Inputs)
     if inputs.A.press
-        game.ctrl.choice.active = false
+        game.ctrl.input.choice.active = false
 
         killSprite!(game,:ccursor)
+        deleteFrame!(game,:choice)
+        deleteText!(game,:choice)
 
-        game.ctrl.choice.func(game,game.ctrl.choice.args)
-    elseif input.B.press
-        if game.ctrl.choice.exit
+        evalCallback(game,game.ctrl.input.choice.func)
+    elseif inputs.B.press
+        if game.ctrl.input.choice.exit
             resetChoice!(game)
 
             killSprite!(game,:ccursor)
+            deleteFrame!(game,:choice)
+            deleteText!(game,:choice)
 
             return
         end
 
-        game.im.sprites[game.ctrl.choice.layer][:ccursor].pos.h += 
-            16*(game.ctrl.choice.max-game.ctrl.choice.sel)
+        moveSprite!(game,:ccursor,0,
+            16*(game.ctrl.input.choice.max-game.ctrl.input.choice.sel))
 
-        game.ctrl.choice.sel = game.ctrl.choice.max
-    elseif input._up
-        if game.ctrl.choice.sel == 1
-            game.im.sprites[game.ctrl.choice.layer][:ccursor].pos.h +=
-                16*(game.ctrl.choice.max-1)
+        game.ctrl.input.choice.sel = game.ctrl.input.choice.max
+    elseif inputs.up.press
+        if game.ctrl.input.choice.sel == 1
+            moveSprite!(game,:ccursor,0,16*(game.ctrl.input.choice.max-1))
 
-            game.ctrl.choice.sel = game.ctrl.choice.max
+            game.ctrl.input.choice.sel = game.ctrl.input.choice.max
 
             return
         end
 
-        game.ctrl.choice.sel -= 1
-        game.im.sprites[game.ctrl.choice.layer][:ccursor].pos.h -= 16
-    elseif input._down
-        if game.ctrl.choice.sel == game.ctrl.choice.max
-            game.im.sprites[game.ctrl.choice.layer][:ccursor].pos.h -=
-                16*(game.ctrl.choice.max-1)
+        moveSprite!(game,:ccursor,0,-16)
+        
+        game.ctrl.input.choice.sel -= 1
+    elseif inputs.down.press
+        if game.ctrl.input.choice.sel == game.ctrl.input.choice.max
+            moveSprite!(game,:ccursor,0,-16*(game.ctrl.input.choice.max-1))
 
-            game.ctrl.choice.sel = 1
+            game.ctrl.input.choice.sel = 1
 
             return
         end
         
-        game.ctrl.choice.sel += 1
-        game.im.sprites[game.ctrl.choice.layer][:ccursor].pos.h += 16
+        moveSprite!(game,:ccursor,0,16)
+
+        game.ctrl.input.choice.sel += 1
     end
 
     return

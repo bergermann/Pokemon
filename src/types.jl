@@ -141,7 +141,7 @@ end
 
 
 
-mutable struct CallbackFunction
+mutable struct Callback
     id::Symbol
 
     active::Bool
@@ -149,28 +149,28 @@ mutable struct CallbackFunction
     func::Function
     args::Tuple
 
-    function CallbackFunction()
+    function Callback()
         new(Symbol(),false,emptyCallback,())
     end
 
-    function CallbackFunction(func)
+    function Callback(func)
         new(Symbol(),false,func,())
     end
 
-    function CallbackFunction(func,args)
+    function Callback(func,args)
         new(Symbol(),false,func,args)
     end
 
-    function CallbackFunction(id,func,args)
+    function Callback(id,func,args)
         new(id,true,func,args)
     end
 
-    function CallbackFunction(id,active,func,args)
+    function Callback(id,active,func,args)
         new(id,active,func,args)
     end
 end
 
-const F = CallbackFunction
+const F = Callback
 
 mutable struct Counter
     id::Symbol

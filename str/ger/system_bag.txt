@@ -5,7 +5,7 @@ Beeren
 Basis-Items
 Beutel schließen
 Zurück zum Hauptmenü.
-Was möchtest/du tun?
+Was möchtest\du tun?
 O.K.
 Geben
 Wählen

@@ -85,13 +85,7 @@ function inputMap!(game::GameState,inputs::Inputs)
         end
 
         if inputs.start.press
-            game.ctrl.input.move = false
-            game.ctrl.input.map = false
-            game.ctrl.input.menu.main = true
-
-            switchFrame!(game,:menu)
-            switchText!(game,:menu)
-            switchSprite!(game,:cursor)
+            stateMenuMainOpen!(game)
         elseif inputs.A.press
             mapAction!(game)
         end

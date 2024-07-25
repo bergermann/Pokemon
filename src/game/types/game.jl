@@ -205,7 +205,7 @@ mutable struct GameState
     pkmndata::PkmnData
 
     n::ArrayList{Counter}
-    callbacks::ArrayList{CallbackFunction}
+    callbacks::ArrayList{Callback}
 
     overworld::Bool
     battle::Battle

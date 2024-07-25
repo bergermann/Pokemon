@@ -93,7 +93,7 @@ end
 
 
 
-function evalCallback(game::GameState,f::CallbackFunction)
+function evalCallback(game::GameState,f::Callback)
     f.func(game,f.args)  # FIX
 
     return
@@ -116,11 +116,11 @@ function killCounter!(game::GameState,id::Symbol)
 end
 
 function createCallback!(game::GameState,id::Symbol,active::Bool,func::Function,args::Tuple)
-    push!(game.callbacks,CallbackFunction(id,active,func,args))
+    push!(game.callbacks,Callback(id,active,func,args))
 end
 
 function createCallback!(game::GameState,id::Symbol,func::Function,args::Tuple; active=false)
-    push!(game.callbacks,CallbackFunction(id,active,func,args))
+    push!(game.callbacks,Callback(id,active,func,args))
 end
 
 function killCallback!(game::GameState,id::Symbol)
@@ -164,30 +164,25 @@ end
 
 
 function setChoice!(game::GameState,exit::Bool,sel::Int; active=true)
-    game.input.choice.active = active
-    game.input.choice.exit = exit
-    game.input.choice.sel = sel
-    game.input.choice.func = emptyCallback
-    game.input.choice.args = ()
+    game.ctrl.input.choice.active = active
+    game.ctrl.input.choice.exit = exit
+    game.ctrl.input.choice.sel = sel
+    game.ctrl.input.choice.func = Callback()
 end
 
-function setChoice!(game::GameState,exit::Bool,sel::Int,func::Function,
-        args::Tuple; active=true)
-    
-    game.input.choice.active = active
-    game.input.choice.exit = exit
-    game.input.choice.sel = sel
-    game.input.choice.func = func
-    game.input.choice.args = args
+function setChoice!(game::GameState,exit::Bool,sel::Int,func::Callback; active=true)
+    game.ctrl.input.choice.active = active
+    game.ctrl.input.choice.exit = exit
+    game.ctrl.input.choice.sel = sel
+    game.ctrl.input.choice.func = func
 end
 
 function resetChoice!(game::GameState)
-    game.input.choice.active = false
-    game.input.choice.exit = false
-    game.input.choice.sel = -1
-    game.input.choice.max = 0
-    game.input.choice.func = emptyCallback
-    game.input.choice.args = ()
+    game.ctrl.input.choice.active = false
+    game.ctrl.input.choice.exit = false
+    game.ctrl.input.choice.sel = -1
+    game.ctrl.input.choice.max = 0
+    game.ctrl.input.choice.func = Callback()
 end
 
 lang = Base.ImmutableDict(

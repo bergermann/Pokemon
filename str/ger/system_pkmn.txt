@@ -17,6 +17,6 @@ Zertrümmerer
 Kaskade
 Taucher
 
-Was willst du mit dem Item?
+Was willst du mit dem Item tun?
 Geben
 Nehmen

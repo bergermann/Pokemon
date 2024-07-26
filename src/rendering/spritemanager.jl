@@ -5,11 +5,26 @@ function setupSprites(game::GameState)
     return
 end
 
-function loadSpriteSheet!(game::GameState,file::String,name::Symbol,
-        width::Int,height::Int,nframes::Int;
-        maxsprites::Int=128)
+function loadSpriteSheet!(game::GameState,dir::String,textures::Vector{String},name::Symbol,
+        width::Int,height::Int,nframes::Int; maxsprites::Int=128)
 
-    loadArrayTexture!(game,joinpath("sprites",file),name,width,height; addempty=true)
+    loadArrayTexture!(game,dir,textures,name,width,height; addempty=true)
+    loadSpriteSheet!(game,name,width,height,nframes; maxsprites=maxsprites)
+
+    return
+end
+
+function loadSpriteSheet!(game::GameState,file::String,name::Symbol,
+        width::Int,height::Int,nframes::Int; maxsprites::Int=128)
+
+    loadArrayTexture!(game,file,name,width,height; addempty=true)
+    loadSpriteSheet!(game,name,width,height,nframes; maxsprites=maxsprites)
+
+    return
+end
+
+function loadSpriteSheet!(game::GameState,name::Symbol,
+        width::Int,height::Int,nframes::Int; maxsprites::Int=128)
 
     sheet = SpriteSheet(width,height,nframes,maxsprites)
     game.im.s.sheets[name] = sheet 

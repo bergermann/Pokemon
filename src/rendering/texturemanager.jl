@@ -111,8 +111,6 @@ function loadArrayImage(path::String,width::Int,height::Int)
     return data, nw*nh
 end
 
-
-
 function loadArrayTexture!(game::GameState,path::String,name::Symbol,width::Int,height::Int;
         addempty::Bool=false)
 
@@ -151,6 +149,14 @@ end
 function loadArrayTexture!(game::GameState,dir::String,textures::Vector{String},
         name::Symbol,width::Int,height::Int; addempty::Bool=false)
 
+    loadArrayTexture!(game,joinpath.(dir,textures),name,width,height; addempty=addempty)
+
+    return
+end
+
+function loadArrayTexture!(game::GameState,textures::Vector{String},name::Symbol,
+        width::Int,height::Int; addempty::Bool=false)
+
     @assert length(game.im.t.atextures) < game.im.t.maxtextures "Max textures reached!"
 
     tex = Vector{N0f8}([]); l = 0
@@ -160,7 +166,7 @@ function loadArrayTexture!(game::GameState,dir::String,textures::Vector{String},
     end
 
     for texture in textures
-        tex_, l_ = loadArrayImage(joinpath(dir,texture),width,height)
+        tex_, l_ = loadArrayImage(texture,width,height)
         append!(tex,tex_); l += l_
     end
 

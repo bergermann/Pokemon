@@ -65,6 +65,13 @@ function drawSlotSide!(game::GameState)
     return
 end
 
+function loadIcons!(game::GameState)
+    icons = [string(p.id,".png") for p in game.p.pokemon]
+
+    loadSpriteSheet!(game,joinpath("menupkmn","icons"),icons,:chibis,32,32,2; maxsprites=6)
+
+    return
+end
 
 function stateMenuPkmnOpen!(game::GameState)
     stateCloseMap!(game)
@@ -79,7 +86,7 @@ function stateMenuPkmnOpen!(game::GameState)
     loadSpriteSheet!(game,"menupkmn/item.png",:item,8,8,1; maxsprites=6)
     # loadSpriteSheet!(game,"menupkmn/gender.png",:item,8,8,1; maxsprites=6)
     # loadSpriteSheet!(game,"menupkmn/health.png",:health,1,3,3; maxsprites=6)
-    loadSpriteSheet!(game,"menupkmn/icons.png",:chibis,32,32,2; maxsprites=6)
+    loadIcons!(game)
     
     createBackground!(game,:menupkmn,"backgrounds/menupkmn.png",-120,-80,1; active=true)
     

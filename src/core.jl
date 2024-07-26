@@ -121,30 +121,42 @@ end
 
 function createCallback!(game::GameState,id::Symbol,func::Function,args::Tuple; active=false)
     push!(game.callbacks,Callback(id,active,func,args))
+
+    return
 end
 
 function killCallback!(game::GameState,id::Symbol)
     popat!(game.callbacks,id)
+
+    return
 end
 
 function createCC!(game::GameState,id::Symbol,func::Function,args::Tuple; active=false,n=0)
     createCounter!(game,id,n)
     createCallback!(game,id,active,func,args)
+
+    return
 end
 
 function createCC!(game::GameState,idc::Symbol,idcb::Symbol,func::Function,args::Tuple)
     createCounter!(game,idc::Symbol)
     createCallback!(game,idcb,func,args)
+
+    return
 end
 
 function killCC!(game::GameState,id::Symbol)
     killCounter!(game,id)
     killCallback!(game,id)
+
+    return
 end
 
 function killCC!(game::GameState,idc::Symbol,idcb::Symbol)
     killCounter!(game,idc)
     killCallback!(game,idcb)
+
+    return
 end
 
 
@@ -159,6 +171,8 @@ function setBattleDialogue!(game::GameState,str::String)
     game.battle.dialogue.d = true
     game.battle.dialogue.n = 1
     game.battle.dialogue.str = str
+
+    return
 end
 
 
@@ -168,6 +182,8 @@ function setChoice!(game::GameState,exit::Bool,sel::Int; active=true)
     game.ctrl.input.choice.exit = exit
     game.ctrl.input.choice.sel = sel
     game.ctrl.input.choice.func = Callback()
+
+    return
 end
 
 function setChoice!(game::GameState,exit::Bool,sel::Int,func::Callback; active=true)
@@ -175,6 +191,8 @@ function setChoice!(game::GameState,exit::Bool,sel::Int,func::Callback; active=t
     game.ctrl.input.choice.exit = exit
     game.ctrl.input.choice.sel = sel
     game.ctrl.input.choice.func = func
+
+    return
 end
 
 function resetChoice!(game::GameState)
@@ -183,6 +201,8 @@ function resetChoice!(game::GameState)
     game.ctrl.input.choice.sel = -1
     game.ctrl.input.choice.max = 0
     game.ctrl.input.choice.func = Callback()
+
+    return
 end
 
 lang = Base.ImmutableDict(

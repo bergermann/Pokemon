@@ -455,27 +455,66 @@ function animMenuPkmnSwap!(game::GameState)
     p1 = game.input.menu.menupkmn.swap
     p2 = game.input.menu.menupkmn.select
     
-    if game.n[:pkmnswap].c == 1
+    if game.n[:pkmnswap].c <= 30
+        moveSprite!(game,Symbol(:slot,p1),4-6*(p1==1),0)
+        moveSprite!(game,Symbol(:ball,p1),4-6*(p1==1),0)
+        moveSprite!(game,Symbol(:health,p1),4-6*(p1==1),0)
+        moveSprite!(game,Symbol(:item,p1),4-6*(p1==1),0)
+        moveSprite!(game,Symbol(:status,p1),4-6*(p1==1),0)
+        # moveSprite!(game,Symbol(:icon,p1),4-6*(p1==2),0)
+        # moveSprite!(game,Symbol(:gender,p1),4-6*(p1==2),0)
+        moveText!(game,Symbol(:name,p1),4-6*(p1==1),0)
+        moveText!(game,Symbol(:health,p1),4-6*(p1==1),0)
+
+        moveSprite!(game,Symbol(:slot,p2),4-6*(p2==1),0)
+        moveSprite!(game,Symbol(:ball,p2),4-6*(p2==1),0)
+        moveSprite!(game,Symbol(:health,p2),4-6*(p2==1),0)
+        moveSprite!(game,Symbol(:item,p2),4-6*(p2==1),0)
+        moveSprite!(game,Symbol(:status,p2),4-6*(p2==1),0)
+        # moveSprite!(game,Symbol(:icon,p1),4-6*(p1==2),0)
+        # moveSprite!(game,Symbol(:gender,p1),4-6*(p1==2),0)   
+        moveText!(game,Symbol(:name,p2),4-6*(p2==1),0)
+        moveText!(game,Symbol(:health,p2),4-6*(p2==1),0)
+    elseif game.n[:pkmnswap].c == 31
         swap!(game.trainer.pokemon,p1,p2)
 
-        if p1 == 1 || p2 == 1
-            killSprite!(game,1,Symbol("slot$p1"))
-            killSprite!(game,1,Symbol("slot$p2"))
-            killSprite!(game,1,Symbol("ball$p1"))
-            killSprite!(game,1,Symbol("ball$p2"))
+        setText!(game,Symbol(:name,p1),
+            pkmnName(game,game.p.pokemon[p1])*"\\   Lv.$(game.p.pokemon[p1].stats.level)")
+        setText!(game,Symbol(:name,p1),
+            string(game.p.pokemon[p1].stats.hp)*"/"*string(game.p.pokemon[p1].stats.rv[1]))
+        
+        setText!(game,Symbol(:name,p2),
+            pkmnName(game,game.p.pokemon[p2])*"\\   Lv.$(game.p.pokemon[p2].stats.level)")
+        setText!(game,Symbol(:name,p2),
+            string(game.p.pokemon[p2].stats.hp)*"/"*string(game.p.pokemon[p2].stats.rv[1]))
+    elseif game.n[:pkmnswap].c <= 61
+        moveSprite!(game,Symbol(:slot,p1),6*(p1==1)-4,0)
+        moveSprite!(game,Symbol(:ball,p1),6*(p1==1)-4,0)
+        moveSprite!(game,Symbol(:health,p1),6*(p1==1)-4,0)
+        moveSprite!(game,Symbol(:item,p1),6*(p1==1)-4,0)
+        moveSprite!(game,Symbol(:status,p1),6*(p1==1)-4,0)
+        # moveSprite!(game,Symbol(:icon,p1),6*(p1==2)-4,0)
+        # moveSprite!(game,Symbol(:gender,p1),6*(p1==2)-4,0)
+        moveText!(game,Symbol(:name,p1),6*(p1==1)-4,0)
+        moveText!(game,Symbol(:health,p1),6*(p1==1)-4,0)
 
-            b = getSprite("im/menu/pkmn/pokeballs",2)
-
-            drawSlotMain!(game,b)
-            drawSlotSide!(game,p1 == 1 ? p2 : p1,b)
-        else
-            swapfields!(game.im.sprites[1],:dict,Symbol("slot$p1"),Symbol("slot$p2"))
-            swapfields!(game.im.sprites[1],:im,Symbol("slot$p1"),Symbol("slot$p2"))
-        end
-    elseif game.n[:pkmnswap].c == 2
+        moveSprite!(game,Symbol(:slot,p2),6*(p2==1)-4,0)
+        moveSprite!(game,Symbol(:ball,p2),6*(p2==1)-4,0)
+        moveSprite!(game,Symbol(:health,p2),6*(p2==1)-4,0)
+        moveSprite!(game,Symbol(:item,p2),6*(p2==1)-4,0)
+        moveSprite!(game,Symbol(:status,p2),6*(p2==1)-4,0)
+        # moveSprite!(game,Symbol(:icon,p1),6*(p1==2)-4,0)
+        # moveSprite!(game,Symbol(:gender,p1),6*(p1==2)-4,0)   
+        moveText!(game,Symbol(:name,p2),6*(p2==1)-4,0)
+        moveText!(game,Symbol(:health,p2),6*(p2==1)-4,0)
+    elseif game.n[:pkmnswap].c == 62
         killCC!(game,:pkmnswap)
 
-        updateSlots!(game)
+        setSprite!(game,Symbol(:slot,p1),1,1)
+        setSprite!(game,Symbol(:ball,p1),1,1)
+        
+        setSprite!(game,Symbol(:slot,p2),1,2)
+        setSprite!(game,Symbol(:ball,p2),1,2)
 
         game.input.menu.menupkmn.swap = 0
         game.input.inputlock = false

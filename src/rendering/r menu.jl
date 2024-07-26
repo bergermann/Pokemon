@@ -4,25 +4,6 @@
 
 
 
-function updateSlots!(game::GameState)
-    for i in 1:game.trainer.pokemon.idx
-        updateSprite!(game.im.sprites[1][Symbol(:slot,i)],1+
-            1*(i==game.input.menu.menupkmn.select)+
-            4*(game.trainer.pokemon[i].stats.rv[1]<=0))
-
-        updateSprite!(game.im.sprites[1][Symbol(:ball,i)],1+
-            1*(i==game.input.menu.menupkmn.select))
-    end
-
-    updateSprite!(game.im.sprites[1][:exit],1+
-        1*(game.trainer.pokemon.idx+1==game.input.menu.menupkmn.select))
-    
-    updateSprite!(game.im.sprites[1][:ballexit],1+
-        1*(game.trainer.pokemon.idx+1==game.input.menu.menupkmn.select))
-
-    return
-end
-
 function drawHealthBar!(im::Matrix{UInt32},value::Int,pos::Position)
     if value > 24
         im[pos.h,pos.w+1:pos.w+value] .= 0x5ad684

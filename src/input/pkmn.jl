@@ -11,11 +11,21 @@ function inputMenuPkmn!(game::GameState,inputs::Inputs)
             if game.ctrl.input.menu.menupkmn.select == game.p.pokemon.idx+1
                 setSprite!(game,Symbol(:slot,game.ctrl.input.menu.menupkmn.swap),1,1)
 
+                # switchText!(game,:choose)
+                # switchFrame!(game,:choose)
+            
+                # switchText!(game,:info)
+                # switchFrame!(game,:info)
+            
+                setText!(game,:choose,game.str[1][2])
+
                 game.ctrl.input.menu.menupkmn.swap = 0
 
                 return
             elseif game.ctrl.input.menu.menupkmn.select == game.ctrl.input.menu.menupkmn.swap
                 setSprite!(game,Symbol(:slot,game.ctrl.input.menu.menupkmn.swap),1,2)
+            
+                setText!(game,:choose,game.str[1][2])
             
                 game.ctrl.input.menu.menupkmn.swap = 0
 
@@ -27,15 +37,15 @@ function inputMenuPkmn!(game::GameState,inputs::Inputs)
 
             return
         elseif inputs.B.press
-            setSprite!(game,Symbol(:slot,game.ctrl.input.menu.menupkmn.swap),
-                1,1+game.ctrl.input.menu.menupkmn.swap==game.ctrl.input.menu.menupkmn.select)
-
-            if game.ctrl.input.menu.menupkmn.select != game.p.pokemon.idx+1
-                setSprite!(game,Symbol(:slot,game.ctrl.input.menu.menupkmn.select),1,2)
-            end
+            setSprite!(game,Symbol(:slot,game.ctrl.input.menu.menupkmn.swap),1,1)
+            setSprite!(game,Symbol(:slot,game.ctrl.input.menu.menupkmn.select),1,2)
             
             game.ctrl.input.menu.menupkmn.swapping = false
             game.ctrl.input.menu.menupkmn.swap = 0
+            
+            setText!(game,:choose,game.str[1][2])
+
+            return
         end
     end
 
@@ -78,7 +88,7 @@ function inputTeam!(game::GameState,inputs::Inputs)
 
         if !game.battle.active
             createCC!(game,:scenet,sceneTransition!,(16,8,
-                F(stateMenuPkmnClose!),F(stateMenuMainOpen!)); active=true,n=1)
+                F(stateMenuPkmnClose!),F()); active=true,n=1)
         else
             createCC!(game,:scenet,sceneTransition!,(16,8,
                 F(stateBattlePkmnClose!),F(stateBattleCtrls!)); active=true,n=1)
@@ -162,8 +172,6 @@ function inputTeamActionBattle!(game::GameState)
         return
     end
 
-    flushLayer!(game,2)
-
     drawFrame!(game,2,4,20,Position(24+128,16))
     drawText!(game,2,game.str[1][3]*getPkmnName(game,
         game.p.pokemon[game.ctrl.input.menu.menupkmn.select])*"?",
@@ -197,6 +205,14 @@ function pkmnAction!(game::GameState,args::Tuple{})
 
         setSprite!(game,Symbol(:slot,game.ctrl.input.menu.menupkmn.select),2,2)
 
+        switchText!(game,:choose)
+        switchFrame!(game,:choose)
+    
+        switchText!(game,:info)
+        switchFrame!(game,:info)
+    
+        setText!(game,:choose,game.str[1][4])
+
         return
     elseif game.ctrl.input.choice.sel == 3
         resetChoice!(game)
@@ -208,6 +224,12 @@ function pkmnAction!(game::GameState,args::Tuple{})
 
         return
     end
+
+    switchText!(game,:choose)
+    switchFrame!(game,:choose)
+
+    switchText!(game,:info)
+    switchFrame!(game,:info)
     
     resetChoice!(game)
 

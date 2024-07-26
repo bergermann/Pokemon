@@ -211,3 +211,13 @@ function switchText!(game::GameState,name::Symbol)
 
     return
 end
+
+function moveText!(game::GameState,name::Symbol,w::Int,h::Int,absolute::Bool=false)
+    if absolute
+        game.im.text.texts[name].pos[1:2] .= w,h
+    else
+        game.im.text.texts[name].pos[1:2] .+= w,h
+    end
+
+    return
+end

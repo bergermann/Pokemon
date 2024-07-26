@@ -19,7 +19,7 @@ function drawSlotMain!(game::GameState)
     createSprite!(game,:status1,:status,1,1,-88,-11,1,2; active=true)
     createSprite!(game,:item1,:item,1,1,-99,-29,2,2; active=true)
     # createSprite!(game,:health1,:health,1,1,-96,-56,3,2; active=false)
-    # createSprite!(game,:chibi1,:chibis,1,1,-96,-56,3,2; active=false)
+    createSprite!(game,:icon1,:icons,1,1,-104,-40,3,2; active=false)
     
     createText!(game,:name1,1,-86,-44,2,
         pkmnName(game,game.p.pokemon[1])*"\\   Lv.$(game.p.pokemon[1].stats.level)",
@@ -46,7 +46,7 @@ function drawSlotSide!(game::GameState)
         createSprite!(game,Symbol(:status,"$i"),:status,1,1,59,-53+24*(i-2),1,2; active=true)
         createSprite!(game,Symbol(:item,"$i"),:item,1,1,-11,-51+24*(i-2),2,3; active=true)
         # createSprite!(game,Symbol(:health1,"$i"),:health,1,1,-96,-56,3,2; active=false)
-        # createSprite!(game,Symbol(:chibi1,"$i"),:chibis,1,1,-96,-56,3,2; active=false)
+        createSprite!(game,Symbol(:icon1,"$i"),:icons,1,1,-18,-59+24*(i-2),3,2; active=false)
         
         createText!(game,Symbol(:name,"$i"),1,0,-70+24*(i-2),2,
             pkmnName(game,game.p.pokemon[i])*"\\   Lv.$(game.p.pokemon[1].stats.level)",
@@ -79,16 +79,16 @@ function stateMenuPkmnOpen!(game::GameState)
     loadSpriteSheet!(game,"menupkmn/item.png",:item,8,8,1; maxsprites=6)
     # loadSpriteSheet!(game,"menupkmn/gender.png",:item,8,8,1; maxsprites=6)
     # loadSpriteSheet!(game,"menupkmn/health.png",:health,1,3,3; maxsprites=6)
-    # loadSpriteSheet!(game,"menupkmn/chibis.png",:chibis,32,32,1; maxsprites=6)
+    loadSpriteSheet!(game,"menupkmn/icons.png",:chibis,32,32,2; maxsprites=6)
     
     createBackground!(game,:menupkmn,"backgrounds/menupkmn.png",-120,-80,1; active=true)
     
     createFrame!(game,:choose,21,2,-120,48,1; active=true)
     createFrame!(game,:info,16,2,-120,48,1; active=false)
 
-    createText!(game,:choose,3,-112,57,5,game.str[1][2],
+    createText!(game,:choose,4,-112,57,5,game.str[1][2],
         [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0)
-    createText!(game,:info,3,-112,57,5,game.str[1][3],
+    createText!(game,:info,4,-112,57,5,game.str[1][3],
         [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=false,hpad=0)
     
     createCallback!(game,:wiggle,animMenuPkmnWiggle!,(); active=true)
@@ -131,6 +131,7 @@ function stateMenuPkmnClose!(game::GameState)
     game.overworld = false
 
     stateInitMap!(game)
+    stateMenuMainOpen!(game)
 
     return
 end

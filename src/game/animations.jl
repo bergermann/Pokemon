@@ -40,13 +40,13 @@ function animBattleEntry1!(game::GameState)
 end
 
 function animWiggleBattle!(game::GameState)
-    if game.n.frame%0x20 == 0x08
+    if game.frame%0x20 == 0x08
         game.im.sprites[2][:pkmn1].pos.h = 89
-    elseif game.n.frame%0x20 == 0x10
+    elseif game.frame%0x20 == 0x10
         game.im.sprites[3][:tag1].pos.h = 95
-    elseif game.n.frame%0x20 == 0x18
+    elseif game.frame%0x20 == 0x18
         game.im.sprites[2][:pkmn1].pos.h = 90
-    elseif game.n.frame%0x20 == 0x00
+    elseif game.frame%0x20 == 0x00
         game.im.sprites[3][:tag1].pos.h = 96
     end
 
@@ -341,50 +341,52 @@ end
 #     return
 # end
 
-function animArrowsMenu!(game::GameState)
-    if (game.n.frame%48) < 24
-        game.im.sprites[1][:arrowleft].pos = P(24+8,16+22-div((game.n.frame%24),6))
-        game.im.sprites[1][:arrowright].pos = P(24+8,16+90+div((game.n.frame%24),6))
-    else
-        game.im.sprites[1][:arrowleft].pos = P(24+8,16+22-4+div((game.n.frame%24),6))
-        game.im.sprites[1][:arrowright].pos = P(24+8,16+90+4-div((game.n.frame%24),6))
+function animArrowsMenu!(game::GameState,args::Tuple{})
+    s = (game.frame%48) < 24
+
+    # moveSpriteW!(game,:left,-82-(1-2*s)*Int(div((game.frame%24),6)),true)
+    # moveSpriteW!(game,:right,-14+(1-2*s)*Int(div((game.frame%24),6)),true)
+    if game.frame%6 == 0
+        moveSpriteW!(game,:left,(2*s-1))
+        moveSpriteW!(game,:right,(1-2*s))
     end
 
     return
 end
 
-function animBagSwitch!(game::GameState)
+function animBagSwitch!(game::GameState,args::Tuple{})
     if game.n[:bagswitch].c == 1
-        updateSprite!(game.im.sprites[1][:slot],game.input.menu.menubags.bag)
-        setPos!(game.im.sprites[1][:slotmarker].pos,
-            24+27,16+34+game.input.menu.menubags.bag*8)
+        # setSpriteFrame!(game,:slot,game.input.menu.menubags.bag)
+        moveSpriteW!(game,:marker,-70+8*game.input.menu.menubags.bag,true)
 
-        updateSprite!(game.im.sprites[1][:bag],6)
+        setSpriteFrame!(game,:bag,6)
+        moveSpriteH!(game,:bag,-1)
 
-        game.im.sprites[1][:arrowleft].active = false
-        game.im.sprites[1][:arrowright].active = false
-    end
-
-    if game.n[:bagswitch].c < 4
-        setPos!(game.im.sprites[1][:bag].pos,24+34-game.n[:bagswitch].c+1,16+40)
+        switchSprite!(game,:left)
+        switchSprite!(game,:right)
+        switchSprite!(game,:cursor)
+        switchSprite!(game,:icon)
+    elseif game.n[:bagswitch].c < 4
+        moveSpriteH!(game,:bag,-1)
     elseif game.n[:bagswitch].c == 4
-        updateSprite!(game.im.sprites[1][:bag],game.input.menu.menubags.bag)
-    elseif game.n[:bagswitch].c <= 8
-        setPos!(game.im.sprites[1][:bag].pos,24+34-4+game.n[:bagswitch].c-4,16+40)
-    end
+        setSpriteFrame!(game,:bag,game.input.menu.menubags.bag)
+    elseif game.n[:bagswitch].c < 8
+        moveSpriteH!(game,:bag,1)
+    else game.n[:bagswitch].c
+        moveSpriteH!(game,:bag,1)
 
-    if game.n[:bagswitch].c == 8
-        game.im.sprites[1][:arrowleft].active = true
-        game.im.sprites[1][:arrowright].active = true
-        game.im.sprites[1][:cursor].active = true
-        game.im.sprites[1][:icon].active = true
+        switchSprite!(game,:left)
+        switchSprite!(game,:right)
+        switchSprite!(game,:cursor)
+        switchSprite!(game,:icon)
+
+        # drawInventoryText!(game,game.input.menu.menubags)
+        # drawItemText!(game,game.input.menu.menubags)
+
+        game.callbacks[:bagswitch].active = false
+        game.n[:bagswitch].c = 1
 
         game.input.inputlock = false
-        game.n[:bagswitch].c = 1
-        game.callbacks[:bagswitch].active = false
-
-        drawInventoryText!(game,game.input.menu.menubags)
-        drawItemText!(game,game.input.menu.menubags)
 
         return
     end
@@ -524,6 +526,8 @@ function animMenuPkmnSwap!(game::GameState,(p1,p2)::Tuple{Int,Int})
         
         setSprite!(game,mplabels[p2].s,1,2)
         setSprite!(game,mplabels[p2].b,1,2)
+
+        setText!(game,:choose,game.str[1][2])
 
         game.ctrl.input.menu.menupkmn.swap = 0
         game.ctrl.input.inputlock = false

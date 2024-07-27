@@ -298,18 +298,18 @@ function killSpritesAll!(game::GameState)
 end
 
 function swapSprites!(game::GameState,name1::Symbol,name2::Symbol)
-    s1 = game.im.s.sprites[name1].slot
-    s2 = game.im.s.sprites[name2].slot
-
+    s1 = game.im.s.sprites[name1]
+    s2 = game.im.s.sprites[name2]
+    S1 = game.im.s.sheets[s1.sheet]
+    S2 = game.im.s.sheets[s2.sheet]
     
-    idx::Matrix{UInt32}     # 2 x n #  8 #  0
-    pos::Matrix{Int32}      # 4 x n # 16 #  8
-    scale::Matrix{Float32}  # 2 x n #  8 # 24
-    rot::Matrix{Float32}    # 1 x n #  4 # 32
-    alpha::Matrix{Float32}  # 1 x n #  4 # 36
-    rev::Matrix{Bool}       # 2 x n #  2 # 40
-    active::Matrix{Bool}    # 1 x n #  1 # 42
-
+    # S1.idx[:,s1.slot], S2.idx[:,s2.slot] = S2.idx[:,s2.slot], S1.idx[:,s1.slot]
+    S1.pos[:,s1.slot], S2.pos[:,s2.slot] = S2.pos[:,s2.slot], S1.pos[:,s1.slot]
+    S1.scale[:,s1.slot], S2.scale[:,s2.slot] = S2.scale[:,s2.slot], S1.scale[:,s1.slot]
+    S1.rot[:,s1.slot], S2.rot[:,s2.slot] = S2.rot[:,s2.slot], S1.rot[:,s1.slot]
+    S1.alpha[:,s1.slot], S2.alpha[:,s2.slot] = S2.alpha[:,s2.slot], S1.alpha[:,s1.slot]
+    S1.rev[:,s1.slot], S2.rev[:,s2.slot] = S2.rev[:,s2.slot], S1.rev[:,s1.slot]
+    S1.active[:,s1.slot], S2.active[:,s2.slot] = S2.active[:,s2.slot], S1.active[:,s1.slot]
 
     game.im.s.sprites[name1], game.im.s.sprites[name2] =
         game.im.s.sprites[name2], game.im.s.sprites[name1]

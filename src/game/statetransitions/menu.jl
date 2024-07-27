@@ -63,7 +63,7 @@ function drawSlotSide!(game::GameState)
         createSprite!(game,mplabels[i].ic,:icons,i,1,-18,-63+24*(i-2),3,3; active=true)
         
         createText!(game,mplabels[i].n,1,0,-70+24*(i-2),2,
-            pkmnName(game,game.p.pokemon[i])*"\\   Lv.$(game.p.pokemon[1].stats.level)",
+            pkmnName(game,game.p.pokemon[i])*"\\   Lv.$(game.p.pokemon[i].stats.level)",
             [0xff,0xff,0xff,0xff],[0x73,0x73,0x73,0xff]; hpad=-3)
 
         createText!(game,mplabels[i].h,1,78,-59+24*(i-2),2,
@@ -98,7 +98,7 @@ function stateMenuPkmnOpen!(game::GameState)
     loadSpriteSheet!(game,"menupkmn/pokeballs.png",:balls,20,24,2; maxsprites=7)
     loadSpriteSheet!(game,"menupkmn/status.png",:status,20,8,1; maxsprites=6)
     loadSpriteSheet!(game,"menupkmn/item.png",:item,8,8,1; maxsprites=6)
-    # loadSpriteSheet!(game,"menupkmn/gender.png",:item,8,8,1; maxsprites=6)
+    # loadSpriteSheet!(game,"menupkmn/gender.png",:gender,8,8,1; maxsprites=6)
     # loadSpriteSheet!(game,"menupkmn/health.png",:health,1,3,3; maxsprites=6)
     loadIcons!(game)
     
@@ -153,28 +153,99 @@ end
 
 
 
+function setVisibleItems!(game::GameState,m::MenuBags)
+    nitems = game.p.inventory[-m.bag]
+
+    m.vis .= 0
+    s = m.select[m.bag]
+
+    i0 = max(1,(s-min(2,s)+(min(5,nitems-s+1)-5)))
+
+    m.slot = 1  # fix?
+
+    for i in 0:7
+        if i0+i == s
+            m.slot = i+1
+        end
+        
+        if i0+i > nitems
+            m.vis[i+1,1] = -1
+
+            break
+        end
+
+        m.vis[i+1,:] = getInvSlot(game,m.bag,i0+i)
+    end
+
+    return
+end
+
+
+# function getItemIcon(m::MenuBags)
+#     id = Int(m.vis[m.slot])
+
+#     if id == -1
+#         return getSprite("im/menu/bag/arrowback.imp")
+#     elseif m.bag == 1
+#         return getSprite("im/menu/bag/items/$(id-20).imp")
+#     elseif m.bag == 2
+#         return getSprite("im/menu/bag/balls/$id.imp")
+#     elseif m.bag == 3
+#         return getSprite("im/menu/bag/machines/$(id-100).imp")
+#     elseif m.bag == 4
+#         return getSprite("im/menu/bag/berries/$(id-200).imp")
+#     elseif m.bag == 5
+#         return getSprite("im/menu/bag/keys/$(id-200).imp")
+#     end
+# end
 
 function stateMenuBagsOpen!(game::GameState)
     stateCloseMap!(game)
 
+    loadInventoryStrings!(game)
+    
+    loadSpriteSheet!(game,"menubag/arrows.png",:arrows,16,16,4; maxsprites=4)
+    loadSpriteSheet!(game,"menubag/bags.png",:bags,64,64,6; maxsprites=1)
+    loadSpriteSheet!(game,"menubag/items.png",:items,24,24,8; maxsprites=1)
+    loadSpriteSheet!(game,"menubag/marker.png",:markers,4,4,2; maxsprites=1)
+
     createCC!(game,:bagswitch,animBagSwitch!,(); n=1)
     createCallback!(game,:arrows,true,animArrowsMenu!,())
 
-    loadInventoryStrings!(game)
-    drawInventory!(game)
+    createBackground!(game,:bag,"backgrounds/menubag1.png",-120,-80,2; active=true)
+
+    m = game.ctrl.input.menu.menubags; setVisibleItems!(game,m)
+    createSprite!(game,:marker,:markers,1,1,-84+8*m.bag,-51,0,2; active=true)
+    createSprite!(game,:bag,:bags,1,m.bag,-48,-12,1,2; active=true)
+    createSprite!(game,:left,:arrows,1,4,-88,-64,1,3; active=true)
+    createSprite!(game,:right,:arrows,1,2,-24,-64,1,3; active=true)
+    createSprite!(game,:up,:arrows,1,1,54,-64,1,3; active=true)
+    createSprite!(game,:down,:arrows,1,3,54,64,1,3; active=true)
+    createSprite!(game,:cursor,:cursors,1,1,0,-39+15*m.slot,0,4; active=true)
+    createSprite!(game,:item,:items,Int(m.vis[m.slot]),1,-100,4,1,3; active=true)
+
+    # drawInventoryText!(game,m)
+    # drawItemText!(game,m)
+
+    createText!(game,:slot,1,-20,0,2,"test2",[0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff];
+        active=true)
+    createText!(game,:items,1,20,0,2,"test1",[0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff];
+        active=true)
+    createText!(game,:info,2,0,0,2,"test3",[0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff];
+        active=true)
 
     return
 end
 
 function stateMenuBagsCtrls!(game::GameState)
-    game.input.inputlock = false
-    game.input.menu.bags = true
+    game.ctrl.input.inputlock = false
+    game.ctrl.input.menu.bags = true
 
     return
 end
 
 function stateMenuBagsClose!(game::GameState)
-    game.input.inputlock = true
+    game.ctrl.input.inputlock = true
     
     killSpriteAll!(game)
 

@@ -9,7 +9,7 @@ include("keys.jl")
 
 
 function getSelect(game::GameState)
-    return game.input.menu.menubags.select[game.input.menu.menubags.bag]
+    return game.ctrl.input.menu.menubags.select[game.ctrl.input.menu.menubags.bag]
 end
 
 function getSelect(m::MenuBags)
@@ -17,63 +17,63 @@ function getSelect(m::MenuBags)
 end
 
 function getAmountItems(game::GameState)
-    return game.trainer.inventory[-game.input.menu.menubags.bag]
+    return game.p.inventory[-game.ctrl.input.menu.menubags.bag]
 end
 
 function getAmountItems(game::GameState,m::MenuBags)
-    return game.trainer.inventory[-m.bag]
+    return game.p.inventory[-m.bag]
 end
 
 function getInvSlot(game::GameState,bag::Int,select::Int)
-    return game.trainer.inventory[bag][select,:]
+    return game.p.inventory[bag][select,:]
 end
 
 function getInvSlot(game::GameState)
-    return game.trainer.inventory[game.input.menu.menubags.bag][
-        game.input.menu.menubags.select[game.input.menu.menubags.bag],:]
+    return game.p.inventory[game.ctrl.input.menu.menubags.bag][
+        game.ctrl.input.menu.menubags.select[game.ctrl.input.menu.menubags.bag],:]
 end
 
 function getInvSlot(game::GameState,m::MenuBags)
-    return game.trainer.inventory[m.bag][m.select[m.bag],:]
+    return game.p.inventory[m.bag][m.select[m.bag],:]
 end
 
 function getInvSlotID(game::GameState,bag::Int,select::Int)
-    return game.trainer.inventory[bag][select,1]
+    return game.p.inventory[bag][select,1]
 end
 
 function getInvSlotID(game::GameState)
-    return game.trainer.inventory[game.input.menu.menubags.bag][
-        game.input.menu.menubags.select[game.input.menu.menubags.bag],1]
+    return game.p.inventory[game.ctrl.input.menu.menubags.bag][
+        game.ctrl.input.menu.menubags.select[game.ctrl.input.menu.menubags.bag],1]
 end
 
 function getInvSlotID(game::GameState,m::MenuBags)
-    return game.trainer.inventory[m.bag][m.select[m.bag],1]
+    return game.p.inventory[m.bag][m.select[m.bag],1]
 end
 
 function getInvSlotAmount(game::GameState,bag::Int,select::Int)
-    return game.trainer.inventory[bag][select,2]
+    return game.p.inventory[bag][select,2]
 end
 
 function getInvSlotAmount(game::GameState)
-    return game.trainer.inventory[game.input.menu.menubags.bag][
-        game.input.menu.menubags.select[game.input.menu.menubags.bag],2]
+    return game.p.inventory[game.ctrl.input.menu.menubags.bag][
+        game.ctrl.input.menu.menubags.select[game.ctrl.input.menu.menubags.bag],2]
 end
 
 function getInvChoiceStr(game::GameState)
     if !game.battle.active
-        if game.input.menu.menubags.bag == 1
+        if game.ctrl.input.menu.menubags.bag == 1
             return game.str[1][[9,10,12]]
-        elseif game.input.menu.menubags.bag == 2
+        elseif game.ctrl.input.menu.menubags.bag == 2
             return game.str[1][[10,13,12]]
-        elseif game.input.menu.menubags.bag == 3
+        elseif game.ctrl.input.menu.menubags.bag == 3
             return game.str[1][[9,10,12]]
-        elseif game.input.menu.menubags.bag == 4
+        elseif game.ctrl.input.menu.menubags.bag == 4
             return game.str[1][[9,10,12]]
         else
             return game.str[1][[9,11,12]]
         end
     else
-        m = game.input.battlebags
+        m = game.ctrl.input.battlebags
 
         if m.bag == 1
             t = getItem(game,m)

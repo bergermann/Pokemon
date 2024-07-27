@@ -298,6 +298,19 @@ function killSpritesAll!(game::GameState)
 end
 
 function swapSprites!(game::GameState,name1::Symbol,name2::Symbol)
+    s1 = game.im.s.sprites[name1].slot
+    s2 = game.im.s.sprites[name2].slot
+
+    
+    idx::Matrix{UInt32}     # 2 x n #  8 #  0
+    pos::Matrix{Int32}      # 4 x n # 16 #  8
+    scale::Matrix{Float32}  # 2 x n #  8 # 24
+    rot::Matrix{Float32}    # 1 x n #  4 # 32
+    alpha::Matrix{Float32}  # 1 x n #  4 # 36
+    rev::Matrix{Bool}       # 2 x n #  2 # 40
+    active::Matrix{Bool}    # 1 x n #  1 # 42
+
+
     game.im.s.sprites[name1], game.im.s.sprites[name2] =
         game.im.s.sprites[name2], game.im.s.sprites[name1]
 

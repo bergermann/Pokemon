@@ -491,16 +491,11 @@ function animMenuPkmnSwap!(game::GameState,(p1,p2)::Tuple{Int,Int})
         setText!(game,mplabels[p2].h,
             string(game.p.pokemon[p2].stats.hp)*"/"*string(game.p.pokemon[p2].stats.rv[1]))
 
-        game.im.s.sprites[mplabels[p1].ic], game.im.s.sprites[mplabels[p2].ic] = 
-            game.im.s.sprites[mplabels[p2].ic], game.im.s.sprites[mplabels[p1].ic]
-        game.im.s.sprites[mplabels[p1].i], game.im.s.sprites[mplabels[p2].i] = 
-            game.im.s.sprites[mplabels[p2].i], game.im.s.sprites[mplabels[p1].i]
-        game.im.s.sprites[mplabels[p1].st], game.im.s.sprites[mplabels[p2].st] = 
-            game.im.s.sprites[mplabels[p2].st], game.im.s.sprites[mplabels[p1].st]
-        # game.im.s.sprites[mplabels[p1].h], game.im.s.sprites[mplabels[p2].h] = 
-        #     game.im.s.sprites[mplabels[p2].h], game.im.s.sprites[mplabels[p1].h]
-        # game.im.s.sprites[mplabels[p1].g], game.im.s.sprites[mplabels[p2].g] = 
-        #     game.im.s.sprites[mplabels[p2].g], game.im.s.sprites[mplabels[p1].g]
+        swapSprites!(game,mplabels[p1].ic,mplabels[p2].ic)
+        swapSprites!(game,mplabels[p1].i,mplabels[p2].i)
+        swapSprites!(game,mplabels[p1].st,mplabels[p2].st)
+        # swapSprites!(game,mplabels[p1].h,mplabels[p2].h)
+        # swapSprites!(game,mplabels[p1].g,mplabels[p2].g)
     elseif game.n[:pkmnswap].c <= 61
         moveSprite!(game,mplabels[p1].s,12*(p1==1)-8,0)
         moveSprite!(game,mplabels[p1].b,12*(p1==1)-8,0)

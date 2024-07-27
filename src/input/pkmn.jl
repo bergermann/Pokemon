@@ -10,12 +10,6 @@ function inputMenuPkmn!(game::GameState,inputs::Inputs)
         if inputs.A.press
             if game.ctrl.input.menu.menupkmn.select == game.p.pokemon.idx+1
                 setSprite!(game,Symbol(:slot,game.ctrl.input.menu.menupkmn.swap),1,1)
-
-                # switchText!(game,:choose)
-                # switchFrame!(game,:choose)
-            
-                # switchText!(game,:info)
-                # switchFrame!(game,:info)
             
                 setText!(game,:choose,game.str[1][2])
 
@@ -33,7 +27,9 @@ function inputMenuPkmn!(game::GameState,inputs::Inputs)
             end
 
             game.ctrl.input.inputlock = true
-            createCC!(game,:pkmnswap,animMenuPkmnSwap!,(); active=true,n=1)
+            createCC!(game,:pkmnswap,animMenuPkmnSwap!,
+                (game.ctrl.input.menu.menupkmn.swap,game.ctrl.input.menu.menupkmn.select);
+                active=true,n=1)
 
             return
         elseif inputs.B.press
@@ -59,16 +55,22 @@ function switchSlot!(game::GameState,from::Int,to::Int)
         setSpriteFrame!(game,:exit,1)
         setSpriteFrame!(game,:ballexit,1)
     else
-        setSprite!(game,Symbol(:slot,from),1+(game.ctrl.input.menu.menupkmn.swap==from),1)
-        setSpriteFrame!(game,Symbol(:ball,from),1)
+        setSprite!(game,mplabels[from].s,1+(game.ctrl.input.menu.menupkmn.swap==from),1)
+        setSpriteFrame!(game,mplabels[from].b,1)
+        if from != 1
+            moveSpriteW!(game,mplabels[from].ic,-4)
+        end
     end
 
     if to == game.p.pokemon.idx+1
         setSpriteFrame!(game,:exit,2)
         setSpriteFrame!(game,:ballexit,2)
     else
-        setSprite!(game,Symbol(:slot,to),1+(game.ctrl.input.menu.menupkmn.swap!=0),2)
-        setSpriteFrame!(game,Symbol(:ball,to),2)
+        setSprite!(game,mplabels[to].s,1+(game.ctrl.input.menu.menupkmn.swap!=0),2)
+        setSpriteFrame!(game,mplabels[to].b,2)
+        if to != 1
+            moveSpriteW!(game,mplabels[to].ic,4)
+        end
     end
 
     return
@@ -139,7 +141,7 @@ function inputTeamAction!(game::GameState)
         game.ctrl.input.menu.menupkmn.select = 1
 
         createCC!(game,:scenet,sceneTransition!,(16,8,
-            F(stateMenuPkmnClose!),F(stateMenuMainOpen!)); active=true,n=1)
+            F(stateMenuPkmnClose!),F()); active=true,n=1)
 
         return
     end

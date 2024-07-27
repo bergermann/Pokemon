@@ -39,7 +39,9 @@ function main()
     push!(game.p.pokemon,generatePkmn(game,0x0001,0x14))
     push!(game.p.pokemon,generatePkmn(game,0x0002,0x03))
     push!(game.p.pokemon,generatePkmn(game,0x0003,0x60))
-    
+    push!(game.p.pokemon,generatePkmn(game,0x0004,0x08))
+    push!(game.p.pokemon,generatePkmn(game,0x0005,0x13))
+
     render(game)
     
     # GLFW.DestroyWindow(game.im.window); return game

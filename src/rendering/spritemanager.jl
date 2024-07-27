@@ -8,7 +8,7 @@ end
 function loadSpriteSheet!(game::GameState,dir::String,textures::Vector{String},name::Symbol,
         width::Int,height::Int,nframes::Int; maxsprites::Int=128)
 
-    loadArrayTexture!(game,dir,textures,name,width,height; addempty=true)
+    loadArrayTexture!(game,joinpath("sprites",dir),textures,name,width,height; addempty=true)
     loadSpriteSheet!(game,name,width,height,nframes; maxsprites=maxsprites)
 
     return
@@ -17,7 +17,7 @@ end
 function loadSpriteSheet!(game::GameState,file::String,name::Symbol,
         width::Int,height::Int,nframes::Int; maxsprites::Int=128)
 
-    loadArrayTexture!(game,file,name,width,height; addempty=true)
+    loadArrayTexture!(game,joinpath("sprites",file),name,width,height; addempty=true)
     loadSpriteSheet!(game,name,width,height,nframes; maxsprites=maxsprites)
 
     return
@@ -127,6 +127,30 @@ function moveSprite!(game::GameState,id::Symbol,w::Int,h::Int,absolute::Bool=fal
         game.im.s.sheets[s.sheet].pos[1:2,s.slot] .= w,h
     else
         game.im.s.sheets[s.sheet].pos[1:2,s.slot] .+= w,h
+    end
+
+    return
+end
+
+function moveSpriteW!(game::GameState,id::Symbol,w::Int,absolute::Bool=false)
+    s = game.im.s.sprites[id]
+
+    if absolute
+        game.im.s.sheets[s.sheet].pos[1,s.slot] = w
+    else
+        game.im.s.sheets[s.sheet].pos[1,s.slot] += w
+    end
+
+    return
+end
+
+function moveSpriteH!(game::GameState,id::Symbol,h::Int,absolute::Bool=false)
+    s = game.im.s.sprites[id]
+
+    if absolute
+        game.im.s.sheets[s.sheet].pos[2,s.slot] = h
+    else
+        game.im.s.sheets[s.sheet].pos[2,s.slot] += h
     end
 
     return
@@ -269,6 +293,13 @@ function killSpritesAll!(game::GameState)
     end
 
     empty!(game.im.s.sprites)
+
+    return
+end
+
+function swapSprites!(game::GameState,name1::Symbol,name2::Symbol)
+    game.im.s.sprites[name1], game.im.s.sprites[name2] =
+        game.im.s.sprites[name2], game.im.s.sprites[name1]
 
     return
 end

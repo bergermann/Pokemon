@@ -436,88 +436,102 @@ function animBattleBagSwitch!(game::GameState)
 end
 
 function animMenuPkmnWiggle!(game::GameState,args::Tuple{})
-    return
+    for i in 1:game.p.pokemon.idx
+        if i == game.ctrl.input.menu.menupkmn.select
+            setSpriteFrame!(game,mplabels[i].ic,Int(div(game.frame%16,8)+1))
 
-    for i in 1:game.trainer.pokemon.idx
-        if i == game.input.menu.menupkmn.select
-            updateSprite!(game.im.sprites[0+i],2*div(game.n.frame%30,15)+1)
+            if i == 1
+                moveSpriteH!(game,mplabels[i].ic,
+                    -44-2*Int(div(game.frame%16,8)),true)
+            else
+                moveSpriteH!(game,mplabels[i].ic,
+                    -63+24*(i-2)-2*Int(div(game.frame%16,8)),true)
+            end
 
             continue
         end
 
-        updateSprite!(game.im.sprites[0+i],div(game.n.frame%30,15)+1)   #fix this
+        setSpriteFrame!(game,mplabels[i].ic,Int(div((game.frame+2i)%20,10)+1))
     end
 
     return
 end
 
-function animMenuPkmnSwap!(game::GameState)
-    p1 = game.input.menu.menupkmn.swap
-    p2 = game.input.menu.menupkmn.select
-    
+function animMenuPkmnSwap!(game::GameState,(p1,p2)::Tuple{Int,Int})
     if game.n[:pkmnswap].c <= 30
-        moveSprite!(game,Symbol(:slot,p1),4-6*(p1==1),0)
-        moveSprite!(game,Symbol(:ball,p1),4-6*(p1==1),0)
-        moveSprite!(game,Symbol(:health,p1),4-6*(p1==1),0)
-        moveSprite!(game,Symbol(:item,p1),4-6*(p1==1),0)
-        moveSprite!(game,Symbol(:status,p1),4-6*(p1==1),0)
-        # moveSprite!(game,Symbol(:icon,p1),4-6*(p1==2),0)
-        # moveSprite!(game,Symbol(:gender,p1),4-6*(p1==2),0)
-        moveText!(game,Symbol(:name,p1),4-6*(p1==1),0)
-        moveText!(game,Symbol(:health,p1),4-6*(p1==1),0)
+        moveSprite!(game,mplabels[p1].s,8-12*(p1==1),0)
+        moveSprite!(game,mplabels[p1].b,8-12*(p1==1),0)
+        moveSprite!(game,mplabels[p1].st,8-12*(p1==1),0)
+        moveSprite!(game,mplabels[p1].i,8-12*(p1==1),0)
+        moveSprite!(game,mplabels[p1].ic,8-12*(p1==1),0)
+        # moveSprite!(game,mplabels[p1].h,8-12*(p1==1),0)
+        # moveSprite!(game,mplabels[p1].g,8-12*(p1==1),0)
+        moveText!(game,mplabels[p1].n,8-12*(p1==1),0)
+        moveText!(game,mplabels[p1].h,8-12*(p1==1),0)
 
-        moveSprite!(game,Symbol(:slot,p2),4-6*(p2==1),0)
-        moveSprite!(game,Symbol(:ball,p2),4-6*(p2==1),0)
-        moveSprite!(game,Symbol(:health,p2),4-6*(p2==1),0)
-        moveSprite!(game,Symbol(:item,p2),4-6*(p2==1),0)
-        moveSprite!(game,Symbol(:status,p2),4-6*(p2==1),0)
-        # moveSprite!(game,Symbol(:icon,p1),4-6*(p1==2),0)
-        # moveSprite!(game,Symbol(:gender,p1),4-6*(p1==2),0)   
-        moveText!(game,Symbol(:name,p2),4-6*(p2==1),0)
-        moveText!(game,Symbol(:health,p2),4-6*(p2==1),0)
+        moveSprite!(game,mplabels[p2].s,8-12*(p2==1),0)
+        moveSprite!(game,mplabels[p2].b,8-12*(p2==1),0)
+        moveSprite!(game,mplabels[p2].st,8-12*(p2==1),0)
+        moveSprite!(game,mplabels[p2].i,8-12*(p2==1),0)
+        moveSprite!(game,mplabels[p2].ic,8-12*(p2==1),0)
+        # moveSprite!(game,mplabels[p2].h,8-12*(p2==1),0)
+        # moveSprite!(game,mplabels[p2].g,8-12*(p2==1),0)   
+        moveText!(game,mplabels[p2].n,8-12*(p2==1),0)
+        moveText!(game,mplabels[p2].h,8-12*(p2==1),0)
     elseif game.n[:pkmnswap].c == 31
-        swap!(game.trainer.pokemon,p1,p2)
+        swap!(game.p.pokemon,p1,p2)
 
-        setText!(game,Symbol(:name,p1),
+        setText!(game,mplabels[p1].n,
             pkmnName(game,game.p.pokemon[p1])*"\\   Lv.$(game.p.pokemon[p1].stats.level)")
-        setText!(game,Symbol(:name,p1),
+        setText!(game,mplabels[p1].h,
             string(game.p.pokemon[p1].stats.hp)*"/"*string(game.p.pokemon[p1].stats.rv[1]))
         
-        setText!(game,Symbol(:name,p2),
+        setText!(game,mplabels[p2].n,
             pkmnName(game,game.p.pokemon[p2])*"\\   Lv.$(game.p.pokemon[p2].stats.level)")
-        setText!(game,Symbol(:name,p2),
+        setText!(game,mplabels[p2].h,
             string(game.p.pokemon[p2].stats.hp)*"/"*string(game.p.pokemon[p2].stats.rv[1]))
-    elseif game.n[:pkmnswap].c <= 61
-        moveSprite!(game,Symbol(:slot,p1),6*(p1==1)-4,0)
-        moveSprite!(game,Symbol(:ball,p1),6*(p1==1)-4,0)
-        moveSprite!(game,Symbol(:health,p1),6*(p1==1)-4,0)
-        moveSprite!(game,Symbol(:item,p1),6*(p1==1)-4,0)
-        moveSprite!(game,Symbol(:status,p1),6*(p1==1)-4,0)
-        # moveSprite!(game,Symbol(:icon,p1),6*(p1==2)-4,0)
-        # moveSprite!(game,Symbol(:gender,p1),6*(p1==2)-4,0)
-        moveText!(game,Symbol(:name,p1),6*(p1==1)-4,0)
-        moveText!(game,Symbol(:health,p1),6*(p1==1)-4,0)
 
-        moveSprite!(game,Symbol(:slot,p2),6*(p2==1)-4,0)
-        moveSprite!(game,Symbol(:ball,p2),6*(p2==1)-4,0)
-        moveSprite!(game,Symbol(:health,p2),6*(p2==1)-4,0)
-        moveSprite!(game,Symbol(:item,p2),6*(p2==1)-4,0)
-        moveSprite!(game,Symbol(:status,p2),6*(p2==1)-4,0)
-        # moveSprite!(game,Symbol(:icon,p1),6*(p1==2)-4,0)
-        # moveSprite!(game,Symbol(:gender,p1),6*(p1==2)-4,0)   
-        moveText!(game,Symbol(:name,p2),6*(p2==1)-4,0)
-        moveText!(game,Symbol(:health,p2),6*(p2==1)-4,0)
+        game.im.s.sprites[mplabels[p1].ic], game.im.s.sprites[mplabels[p2].ic] = 
+            game.im.s.sprites[mplabels[p2].ic], game.im.s.sprites[mplabels[p1].ic]
+        game.im.s.sprites[mplabels[p1].i], game.im.s.sprites[mplabels[p2].i] = 
+            game.im.s.sprites[mplabels[p2].i], game.im.s.sprites[mplabels[p1].i]
+        game.im.s.sprites[mplabels[p1].st], game.im.s.sprites[mplabels[p2].st] = 
+            game.im.s.sprites[mplabels[p2].st], game.im.s.sprites[mplabels[p1].st]
+        # game.im.s.sprites[mplabels[p1].h], game.im.s.sprites[mplabels[p2].h] = 
+        #     game.im.s.sprites[mplabels[p2].h], game.im.s.sprites[mplabels[p1].h]
+        # game.im.s.sprites[mplabels[p1].g], game.im.s.sprites[mplabels[p2].g] = 
+        #     game.im.s.sprites[mplabels[p2].g], game.im.s.sprites[mplabels[p1].g]
+    elseif game.n[:pkmnswap].c <= 61
+        moveSprite!(game,mplabels[p1].s,12*(p1==1)-8,0)
+        moveSprite!(game,mplabels[p1].b,12*(p1==1)-8,0)
+        moveSprite!(game,mplabels[p1].st,12*(p1==1)-8,0)
+        moveSprite!(game,mplabels[p1].i,12*(p1==1)-8,0)
+        moveSprite!(game,mplabels[p1].ic,12*(p1==1)-8,0)
+        # moveSprite!(game,mplabels[p1].h,12*(p1==1)-8,0)
+        # moveSprite!(game,mplabels[p1].g,12*(p1==1)-8,0)
+        moveText!(game,mplabels[p1].n,12*(p1==1)-8,0)
+        moveText!(game,mplabels[p1].h,12*(p1==1)-8,0)
+
+        moveSprite!(game,mplabels[p2].s,12*(p2==1)-8,0)
+        moveSprite!(game,mplabels[p2].b,12*(p2==1)-8,0)
+        moveSprite!(game,mplabels[p2].st,12*(p2==1)-8,0)
+        moveSprite!(game,mplabels[p2].i,12*(p2==1)-8,0)
+        moveSprite!(game,mplabels[p2].ic,12*(p2==1)-8,0)
+        # moveSprite!(game,mplabels[p2].h,12*(p2==1)-8,0)
+        # moveSprite!(game,mplabels[p2].g,12*(p2==1)-8,0)   
+        moveText!(game,mplabels[p2].n,12*(p2==1)-8,0)
+        moveText!(game,mplabels[p2].h,12*(p2==1)-8,0)
     elseif game.n[:pkmnswap].c == 62
         killCC!(game,:pkmnswap)
 
-        setSprite!(game,Symbol(:slot,p1),1,1)
-        setSprite!(game,Symbol(:ball,p1),1,1)
+        setSprite!(game,mplabels[p1].s,1,1)
+        setSprite!(game,mplabels[p1].b,1,1)
         
-        setSprite!(game,Symbol(:slot,p2),1,2)
-        setSprite!(game,Symbol(:ball,p2),1,2)
+        setSprite!(game,mplabels[p2].s,1,2)
+        setSprite!(game,mplabels[p2].b,1,2)
 
-        game.input.menu.menupkmn.swap = 0
-        game.input.inputlock = false
+        game.ctrl.input.menu.menupkmn.swap = 0
+        game.ctrl.input.inputlock = false
 
         return
     end

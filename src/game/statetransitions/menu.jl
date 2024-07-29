@@ -141,6 +141,8 @@ function stateMenuPkmnClose!(game::GameState)
     deleteSpriteSheet!(game,:item)
     # deleteSpriteSheet!(game,:health)
     deleteSpriteSheet!(game,:icons)
+
+    deleteBackground!(game,:menupkmn)
     deleteTextsAll!(game)
     deleteFramesAll!(game)
 
@@ -204,35 +206,37 @@ function stateMenuBagsOpen!(game::GameState)
 
     loadInventoryStrings!(game)
     
-    loadSpriteSheet!(game,"menubag/arrows.png",:arrows,16,16,4; maxsprites=4)
+    loadSpriteSheet!(game,"menubag/arrows.png",:arrows,16,16,5; maxsprites=5)
     loadSpriteSheet!(game,"menubag/bags.png",:bags,64,64,6; maxsprites=1)
     loadSpriteSheet!(game,"menubag/items.png",:items,24,24,8; maxsprites=1)
     loadSpriteSheet!(game,"menubag/marker.png",:markers,4,4,2; maxsprites=1)
 
+    createBackground!(game,:bag1,"backgrounds/bag01.png",-88,-70,1; active=true)
+    createBackground!(game,:bag2,"backgrounds/bag02.png",-16,-80,2; active=true)
+    createBackground!(game,:bag3,"backgrounds/bag1.png",-120,-80,3; active=true)
+
+    m = game.ctrl.input.menu.menubags#; setVisibleItems!(game,m)
+    createSprite!(game,:marker,:markers,1,1,-84+8*m.bag,-51,0,3; active=true)
+    createSprite!(game,:bag,:bags,1,m.bag,-48,-12,1,5; active=true)
+    createSprite!(game,:left,:arrows,1,4,-90,-64,1,4; active=true)
+    createSprite!(game,:right,:arrows,1,2,-22,-64,1,4; active=true)
+    createSprite!(game,:ball,:arrows,1,5,-104,-64,1,3; active=true)
+    createSprite!(game,:up,:arrows,1,1,54,-66,1,3; active=true)
+    createSprite!(game,:down,:arrows,1,3,54,66,1,3; active=true)
+    createSprite!(game,:cursor,:cursors,1,1,-4,-55,0,3; active=true)
+    createSprite!(game,:item,:items,1,1,-100,4,1,3; active=true)
+
+    createText!(game,:slot,4,-56,-72,4,"slot",[0x00,0x00,0x00,0xff],[0xbd,0x9c,0x5a,0xff];
+        active=true,align=0)
+    createText!(game,:items,2,0,-63,2,"Items",[0x00,0x00,0x00,0xff],[0xd6,0xd6,0xce,0xff];
+        active=true)
+    createText!(game,:amounts,2,90,-60,2,"×99",[0x00,0x00,0x00,0xff],[0xd6,0xd6,0xce,0xff];
+        active=true)
+    createText!(game,:info,2,-117,25,4,"Info1",[0x00,0x00,0x00,0xff],[0xd6,0xd6,0xce,0xff];
+        active=true)
+
     createCC!(game,:bagswitch,animBagSwitch!,(); n=1)
     createCallback!(game,:arrows,true,animArrowsMenu!,())
-
-    createBackground!(game,:bag,"backgrounds/menubag1.png",-120,-80,2; active=true)
-
-    m = game.ctrl.input.menu.menubags; setVisibleItems!(game,m)
-    createSprite!(game,:marker,:markers,1,1,-84+8*m.bag,-51,0,2; active=true)
-    createSprite!(game,:bag,:bags,1,m.bag,-48,-12,1,2; active=true)
-    createSprite!(game,:left,:arrows,1,4,-88,-64,1,3; active=true)
-    createSprite!(game,:right,:arrows,1,2,-24,-64,1,3; active=true)
-    createSprite!(game,:up,:arrows,1,1,54,-64,1,3; active=true)
-    createSprite!(game,:down,:arrows,1,3,54,64,1,3; active=true)
-    createSprite!(game,:cursor,:cursors,1,1,0,-39+15*m.slot,0,4; active=true)
-    createSprite!(game,:item,:items,Int(m.vis[m.slot]),1,-100,4,1,3; active=true)
-
-    # drawInventoryText!(game,m)
-    # drawItemText!(game,m)
-
-    createText!(game,:slot,1,-20,0,2,"test2",[0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff];
-        active=true)
-    createText!(game,:items,1,20,0,2,"test1",[0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff];
-        active=true)
-    createText!(game,:info,2,0,0,2,"test3",[0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff];
-        active=true)
 
     return
 end

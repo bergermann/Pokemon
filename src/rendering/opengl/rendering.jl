@@ -162,7 +162,7 @@ function drawTexts(game::GameState)
         # println("Text: ",name)
 
         glFramebufferTextureLayer(GL_DRAW_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,
-            game.im.l.tex,0,Int(text.pos[3])-1); checkError("T.0")
+            game.im.l.tex,0,Int(text.pos[3])-1); checkError("T.01")
 
         glUniform2f(game.im.text.ulocpos,text.pos[1],text.pos[2]); checkError("T.0.1")
         glUniformMatrix3x4fv(game.im.text.uloccolours,1,false,pointer(text.colours)); checkError("T.1")

@@ -2,7 +2,7 @@ Items
 Pokébälle
 TM/VM
 Beeren
-Basis-Items
+Basis-Item
 Beutel schließen
 Zurück zum Hauptmenü.
 Was möchtest\du tun?

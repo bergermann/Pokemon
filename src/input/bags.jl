@@ -114,8 +114,8 @@ function inputBags!(game::GameState,inputs::Inputs)
         setVisibleItems!(game,game.ctrl.input.menu.menubags)
 
         game.im.sprites[1][:cursor].active = false
-        setPos!(game.im.sprites[1][:cursor].pos,
-            24+7+15*game.ctrl.input.menu.menubags.slot,16+114)
+        # setPos!(game.im.sprites[1][:cursor].pos,
+        #     24+7+15*game.ctrl.input.menu.menubags.slot,16+114)
 
         game.im.sprites[1][:icon].active = false
         setInventoryItemIcon!(game,game.ctrl.input.menu.menubags)
@@ -133,8 +133,8 @@ function inputBags!(game::GameState,inputs::Inputs)
 
         switchSprite!(game,:cursor)
         moveSpriteH!(game,:cursor,24+7+15*game.ctrl.input.menu.menubags.slot)
-        setPos!(game.im.sprites[1][:cursor].pos,
-            ,16+114)
+        # setPos!(game.im.sprites[1][:cursor].pos,
+        #     ,16+114)
 
         game.im.sprites[1][:icon].active = false
         setInventoryItemIcon!(game,game.ctrl.input.menu.menubags)

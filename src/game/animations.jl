@@ -344,19 +344,16 @@ end
 function animArrowsMenu!(game::GameState,args::Tuple{})
     s = (game.frame%48) < 24
 
-    # moveSpriteW!(game,:left,-82-(1-2*s)*Int(div((game.frame%24),6)),true)
-    # moveSpriteW!(game,:right,-14+(1-2*s)*Int(div((game.frame%24),6)),true)
-    if game.frame%6 == 0
-        moveSpriteW!(game,:left,(2*s-1))
-        moveSpriteW!(game,:right,(1-2*s))
-    end
+    moveSpriteW!(game,:left,-90-4*s-(1-2*s)*Int(div((game.frame%24),6)),true)
+    moveSpriteW!(game,:right,-20+4*s+(1-2*s)*Int(div((game.frame%24),6)),true)
+    moveSpriteH!(game,:up,-66-4*s-(1-2*s)*Int(div((game.frame%24),6)),true)
+    moveSpriteH!(game,:down,66+4*s+(1-2*s)*Int(div((game.frame%24),6)),true)
 
     return
 end
 
 function animBagSwitch!(game::GameState,args::Tuple{})
     if game.n[:bagswitch].c == 1
-        # setSpriteFrame!(game,:slot,game.input.menu.menubags.bag)
         moveSpriteW!(game,:marker,-70+8*game.input.menu.menubags.bag,true)
 
         setSpriteFrame!(game,:bag,6)

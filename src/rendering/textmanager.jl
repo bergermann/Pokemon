@@ -48,7 +48,7 @@ end
 
 
 
-function string2buffer!(buffer::MMatrix,font::Font,str::String,maxchar::Int,
+function string2buffer!(buffer::Matrix,font::Font,str::String,maxchar::Int,
         wpad::Int,hpad::Int,align::Int)
 
     ch = font.charheight
@@ -147,8 +147,12 @@ end
 
 function createText!(game::GameState,name::Symbol,font::Int,x::Int,y::Int,layer::Int,
         str::String,colour1::Vector{UInt8},colour2::Vector{UInt8};
-        maxchar::Int=128,active::Bool=true,nchar::Int=-1,wpad::Int=0,hpad::Int=0,
+        maxchar::Int=0,active::Bool=true,nchar::Int=-1,wpad::Int=0,hpad::Int=0,
         colour0::Vector{UInt8}=UInt8[0,0,0,0],align::Int=-1)
+
+    if maxchar == 0
+        maxchar = length(str)
+    end
 
     if nchar < 0
         nchar = maxchar
@@ -158,7 +162,8 @@ function createText!(game::GameState,name::Symbol,font::Int,x::Int,y::Int,layer:
 
     setTextColours!(t,colour0,colour1,colour2)
 
-    buffer = MMatrix{24,maxchar}(zeros(Float32,24,maxchar))
+    # buffer = MMatrix{24,maxchar}(zeros(Float32,24,maxchar))
+    buffer = zeros(Float32,24,maxchar)
     string2buffer!(buffer,game.im.text.fonts[font],str,maxchar,wpad,hpad,align)
 
     glBindVertexArray(t.vao)
@@ -189,7 +194,8 @@ function setText!(game::GameState,name::Symbol,str::String; nchar::Int=-1,align:
 
     t.nchar = nchar
 
-    buffer = MMatrix{24,t.maxchar}(zeros(Float32,24,t.maxchar))
+    # buffer = MMatrix{24,t.maxchar}(zeros(Float32,24,t.maxchar))
+    buffer = zeros(Float32,24,t.maxchar)
     string2buffer!(buffer,game.im.text.fonts[t.font],str,t.maxchar,
         t.wpad,t.hpad,align)
 

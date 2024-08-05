@@ -114,15 +114,10 @@ end
 mutable struct MenuBags
     bag::Int
     select::Vector{Int}
-    vis::Matrix{Int}
-    slot::Int
-
-    sub::Bool
-    subslot::Int
-    submode::Int
+    cursor::Vector{Int}
 
     function MenuBags()
-        new(1,ones(5),zeros(8,2),0,false,0,0)
+        new(1,ones(5),ones(5))
     end
 end
 
@@ -151,10 +146,16 @@ mutable struct MenuOpt
 end
 
 mutable struct MenuBattle
-    select::Int
+    d::Bool
+    m1::Bool
+    s1::Integer
+    m2::Bool
+    s2::Integer
+    bag::Bool
+    bags::MenuBags
 
     function MenuBattle()
-        new(0)
+        new(false,false,0,false,0,false,MenuBags())
     end
 end
 
@@ -229,14 +230,7 @@ mutable struct InputState
 
     dialogue::Bool
 
-    battle::Bool
-    battled::Bool
-    battle1::Bool
-    battle1menu::MenuBattle
-    battle2::Bool
-    battle2menu::MenuBattle
-    battlebag::Bool
-    battlebags::MenuBags
+    battle::MenuBattle
 
     worldmap::Bool
 
@@ -255,14 +249,7 @@ mutable struct InputState
 
             false,
 
-            false,
-            false,
-            false,
             MenuBattle(),
-            false,
-            MenuBattle(),
-            false,
-            MenuBags(),
 
             false
         )
@@ -295,7 +282,8 @@ function getdir(input::Input)::Int
 end
 
 mutable struct Controls
-    pos::Position
+    pos1::Position
+    pos2::Position
     mpos::Position
     height::Int
     chunk::Position
@@ -306,6 +294,6 @@ mutable struct Controls
     dialogue::Dialogue
 
     function Controls(x::Int,y::Int,h::Int,cx::Int,cy::Int,dir::Int)
-        new(P(x,y),P(x,y),h,P(cx,cy),dir,InputState(),Dialogue())
+        new(P(x,y),P(x,y),P(x,y),h,P(cx,cy),dir,InputState(),Dialogue())
     end
 end

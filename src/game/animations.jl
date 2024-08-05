@@ -177,9 +177,10 @@ function moveWalk!(game::GameState,dir::Int)
     moveScreen!(game,dir,1)
 
     if game.n[:movemain].c == 1
-        setSpriteFrame!(game,:mc,1+3*(dir-1-2*(dir == 4))+1+sum(game.ctrl.pos)%2)
+        setSpriteFrame!(game,:mc,1+3*(dir-1-2*(dir == 4))+1+sum(game.ctrl.pos1)%2)
+        game.ctrl.pos2 = game.ctrl.pos1+dirs[dir]
     elseif game.n[:movemain].c == 9
-        game.ctrl.pos += dirs[dir]
+        game.ctrl.pos1 += dirs[dir]
         setSpriteFrame!(game,:mc,1+3*(dir-1-2*(dir == 4)))
     elseif game.n[:movemain].c == 16
         # game.ctrl.mpos = game.ctrl.pos + dirs[dir]
@@ -217,9 +218,10 @@ function moveRun!(game::GameState,dir::Int)
     moveScreen!(game,dir,2)
 
     if game.n[:movemain].c == 1
-        setSpriteFrame!(game,:mc,1+3*(dir-1-2*(dir == 4))+1+sum(game.ctrl.pos)%2)
+        setSpriteFrame!(game,:mc,1+3*(dir-1-2*(dir == 4))+1+sum(game.ctrl.pos1)%2)
+        game.ctrl.pos2 = game.ctrl.pos1+dirs[dir]
     elseif game.n[:movemain].c == 5
-        game.ctrl.pos += dirs[dir]
+        game.ctrl.pos1 += dirs[dir]
         setSpriteFrame!(game,:mc,1+3*(dir-1-2*(dir == 4)))
     elseif game.n[:movemain].c == 8
         # game.ctrl.mpos = game.ctrl.pos + dirs[dir]
@@ -345,37 +347,68 @@ function animArrowsMenu!(game::GameState,args::Tuple{})
     s = (game.frame%48) < 24
 
     moveSpriteW!(game,:left,-90-4*s-(1-2*s)*Int(div((game.frame%24),6)),true)
-    moveSpriteW!(game,:right,-20+4*s+(1-2*s)*Int(div((game.frame%24),6)),true)
+    moveSpriteW!(game,:right,-22+4*s+(1-2*s)*Int(div((game.frame%24),6)),true)
     moveSpriteH!(game,:up,-66-4*s-(1-2*s)*Int(div((game.frame%24),6)),true)
     moveSpriteH!(game,:down,66+4*s+(1-2*s)*Int(div((game.frame%24),6)),true)
 
     return
 end
 
-function animBagSwitch!(game::GameState,args::Tuple{})
+function animBagSwitch!(game::GameState,(m,dir,)::Tuple{MenuBags,Int,})
+    for i in 1:5
+        moveText!(game,mbslots[i],-8*dir,0)
+    end
+
     if game.n[:bagswitch].c == 1
-        moveSpriteW!(game,:marker,-70+8*game.input.menu.menubags.bag,true)
+        moveSpriteW!(game,:marker,-84+8*m.bag,true)
+        moveSpriteH!(game,:bag,-1)
+        moveSpriteH!(game,:cursor,-71+16*m.cursor[m.bag],true)
+
+        moveText!(game,:items,0,-63+16*(m.cursor[m.bag]-m.select[m.bag]),true)
+        moveText!(game,:amounts,90,-63+16*(m.cursor[m.bag]-m.select[m.bag]),true)
 
         setSpriteFrame!(game,:bag,6)
-        moveSpriteH!(game,:bag,-1)
+        setText!(game,:items,getItemsStr(game,m))
+        setText!(game,:amounts,getAmountsStr(game,m))
+        setText!(game,:info,game.str[3][getSelectedItem(game,m)])
+        setSpriteIdx!(game,:item,getSelectedItem(game,m))
 
         switchSprite!(game,:left)
         switchSprite!(game,:right)
+        deactivateSprite!(game,:up)
+        deactivateSprite!(game,:down)
         switchSprite!(game,:cursor)
-        switchSprite!(game,:icon)
+        switchSprite!(game,:item)
+        
+        switchText!(game,:info)
+        switchText!(game,:items)
+        switchText!(game,:amounts)
     elseif game.n[:bagswitch].c < 4
         moveSpriteH!(game,:bag,-1)
     elseif game.n[:bagswitch].c == 4
-        setSpriteFrame!(game,:bag,game.input.menu.menubags.bag)
+        moveSpriteH!(game,:bag,-1)
+        setSpriteFrame!(game,:bag,m.bag)
     elseif game.n[:bagswitch].c < 8
         moveSpriteH!(game,:bag,1)
     else game.n[:bagswitch].c
         moveSpriteH!(game,:bag,1)
 
+        for i in 1:5
+            if game.im.text.texts[mbslots[i]].pos[1] > -56+64*2
+                moveText!(game,mbslots[i],-64*5,0)
+            elseif game.im.text.texts[mbslots[i]].pos[1] < -56-64*2
+                moveText!(game,mbslots[i],64*5,0)
+            end
+        end
+
         switchSprite!(game,:left)
         switchSprite!(game,:right)
         switchSprite!(game,:cursor)
-        switchSprite!(game,:icon)
+        switchSprite!(game,:item)
+
+        switchText!(game,:info)
+        switchText!(game,:items)
+        switchText!(game,:amounts)
 
         # drawInventoryText!(game,game.input.menu.menubags)
         # drawItemText!(game,game.input.menu.menubags)
@@ -383,7 +416,7 @@ function animBagSwitch!(game::GameState,args::Tuple{})
         game.callbacks[:bagswitch].active = false
         game.n[:bagswitch].c = 1
 
-        game.input.inputlock = false
+        game.ctrl.input.inputlock = false
 
         return
     end

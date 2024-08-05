@@ -2,6 +2,6 @@
 
 
 keys = Dict{Int,KeyItem}(
-    301 => Bike(),
-    302 => Key()
+    401 => Bike(),
+    402 => Key()
 )

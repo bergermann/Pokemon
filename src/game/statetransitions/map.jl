@@ -38,7 +38,7 @@ function stateInitMap!(game::GameState)
     
     # loadSpritesNPCs!(game)
 
-    createCounter!(game,:movemain,0)
+    createCounter!(game,:movemain,1)
     createCallback!(game,:movemain,false,moveMain!,(game.ctrl.dir,-1))
 
     return

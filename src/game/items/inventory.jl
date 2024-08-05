@@ -6,59 +6,6 @@ include("machines.jl")
 include("berries.jl")
 include("keys.jl")
 
-
-
-function getSelect(game::GameState)
-    return game.ctrl.input.menu.menubags.select[game.ctrl.input.menu.menubags.bag]
-end
-
-function getSelect(m::MenuBags)
-    return m.select[m.bag]
-end
-
-function getAmountItems(game::GameState)
-    return game.p.inventory[-game.ctrl.input.menu.menubags.bag]
-end
-
-function getAmountItems(game::GameState,m::MenuBags)
-    return game.p.inventory[-m.bag]
-end
-
-function getInvSlot(game::GameState,bag::Int,select::Int)
-    return game.p.inventory[bag][select,:]
-end
-
-function getInvSlot(game::GameState)
-    return game.p.inventory[game.ctrl.input.menu.menubags.bag][
-        game.ctrl.input.menu.menubags.select[game.ctrl.input.menu.menubags.bag],:]
-end
-
-function getInvSlot(game::GameState,m::MenuBags)
-    return game.p.inventory[m.bag][m.select[m.bag],:]
-end
-
-function getInvSlotID(game::GameState,bag::Int,select::Int)
-    return game.p.inventory[bag][select,1]
-end
-
-function getInvSlotID(game::GameState)
-    return game.p.inventory[game.ctrl.input.menu.menubags.bag][
-        game.ctrl.input.menu.menubags.select[game.ctrl.input.menu.menubags.bag],1]
-end
-
-function getInvSlotID(game::GameState,m::MenuBags)
-    return game.p.inventory[m.bag][m.select[m.bag],1]
-end
-
-function getInvSlotAmount(game::GameState,bag::Int,select::Int)
-    return game.p.inventory[bag][select,2]
-end
-
-function getInvSlotAmount(game::GameState)
-    return game.p.inventory[game.ctrl.input.menu.menubags.bag][
-        game.ctrl.input.menu.menubags.select[game.ctrl.input.menu.menubags.bag],2]
-end
-
 function getInvChoiceStr(game::GameState)
     if !game.battle.active
         if game.ctrl.input.menu.menubags.bag == 1
@@ -97,19 +44,27 @@ function getInvChoiceStr(game::GameState)
 end
 
 function getItem(id::Int)
-    if 1 <= id <= 20
+    if 1 <= id <= 30            # 30
         return pokeballs[id]
-    elseif id <= 100
+    elseif 31 <= id <= 200      # 170
         return items[id]
-    elseif id <= 200
-        return machines[id]
-    elseif id <= 300
-        return berries[id]
+    elseif 201 <= id <= 320
+        return machines[id]     # 120
+    elseif 321 <= id <= 400
+        return berries[id]      # 80
     else
-        return keys[id]
+        return keys[id]         # 100
     end
 end
 
 function getItem(game::GameState,m::MenuBags)
     return getItem(Int(getInvSlotID(game,m)))
+end
+
+function getSelectedItem(game::GameState,m::MenuBags)
+    if m.select[m.bag] >= game.p.inventory[-m.bag]+1
+        return 500
+    else
+        return Int(game.p.inventory[m.bag][m.select[m.bag],1])
+    end
 end

@@ -18,6 +18,16 @@ Ball wird effektiver,\je länger der\Kampf dauert.
 
 
 
+
+
+
+
+
+
+
+
+
+
 Füllt die KP eines\Pokémon um\20 Punkte auf.
 Füllt die KP eines\Pokémon um\50 Punkte auf.
 Füllt die KP eines\Pokémon um\200 Punkte auf.
@@ -98,8 +108,118 @@ Füllt alle AP eines\Pokémon voll-\ständig auf.
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Stark. Pokémon er-\schrickt vielleicht\bei gegn. Attacke.
 TM02 Aquawelle
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -278,26 +398,6 @@ Item (Tragen) be-\wirkt Selbstheilung\bei Paralyse.
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Klapprad, das dop-\pelt so schnell ist\wie ein Fußgänger.
 Schlüssel
 
@@ -318,3 +418,83 @@ Schlüssel
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Zurück zum\Hauptmenü.

@@ -33,6 +33,8 @@ function mapAction!(game::GameState)
 
         return
     end
+
+    return
 end
 
 

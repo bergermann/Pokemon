@@ -2,6 +2,6 @@
 
 
 machines = Dict{Int,Machine}(
-    101 => HM(),
-    102 => HM(),
+    201 => HM(),
+    202 => HM(),
 )

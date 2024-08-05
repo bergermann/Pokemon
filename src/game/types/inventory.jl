@@ -1,68 +1,50 @@
 # types for item and inventory stuff
 
-
 mutable struct Inventory
-    items::Matrix{UInt16}
-    balls::Matrix{UInt16}
-    machines::Matrix{UInt16}
-    berries::Matrix{UInt16}
-    keys::Matrix{UInt16}
-
-    nitems::Int
-    nballs::Int
-    nmachines::Int
-    nberries::Int
     nkeys::Int
+    nberries::Int
+    nmachines::Int
+    nballs::Int
+    nitems::Int
 
     cash::UInt32
 
-    function Inventory()
-        items   = zeros(UInt16,25,2);   items[:,1] = 21:45
-        balls   = zeros(UInt16,12,2);   balls[:,1] = 1:12
-        tms     = zeros(UInt16,2,2);      tms[:,1] = 101:102
-        berries = zeros(UInt16,2,2);  berries[:,1] = 201:202
-        keys    = zeros(UInt16,2,2);     keys[:,1] = 301:302
+    items::MMatrix{170,2,UInt16}
+    balls::MMatrix{30,2,UInt16}
+    machines::MMatrix{120,2,UInt16}
+    berries::MMatrix{80,2,UInt16}
+    keys::MMatrix{100,2,UInt16}
 
-        new(items,balls,tms,berries,keys,0,0,0,0,0,0)
+    function Inventory()
+        items   = zeros(UInt16,170,2)
+        balls   = zeros(UInt16, 30,2)
+        tms     = zeros(UInt16,120,2)
+        berries = zeros(UInt16, 80,2)
+        keys    = zeros(UInt16,100,2)
+
+        new(0,0,0,0,0,0,items,balls,tms,berries,keys)
     end
 end
 
-function Base.getindex(inv::Inventory,ind)
-    if ind == -5
-        return inv.nkeys
-    elseif ind == -4
-        return inv.nberries
-    elseif ind == -3
-        return inv.nmachines
-    elseif ind == -2
-        return inv.nballs
-    elseif ind == -1
-        return inv.nitems
-    elseif ind == 0
-        return inv.cash
-    elseif ind == 1
-        return inv.items
-    elseif ind == 2
-        return inv.balls
-    elseif ind == 3
-        return inv.machines
-    elseif ind == 4
-        return inv.berries
-    elseif ind == 5
-        return inv.keys
-    end
+function Base.getindex(inv::Inventory,ind::Integer)
+    @assert -5 <= ind <= 5 "Index needs to be within -5 and 5."
+
+    return getfield(inv::Inventory,ind+6)
 end
 
 function setInventoryTest!(inv::Inventory)
-    inv[1][1:10,2] .= 1:10; inv[1][2,2] = 5
-    inv.nitems = 10
+    inv[1][1:20,1] = 31:50; inv[1][1:20,2] .= 1:20; inv[1][2,2] = 5
+    inv.nitems = 20
 
+    inv[2][1,1] = 1; inv[2][2,1] = 2; inv[2][3,1] = 3
     inv[2][1,2] = 20; inv[2][2,2] = 15; inv[2][3,2] = 10
     inv.nballs = 3
 
+    inv[3][1,1] = 201; inv[3][2,1] = 202
     inv[3][1,2] = 10; inv[3][2,2] = 5
     inv.nmachines = 2
 
+    inv[4][1,1] = 321
     inv[4][1,2] = 5
     inv.nberries = 1
 
@@ -70,6 +52,8 @@ function setInventoryTest!(inv::Inventory)
     inv.nkeys = 0
 
     inv.cash = 10000
+
+    return
 end
 
 

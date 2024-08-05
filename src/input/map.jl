@@ -64,6 +64,8 @@ function moveMain!(game::GameState,(dir,type)::Tuple{Int,Int})
         moveWalkWall!(game,dir)
     end
 
+    println(game.ctrl.pos)
+
     return
 end
 

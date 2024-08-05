@@ -13,6 +13,8 @@ const mplabels = Base.ImmutableDict(
     for i in 1:6]...
 )
 
+const mbslots = Base.ImmutableDict([i => Symbol(:slot,i) for i in 1:5]...)
+
 function stateMenuMainOpen!(game::GameState)
     game.ctrl.input.move = false
     game.ctrl.input.map = false
@@ -154,88 +156,93 @@ end
 
 
 
-
-function setVisibleItems!(game::GameState,m::MenuBags)
-    nitems = game.p.inventory[-m.bag]
-
-    m.vis .= 0
-    s = m.select[m.bag]
-
-    i0 = max(1,(s-min(2,s)+(min(5,nitems-s+1)-5)))
-
-    m.slot = 1  # fix?
-
-    for i in 0:7
-        if i0+i == s
-            m.slot = i+1
-        end
-        
-        if i0+i > nitems
-            m.vis[i+1,1] = -1
-
-            break
-        end
-
-        m.vis[i+1,:] = getInvSlot(game,m.bag,i0+i)
+function correctBags!(game::GameState,m::MenuBags)
+    for i in 1:5
+        m.select[i] = min(game.p.inventory[-i],m.select[i])
+        m.cursor[i] = min(game.p.inventory[-i],m.cursor[i])
     end
 
     return
 end
 
+function drawSlots!(game::GameState,m::MenuBags)
+    for i in 1:5
+        p = (i-m.bag)
+        p += 5*(p<-2)-5*(p>2)
+        
+        createText!(game,mbslots[i],4,-56+64*p,-72,1,game.str[1][i],
+            [0x00,0x00,0x00,0xff],[0xbd,0x9c,0x5a,0xff]; active=true,align=0)
+    end
 
-# function getItemIcon(m::MenuBags)
-#     id = Int(m.vis[m.slot])
+    return
+end
 
-#     if id == -1
-#         return getSprite("im/menu/bag/arrowback.imp")
-#     elseif m.bag == 1
-#         return getSprite("im/menu/bag/items/$(id-20).imp")
-#     elseif m.bag == 2
-#         return getSprite("im/menu/bag/balls/$id.imp")
-#     elseif m.bag == 3
-#         return getSprite("im/menu/bag/machines/$(id-100).imp")
-#     elseif m.bag == 4
-#         return getSprite("im/menu/bag/berries/$(id-200).imp")
-#     elseif m.bag == 5
-#         return getSprite("im/menu/bag/keys/$(id-200).imp")
-#     end
-# end
+function getItemsStr(game::GameState,m::MenuBags)
+    if game.p.inventory[-m.bag] > 0
+        return *(game.str[2][game.p.inventory[m.bag][1:game.p.inventory[-m.bag],1]].*"\\"...)*
+            game.str[1][6]
+    else
+        return game.str[1][6]
+    end
+end
 
-function stateMenuBagsOpen!(game::GameState)
+function getAmountsStr(game::GameState,m::MenuBags)
+    if game.p.inventory[-m.bag] > 0
+        return *("×".*string.(game.p.inventory[m.bag][1:game.p.inventory[-m.bag],2]).*"\\"...)
+    else
+        return ""
+    end
+end
+
+function stateMenuBagsOpen!(game::GameState,m::MenuBags)
     stateCloseMap!(game)
+
+    correctBags!(game,m)
 
     loadInventoryStrings!(game)
     
     loadSpriteSheet!(game,"menubag/arrows.png",:arrows,16,16,5; maxsprites=5)
     loadSpriteSheet!(game,"menubag/bags.png",:bags,64,64,6; maxsprites=1)
-    loadSpriteSheet!(game,"menubag/items.png",:items,24,24,8; maxsprites=1)
+    loadSpriteSheet!(game,"menubag/items.png",:items,24,24,1; maxsprites=1)
     loadSpriteSheet!(game,"menubag/marker.png",:markers,4,4,2; maxsprites=1)
 
     createBackground!(game,:bag1,"backgrounds/bag01.png",-88,-70,1; active=true)
     createBackground!(game,:bag2,"backgrounds/bag02.png",-16,-80,2; active=true)
     createBackground!(game,:bag3,"backgrounds/bag1.png",-120,-80,3; active=true)
 
-    m = game.ctrl.input.menu.menubags#; setVisibleItems!(game,m)
     createSprite!(game,:marker,:markers,1,1,-84+8*m.bag,-51,0,3; active=true)
-    createSprite!(game,:bag,:bags,1,m.bag,-48,-12,1,5; active=true)
+    createSprite!(game,:bag,:bags,1,m.bag,-50,-14,1,5; active=true)
     createSprite!(game,:left,:arrows,1,4,-90,-64,1,4; active=true)
     createSprite!(game,:right,:arrows,1,2,-22,-64,1,4; active=true)
     createSprite!(game,:ball,:arrows,1,5,-104,-64,1,3; active=true)
-    createSprite!(game,:up,:arrows,1,1,54,-66,1,3; active=true)
-    createSprite!(game,:down,:arrows,1,3,54,66,1,3; active=true)
-    createSprite!(game,:cursor,:cursors,1,1,-4,-55,0,3; active=true)
-    createSprite!(game,:item,:items,1,1,-100,4,1,3; active=true)
+    createSprite!(game,:up,:arrows,1,1,54,-66,1,3)
+    createSprite!(game,:down,:arrows,1,3,54,66,1,3)
+    createSprite!(game,:cursor,:cursors,1,1,-4,-71+16*m.cursor[m.bag],0,3; active=true)
+    createSprite!(game,:item,:items,getSelectedItem(game,m),1,-100,4,1,3; active=true)
 
-    createText!(game,:slot,4,-56,-72,4,"slot",[0x00,0x00,0x00,0xff],[0xbd,0x9c,0x5a,0xff];
-        active=true,align=0)
-    createText!(game,:items,2,0,-63,2,"Items",[0x00,0x00,0x00,0xff],[0xd6,0xd6,0xce,0xff];
-        active=true)
-    createText!(game,:amounts,2,90,-60,2,"×99",[0x00,0x00,0x00,0xff],[0xd6,0xd6,0xce,0xff];
-        active=true)
-    createText!(game,:info,2,-117,25,4,"Info1",[0x00,0x00,0x00,0xff],[0xd6,0xd6,0xce,0xff];
-        active=true)
+    if m.select[m.bag]-m.cursor[m.bag] <= 0
+        deactivateSprite!(game,:up)
+    else
+        activateSprite!(game,:up)
+    end
 
-    createCC!(game,:bagswitch,animBagSwitch!,(); n=1)
+    if (game.p.inventory[-m.bag]-(m.select[m.bag]-m.cursor[m.bag])) < 8
+        deactivateSprite!(game,:down)
+    else
+        activateSprite!(game,:down)
+    end
+
+    drawSlots!(game,m)
+    createText!(game,:items,2,0,-63+16*(m.cursor[m.bag]-m.select[m.bag]),2,
+        getItemsStr(game,m),[0x00,0x00,0x00,0xff],[0xd6,0xd6,0xce,0xff];
+        active=true,hpad=1,maxchar=12*150)
+    createText!(game,:amounts,2,90,-63+16*(m.cursor[m.bag]-m.select[m.bag]),2,
+        getAmountsStr(game,m),[0x00,0x00,0x00,0xff],[0xd6,0xd6,0xce,0xff];
+        active=true,hpad=1,maxchar=4*150)
+    createText!(game,:info,2,-117,25,4,game.str[3][getSelectedItem(game,m)],
+        [0x00,0x00,0x00,0xff],[0xd6,0xd6,0xce,0xff]; active=true)
+
+    createCC!(game,:bagswitch,animBagSwitch!,(m,0); n=1)
     createCallback!(game,:arrows,true,animArrowsMenu!,())
 
     return
@@ -250,52 +257,27 @@ end
 
 function stateMenuBagsClose!(game::GameState)
     game.ctrl.input.inputlock = true
-    
-    killSpriteAll!(game)
 
     killCallback!(game,:arrows)
     killCC!(game,:bagswitch)
+    killSpritesAll!(game)
+    
+    deleteSpriteSheet!(game,:arrows)
+    deleteSpriteSheet!(game,:bags)
+    deleteSpriteSheet!(game,:items)
+    deleteSpriteSheet!(game,:markers)
 
-    stateInitDrawMap!(game)
-    drawMenu!(game)
+    deleteBackground!(game,:bag1)
+    deleteBackground!(game,:bag2)
+    deleteBackground!(game,:bag3)
 
-    return
-end
+    deleteTextsAll!(game)
+    deleteFramesAll!(game)
 
-
-
-function stateMenuPkmnSubOpen!(game::GameState)
-    killSpriteAll!(game)
-
-    killCC!(game,:bagswitch)
-
-    killCallback!(game,:wiggle)
-    createCallback!(game,:wiggle,animMenuPkmnWiggle!,(); active=true)
-
-    drawMenuPkmn!(game)
+    stateInitMap!(game)
+    stateMenuMainOpen!(game)
 
     return
 end
 
-function stateMenuPkmnSubCtrls!(game::GameState)
-    game.input.inputlock = false
-    game.input.menu.menubags.sub = true
-    game.input.menu.menubags.subslot = 1
-
-    return
-end
-
-function stateMenuPkmnSubClose!(game::GameState)
-    game.input.inputlock = true
-
-    killSpriteAll!(game)
-    killCallback!(game,:wiggle)
-
-    createCC!(game,:bagswitch,animBagSwitch!,(); n=1)
-    createCallback!(game,:wiggle,true,animArrowsMenu!,())
-
-    drawInventory!(game)
-
-    return
-end
 

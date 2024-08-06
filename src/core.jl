@@ -2,7 +2,9 @@
 # include("pokemons.jl")
 
 
-
+function Base.getindex(a::MMatrix,idx::MVector{2,<:Integer})
+    return a[idx[1],idx[2]]
+end
 
 function modc(x::Integer)
     return div(x-1+16,16)-1

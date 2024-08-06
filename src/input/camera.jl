@@ -29,8 +29,9 @@ function checkChunks!(game::GameState,dir::Int)
     r = 2*rd+1
     c = game.ctrl.chunk
 
-    if dir == 1 && game.ctrl.pos[2] < 1
-        game.ctrl.pos[2] += 16
+    if dir == 1 && game.ctrl.pos1[2] < 1
+        game.ctrl.pos1[2] += 16
+        game.ctrl.pos2[2] += 16
         game.ctrl.chunk[2] -= 1
 
         game.im.c.projection1[2,4] -= 16
@@ -38,8 +39,9 @@ function checkChunks!(game::GameState,dir::Int)
         shifty!(game.m.idxs,false)
         shifty!(game.m.didxs,!false)
         loadChunks!(game,game.m.idxs[1,:],c[1]-rd:c[1]+rd,fill(c[2]-rd,r))
-    elseif dir == 2 && game.ctrl.pos[1] > 16
-        game.ctrl.pos[1] -= 16
+    elseif dir == 2 && game.ctrl.pos1[1] > 16
+        game.ctrl.pos1[1] -= 16
+        game.ctrl.pos2[1] -= 16
         game.ctrl.chunk[1] += 1
 
         game.im.c.projection1[1,4] += 16
@@ -47,8 +49,9 @@ function checkChunks!(game::GameState,dir::Int)
         shiftx!(game.m.idxs,false)
         shiftx!(game.m.didxs,!false)
         loadChunks!(game,game.m.idxs[:,end],fill(c[1]+rd,r),c[2]-rd:c[2]+rd)
-    elseif dir == 3 && game.ctrl.pos[2] > 16
-        game.ctrl.pos[2] -= 16
+    elseif dir == 3 && game.ctrl.pos1[2] > 16
+        game.ctrl.pos1[2] -= 16
+        game.ctrl.pos2[2] -= 16
         game.ctrl.chunk[2] += 1
 
         game.im.c.projection1[2,4] += 16
@@ -56,8 +59,9 @@ function checkChunks!(game::GameState,dir::Int)
         shifty!(game.m.idxs,true)
         shifty!(game.m.didxs,!true)
         loadChunks!(game,game.m.idxs[end,:],c[1]-rd:c[1]+rd,fill(c[2]+rd,r))
-    elseif dir == 4 && game.ctrl.pos[1] < 1
-        game.ctrl.pos[1] += 16
+    elseif dir == 4 && game.ctrl.pos1[1] < 1
+        game.ctrl.pos1[1] += 16
+        game.ctrl.pos2[1] += 16
         game.ctrl.chunk[1] -= 1
 
         game.im.c.projection1[1,4] -= 16

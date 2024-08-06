@@ -10,7 +10,7 @@ end
 
 function stateInitMap!(game::GameState)
     game.overworld = true    
-    game.im.c.projection1[1:2,4] .= -game.ctrl.pos
+    game.im.c.projection1[1:2,4] .= -game.ctrl.pos1
 
     loadChunksAll!(game)
 

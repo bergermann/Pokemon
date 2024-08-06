@@ -287,6 +287,7 @@ mutable struct Controls
     mpos::Position
     height::Int
     chunk::Position
+    mchunk::Position
     dir::Int            # 1,2,3,4 = N,E,S,W
 
     input::InputState
@@ -294,6 +295,6 @@ mutable struct Controls
     dialogue::Dialogue
 
     function Controls(x::Int,y::Int,h::Int,cx::Int,cy::Int,dir::Int)
-        new(P(x,y),P(x,y),P(x,y),h,P(cx,cy),dir,InputState(),Dialogue())
+        new(P(x,y),P(x,y),P(x,y),h,P(cx,cy),P(cx,cy),dir,InputState(),Dialogue())
     end
 end

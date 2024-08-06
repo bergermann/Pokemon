@@ -1,11 +1,8 @@
 
 
 
-function getCollision(game::GameState,movepos::Position,l::Int)
-    return game.m.chunkdata[game.m.idxs[
-            game.im.c.renderdistance+1+modc.(movepos[1]),
-            game.im.c.renderdistance+1+modc.(movepos[2])]
-        ].collision[movepos[1],movepos[2],l]
+function getCollision(game::GameState,mpos::Pos,mchunk::Pos,l::Int)
+    return game.m.chunkdata[game.m.idxs[mchunk]].collision[mpos[1],mpos[2],l]
 end
 
 
@@ -13,20 +10,20 @@ const walkable::Vector{UInt16} = [0x0000,0x0005,0x00006,0x00007]
 const bikeable::Vector{UInt16} = [0x0000,0x0005,0x00006]
 const swimmable::Vector{UInt16} = [0x0002,0x0003]
 
-function checkWalkable(game::GameState,movepos::Position,l::Int)
+function checkWalkable(game::GameState,mpos::Pos,mchunk::Pos,l::Int)
     for i in 1:game.npcstatic.idx
-        if isequal(game.npcstatic[i].pos,movepos)
+        if isequal(game.npcstatic[i].pos1,mpos) || isequal(game.npcstatic[i].pos2,mpos)
             return false
         end
     end
 
     for i in 1:game.npcmove.idx
-        if isequal(game.npcmove[i].pos,movepos)
+        if isequal(game.npcmove[i].pos1,mpos) || isequal(game.npcmove[i].pos2,mpos)
             return false
         end
     end
 
-    col = getCollision(game,movepos,l)
+    col = getCollision(game,mpos,mchunk,l)
 
     return |(col ∈ walkable,
         (0x14 <= col <= 0x3b),
@@ -64,7 +61,7 @@ function moveMain!(game::GameState,(dir,type)::Tuple{Int,Int})
         moveWalkWall!(game,dir)
     end
 
-    println(game.ctrl.pos)
+    println(game.ctrl.pos1,",",game.ctrl.pos2)
 
     return
 end
@@ -98,9 +95,11 @@ end
 
 function inputMove!(game::GameState,inputs::Inputs)
     dir = getDirection(inputs)
-    game.ctrl.mpos = game.ctrl.pos + dirs[dir]
+    game.ctrl.mpos = game.ctrl.pos1 + dirs[dir]
+    @. game.ctrl.mpos = (game.ctrl.mpos-1)%16+1
+    game.ctrl.mchunk = modc.(game.ctrl.mpos).+(game.im.c.renderdistance+1)
 
-    if !checkWalkable(game,game.ctrl.mpos,game.ctrl.height)
+    if !checkWalkable(game,game.ctrl.mpos,game.ctrl.mchunk,game.ctrl.height)
         setSpriteIdx!(game,:mc,1)
 
         if game.ctrl.dir != dir

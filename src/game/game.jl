@@ -1,13 +1,13 @@
 
 include("battle/battle.jl")
 include("statetransitions/general.jl")
-include("items/inventory.jl")
+include("inventory/inventory.jl")
 include("dialogue/dialogue.jl")
 include("pokemons.jl")
 include("npcs.jl")
 include("maps.jl")
 # include("controls.jl")
-include("animations.jl")
+include("animations/animations.jl")
 include("npcs.jl")
 include("events.jl")
 

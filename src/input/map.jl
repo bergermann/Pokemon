@@ -25,6 +25,8 @@ function checkWalkable(game::GameState,mpos::Pos,mchunk::Pos,l::Int)
 
     col = getCollision(game,mpos,mchunk,l)
 
+    println(col)
+
     return |(col ∈ walkable,
         (0x14 <= col <= 0x3b),
         (0xa0 <= col <= 0xb3),
@@ -61,8 +63,6 @@ function moveMain!(game::GameState,(dir,type)::Tuple{Int,Int})
         moveWalkWall!(game,dir)
     end
 
-    println(game.ctrl.pos1,",",game.ctrl.pos2)
-
     return
 end
 
@@ -95,9 +95,12 @@ end
 
 function inputMove!(game::GameState,inputs::Inputs)
     dir = getDirection(inputs)
-    game.ctrl.mpos = game.ctrl.pos1 + dirs[dir]
-    @. game.ctrl.mpos = (game.ctrl.mpos-1)%16+1
+    game.ctrl.mpos = game.ctrl.pos1+dirs[dir]
     game.ctrl.mchunk = modc.(game.ctrl.mpos).+(game.im.c.renderdistance+1)
+    # game.ctrl.mchunk = dirs[dir].+(game.im.c.renderdistance+1)
+    @. game.ctrl.mpos = (game.ctrl.mpos+15)%16+1
+
+    # println(game.ctrl.pos1,", ",game.ctrl.pos2,", ",game.ctrl.mpos,", ",game.ctrl.mchunk)
 
     if !checkWalkable(game,game.ctrl.mpos,game.ctrl.mchunk,game.ctrl.height)
         setSpriteIdx!(game,:mc,1)

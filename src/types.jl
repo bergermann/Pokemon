@@ -4,8 +4,10 @@ using StaticArrays: MVector, MMatrix, MArray, SVector, SMatrix, SArray
 const P = Pos = Position = Position = MVector{2,Int}
 
 import Base.getindex
-Base.getindex(A::AbstractMatrix,p::Position) = Base.getindex(A,p[1],p[2])
-Base.getindex(A::AbstractMatrix,p::Position,l::Int) = Base.getindex(A,p[1],p[2],l)
+# Base.getindex(A::AbstractMatrix,p::Position) = Base.getindex(A,p[1],p[2])
+# Base.getindex(A::AbstractMatrix,p::Position,l::Int) = Base.getindex(A,p[1],p[2],l)
+Base.getindex(A::MMatrix, p::MVector{2, Int64}) = 
+    Base.getindex(A,p[1],p[2])
 
 Base.println(p::Position) = println("P($(p[1]),$(p[2]))")
 

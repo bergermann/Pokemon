@@ -2,19 +2,24 @@
 
 
 function mapAction!(game::GameState)
-    b, npc = checkTileNPC(game)
+    game.ctrl.mpos = game.ctrl.pos1+dirs[game.ctrl.dir]
+    game.ctrl.mchunk = modc.(game.ctrl.mpos).+(game.im.c.renderdistance+1)
+    # game.ctrl.mchunk = dirs[dir].+(game.im.c.renderdistance+1)
+    @. game.ctrl.mpos = (game.ctrl.mpos+15)%16+1
 
-    if b
-        if npc.dialogue == 0    # FIX
-            return
-        end
+    # b, npc = checkTileNPC(game)
 
-        stateSetDialogue!(game,1,npc.dialogue,npc.dialoguelen)
+    # if b
+    #     if npc.dialogue == 0    # FIX
+    #         return
+    #     end
 
-        return
-    end
+    #     stateSetDialogue!(game,1,npc.dialogue,npc.dialoguelen)
 
-    tile = game.maps.map.tilemap.collision[game.movepos.h,game.movepos.w]
+    #     return
+    # end
+
+    tile = getCollision(game,game.ctrl.mpos,game.ctrl.mchunk,game.ctrl.l)
 
     if 0x003c <= tile <= 0x004f
         stateSetDialogue!(game,1,tile-59,1)
@@ -22,7 +27,7 @@ function mapAction!(game::GameState)
         return
     end
 
-    tile = game.maps.map.tilemap.collision[game.pos.h,game.pos.w]
+    tile = getCollision(game,game.ctrl.pos1,game.ctrl.chunk,game.ctrl.l)
 
     if 0x00a0 <= tile <= 0x00b3
         event = game.maps.map.events[tile-159]

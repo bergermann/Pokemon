@@ -62,6 +62,6 @@ function main()
     return game, inputs
 end
 
-game, inputs = main();
-
 end
+
+game, inputs = Pokemon.main();

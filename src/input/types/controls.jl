@@ -259,10 +259,10 @@ end
 
 const dirs = Base.ImmutableDict(
     0 => P( 0, 0),
-    1 => P( 0,-1),
-    2 => P( 1, 0),
-    3 => P( 0, 1),
-    4 => P(-1, 0),
+    1 => P(-1, 0),
+    2 => P( 0, 1),
+    3 => P( 1, 0),
+    4 => P( 0,-1),
 )
 
 function invdir(dir::Int)

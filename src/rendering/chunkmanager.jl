@@ -57,6 +57,8 @@ end
 
 
 function loadChunk!(game::GameState,target::Integer,cx::Integer,cy::Integer)
+    println("loading chunk $cx-$cy")
+
     if !isdir("maps/$cx-$cy/")
         game.m.tilemap[1+1280*(target-1):1280*target] .= 1
         game.m.chunkdata[target].height .= 0
@@ -136,14 +138,14 @@ function loadNPCs!(game::GameState,target::Integer,cx::Integer,cy::Integer)
             if npc[3]
                 push!(game.npcs.move,NPCMove(
                     id,
-                    P(x,y),
-                    P(x,y),
-                    P(x,y),
-                    P(x,y),
-                    game.m.chunkdata[target].height[x,y]*(l==1),
-                    P(cx,cy),
-                    P(cx,cy),
-                    P(cx,cy),
+                    P(y,x),
+                    P(y,x),
+                    P(y,x),
+                    P(y,x),
+                    game.m.chunkdata[target].height[y,x]*(l==1),
+                    P(cy,cx),
+                    P(cy,cx),
+                    P(cy,cx),
                     l==2,
                     dir,
                     sid,
@@ -160,8 +162,8 @@ function loadNPCs!(game::GameState,target::Integer,cx::Integer,cy::Integer)
             else
                 push!(game.npcs.static,NPCStatic(
                     id,
-                    P(x,y),
-                    P(cx,cy),
+                    P(y,x),
+                    P(cy,cx),
                     l==2,
                     dir,
                     sid,
@@ -175,11 +177,10 @@ function loadNPCs!(game::GameState,target::Integer,cx::Integer,cy::Integer)
                     Ref(game.npcs.static.data,game.npcs.static.idx)
             end
 
-            x = 16*(16*(cx-game.ctrl.chunk[1])+(x-game.ctrl.pos1[2]))
-            y = 16*(16*(cy-game.ctrl.chunk[2])+(y-game.ctrl.pos1[1]))-8
-            z = 10
-
-            createSprite!(game,sid,:npcs,spriteid,1+3*(dir-1-2*(dir==4)),x,y,z,3;
+            createSprite!(game,sid,:npcs,spriteid,1+3*(dir-1-2*(dir==4)),
+                16*(16*(cx-game.ctrl.chunk[1])+(x-game.ctrl.pos1[2])),
+                16*(16*(cy-game.ctrl.chunk[2])+(y-game.ctrl.pos1[1]))-8,
+                10,3;
                 wreverse=dir==4,active=true)
         end
     end

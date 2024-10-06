@@ -2,7 +2,7 @@
 
 
 function getCollision(game::GameState,mpos::Pos,mchunk::Pos,l::Int)
-    return game.m.chunkdata[game.m.idxs[mchunk]].collision[mpos[2],mpos[1],l]
+    return game.m.chunkdata[game.m.idxs[mchunk]].collision[mpos[1],mpos[2],l]
 end
 
 
@@ -24,8 +24,6 @@ function checkWalkable(game::GameState,mpos::Pos,mchunk::Pos,l::Int)
     # end
 
     col = getCollision(game,mpos,mchunk,l)
-
-    println(col)
 
     return |(col ∈ walkable,
         (0x14 <= col <= 0x3b),
@@ -100,7 +98,8 @@ function inputMove!(game::GameState,inputs::Inputs)
     # game.ctrl.mchunk = dirs[dir].+(game.im.c.renderdistance+1)
     @. game.ctrl.mpos = (game.ctrl.mpos+15)%16+1
 
-    # println(game.ctrl.pos1,", ",game.ctrl.pos2,", ",game.ctrl.mpos,", ",game.ctrl.mchunk)
+    println(game.ctrl.pos1,", ",game.ctrl.pos2,", ",game.ctrl.mpos,", ",game.ctrl.mchunk,
+        ", ",dir)
 
     if !checkWalkable(game,game.ctrl.mpos,game.ctrl.mchunk,game.ctrl.height)
         setSpriteIdx!(game,:mc,1)

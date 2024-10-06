@@ -22,88 +22,70 @@
 
 
 
-function loadStaticNPC!(game::GameState,d::Vector{Int})
-    push!(game.npcstatic,NPCStatic(
-            d[1],                   # id
-            P(d[2],d[3]),           # pos
-            d[4],                   # dir
-            d[5],                   # sprite
-            Symbol("npc",d[1]),     # sprite id
-            d[6],                   # pattern
-            d[7],                   # pattern arg
-            0,                      # counter
-            d[8],                   # dialogue
-            d[9]                    # dialogue length
-        )
-    )
-end
+# function loadStaticNPC!(game::GameState,d::Vector{Int})
+#     push!(game.npcstatic,NPCStatic(
+#             d[1],                   # id
+#             P(d[2],d[3]),           # pos
+#             d[4],                   # dir
+#             d[5],                   # sprite
+#             Symbol("npc",d[1]),     # sprite id
+#             d[6],                   # pattern
+#             d[7],                   # pattern arg
+#             0,                      # counter
+#             d[8],                   # dialogue
+#             d[9]                    # dialogue length
+#         )
+#     )
+# end
 
-function loadMoveNPC!(game::GameState,d::Vector{Int})
-    push!(game.npcmove,NPCMove(
-            d[1],               # id::UInt16
+# function loadMoveNPC!(game::GameState,d::Vector{Int})
+#     push!(game.npcmove,NPCMove(
+#             d[1],               # id::UInt16
 
-            P(d[2],d[3]),       # pos::Position
-            P(d[2],d[3]),       # homepos
-            d[4],               # dir::Int
-            d[5],               # sprite::Int
-            Symbol("npc",d[1]), # spriteid::Symbol
+#             P(d[2],d[3]),       # pos::Position
+#             P(d[2],d[3]),       # homepos
+#             d[4],               # dir::Int
+#             d[5],               # sprite::Int
+#             Symbol("npc",d[1]), # spriteid::Symbol
                 
-            d[6],               # pattern::Int
-            d[7],               # parg1::Int
-            d[8],               # parg2::Int
-            0,                  # c1::Int
-            1,               # c2::Int
+#             d[6],               # pattern::Int
+#             d[7],               # parg1::Int
+#             d[8],               # parg2::Int
+#             0,                  # c1::Int
+#             1,               # c2::Int
 
-            d[9],               # dialogue::Int
-            d[10]               # dialoguelen::Int
-        )
-    )
-end
+#             d[9],               # dialogue::Int
+#             d[10]               # dialoguelen::Int
+#         )
+#     )
+# end
 
-function loadNPCs!(game::GameState,mapid)
-    try
-        f1 = readdlm("maps/$mapid/npcstatic.txt",'\t',Int,'\n'; skipstart=1)
-        f2 = readdlm("maps/$mapid/npcmove.txt",'\t',Int,'\n'; skipstart=1)
+# function loadSpritesNPCs!(game::GameState)
+#     for i in 1:game.npcstatic.idx
+#         npc = game.npcstatic[i]
 
-        for i in axes(f1,1)
-            loadStaticNPC!(game,f1[i,:])
-        end
+#         n = length(readdir("im/sprites/npcs/$(npc.sprite)"))-1
 
-        for i in axes(f2,1)
-            loadMoveNPC!(game,f2[i,:])
-        end
-    catch e
-        println(e)
-        return
-    end
-end
+#         createSprite!(game,npc.spriteid,3,
+#             P(80+16*(npc.pos.h-game.pos.h),128+16*(npc.pos.w-game.pos.w)),
+#             min(3,npc.dir),
+#             getSprite("im/sprites/npcs/$(npc.sprite)",n);
+#             hreverse=(npc.dir==4))
+#     end
 
-function loadSpritesNPCs!(game::GameState)
-    for i in 1:game.npcstatic.idx
-        npc = game.npcstatic[i]
+#     for i in 1:game.npcmove.idx
+#         npc = game.npcmove[i]
 
-        n = length(readdir("im/sprites/npcs/$(npc.sprite)"))-1
+#         createSprite!(game,npc.spriteid,3,
+#             posAddMult(P(80+16*(npc.pos.h-game.pos.h),128+16*(npc.pos.w-game.pos.w)),
+#             dirs[npc.dir],-npc.c1),
+#             min(3,npc.dir),
+#             getSprite("im/sprites/npcs/$(npc.sprite)",9);
+#             hreverse=(npc.dir==4))
+#     end
 
-        createSprite!(game,npc.spriteid,3,
-            P(80+16*(npc.pos.h-game.pos.h),128+16*(npc.pos.w-game.pos.w)),
-            min(3,npc.dir),
-            getSprite("im/sprites/npcs/$(npc.sprite)",n);
-            hreverse=(npc.dir==4))
-    end
-
-    for i in 1:game.npcmove.idx
-        npc = game.npcmove[i]
-
-        createSprite!(game,npc.spriteid,3,
-            posAddMult(P(80+16*(npc.pos.h-game.pos.h),128+16*(npc.pos.w-game.pos.w)),
-            dirs[npc.dir],-npc.c1),
-            min(3,npc.dir),
-            getSprite("im/sprites/npcs/$(npc.sprite)",9);
-            hreverse=(npc.dir==4))
-    end
-
-    checkProximityNPCs!(game)
-end
+#     checkProximityNPCs!(game)
+# end
 
 
 

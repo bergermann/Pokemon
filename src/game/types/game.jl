@@ -156,13 +156,17 @@ end
 
 
 
-abstract type NPC end
+mutable struct NPCs
+    ids::Vector{UInt16}
 
-abstract type NPCNormal <: NPC end
+    static::ArrayList{NPCStatic}
+    move::ArrayList{NPCMove}
+    trainers::ArrayList{NPCTrainer}
 
-abstract type NPCTrainer <:NPC end
-
-
+    function NPCs()
+        new([],ArrayList(NPCStatic,64),ArrayList(NPCMove,64),ArrayList(NPCTrainer,64))
+    end
+end
 
 
 
@@ -210,9 +214,7 @@ mutable struct GameState
     overworld::Bool
     battle::Battle
 
-    npcstatic::ArrayList{<:NPCNormal}
-    npcmove::ArrayList{<:NPCNormal}
-    # trainers::ArrayList{NPCTrainer}
+    npcs::NPCs
 
     flags::Flags
 

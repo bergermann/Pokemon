@@ -2,7 +2,7 @@
 
 
 function getCollision(game::GameState,mpos::Pos,mchunk::Pos,l::Int)
-    return game.m.chunkdata[game.m.idxs[mchunk]].collision[mpos[1],mpos[2],l]
+    return game.m.chunkdata[game.m.idxs[mchunk]].collision[mpos[2],mpos[1],l]
 end
 
 
@@ -11,17 +11,17 @@ const bikeable::Vector{UInt16} = [0x0000,0x0005,0x00006]
 const swimmable::Vector{UInt16} = [0x0002,0x0003]
 
 function checkWalkable(game::GameState,mpos::Pos,mchunk::Pos,l::Int)
-    for i in 1:game.npcstatic.idx
-        if isequal(game.npcstatic[i].pos1,mpos) || isequal(game.npcstatic[i].pos2,mpos)
-            return false
-        end
-    end
+    # for i in 1:game.npcstatic.idx
+    #     if isequal(game.npcstatic[i].pos1,mpos) || isequal(game.npcstatic[i].pos2,mpos)
+    #         return false
+    #     end
+    # end
 
-    for i in 1:game.npcmove.idx
-        if isequal(game.npcmove[i].pos1,mpos) || isequal(game.npcmove[i].pos2,mpos)
-            return false
-        end
-    end
+    # for i in 1:game.npcmove.idx
+    #     if isequal(game.npcmove[i].pos1,mpos) || isequal(game.npcmove[i].pos2,mpos)
+    #         return false
+    #     end
+    # end
 
     col = getCollision(game,mpos,mchunk,l)
 

@@ -7,13 +7,13 @@
 function moveScreen!(game::GameState,dir::Int,n::Int)
     if dir == 1
         game.im.c.projection1[2,4] += Float32(n/16)
-        moveSprites!(game,:npcs,dirs[1]*n)
+        moveSprites!(game,:npcs,dirs[3]*n)
     elseif dir == 2
         game.im.c.projection1[1,4] -= Float32(n/16)
         moveSprites!(game,:npcs,dirs[4]*n)
     elseif dir == 3
         game.im.c.projection1[2,4] -= Float32(n/16)
-        moveSprites!(game,:npcs,dirs[3]*n)
+        moveSprites!(game,:npcs,dirs[1]*n)
     else
         game.im.c.projection1[1,4] += Float32(n/16)
         moveSprites!(game,:npcs,dirs[2]*n)

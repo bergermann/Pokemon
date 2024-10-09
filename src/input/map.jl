@@ -11,17 +11,11 @@ const bikeable::Vector{UInt16} = [0x0000,0x0005,0x00006]
 const swimmable::Vector{UInt16} = [0x0002,0x0003]
 
 function checkWalkable(game::GameState,mpos::Pos,mchunk::Pos,l::Int)
-    # for i in 1:game.npcstatic.idx
-    #     if isequal(game.npcstatic[i].pos1,mpos) || isequal(game.npcstatic[i].pos2,mpos)
-    #         return false
-    #     end
-    # end
-
-    # for i in 1:game.npcmove.idx
-    #     if isequal(game.npcmove[i].pos1,mpos) || isequal(game.npcmove[i].pos2,mpos)
-    #         return false
-    #     end
-    # end
+    for npc in game.m.chunkdata[game.m.idxs[mchunk]].npcs
+        if isequal(npc.second[].pos1,mpos) || isequal(npc.second[].pos2,mpos)
+            return false
+        end
+    end
 
     col = getCollision(game,mpos,mchunk,l)
 
@@ -32,7 +26,8 @@ function checkWalkable(game::GameState,mpos::Pos,mchunk::Pos,l::Int)
 end
 
 function checkEncounter!(game::GameState)
-    if !(game.m.chunkdata[game.m.idxs[r+1,r+1]].collision[game.ctrl.pos[1],game.ctrl.pos[2],1] == 0x06)
+    if !(game.m.chunkdata[game.m.idxs[r+1,r+1]].collision[game.ctrl.pos[1],
+            game.ctrl.pos[2],1] == 0x06)
         return
     end
 
@@ -98,8 +93,8 @@ function inputMove!(game::GameState,inputs::Inputs)
     # game.ctrl.mchunk = dirs[dir].+(game.im.c.renderdistance+1)
     @. game.ctrl.mpos = (game.ctrl.mpos+15)%16+1
 
-    println(game.ctrl.pos1,", ",game.ctrl.pos2,", ",game.ctrl.mpos,", ",game.ctrl.mchunk,
-        ", ",dir)
+    # game.ctrl.pos1,", ",game.ctrl.pos2,", ",
+    println(game.ctrl.mpos,", ",game.ctrl.chunk,", ",game.ctrl.mchunk,", ",dir)
 
     if !checkWalkable(game,game.ctrl.mpos,game.ctrl.mchunk,game.ctrl.height)
         setSpriteIdx!(game,:mc,1)

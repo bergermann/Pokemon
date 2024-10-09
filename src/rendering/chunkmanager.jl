@@ -67,7 +67,6 @@ function loadChunk!(game::GameState,target::Integer,cx::Integer,cy::Integer)
         game.m.tilemap[1+1280*(target-1):1280*target] =
             deserialize("maps/$cx-$cy/tiles.tm")
         game.m.chunkdata[target].height[:] = deserialize("maps/$cx-$cy/heights.hm")
-        # game.m.chunkdata[target].collision[:,:,:] = deserialize("maps/$cx-$cy/col.cm")
         game.m.chunkdata[target].collision[:] = deserialize("maps/$cx-$cy/col.cm")
 
         loadNPCs!(game,target,cx,cy)
@@ -148,40 +147,30 @@ function loadNPCs!(game::GameState,target::Integer,cx::Integer,cy::Integer)
                     P(cy,cx),
                     l==2,
                     dir,
+
                     sid,
+
+                    npc[3],
                     npc[6],
                     npc[4],
                     npc[5],
                     0,
                     0,
-                    npc[7]
+
+                    npc[7],
                 ))
 
                 game.m.chunkdata[target].npcs[id] =
-                    Ref(game.npcs.move.data,game.npcs.static.idx)
-            else
-                push!(game.npcs.static,NPCStatic(
-                    id,
-                    P(y,x),
-                    P(cy,cx),
-                    l==2,
-                    dir,
-                    sid,
-                    npc[6],
-                    npc[4],
-                    0,
-                    npc[7]
-                ))
-
-                game.m.chunkdata[target].npcs[id] =
-                    Ref(game.npcs.static.data,game.npcs.static.idx)
+                    Ref(game.npcs,game.npcs.idx)
             end
 
             createSprite!(game,sid,:npcs,spriteid,1+3*(dir-1-2*(dir==4)),
-                16*(16*(cx-game.ctrl.chunk[1])+(x-game.ctrl.pos1[2])),
-                16*(16*(cy-game.ctrl.chunk[2])+(y-game.ctrl.pos1[1]))-8,
+                16*(16*(cx-game.ctrl.chunk[2])+(x-game.ctrl.pos1[2])),
+                16*(16*(cy-game.ctrl.chunk[1])+(y-game.ctrl.pos1[1]))-8,
                 10,3;
                 wreverse=dir==4,active=true)
+
+            i += 1
         end
     end
 

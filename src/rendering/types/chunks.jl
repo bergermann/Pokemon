@@ -5,14 +5,15 @@ mutable struct ChunkData
     collision::MArray{Tuple{16,16,2},UInt8}
 
     events::Vector{UInt8}
-    npcs::Dict{UInt16,Base.RefArray}
+    # npcs::Dict{UInt16,Base.RefArray}
+    npcs::Dict{UInt16,Base.RefArray{NPC,Vector{NPC},Nothing}}
 
     function ChunkData()
         new(
             MMatrix{16,16,UInt8}(undef),
             MArray{Tuple{16,16,2},UInt8}(undef),
             [],
-            Dict{UInt16,Base.RefArray{<:NPC,Vector{<:NPC},Nothing}}(),
+            Dict{UInt16,Base.RefArray{NPC,Vector{NPC},Nothing}}(),
         )
     end
 end

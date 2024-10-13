@@ -31,7 +31,8 @@ function setupGame(windowscale::Int=4,renderdistance::Int=2,maxtextures::Int=64;
         true,
         Battle(),
 
-        NPCs(),
+        UInt16[],
+        ArrayList(NPC,64),
 
         Flags(),
 

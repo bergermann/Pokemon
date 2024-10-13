@@ -12,7 +12,7 @@ const swimmable::Vector{UInt16} = [0x0002,0x0003]
 
 function checkWalkable(game::GameState,mpos::Pos,mchunk::Pos,l::Int)
     for npc in game.m.chunkdata[game.m.idxs[mchunk]].npcs
-        if isequal(npc.second[].pos1,mpos) || isequal(npc.second[].pos2,mpos)
+        if isequal(npc[].pos1,mpos) || isequal(npc[].pos2,mpos)
             return false
         end
     end
@@ -90,11 +90,7 @@ function inputMove!(game::GameState,inputs::Inputs)
     dir = getDirection(inputs)
     game.ctrl.mpos = game.ctrl.pos1+dirs[dir]
     game.ctrl.mchunk = modc.(game.ctrl.mpos).+(game.im.c.renderdistance+1)
-    # game.ctrl.mchunk = dirs[dir].+(game.im.c.renderdistance+1)
     @. game.ctrl.mpos = (game.ctrl.mpos+15)%16+1
-
-    # game.ctrl.pos1,", ",game.ctrl.pos2,", ",
-    println(game.ctrl.mpos,", ",game.ctrl.chunk,", ",game.ctrl.mchunk,", ",dir)
 
     if !checkWalkable(game,game.ctrl.mpos,game.ctrl.mchunk,game.ctrl.height)
         setSpriteIdx!(game,:mc,1)

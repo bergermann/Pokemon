@@ -301,9 +301,9 @@ function Base.popat!(a::ArrayList,i::Int)
         error("Invalid index, can't pop element."); return
     end
 
-    a[i] = eltype(a.data).name.wrapper()
+    # a[i] = eltype(a.data).name.wrapper()
 
-    a.data[i:a.idx-1] = a.data[i+1:a.idx-1]
+    a.data[i:a.idx-1] = a.data[i+1:a.idx]
     a.idx -= 1
 
     return

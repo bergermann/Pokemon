@@ -6,14 +6,15 @@ mutable struct ChunkData
 
     events::Vector{UInt8}
     # npcs::Dict{UInt16,Base.RefArray}
-    npcs::Dict{UInt16,Base.RefArray{NPC,Vector{NPC},Nothing}}
+    # npcs::Dict{UInt16,Base.RefArray{NPC,Vector{NPC},Nothing}}
+    npcs::Array{Base.RefValue{NPC}}
 
     function ChunkData()
         new(
             MMatrix{16,16,UInt8}(undef),
             MArray{Tuple{16,16,2},UInt8}(undef),
             [],
-            Dict{UInt16,Base.RefArray{NPC,Vector{NPC},Nothing}}(),
+            Array{Base.RefValue{NPC}}([]),
         )
     end
 end

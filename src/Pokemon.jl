@@ -10,6 +10,7 @@ using ModernGL, GLFW#, GLAbstraction
 using LinearAlgebra, Images, Serialization, DelimitedFiles
 
 include("types.jl")
+include("game/types/npc.jl")
 include("rendering/types/types.jl")
 include("input/types/controls.jl")
 include("game/types/types.jl")

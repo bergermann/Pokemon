@@ -59,6 +59,8 @@ end
 function loadChunk!(game::GameState,target::Integer,cx::Integer,cy::Integer)
     println("loading chunk $cx-$cy")
 
+    unloadNPCs!(game,target)
+
     if !isdir("maps/$cx-$cy/")
         game.m.tilemap[1+1280*(target-1):1280*target] .= 1
         game.m.chunkdata[target].height .= 0
@@ -114,55 +116,53 @@ function loadChunks!(game::GameState,targets::AbstractVector{<:Integer},
 end
 
 function loadNPCs!(game::GameState,target::Integer,cx::Integer,cy::Integer)
-    npcs = deserialize("maps/$cx-$cy/npcs.nm")
-
-    i = 1
+    npcs = deserialize("maps/$cx-$cy/npcs.nm"); i = 1
 
     for l in 1:2
         for npc in npcs[l]
             id = UInt16(i+64*cx+64*64*cy)
-            sid = Symbol(:npc,id)
 
+            if id in game.npcids
+                continue
+            else
+                push!(game.npcids,id)
+            end
+
+            sid = Symbol(:npc,id)
             x = npc[1]; y = npc[2]
             spriteid = npc[8]; dir = npc[9]
 
-            # println("chunk: $cx-$cy npc: $id, pos: $x $y, dir: $dir")
+            npc_ = NPC(
+                id,
 
-            if id in game.npcs.ids
-                continue
-            else
-                push!(game.npcs.ids,id)
-            end
+                P(y,x),
+                P(y,x),
+                P(y,x),
+                P(y,x),
+                game.m.chunkdata[target].height[y,x]*(l==1),
+                P(cy,cx),
+                P(cy,cx),
+                P(cy,cx),
+                l==2,
+                dir,
 
-            if npc[3]
-                push!(game.npcs.move,NPCMove(
-                    id,
-                    P(y,x),
-                    P(y,x),
-                    P(y,x),
-                    P(y,x),
-                    game.m.chunkdata[target].height[y,x]*(l==1),
-                    P(cy,cx),
-                    P(cy,cx),
-                    P(cy,cx),
-                    l==2,
-                    dir,
+                sid,
+                
+                npc[3],
+                npc[6],
+                npc[4],
+                npc[5],
+                0,
+                0,
 
-                    sid,
+                0,
+                0,
 
-                    npc[3],
-                    npc[6],
-                    npc[4],
-                    npc[5],
-                    0,
-                    0,
+                npc[7],
+            )
 
-                    npc[7],
-                ))
-
-                game.m.chunkdata[target].npcs[id] =
-                    Ref(game.npcs,game.npcs.idx)
-            end
+            push!(game.npcs,npc_)
+            push!(game.m.chunkdata[target].npcs,Ref(npc_))
 
             createSprite!(game,sid,:npcs,spriteid,1+3*(dir-1-2*(dir==4)),
                 16*(16*(cx-game.ctrl.chunk[2])+(x-game.ctrl.pos1[2])),
@@ -178,21 +178,17 @@ function loadNPCs!(game::GameState,target::Integer,cx::Integer,cy::Integer)
 end
 
     
+function unloadNPCs!(game::GameState,target::Integer)
+    # println("unloading chunk $target")
+    # println(game.m.chunkdata[target].npcs)
 
-# function loadNPCs!(game::GameState,mapid)
-#     try
-#         f1 = readdlm("maps/$mapid/npcstatic.txt",'\t',Int,'\n'; skipstart=1)
-#         f2 = readdlm("maps/$mapid/npcmove.txt",'\t',Int,'\n'; skipstart=1)
+    for npc in game.m.chunkdata[target].npcs
+        idx1 = findfirst(x->x.id==npc[].id,game.npcs.data[1:game.npcs.idx])
+        idx2 = findfirst(isequal(npc[].id),game.npcids)
 
-#         for i in axes(f1,1)
-#             loadStaticNPC!(game,f1[i,:])
-#         end
+        popat!(game.npcs,idx1)
+        popat!(game.npcids,idx2)
+    end
 
-#         for i in axes(f2,1)
-#             loadMoveNPC!(game,f2[i,:])
-#         end
-#     catch e
-#         println(e)
-#         return
-#     end
-# end
+    empty!(game.m.chunkdata[target].npcs)
+end

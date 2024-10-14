@@ -26,6 +26,7 @@
 function manageNPCs!(game::GameState)
     for npc in game.npcs
         if npc.dynamic
+            return
             manageDynamicNPC!(game,npc)
         else
             manageStaticNPC!(game,npc)
@@ -93,7 +94,7 @@ function manageStaticNPC!(game::GameState,npc::NPC)
             npc.c1 = 0
         end
     end
-            
+    
     setSpriteFrame!(game,npc.sprite,1+3*(npc.dir-1-2*(npc.dir==4)))            
     reverseSpriteW!(game,npc.sprite,npc.dir==4)
 
@@ -103,19 +104,26 @@ function manageStaticNPC!(game::GameState,npc::NPC)
 end
 
 function manageDynamicNPC!(game::GameState,npc::NPC)
-    if npc.pattern == 0
-        return
-    elseif npc.pattern == 1 # horizontal
-        moveLinearNPC!(game,npc)
-    elseif npc.pattern == 2
-        moveAngleNPC!(game,npc)
-    elseif npc.pattern == 3
-        moveRectangleNPC!(game,npc,dirsturnright)
-    elseif npc.pattern == 4
-        moveRectangleNPC!(game,npc,dirsturnleft)
+    if npc.c2 == 0
+        if npc.pattern == 0     # rand
+            moveRandomNPC!(game,npc)
+        elseif npc.pattern == 1 # linear
+            moveLinearNPC!(game,npc)
+        elseif npc.pattern == 2 # angle
+            moveAngleNPC!(game,npc)
+        elseif npc.pattern == 3 # cw
+            moveRectangleNPC!(game,npc)
+        elseif npc.pattern == 4 # ccw
+            moveRectangleNPC!(game,npc)
+        end
+
+        setSpriteFrame!(game,:mc,1+3*(npc.dir-1-2*(npc.dir == 4))+1+sum(npc.pos1)%2)
+        reverseSpriteW!(game,npc.sprite,npc.dir==4)
     else
-        moveRandomNPC!(game,npc)
     end
+
+    npc.c2 += 1
+    npc.c2 %= 16
 
     return
 end
@@ -123,7 +131,7 @@ end
 
 function moveLinearNPC!(game::GameState,npc::NPC)
     if npc.c1 == 0
-        if npc.dir == 1 || npc.dir == 2
+        if npc.dir == 1 || npc.dir == 3
             dr = npc.pos1[1]-npc.homepos[1]+dirs[npc.dir][1]
         else
             dr = npc.pos1[2]-npc.homepos[2]+dirs[npc.dir][2]
@@ -137,14 +145,14 @@ function moveLinearNPC!(game::GameState,npc::NPC)
             npc.dir = invdirs(npc.dir)
         end
 
-        if isequal(npc.pos,game.pos,dirs[npc.dir])
-            updateSprite!(game.im.sprites[3][npc.spriteid],min(3,npc.dir))
-            game.im.sprites[3][npc.spriteid].hreverse = (npc.dir == 4)
+        # if isequal(npc.pos,game.pos,dirs[npc.dir])
+        #     updateSprite!(game.im.sprites[3][npc.spriteid],min(3,npc.dir))
+        #     game.im.sprites[3][npc.spriteid].hreverse = (npc.dir == 4)
 
-            return
-        else
-            posAdd!(npc.pos,dirs[npc.dir])
-        end
+        #     return
+        # else
+        #     posAdd!(npc.pos,dirs[npc.dir])
+        # end
         
         if npc.pos.h%2 == npc.pos.w%2
             updateSprite!(game.im.sprites[3][npc.spriteid],min(3,npc.dir)+3)
@@ -159,9 +167,6 @@ function moveLinearNPC!(game::GameState,npc::NPC)
     end
 
     posAdd!(game.im.sprites[3][npc.spriteid].pos,dirs[npc.dir])
-
-    npc.c1 += 1
-    npc.c1 %= 16
 
     return
 end

@@ -103,75 +103,68 @@ function manageStaticNPC!(game::GameState,npc::NPC)
 end
 
 function manageDynamicNPC!(game::GameState,npc::NPC)
+    if npc.pattern == 0
+        return
+    elseif npc.pattern == 1 # horizontal
+        moveLinearNPC!(game,npc)
+    elseif npc.pattern == 2
+        moveAngleNPC!(game,npc)
+    elseif npc.pattern == 3
+        moveRectangleNPC!(game,npc,dirsturnright)
+    elseif npc.pattern == 4
+        moveRectangleNPC!(game,npc,dirsturnleft)
+    else
+        moveRandomNPC!(game,npc)
+    end
+
     return
 end
 
-# function manageMoveNPC!(game::GameState,npc::NPCMove)
-#     if game.input.npclock && npc.c1 == 0
-#         # updateSprite!(game.im.sprites[3][npc.spriteid],dirsinv[game.direction])
+
+function moveLinearNPC!(game::GameState,npc::NPC)
+    if npc.c1 == 0
+        if npc.dir == 1 || npc.dir == 2
+            dr = npc.pos1[1]-npc.homepos[1]+dirs[npc.dir][1]
+        else
+            dr = npc.pos1[2]-npc.homepos[2]+dirs[npc.dir][2]
+        end
+
+        if dr < -npc.parg1
+            npc.c2 = 2
+            npc.dir = invdirs(npc.dir)
+        elseif dr > npc.parg2
+            npc.c2 = 1
+            npc.dir = invdirs(npc.dir)
+        end
+
+        if isequal(npc.pos,game.pos,dirs[npc.dir])
+            updateSprite!(game.im.sprites[3][npc.spriteid],min(3,npc.dir))
+            game.im.sprites[3][npc.spriteid].hreverse = (npc.dir == 4)
+
+            return
+        else
+            posAdd!(npc.pos,dirs[npc.dir])
+        end
         
-#         return
-#     end
-    
-#     if npc.pattern == 0
-#         return
-#     elseif npc.pattern == 1 # horizontal
-#         moveLinearNPC!(game,npc)
-#     elseif npc.pattern == 2
-#         moveAngleNPC!(game,npc)
-#     elseif npc.pattern == 3
-#         moveRectangleNPC!(game,npc,dirsturnright)
-#     elseif npc.pattern == 4
-#         moveRectangleNPC!(game,npc,dirsturnleft)
-#     else
-#         moveRandomNPC!(game,npc)
-#     end    
-# end
+        if npc.pos.h%2 == npc.pos.w%2
+            updateSprite!(game.im.sprites[3][npc.spriteid],min(3,npc.dir)+3)
+            game.im.sprites[3][npc.spriteid].hreverse = (npc.dir == 4)
+        else
+            updateSprite!(game.im.sprites[3][npc.spriteid],min(3,npc.dir)+6)
+            game.im.sprites[3][npc.spriteid].hreverse = (npc.dir == 4)
+        end
+    elseif npc.c1 == 8
+        updateSprite!(game.im.sprites[3][npc.spriteid],min(3,npc.dir))
+        game.im.sprites[3][npc.spriteid].hreverse = (npc.dir == 4)
+    end
 
-# function moveLinearNPC!(game::GameState,npc::NPC)
-#     if npc.c1 == 0
-#         if npc.dir == 1 || npc.dir == 2
-#             dr = npc.pos.h-npc.homepos.h+dirs[npc.dir].h
-#         else
-#             dr = npc.pos.w-npc.homepos.w+dirs[npc.dir].w
-#         end
+    posAdd!(game.im.sprites[3][npc.spriteid].pos,dirs[npc.dir])
 
-#         if dr < -npc.parg1
-#             npc.c2 = 2
-#             npc.dir = dirsinv[npc.dir]
-#         elseif dr > npc.parg2
-#             npc.c2 = 1
-#             npc.dir = dirsinv[npc.dir]
-#         end
+    npc.c1 += 1
+    npc.c1 %= 16
 
-#         if isequal(npc.pos,game.pos,dirs[npc.dir])
-#             updateSprite!(game.im.sprites[3][npc.spriteid],min(3,npc.dir))
-#             game.im.sprites[3][npc.spriteid].hreverse = (npc.dir == 4)
-
-#             return
-#         else
-#             posAdd!(npc.pos,dirs[npc.dir])
-#         end
-        
-#         if npc.pos.h%2 == npc.pos.w%2
-#             updateSprite!(game.im.sprites[3][npc.spriteid],min(3,npc.dir)+3)
-#             game.im.sprites[3][npc.spriteid].hreverse = (npc.dir == 4)
-#         else
-#             updateSprite!(game.im.sprites[3][npc.spriteid],min(3,npc.dir)+6)
-#             game.im.sprites[3][npc.spriteid].hreverse = (npc.dir == 4)
-#         end
-#     elseif npc.c1 == 8
-#         updateSprite!(game.im.sprites[3][npc.spriteid],min(3,npc.dir))
-#         game.im.sprites[3][npc.spriteid].hreverse = (npc.dir == 4)
-#     end
-
-#     posAdd!(game.im.sprites[3][npc.spriteid].pos,dirs[npc.dir])
-
-#     npc.c1 += 1
-#     npc.c1 %= 16
-
-#     return
-# end
+    return
+end
 
 # function moveAngleNPC!(game::GameState,npc::NPC)
 #     if npc.c1 == 0

@@ -43,6 +43,7 @@ end
 
 mutable struct Chunks
     renderdistance::UInt8
+    r2::UInt8
 
     vao::UInt32
     vbo::UInt32
@@ -65,6 +66,7 @@ mutable struct Chunks
         b = UInt32[0,0]; glGenBuffers(2,pointer(b))
 
         new(renderdistance,
+            2*renderdistance+1,
             vao[1],vbo[1],
             t[1],b[1],
             t[2],b[2],

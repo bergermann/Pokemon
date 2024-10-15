@@ -1,8 +1,12 @@
 
 
 
-function getCollision(game::GameState,mpos::Pos,mchunk::Pos,l::Int)
-    return game.m.chunkdata[game.m.idxs[mchunk]].collision[mpos[1],mpos[2],l]
+function getCollision(game::GameState,mpos::Pos,mchunk::Pos,l::Int)::UInt16
+    if mchunk[1] < 1 || mchunk[2] < 1 || mchunk[1] > game.im.c.r2 || mchunk[2] > game.im.c.r2
+        return 0x0001
+    else
+        return game.m.chunkdata[game.m.idxs[mchunk]].collision[mpos[1],mpos[2],l]
+    end
 end
 
 
@@ -12,9 +16,8 @@ const swimmable::Vector{UInt16} = [0x0002,0x0003]
 
 function checkWalkable(game::GameState,mpos::Pos,mchunk::Pos,l::Int)
     for npc in game.m.chunkdata[game.m.idxs[mchunk]].npcs
-        if isequal(npc[].pos1,mpos) || isequal(npc[].pos2,mpos)
-            return false
-        end
+        return !(isequal(npc[].fg,game.ctrl.fg) || 
+                isequal(npc[].pos1,mpos) || isequal(npc[].pos2,mpos))
     end
 
     col = getCollision(game,mpos,mchunk,l)

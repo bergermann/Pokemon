@@ -4,7 +4,6 @@
 function mapAction!(game::GameState)
     game.ctrl.mpos = game.ctrl.pos1+dirs[game.ctrl.dir]
     game.ctrl.mchunk = modc.(game.ctrl.mpos).+(game.im.c.renderdistance+1)
-    # game.ctrl.mchunk = dirs[dir].+(game.im.c.renderdistance+1)
     @. game.ctrl.mpos = (game.ctrl.mpos+15)%16+1
 
     # b, npc = checkTileNPC(game)

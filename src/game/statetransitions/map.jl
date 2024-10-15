@@ -51,9 +51,3 @@ function stateCloseMap!(game::GameState)
 
     return
 end
-
-function stateMapTransition!(game::GameState,exit::Exit)
-    
-
-    return
-end

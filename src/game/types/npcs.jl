@@ -1,52 +1,21 @@
 # types for npcs on map stuff
 
-# abstract type NPC end
-
-# abstract type NPCNormal <: NPC end
-
-# abstract type NPCTrainer <:NPC end
-
-
-# mutable struct NPCStatic <: NPCNormal
-#     id::UInt16
-
-#     pos::Position
-#     chunk::Position
-#     fg::Bool
-#     dir::Int
-
-#     sprite::Symbol
-
-#     pattern::Int
-#     parg::Int
-#     c::Int
-
-#     str::Vector{String}
-
-#     function NPCStatic()
-#         new(0,P(0,0),P(0,0),false,0,Symbol(),0,0,0,[])
-#     end
-
-#     function NPCStatic(id,pos,chunk,fg,dir,sprite,pattern,parg,c,str)
-#         new(id,pos,chunk,fg,dir,sprite,pattern,parg,c,str)
-#     end
-# end
-
-mutable struct NPC# <: NPCNormal
+mutable struct NPC
     id::UInt16
 
     pos1::Position
     pos2::Position
     mpos::Position
-    homepos::Position
+    hpos::Position
     height::Int
     chunk::Position
     mchunk::Position
-    homechunk::Position
+    hchunk::Position
     fg::Bool
     dir::Int
 
     sprite::Symbol
+    spriteid::Int
     
     dynamic::Bool
     pattern::Int
@@ -61,14 +30,14 @@ mutable struct NPC# <: NPCNormal
     str::Vector{String}
 
     function NPC()
-        new(0,P(0,0),P(0,0),P(0,0),P(0,0),0,P(0,0),P(0,0),P(0,0),false,0,Symbol(),false,
+        new(0,P(0,0),P(0,0),P(0,0),P(0,0),0,P(0,0),P(0,0),P(0,0),false,0,Symbol(),0,false,
             0,0,0,0,0,0,0,[])
     end
 
-    function NPC(id,pos1,pos2,mpos,homepos,height,chunk,mchunk,homechunk,fg,dir,sprite,
+    function NPC(id,pos1,pos2,mpos,hpos,height,chunk,mchunk,hchunk,fg,dir,sprite,spriteid,
                         dynamic,pattern,parg1,parg2,c1,c2,trainerid,range,str)
         
-        new(id,pos1,pos2,mpos,homepos,height,chunk,mchunk,homechunk,fg,dir,sprite,
+        new(id,pos1,pos2,mpos,hpos,height,chunk,mchunk,hchunk,fg,dir,sprite,spriteid,
             dynamic,pattern,parg1,parg2,c1,c2,trainerid,range,str)
     end
 end

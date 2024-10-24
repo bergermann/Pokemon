@@ -60,6 +60,8 @@ function loadChunk!(game::GameState,target::Integer,cx::Integer,cy::Integer)
     println("loading chunk $cx-$cy")
 
     unloadNPCs!(game,target)
+    unloadObjects!(game,target)
+    unloadItems!(game,target)
 
     if !isdir("maps/$cx-$cy/")
         game.m.tilemap[1+1280*(target-1):1280*target] .= 1
@@ -72,6 +74,8 @@ function loadChunk!(game::GameState,target::Integer,cx::Integer,cy::Integer)
         game.m.chunkdata[target].collision[:] = deserialize("maps/$cx-$cy/col.cm")
 
         loadNPCs!(game,target,cx,cy)
+        loadObjects!(game,target,cx,cy)
+        loadItems!(game,target,cx,cy)
     end
 
     return
@@ -147,6 +151,7 @@ function loadNPCs!(game::GameState,target::Integer,cx::Integer,cy::Integer)
                 dir,
 
                 sid,
+                spriteid,
                 
                 npc[3],
                 npc[6],
@@ -177,18 +182,137 @@ function loadNPCs!(game::GameState,target::Integer,cx::Integer,cy::Integer)
     return
 end
 
-    
-function unloadNPCs!(game::GameState,target::Integer)
-    # println("unloading chunk $target")
-    # println(game.m.chunkdata[target].npcs)
+function loadObjects!(game::GameState,target::Integer,cx::Integer,cy::Integer)
+    objects = deserialize("maps/$cx-$cy/objects.om"); i = 1
 
+    for l in 1:2
+        for object in objects[l]
+            id = UInt16(i+64*cx+64*64*cy)
+
+            if id in game.objectids
+                continue
+            else
+                push!(game.objectids,id)
+            end
+
+            sid = Symbol(:object,id)
+            type = object[1]
+            x = object[2]; y = object[3]
+
+            obj_ = Object(
+                id,
+                type,
+                P(y,x),
+                P(cx,cy),
+                l == 2,
+                0,
+                sid
+            )
+
+            push!(game.objects,obj_)
+            push!(game.m.chunkdata[target].objects,Ref(obj_))
+
+            createSprite!(game,sid,:objects,1,9+4*(type-1),
+                16*(16*(cx-game.ctrl.chunk[2])+(x-game.ctrl.pos1[2])),
+                16*(16*(cy-game.ctrl.chunk[1])+(y-game.ctrl.pos1[1]-1)),
+                10,3;
+                active=true)
+
+            i += 1
+        end
+    end
+
+    return
+end
+
+function loadItems!(game::GameState,target::Integer,cx::Integer,cy::Integer)
+    items = deserialize("maps/$cx-$cy/items.im"); i = 1
+
+    for l in 1:2
+        for item in items[l]
+            id = UInt16(i+64*cx+64*64*cy)
+
+            println("loading item ",id)
+
+            type = item[1]
+            x = item[2]; y = item[3]
+            vis = item[4]
+            # flag = item[5]
+
+            if id in game.itemids# || game.flags.items[flag]
+                continue
+            else
+                push!(game.itemids,id)
+            end
+
+            sid = Symbol(:item,id)
+
+            item_ = MapItem(
+                id,
+                type,
+                0,#flag
+                P(y,x),
+                P(cx,cy),
+                l == 2,
+                vis,
+                sid
+            )
+
+            push!(game.items,item_)
+            push!(game.m.chunkdata[target].items,Ref(item_))
+
+            if vis
+                createSprite!(game,sid,:objects,1,1,
+                    16*(16*(cx-game.ctrl.chunk[2])+(x-game.ctrl.pos1[2])),
+                    16*(16*(cy-game.ctrl.chunk[1])+(y-game.ctrl.pos1[1]-1)),
+                    10,3;
+                    active=true)
+            end
+
+            i += 1
+        end
+    end
+
+    return
+end
+
+function unloadNPCs!(game::GameState,target::Integer)
     for npc in game.m.chunkdata[target].npcs
         idx1 = findfirst(x->x.id==npc[].id,game.npcs.data[1:game.npcs.idx])
         idx2 = findfirst(isequal(npc[].id),game.npcids)
-
+        
+        killSprite!(game,npc[].sprite)
         popat!(game.npcs,idx1)
         popat!(game.npcids,idx2)
     end
 
     empty!(game.m.chunkdata[target].npcs)
 end
+
+function unloadObjects!(game::GameState,target::Integer)
+    for object in game.m.chunkdata[target].objects
+        idx1 = findfirst(x->x.id==object[].id,game.objects.data[1:game.objects.idx])
+        idx2 = findfirst(isequal(object[].id),game.objectids)
+        
+        killSprite!(game,object[].sprite)
+        popat!(game.objects,idx1)
+        popat!(game.objectids,idx2)
+    end
+
+    empty!(game.m.chunkdata[target].objects)
+end
+
+function unloadItems!(game::GameState,target::Integer)
+    for item in game.m.chunkdata[target].items
+        idx1 = findfirst(x->x.id==item[].id,game.items.data[1:game.items.idx])
+        idx2 = findfirst(isequal(item[].id),game.itemids)
+        
+        killSprite!(game,item[].sprite)
+        popat!(game.items,idx1)
+        popat!(game.itemids,idx2)
+    end
+
+    empty!(game.m.chunkdata[target].items)
+end
+
+

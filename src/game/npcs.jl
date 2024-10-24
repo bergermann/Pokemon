@@ -31,6 +31,8 @@ function manageNPCs!(game::GameState)
             manageStaticNPC!(game,npc)
         end
     end
+
+    return
 end
 
 function manageStaticNPC!(game::GameState,npc::NPC)
@@ -109,17 +111,14 @@ function manageDynamicNPC!(game::GameState,npc::NPC)
         elseif npc.pattern == 1 # linear
             m = moveLinearNPC!(npc)
         elseif npc.pattern == 2 # angle
-            # m = moveAngleNPC!(game,npc)
-            return
+            m = moveAngleNPC!(npc)
         elseif npc.pattern == 3 # cw
-            # m = moveRectangleNPC!(game,npc)
-            return
+            m = moveRectangleNPC!(npc,false)
         elseif npc.pattern == 4 # ccw
-            # m = moveRectangleNPC!(game,npc)
-            return
+            m = moveRectangleNPC!(npc,true)
         end
 
-        npc.mpos = npc.pos1+dirs[npc.dir]
+        @. npc.mpos = npc.pos1+dirs[npc.dir]
         @. npc.mchunk = modc(npc.mpos)+(game.im.c.renderdistance+1)+game.ctrl.chunk-npc.chunk
         @. npc.mpos = (npc.mpos+15)%16+1
 
@@ -129,9 +128,9 @@ function manageDynamicNPC!(game::GameState,npc::NPC)
         if m && !w && checkWalkable(game,npc.mpos,npc.mchunk,npc.fg+1)
             @. npc.pos2 = npc.pos1+dirs[npc.dir]
 
-            checkChunks!(game,npc)
+            # checkChunks!(game,npc)
 
-            setSpriteFrame!(game,npc.sprite,1+3*(npc.dir-1-2*(npc.dir == 4))+1+sum(npc.pos1)%2)
+            setSpriteFrame!(game,npc.sprite,1+3*(npc.dir-1-2*(npc.dir==4))+1+sum(npc.pos1)%2)
             reverseSpriteW!(game,npc.sprite,npc.dir==4)
 
             moveSprite!(game,npc.sprite,dirs[npc.dir][2],dirs[npc.dir][1])
@@ -176,8 +175,7 @@ end
 
 function moveRandomNPC!(npc::NPC)
     if npc.c1 < 32
-        npc.c1 += 1
-        return false
+        npc.c1 += 1; return false
     end
 
     if rand(UInt8) <= npc.parg1
@@ -188,10 +186,10 @@ function moveRandomNPC!(npc::NPC)
 
     if rand(Bool); npc.c1 = 0; return false; end
 
-    dh = (npc.pos1[1]-npc.homepos[1])+16*(npc.chunk[1]-npc.homechunk[1])+dirs[npc.dir][1]
-    dw = (npc.pos1[2]-npc.homepos[2])+16*(npc.chunk[2]-npc.homechunk[2])+dirs[npc.dir][2]
+    dh = abs((npc.pos1[1]-npc.hpos[1])+16*(npc.chunk[1]-npc.hchunk[1])+dirs[npc.dir][1])
+    dw = abs((npc.pos1[2]-npc.hpos[2])+16*(npc.chunk[2]-npc.hchunk[2])+dirs[npc.dir][2])
 
-    if -npc.parg2 <= dh <= npc.parg2 && -npc.parg2 <= dw <= npc.parg2
+    if dh <= npc.parg2 && dw <= npc.parg2
         npc.c1 = 16; return true
     else
         return false
@@ -201,9 +199,9 @@ end
 
 function moveLinearNPC!(npc::NPC)
     if npc.dir == 1 || npc.dir == 3
-        dr = (npc.pos1[1]-npc.homepos[1])+16*(npc.chunk[1]-npc.homechunk[1])   
+        dr = (npc.pos1[1]-npc.hpos[1])+16*(npc.chunk[1]-npc.hchunk[1])   
     else
-        dr = (npc.pos1[2]-npc.homepos[2])+16*(npc.chunk[2]-npc.homechunk[2])
+        dr = (npc.pos1[2]-npc.hpos[2])+16*(npc.chunk[2]-npc.hchunk[2])
     end
 
     if dr >= npc.parg1 && (npc.dir == 1 || npc.dir == 2)
@@ -215,97 +213,37 @@ function moveLinearNPC!(npc::NPC)
     return true
 end
 
-# function moveAngleNPC!(game::GameState,npc::NPC)
-#     if npc.c1 == 0
-#         dh = npc.pos.h-npc.homepos.h
-#         dw = npc.pos.w-npc.homepos.w
+function moveAngleNPC!(npc::NPC)
+    dh = abs((npc.pos1[1]-npc.hpos[1])+16*(npc.chunk[1]-npc.hchunk[1])+dirs[npc.dir][1])
+    dw = abs((npc.pos1[2]-npc.hpos[2])+16*(npc.chunk[2]-npc.hchunk[2])+dirs[npc.dir][2])
 
-#         if dh == 0 && dw == 0 && npc.c2 == 4
-#             npc.dir = dirsturnright[npc.dir]
-#             npc.c2 = 1
-#         elseif (abs(dh) >= npc.parg1 || abs(dw) >= npc.parg2) &&
-#                 (npc.c2 == 1 || npc.c2 == 3)
-            
-#             npc.dir = dirsinv[npc.dir]
-#             npc.c2 += 1
-#         elseif dh == 0 && dw == 0 && npc.c2 == 2
-#             npc.dir = dirsturnleft[npc.dir]
-#             npc.c2 += 1
-#         end
+    if dh == 0 && dw == 0 && npc.c1 == 3
+        npc.dir = (npc.dir)%4+1     # turn right
+        npc.c1 = 1
+    elseif (dh >= npc.parg1 || dw >= npc.parg2) && iseven(npc.c1)
+        npc.dir = invdir(npc.dir)
+        npc.c1 += 1
+    elseif dh == 0 && dw == 0 && npc.c1 == 1
+        npc.dir = (npc.dir+2)%4+1   # turn left
+        npc.c1 += 1
+    end
 
-#         if isequal(npc.pos,game.pos,dirs[npc.dir])
-#             updateSprite!(game.im.sprites[3][npc.spriteid],min(3,npc.dir))
-#             game.im.sprites[3][npc.spriteid].hreverse = (npc.dir == 4)
+    return true
+end
 
-#             return
-#         else
-#             posAdd!(npc.pos,dirs[npc.dir])
-#         end
-        
-#         if npc.pos.h%2 == npc.pos.w%2
-#             updateSprite!(game.im.sprites[3][npc.spriteid],min(3,npc.dir)+3)
-#             game.im.sprites[3][npc.spriteid].hreverse = (npc.dir == 4)
-#         else
-#             updateSprite!(game.im.sprites[3][npc.spriteid],min(3,npc.dir)+6)
-#             game.im.sprites[3][npc.spriteid].hreverse = (npc.dir == 4)
-#         end
-#     elseif npc.c1 == 8
-#         updateSprite!(game.im.sprites[3][npc.spriteid],min(3,npc.dir))
-#         game.im.sprites[3][npc.spriteid].hreverse = (npc.dir == 4)
-#     end
+function moveRectangleNPC!(npc::NPC,ccw::Bool)
+    dh = abs((npc.pos1[1]-npc.hpos[1])+16*(npc.chunk[1]-npc.hchunk[1])+dirs[npc.dir][1])
+    dw = abs((npc.pos1[2]-npc.hpos[2])+16*(npc.chunk[2]-npc.hchunk[2])+dirs[npc.dir][2])
 
-#     posAdd!(game.im.sprites[3][npc.spriteid].pos,dirs[npc.dir])
+    if (dh == 0 && dw == 0 && npc.c1 == 3) ||
+            (((dh==npc.parg1 && dw==0) || (dh==0 && dw==npc.parg2)) && iseven(npc.c1)) ||
+            (dh == npc.parg1 && dw == npc.parg2) && npc.c1 == 1
 
-#     npc.c1 += 1
-#     npc.c1 %= 16
+        npc.dir = (npc.dir+2*cw)%4+1
 
-#     return
-# end
-
-# function moveRectangleNPC!(game::GameState,npc::NPC,turns::Base.ImmutableDict)
-#     if npc.c1 == 0
-#         dh = npc.pos.h-npc.homepos.h
-#         dw = npc.pos.w-npc.homepos.w
-
-#         if dh == 0 && dw == 0 && npc.c2 == 4
-#             npc.dir = turns[npc.dir]
-#             npc.c2 = 1
-#         elseif ((abs(dh) == npc.parg1 && dw == 0) ||
-#                 (dh == 0 && abs(dw) == npc.parg2)) && 
-#                 (npc.c2 == 1 || npc.c2 == 3)
-
-#             npc.dir = turns[npc.dir]
-#             npc.c2 += 1
-#         elseif ((abs(dh) == npc.parg1 && abs(dw) == npc.parg2)) && npc.c2 == 2
-#             npc.dir = turns[npc.dir]
-#             npc.c2 += 1
-#         end
-
-#         if isequal(npc.pos,game.pos,dirs[npc.dir])
-#             updateSprite!(game.im.sprites[3][npc.spriteid],min(3,npc.dir))
-#             game.im.sprites[3][npc.spriteid].hreverse = (npc.dir == 4)
-
-#             return
-#         else
-#             posAdd!(npc.pos,dirs[npc.dir])
-#         end
-        
-#         if npc.pos.h%2 == npc.pos.w%2
-#             updateSprite!(game.im.sprites[3][npc.spriteid],min(3,npc.dir)+3)
-#             game.im.sprites[3][npc.spriteid].hreverse = (npc.dir == 4)
-#         else
-#             updateSprite!(game.im.sprites[3][npc.spriteid],min(3,npc.dir)+6)
-#             game.im.sprites[3][npc.spriteid].hreverse = (npc.dir == 4)
-#         end
-#     elseif npc.c1 == 8
-#         updateSprite!(game.im.sprites[3][npc.spriteid],min(3,npc.dir))
-#         game.im.sprites[3][npc.spriteid].hreverse = (npc.dir == 4)
-#     end
-
-#     posAdd!(game.im.sprites[3][npc.spriteid].pos,dirs[npc.dir])
-
-#     npc.c1 += 1
-#     npc.c1 %= 16
-
-#     return
-# end
+        npc.c1 += 1
+        npc.c1 %= 4 
+    end
+    
+    return true
+end

@@ -5,6 +5,7 @@ include("inventory/inventory.jl")
 include("dialogue/dialogue.jl")
 include("pokemons.jl")
 include("npcs.jl")
+include("objects.jl")
 include("maps.jl")
 # include("controls.jl")
 include("animations/animations.jl")
@@ -33,6 +34,12 @@ function setupGame(windowscale::Int=4,renderdistance::Int=2,maxtextures::Int=64;
 
         UInt16[],
         ArrayList(NPC,64),
+
+        UInt16[],
+        ArrayList(Object,64),
+
+        UInt16[],
+        ArrayList(MapItem,64),
 
         Flags(),
 

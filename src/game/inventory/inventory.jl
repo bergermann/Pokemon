@@ -62,6 +62,9 @@ function getItem(game::GameState,m::MenuBags)
 end
 
 function getSelectedItem(game::GameState,m::MenuBags)
+    display(m.bag)
+    display(m.select)
+    display(game.p.inventory[-m.bag])
     if m.select[m.bag] >= game.p.inventory[-m.bag]+1
         return 500
     else

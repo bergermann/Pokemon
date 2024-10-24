@@ -52,7 +52,8 @@ function updateGame!(game::GameState,inputs::Inputs)
         # arrange sprites here
 
         if !game.ctrl.input.npclock
-            manageNPCs!(game)
+            # @time manageNPCs!(game)
+            # manageNPCs!(game)
         end
     end
 

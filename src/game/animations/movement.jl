@@ -38,7 +38,7 @@ function moveWalk!(game::GameState,dir::Int)
 
     if game.n[:movemain].c == 1
         setSpriteFrame!(game,:mc,1+3*(dir-1-2*(dir == 4))+1+sum(game.ctrl.pos1)%2)
-        game.ctrl.pos2 = game.ctrl.pos1+dirs[dir]
+        game.ctrl.pos2 .= game.ctrl.pos1+dirs[dir]
     elseif game.n[:movemain].c == 9
         game.ctrl.pos1 += dirs[dir]
         setSpriteFrame!(game,:mc,1+3*(dir-1-2*(dir == 4)))

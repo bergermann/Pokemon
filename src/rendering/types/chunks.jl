@@ -8,6 +8,8 @@ mutable struct ChunkData
     # npcs::Dict{UInt16,Base.RefArray}
     # npcs::Dict{UInt16,Base.RefArray{NPC,Vector{NPC},Nothing}}
     npcs::Array{Base.RefValue{NPC}}
+    objects::Array{Base.RefValue{Object}}
+    items::Array{Base.RefValue{MapItem}}
 
     function ChunkData()
         new(
@@ -15,6 +17,8 @@ mutable struct ChunkData
             MArray{Tuple{16,16,2},UInt8}(undef),
             [],
             Array{Base.RefValue{NPC}}([]),
+            Array{Base.RefValue{Object}}([]),
+            Array{Base.RefValue{MapItem}}([]),
         )
     end
 end

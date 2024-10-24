@@ -124,9 +124,11 @@ function moveSprite!(game::GameState,id::Symbol,w::Int,h::Int,absolute::Bool=fal
     s = game.im.s.sprites[id]
 
     if absolute
-        game.im.s.sheets[s.sheet].pos[1:2,s.slot] .= w,h
+        game.im.s.sheets[s.sheet].pos[1,s.slot] = w
+        game.im.s.sheets[s.sheet].pos[2,s.slot] = h
     else
-        game.im.s.sheets[s.sheet].pos[1:2,s.slot] .+= w,h
+        game.im.s.sheets[s.sheet].pos[1,s.slot] += w
+        game.im.s.sheets[s.sheet].pos[2,s.slot] += h
     end
 
     return
@@ -157,7 +159,23 @@ function moveSpriteH!(game::GameState,id::Symbol,h::Int,absolute::Bool=false)
 end
 
 function moveSprites!(game::GameState,sheet::Symbol,d::Pos)
-    game.im.s.sheets[sheet].pos[1:2,:] .+= d
+    @views game.im.s.sheets[sheet].pos[1:2,:] .+= d
+
+    # @inbounds @simd for i in axes(game.im.s.sheets[sheet].pos,2)
+    #     game.im.s.sheets[sheet].pos[1,i] += d[1]
+    #     game.im.s.sheets[sheet].pos[2,i] += d[2]
+    # end
+
+    return
+end
+
+function moveSprites!(game::GameState,sheet::Symbol,d::Pos,n::Int)
+    dx = n*d[1]; dy = n*d[2]
+
+    @inbounds @simd for i in axes(game.im.s.sheets[sheet].pos,2)
+        game.im.s.sheets[sheet].pos[1,i] += dx
+        game.im.s.sheets[sheet].pos[2,i] += dy
+    end
 
     return
 end
@@ -239,9 +257,11 @@ function scaleSprite!(game::GameState,id::Symbol,w::Float64,h::Float64,absolute:
     s = game.im.s.sprites[id]
 
     if absolute
-        game.im.s.sheets[s.sheet].scale[:,s.slot] .= w,h
+        game.im.s.sheets[s.sheet].scale[1,s.slot] = w
+        game.im.s.sheets[s.sheet].scale[2,s.slot] = h
     else
-        game.im.s.sheets[s.sheet].scale[:,s.slot] .+= w,h
+        game.im.s.sheets[s.sheet].scale[1,s.slot] += w
+        game.im.s.sheets[s.sheet].scale[2,s.slot] += h
     end
 
     return
@@ -266,8 +286,8 @@ end
 function setSprite!(game::GameState,id::Symbol,idx::Int,frame::Int)
     s = game.im.s.sprites[id]
     
-    game.im.s.sheets[s.sheet].idx[:,s.slot] .=
-        (idx-1)*game.im.s.sheets[s.sheet].nframes+1,frame
+    game.im.s.sheets[s.sheet].idx[1,s.slot] = (idx-1)*game.im.s.sheets[s.sheet].nframes+1
+    game.im.s.sheets[s.sheet].idx[2,s.slot] = frame
 
     return
 end

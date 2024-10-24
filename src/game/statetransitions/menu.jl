@@ -158,8 +158,8 @@ end
 
 function correctBags!(game::GameState,m::MenuBags)
     for i in 1:5
-        m.select[i] = min(game.p.inventory[-i],m.select[i])
-        m.cursor[i] = min(game.p.inventory[-i],m.cursor[i])
+        m.select[i] = min(game.p.inventory[-i]+1,m.select[i])
+        m.cursor[i] = min(game.p.inventory[-i]+1,m.cursor[i])
     end
 
     return

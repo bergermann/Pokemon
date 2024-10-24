@@ -155,21 +155,6 @@ end
 
 
 
-
-# mutable struct NPCs
-#     ids::Vector{UInt16}
-
-#     static::ArrayList{NPCStatic}
-#     move::ArrayList{NPCMove}
-#     trainers::ArrayList{NPCTrainer}
-
-#     function NPCs()
-#         new([],ArrayList(NPCStatic,64),ArrayList(NPCMove,64),ArrayList(NPCTrainer,64))
-#     end
-# end
-
-
-
 mutable struct Flags
     general::BitVector
     progress::BitVector
@@ -217,6 +202,12 @@ mutable struct GameState
     # npcs::NPCs
     npcids::Vector{UInt16}
     npcs::ArrayList{NPC}
+
+    objectids::Vector{UInt16}
+    objects::ArrayList{Object}
+
+    itemids::Vector{UInt16}
+    items::ArrayList{MapItem}
 
     flags::Flags
 

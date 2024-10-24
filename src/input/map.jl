@@ -2,11 +2,7 @@
 
 
 function getCollision(game::GameState,mpos::Pos,mchunk::Pos,l::Int)::UInt16
-    if !(1 <= mchunk[1] <= game.im.c.r2) || !(1 <= mchunk[2] <= game.im.c.r2)
-        return 0x0001
-    else
-        return game.m.chunkdata[game.m.idxs[mchunk]].collision[mpos[1],mpos[2],l]
-    end
+    return game.m.chunkdata[game.m.idxs[mchunk]].collision[mpos[1],mpos[2],l]
 end
 
 
@@ -15,9 +11,25 @@ const bikeable::Vector{UInt16} = [0x0000,0x0005,0x00006]
 const swimmable::Vector{UInt16} = [0x0002,0x0003]
 
 function checkWalkable(game::GameState,mpos::Pos,mchunk::Pos,l::Int)
+    if !(1 <= mchunk[1] <= game.im.c.r2) || !(1 <= mchunk[2] <= game.im.c.r2)
+        return false
+    end
+
     for npc in game.m.chunkdata[game.m.idxs[mchunk]].npcs
         if isequal(npc[].fg,game.ctrl.fg) && 
                 (isequal(npc[].pos1,mpos) || isequal(npc[].pos2,mpos))
+            return false
+        end
+    end
+
+    for object in game.m.chunkdata[game.m.idxs[mchunk]].objects
+        if isequal(object[].fg,game.ctrl.fg) && isequal(object[].pos,mpos)
+            return false
+        end
+    end
+
+    for item in game.m.chunkdata[game.m.idxs[mchunk]].items
+        if isequal(item[].fg,game.ctrl.fg) && isequal(item[].pos,mpos)
             return false
         end
     end
@@ -93,8 +105,8 @@ end
 
 function inputMove!(game::GameState,inputs::Inputs)
     dir = getDirection(inputs)
-    game.ctrl.mpos = game.ctrl.pos1+dirs[dir]
-    game.ctrl.mchunk = modc.(game.ctrl.mpos).+(game.im.c.renderdistance+1)
+    @. game.ctrl.mpos = game.ctrl.pos1+dirs[dir]
+    @. game.ctrl.mchunk = modc(game.ctrl.mpos)+(game.im.c.renderdistance+1)
     @. game.ctrl.mpos = (game.ctrl.mpos+15)%16+1
 
     if !checkWalkable(game,game.ctrl.mpos,game.ctrl.mchunk,game.ctrl.height)

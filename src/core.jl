@@ -96,7 +96,7 @@ function randN(μ::Real,σ::Real,dims)
 end
 
 function randN(μ::Real,σ::Real)
-    return discreteGaussian(typeof(μ),1; μ=μ,σ=σ)
+    return discreteGaussian(typeof(μ),(); μ=μ,σ=σ)
 end
 
 

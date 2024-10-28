@@ -42,7 +42,7 @@ function checkWalkable(game::GameState,mpos::Pos,mchunk::Pos,l::Int)
 end
 
 function checkEncounter!(game::GameState)
-    if !(getCollision(game,game.ctrl.pos1,game.ctrl.chunk,game.ctrl.fg+1)==0x06) ||
+    if !(getCollision(game,game.ctrl.mpos,game.ctrl.mchunk,game.ctrl.fg+1)==0x06) ||
             rand(UInt8) < 0x80
 
         return

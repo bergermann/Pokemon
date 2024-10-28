@@ -1,12 +1,12 @@
 
 
 
-function animBattleEntry1!(game::GameState)
-    if game.n[:introb].c < 40
-        game.im.l.color[4] = 1.0 - 0.5*sinpi((game.n[:introb].c+1)/10.0)
+function animBattleEntry1!(game::GameState,args::Tuple{})
+    if game.n[:introb].c < 36
+        game.im.l.color[4] = 1.0 - 0.75*sinpi((game.n[:introb].c+1)/6.0)
     elseif game.n[:introb].c < 60
         # replace this with horizontal slider effect
-        game.im.l.color[4] = (59-game.n[:introb].c)/20.0
+        game.im.l.color[4] = (59-game.n[:introb].c)/24.0
     elseif game.n[:introb].c == 60
         stateCloseMap!(game)
         stateOpenBattle!(game)
@@ -21,6 +21,8 @@ function animBattleEntry1!(game::GameState)
         game.battle.active = true
 
         killCC!(game,:introb)
+
+        error("here")
 
         return
     end

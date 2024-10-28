@@ -12,7 +12,7 @@ function initBattleWild!(game::GameState)
     stateInitBattle!(game)
 
     data = getArea(game); idx = sample(fweights(data[:,4]))
-    lvl = min(2,randN(data[idx,2],data[idx,3]))
+    lvl = UInt8(clamp(randN(data[idx,2],data[idx,3]),2,100))
 
     pb1 = PkmnBattle(game.p.pokemon[1],getPkmnName(game,activePkmn(game)))
     pb2 = PkmnBattle(generatePkmn(game,data[idx,1],lvl))
@@ -26,8 +26,8 @@ function initBattleWild!(game::GameState)
 end
 
 function getArea(game::GameState)::Matrix{UInt16}
-    p = game.ctrl.pos
-    c = game.ctrl.chunk
+    p = game.ctrl.mpos
+    c = game.ctrl.mchunk
 
     for area in game.m.areas.data[1:game.m.areas.idx]
         if 16*(area.cx-c[2])+area.px <= p[2] <= 16*(area.cx-c[2])+area.px+area.dx &&

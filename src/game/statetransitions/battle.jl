@@ -21,80 +21,61 @@ function stateInitBattle!(game::GameState)
 end
 
 function stateOpenBattle!(game::GameState)
-    loadTeamStrings!(game)
+    # loadBattleStrings!(game)
 
     createBackground!(game,:battle,"backgrounds/battle/grass1.png",-120,-80,1; active=true)
-    createBackground!(game,:battle,"textboxes/battle.png",-120,32,4; active=true)
+    createBackground!(game,:text,"textboxes/battle.png",-120,32,3; active=true)
 
     loadSpriteSheet!(game,"battle/battlers/mc1.png",:battlermc,64,64,4; maxsprites=1)
-    loadSpriteSheet!(game,"battle/pads/grass1.png",:pads,128,64,1; maxsprites=2)
+    loadSpriteSheet!(game,"battle/pads/grass1.png",:pads,128,32,1; maxsprites=2)
     loadSpriteSheet!(game,"battle/intro/grass1.png",:fol,128,64,1; maxsprites=2)
     loadSpriteSheet!(game,"battle/balls.png",:balls,16,16,2; maxsprites=2)
-    loadSpriteSheet!(game,"battle/ballicons.png",:ballicons,7,6,4; maxsprites=12)
+    loadSpriteSheet!(game,"battle/ballicons.png",:ballicons,7,7,4; maxsprites=12)
     loadSpriteSheet!(game,"battle/tagown.png",:tagown,104,37,1; maxsprites=1)
     loadSpriteSheet!(game,"battle/tagopp.png",:tagopp,100,29,1; maxsprites=1)
 
     p1 = game.battle.state.pkmn1.pkmn
     path1 = "battle/battlers/back/$(p1.shiny ? "shiny" : "normal")/$(p1.id).png"
     p2 = game.battle.state.pkmn2.pkmn
-    path2 = "battle/battlers/back/$(p2.shiny ? "shiny" : "normal")/$(p2.id).png"
+    path2 = "battle/battlers/front/$(p2.shiny ? "shiny" : "normal")/$(p2.id).png"
 
-    loadSpriteSheet!(game,path1,:pkmn1,64,64; maxsprites=1)
-    loadSpriteSheet!(game,path2,:pkmn2,64,64; maxsprites=1)
+    loadSpriteSheet!(game,path1,:pkmn1,64,64,2; maxsprites=1)
+    loadSpriteSheet!(game,path2,:pkmn2,64,64,2; maxsprites=1)
 
     createCallback!(game,:wiggle,animWiggleBattle!,())
     createCC!(game,:animbattle,animBattlePhaseWild!,(); n=-1)
+
+    createSprite!(game,:pad1,:pads,2,1,-56,16,10,2; active=true)
+    createSprite!(game,:pad2,:pads,1,1,56,-16,10,2; active=true)
+
+    createSprite!(game,:pkmn1,:pkmn1,1,1,-64,24,10,2; active=true)
+    createSprite!(game,:pkmn2,:pkmn2,1,1,64,-32,10,2; active=true)
     
-    bg = deserialize("im/battle/backgrounds/grass1.imp")
-    game.im.layers[1][24+1:24+112,16+1:16+240] = bg.palette[bg.im]
-
-    dia = deserialize("im/menu/dialogue/1.imp")
-    game.im.layers[3][24+1+112:24+160,16+1:16+240] = dia.palette[dia.im]
-
-    createSprite!(game,:pkmn1,2,Position(90,40),1,
-        getBattlerBack(game.battle.state.pkmn1.pkmn); active=true)
-    createSprite!(game,:pkmn2,2,Position(32,160),1,
-        getBattlerFront(game.battle.state.pkmn2.pkmn); active=true)
+    createSprite!(game,:cursor1,:cursors,1,1,-94,66,10,2; active=true)
+    createSprite!(game,:cursor2,:cursors,1,1,16,66,10,2; active=true)
     
-    createSprite!(game,:cursor1,4,Position(146,136),1,
-        getSprite("im/battle/cursor.imp"))
-    createSprite!(game,:cursor2,5,Position(146,24),1,
-        getSprite("im/battle/cursor.imp"))
+    createSprite!(game,:tagown,:tagown,1,1,60,12,10,2; active=true)
+    createSprite!(game,:tagopp,:tagopp,1,1,-58,-50,10,2; active=true)
     
-    createSprite!(game,:tag1,3,Position(72+24,126+16),1,
-        getSprite("im/battle/tagown.imp"); active=true)
-    createSprite!(game,:tag2,3,Position(14+24,12+16),1,
-        getSprite("im/battle/tagopp.imp"); active=true)
+    createFrame!(game,:choice, 13,4,   0,32,3; active=true)
+    createFrame!(game,:info,   8 ,4,  40,32,3; active=!true)
+    createFrame!(game,:attacks,18,4,-120,32,3; active=!true)
 
-    drawBattleTagOwn!(game,game.battle.state.pkmn1.pkmn,
-        game.im.sprites[3][:tag1])
-    drawBattleTagOpp!(game,game.battle.state.pkmn2.pkmn,
-        game.im.sprites[3][:tag2])
-
+    # createText!(game,:choice,4,-112,57,5,game.str[1][2],
+    #     [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0)
+    # createText!(game,:info,4,-112,57,5,game.str[1][3],
+    #     [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0)
     
-    loadSpriteSheet!(game,"menupkmn/slotmain.png",:smain,78,49,2; maxsprites=1)
-    loadSpriteSheet!(game,"menupkmn/slotside.png",:sside,142,22,2; maxsprites=5)
-    loadSpriteSheet!(game,"menupkmn/exit.png",:exit,52,16,2; maxsprites=1)
-    loadSpriteSheet!(game,"menupkmn/pokeballs.png",:balls,20,24,2; maxsprites=7)
-    loadSpriteSheet!(game,"menupkmn/status.png",:status,20,8,1; maxsprites=6)
-    loadSpriteSheet!(game,"menupkmn/item.png",:item,8,8,1; maxsprites=6)
-    # loadSpriteSheet!(game,"menupkmn/gender.png",:gender,8,8,1; maxsprites=6)
-    # loadSpriteSheet!(game,"menupkmn/health.png",:health,1,3,3; maxsprites=6)
-    loadIcons!(game)
+    # for i in 1:max(4,length(p1.attacks))
+    #     createText!(game,Symbol(:attack,i),4,-112,57,5,p1.attacks[i].name,
+    #         [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=false,hpad=0)
+    # end
+
+    # for i in length(p1.attacks):4
+    #     createText!(game,Symbol(:attack,i),4,-112,57,5,"---",
+    #         [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=false,hpad=0)
+    # end
     
-    createFrame!(game,:choose,21,2,-120,48,1; active=true)
-    createFrame!(game,:info,16,2,-120,48,1; active=false)
-
-    createText!(game,:choose,4,-112,57,5,game.str[1][2],
-        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0)
-    createText!(game,:info,4,-112,57,5,game.str[1][3],
-        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=false,hpad=0)
-    
-    createCallback!(game,:wiggle,animMenuPkmnWiggle!,(); active=true)
-
-    drawSlotMain!(game)
-    drawSlotSide!(game)
-
     return
 end
 

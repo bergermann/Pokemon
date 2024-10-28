@@ -200,7 +200,7 @@ end
 
 function applyItem!(game::GameState)
     item = getItem(getInvSlotID(game))
-    target = game.trainer.pokemon[game.ctrl.input.menu.menubags.subslot]
+    target = game.p.pokemon[game.ctrl.input.menu.menubags.subslot]
 
     applyItem!(target,item)
 end

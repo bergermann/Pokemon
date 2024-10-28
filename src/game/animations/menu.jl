@@ -173,9 +173,6 @@ function animBagSwitch!(game::GameState,(m,dir,)::Tuple{MenuBags,Int,})
         switchText!(game,:items)
         switchText!(game,:amounts)
 
-        # drawInventoryText!(game,game.input.menu.menubags)
-        # drawItemText!(game,game.input.menu.menubags)
-
         game.callbacks[:bagswitch].active = false
         game.n[:bagswitch].c = 1
 

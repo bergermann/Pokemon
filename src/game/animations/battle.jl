@@ -2,48 +2,47 @@
 
 
 function animBattleEntry1!(game::GameState)
-    if game.n[:battleintro].c == 0
-        game.im.postprocess.active = true
-        game.im.postprocess.func = combine!
-        game.im.postprocess.args = (0x999999,0x10,0x00)
-    elseif game.n[:battleintro].c < 45
-        game.im.postprocess.args = (0x999999,0x10,
-            round(UInt8,8*(1-cospi(game.n[:battleintro].c/7.5))))
-    elseif game.n[:battleintro].c == 45
-        game.im.postprocess.func = horizontalShifts!
-        game.im.postprocess.args = (0,2)
-    elseif 45 < game.n[:battleintro].c < 115
-        game.im.postprocess.args = (4*(game.n[:battleintro].c-45),2)
-    else
-        game.im.postprocess.active = false
-        game.im.postprocess.func = empty
-        game.im.postprocess.args = ()
+    if game.n[:introb].c < 40
+        game.im.l.color[4] = 1.0 - 0.5*sinpi((game.n[:introb].c+1)/10.0)
+    elseif game.n[:introb].c < 60
+        # replace this with horizontal slider effect
+        game.im.l.color[4] = (59-game.n[:introb].c)/20.0
+    elseif game.n[:introb].c == 60
+        stateCloseMap!(game)
+        stateOpenBattle!(game)
+        
+        Base.GC.gc()
+    elseif game.n[:introb].c < 80
+        # replace this with vertical slider effect
+        game.im.l.color[4] = (game.n[:introb].c-60)/20.0
+    elseif game.n[:introb].c == 80
+        game.im.l.color[4] = 1.0
 
         game.battle.active = true
-        game.draw.battleintro = true
 
-        stateInitDrawBattle!(game)
-
-        game.n[:battleintro].c = 0
-        killCallback!(game,:battleintro)
+        killCC!(game,:introb)
 
         return
     end
-
-    game.n[:battleintro].c += 1
+   
+    game.n[:introb].c += 1
 
     return
 end
 
 function animWiggleBattle!(game::GameState)
     if game.frame%0x20 == 0x08
-        game.im.sprites[2][:pkmn1].pos.h = 89
+        moveSpriteH!(game,:pkmn1,9,true)
+        # game.im.sprites[2][:pkmn1].pos.h = 89
     elseif game.frame%0x20 == 0x10
-        game.im.sprites[3][:tag1].pos.h = 95
+        moveSpriteH!(game,:tag1,15,true)
+        # game.im.sprites[3][:tag1].pos.h = 95
     elseif game.frame%0x20 == 0x18
-        game.im.sprites[2][:pkmn1].pos.h = 90
+        moveSpriteH!(game,:pkmn1,10,true)
+        # game.im.sprites[2][:pkmn1].pos.h = 90
     elseif game.frame%0x20 == 0x00
-        game.im.sprites[3][:tag1].pos.h = 96
+        moveSpriteH!(game,:tag1,16,true)
+        # game.im.sprites[3][:tag1].pos.h = 96
     end
 
     return
@@ -66,7 +65,7 @@ function animBattlePhaseWild!(game::GameState)
 
         if game.battle.state.stage == 250 || game.battle.state.stage == 251 ||
                 game.battle.state.stage == 252
-            game.input.inputlock = true
+            game.ctrl.input.inputlock = true
 
             stateQuitBattlePhase!(game)
 

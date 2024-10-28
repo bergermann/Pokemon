@@ -7,7 +7,7 @@ export game, inputs
 using ModernGL, GLFW#, GLAbstraction
 # const GLA = GLAbstraction
 
-using LinearAlgebra, Images, Serialization, DelimitedFiles
+using LinearAlgebra, StatsBase, Images, Serialization, DelimitedFiles
 
 include("types.jl")
 include("game/types/npcs.jl")

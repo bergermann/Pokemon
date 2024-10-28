@@ -206,19 +206,17 @@ end
 getPkmnName(game::GameState,pkmn::Pkmn) = pkmnName(game,pkmn)
 
 function activePkmn(game::GameState)
-    return game.trainer.pokemon[
-        findfirst(x->x.stats.hp>0x0000,game.trainer.pokemon.data)
-    ]
+    return game.p.pokemon[findfirst(p->p.stats.hp>0x0000,game.p.pokemon.data)]
 end
 
 function activePkmn!(game::GameState)
-    idx = findfirst(x->x.stats.hp>0x0000,game.trainer.pokemon.data)
+    idx = findfirst(x->x.stats.hp>0x0000,game.p.pokemon.data)
 
     if idx == 1
         return
     end
 
-    swap!(game.trainer.pokemon,1,idx)
+    swap!(game.p.pokemon,1,idx)
     game.battle.teamperm[1], game.battle.teamperm[idx] = 
         game.battle.teamperm[idx], game.battle.teamperm[1]
 
@@ -228,16 +226,16 @@ end
 
 
 function addPokemon!(game::GameState,pkmn::Pkmn)
-    if game.trainer.pokemon.idx < 6
-        push!(game.trainer.pokemon,pkmn)
+    if game.p.pokemon.idx < 6
+        push!(game.p.pokemon,pkmn)
 
         if game.battle.active
             push!(game.battle.teamperm,length(game.battle.teamperm)+1)
         end
     else
-        b = findfirst(x->x.idx<30,game.trainer.boxes)
+        b = findfirst(x->x.idx<30,game.p.boxes)
 
-        push!(game.trainer.boxes[b],pkmn)
+        push!(game.p.boxes[b],pkmn)
     end
 end
 
@@ -253,11 +251,11 @@ function healPkmn!(pkmn::Pkmn)
 end
 
 function healAll!(game::GameState)
-    for pkmn in game.trainer.pokemon
+    for pkmn in game.p.pokemon
         healPkmn!(pkmn)
     end
 
-    for box in game.trainer.boxes, pkmn in box
+    for box in game.p.boxes, pkmn in box
         healPkmn!(pkmn)
     end
 

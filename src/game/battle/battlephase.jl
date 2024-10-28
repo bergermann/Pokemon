@@ -3,7 +3,7 @@
 # managing battlephase
 
 function checkAttack!(game::GameState)
-    if game.battle.state.pkmn1.pkmn.attacks[game.input.battle2menu.select+1].ap == 0
+    if game.battle.state.pkmn1.pkmn.attacks[game.ctrl.input.battle2menu.select+1].ap == 0
         return false
     end
 

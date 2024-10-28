@@ -38,7 +38,7 @@ end
 
 function stateOpenMap!(game::GameState)
     game.overworld = true    
-    game.im.c.projection1[1:2,4] .= -game.ctrl.pos1
+    # game.im.c.projection1[1:2,4] .= -game.ctrl.pos1
 
     loadMapStrings!(game; reset=true)
 
@@ -59,38 +59,37 @@ function stateOpenMap!(game::GameState)
     createCounter!(game,:movemain,1)
     createCallback!(game,:movemain,false,moveMain!,(game.ctrl.dir,-1))
 
-    for npc in game.npcs
+    for npc in game.m.npcs
         createNPCSprite!(game,npc)
     end
-
     
-    for object in game.objects
-        createSprite!(game,sid,:objects,1,9+4*(type-1),
-            16*(16*(cx-game.ctrl.chunk[2])+(x-game.ctrl.pos1[2])),
-            16*(16*(cy-game.ctrl.chunk[1])+(y-game.ctrl.pos1[1]-1)),
-            10,3;
-            active=true)
+    for object in game.m.objects
+        createSprite!(game,object.sprite,:objects,1,9+4*(object.type-1),
+            16*(16*(object.chunk[2]-game.ctrl.chunk[2])+(object.pos[2]-game.ctrl.pos1[2])),
+            16*(16*(object.chunk[1]-game.ctrl.chunk[1])+(object.pos[1]-game.ctrl.pos1[1])),
+            10,3; active=true)
     end
     
-    for item in game.items
-        createSprite!(game,sid,:objects,1,1,
-            16*(16*(cx-game.ctrl.chunk[2])+(x-game.ctrl.pos1[2])),
-            16*(16*(cy-game.ctrl.chunk[1])+(y-game.ctrl.pos1[1]-1)),
-            10,3;
-            active=true)
+    for item in game.m.items
+        createSprite!(game,item.sprite,:objects,1,1,
+            16*(16*(item.chunk[2]-game.ctrl.chunk[2])+(item.pos[2]-game.ctrl.pos1[2])),
+            16*(16*(item.chunk[1]-game.ctrl.chunk[1])+(item.pos[1]-game.ctrl.pos1[1])),
+            10,3; active=true)
     end
 
     return
 end
 
 function createNPCSprite!(game::GameState,npc::NPC)
-    x = 16*(16*(npc.chunk[2]-game.ctrl.chunk[2])+(x-game.ctrl.pos1[2]))+
+    x = 16*(16*(npc.chunk[2]-game.ctrl.chunk[2])+(npc.pos1[2]-game.ctrl.pos1[2]))+
         dirs[npc.dir][1]*npc.c2
-    y = 16*(16*(npc.chunk[1]-game.ctrl.chunk[1])+(y-game.ctrl.pos1[1]))-8+
+    y = 16*(16*(npc.chunk[1]-game.ctrl.chunk[1])+(npc.pos1[1]-game.ctrl.pos1[1]))-8+
         dirs[npc.dir][2]*npc.c2
+
+    f = 1+3*(npc.dir-1-2*(npc.dir==4))+(1+sum(npc.pos1)%2)*(0<npc.c2<=8)
     
-    createSprite!(game,npc.sprite,:npcs,npc.spriteid,1+3*(npc.dir-1-2*(npc.dir==4)),
-        x,y,10,3; wreverse=npc.dir==4,active=true)
+    createSprite!(game,npc.sprite,:npcs,npc.spriteid,f,x,y,10,3;
+        wreverse=npc.dir==4,active=true)
 
     return
 end
@@ -101,7 +100,7 @@ function stateCloseMap!(game::GameState)
     deleteSpriteSheet!(game,:mc)
     deleteSpriteSheet!(game,:npcs)
     deleteSpriteSheet!(game,:objects)
-    # deleteSpriteSheet!(game,:cursors)
+    deleteBackground!(game,:textbox)
     deleteText!(game,:menu)
     deleteFrame!(game,:menu)
 

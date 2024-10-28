@@ -11,26 +11,35 @@ include("queue.jl")
 function initBattleWild!(game::GameState)
     stateInitBattle!(game)
 
-    pb1 = PkmnBattle(game.trainer.pokemon[1],getPkmnName(game,activePkmn(game)))
-    pb2 = PkmnBattle(generatePkmn(game,rand(0x0001:0x0097),rand(0x01:0x0a)))
+    data = getArea(game); idx = sample(fweights(data[:,4]))
+    lvl = min(2,randN(data[idx,2],data[idx,3]))
+
+    pb1 = PkmnBattle(game.p.pokemon[1],getPkmnName(game,activePkmn(game)))
+    pb2 = PkmnBattle(generatePkmn(game,data[idx,1],lvl))
     pb2.name = getPkmnName(game,pb2.pkmn)
-    pb2.xpdrop = UInt32(max(1,rand(UInt8)))   #game.pkmndata.base[pb2.pkmn.id,x]
+    pb2.xpdrop = UInt32(max(1,rand(UInt8)))   # game.pkmndata.base[pb2.pkmn.id,x]
 
     game.battle.state = BattleStateWild(BattleCounters(),0,BattleEnvironment(),
         pb1,pb2)
+
+    return
 end
 
-function initBattleWild!(game::GameState,ids::Vector{UInt16},
-        levels::Vector{UInt8})
-    
-    stateInitBattle!(game)
+function getArea(game::GameState)::Matrix{UInt16}
+    p = game.ctrl.pos
+    c = game.ctrl.chunk
 
-    pb1 = PkmnBattle(activePkmn(game),getPkmnName(game,activePkmn(game)))
-    pb2 = PkmnBattle(generatePkmn(game,rand(ids),rand(levels)))
-    pb2.name = getPkmnName(game,pb2.pkmn)
+    for area in game.m.areas.data[1:game.m.areas.idx]
+        if 16*(area.cx-c[2])+area.px <= p[2] <= 16*(area.cx-c[2])+area.px+area.dx &&
+                16*(area.cy-c[1])+area.py <= p[1] <= 16*(area.cy-c[1])+area.py+area.dy
 
-    game.battle.state = BattleStateWild(BattleCounters(),0,BattleEnvironment(),
-        pb1,pb2)
+            println("in area ",area.id)
+
+            return area.data
+        end
+    end
+
+    @warn "no area found, deploying default rattata"
+
+    return UInt16[19 3 1 1]
 end
-
-

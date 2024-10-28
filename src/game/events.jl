@@ -35,19 +35,19 @@ function eventHealCenter!(game::GameState)
     healAll!(game)
 
     createCC!(game,:heal,animHealCenter!,
-        ([Symbol(:ball,i) for i in 1:length(game.trainer.pokemon)],))
+        ([Symbol(:ball,i) for i in 1:length(game.p.pokemon)],))
 
     stateSetDialogue!(game,1,1,2,F((game,)->(game.callbacks[:heal].active=true;
-        game.input.inputlock=true; game.input.npclock=true)),)
+        game.ctrl.input.inputlock=true; game.ctrl.input.npclock=true)),)
 
     return
 end
 
 function animHealCenter!(game::GameState,ballids::Vector{Symbol})
-    l = length(game.trainer.pokemon)
+    l = length(game.p.pokemon)
 
     if game.n.c[:heal].c == 0
-        game.input.npclock = true
+        game.ctrl.input.npclock = true
 
         updateSprite!(game,3,:npc200,3)
 
@@ -87,7 +87,7 @@ function animHealCenter!(game::GameState,ballids::Vector{Symbol})
     elseif game.n.c[:heal].c == 90+l*30+96+160
         killCC!(game,:heal)
         
-        game.input.inputlock = false
+        game.ctrl.input.inputlock = false
         
         stateSetDialogue!(game,1,4,1)
 

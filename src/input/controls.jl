@@ -53,7 +53,7 @@ function updateGame!(game::GameState,inputs::Inputs)
 
         if !game.ctrl.input.npclock
             # @time manageNPCs!(game)
-            # manageNPCs!(game)
+            manageNPCs!(game)
         end
     end
 

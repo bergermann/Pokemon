@@ -91,6 +91,13 @@ function discreteGaussian(type::Type,dims; μ::Real=0.,σ::Real=1.)
     return round.(type,σ*randn(Float64,dims).+μ)
 end
 
+function randN(μ::Real,σ::Real,dims)
+    return discreteGaussian(typeof(μ),dims; μ=μ,σ=σ)
+end
+
+function randN(μ::Real,σ::Real)
+    return discreteGaussian(typeof(μ),1; μ=μ,σ=σ)
+end
 
 
 

@@ -1,14 +1,13 @@
 
+const walkable::Vector{UInt16} = [0x0000,0x0005,0x00006,0x00007]
+const bikeable::Vector{UInt16} = [0x0000,0x0005,0x00006]
+const swimmable::Vector{UInt16} = [0x0002,0x0003]
+
 
 
 function getCollision(game::GameState,mpos::Pos,mchunk::Pos,l::Int)::UInt16
     return game.m.chunkdata[game.m.idxs[mchunk]].collision[mpos[1],mpos[2],l]
 end
-
-
-const walkable::Vector{UInt16} = [0x0000,0x0005,0x00006,0x00007]
-const bikeable::Vector{UInt16} = [0x0000,0x0005,0x00006]
-const swimmable::Vector{UInt16} = [0x0002,0x0003]
 
 function checkWalkable(game::GameState,mpos::Pos,mchunk::Pos,l::Int)
     if !(1 <= mchunk[1] <= game.im.c.r2) || !(1 <= mchunk[2] <= game.im.c.r2)
@@ -43,12 +42,9 @@ function checkWalkable(game::GameState,mpos::Pos,mchunk::Pos,l::Int)
 end
 
 function checkEncounter!(game::GameState)
-    if !(game.m.chunkdata[game.m.idxs[r+1,r+1]].collision[game.ctrl.pos[1],
-            game.ctrl.pos[2],1] == 0x06)
-        return
-    end
+    if !(getCollision(game,game.ctrl.pos1,game.ctrl.chunk,game.ctrl.fg+1)==0x06) ||
+            rand(UInt8) < 0x80
 
-    if rand(0x00:0xff) > 0x80
         return
     end
 
@@ -109,7 +105,7 @@ function inputMove!(game::GameState,inputs::Inputs)
     @. game.ctrl.mchunk = modc(game.ctrl.mpos)+(game.im.c.renderdistance+1)
     @. game.ctrl.mpos = (game.ctrl.mpos+15)%16+1
 
-    if !checkWalkable(game,game.ctrl.mpos,game.ctrl.mchunk,game.ctrl.height)
+    if !checkWalkable(game,game.ctrl.mpos,game.ctrl.mchunk,1+game.ctrl.fg)
         setSpriteIdx!(game,:mc,1)
 
         if game.ctrl.dir != dir

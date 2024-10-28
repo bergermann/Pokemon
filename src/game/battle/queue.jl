@@ -152,8 +152,8 @@ function queueItem!(game::GameState,state::BattleState,
         user::Int,target::PkmnBattle,item::ItemType,id::Symbol)
     
     push!(state.animqueue,BattleAnimation(
-        id,30,"$(game.trainer.name) setzt\\"*
-            "$(game.str[2][getInvSlotID(game,game.input.battlebags)]) ein.",
+        id,30,"$(game.p.name) setzt\\"*
+            "$(game.str[2][getInvSlotID(game,game.ctrl.input.battlebags)]) ein.",
         banimEmpty!,0
     ))
 
@@ -168,8 +168,8 @@ function queueBall!(game::GameState,state::BattleState,target::PkmnBattle,
         ball::ItemType,id::Symbol)
 
     push!(state.animqueue,BattleAnimation(
-        id,160,"$(game.trainer.name) setzt\\"*
-            "$(game.str[2][getInvSlotID(game,game.input.battlebags)]) ein.",
+        id,160,"$(game.p.name) setzt\\"*
+            "$(game.str[2][getInvSlotID(game,game.ctrl.input.battlebags)]) ein.",
         bthrowBall!,2
     ))
 
@@ -243,7 +243,7 @@ function queueSwitch!(game::GameState,state::BattleStateWild,user::Int,
     ))
     
     push!(state.animqueue,BattleAnimation(
-        id,60,"Los, $(getPkmnName(game,game.trainer.pokemon[target])).",
+        id,60,"Los, $(getPkmnName(game,game.p.pokemon[target])).",
         bswitchIn!,user
     ))
 end
@@ -345,7 +345,7 @@ function queueCheckStatus!(game::GameState,state::BattleStateWild)
             queueCheckXp!(state)
         end
 
-        if game.trainer.pokemon.idx < 6
+        if game.p.pokemon.idx < 6
             push!(state.animqueue,BattleAnimation(
                 :p1,60,"$(state[2].name) wurde dem Team\\hinzugefügt.",
                 banimEmpty!,1

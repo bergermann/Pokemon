@@ -199,16 +199,6 @@ mutable struct GameState
     overworld::Bool
     battle::Battle
 
-    # npcs::NPCs
-    npcids::Vector{UInt16}
-    npcs::ArrayList{NPC}
-
-    objectids::Vector{UInt16}
-    objects::ArrayList{Object}
-
-    itemids::Vector{UInt16}
-    items::ArrayList{MapItem}
-
     flags::Flags
 
     options::Options

@@ -148,7 +148,7 @@ function stateMenuPkmnClose!(game::GameState)
     deleteTextsAll!(game)
     deleteFramesAll!(game)
 
-    stateInitMap!(game)
+    stateOpenMap!(game)
     stateMenuMainOpen!(game)
 
     return
@@ -274,7 +274,7 @@ function stateMenuBagsClose!(game::GameState)
     deleteTextsAll!(game)
     deleteFramesAll!(game)
 
-    stateInitMap!(game)
+    stateOpenMap!(game)
     stateMenuMainOpen!(game)
 
     return

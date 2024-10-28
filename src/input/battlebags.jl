@@ -1,14 +1,14 @@
 
 
 function inputBattleInventory!(game::GameState,input::Input)
-    if game.input.battlebags.sub
+    if game.ctrl.input.battlebags.sub
         inputBattleBagsSub!(game,input)
 
         return
     end
 
-    if game.input.choice.sel == -1
-        game.input.choice.sel = 0
+    if game.ctrl.input.choice.sel == -1
+        game.ctrl.input.choice.sel = 0
 
         game.im.sprites[1][:cursor].palette[1] = 0x010101
 
@@ -22,9 +22,9 @@ end
 
 function inputBattleBags!(game::GameState,input::Input)
     if input._A
-        if getSelect(game.input.battlebags) == getAmountItems(game,game.input.battlebags)+1
-            game.input.inputlock = true
-            game.input.battlebag = false
+        if getSelect(game.ctrl.input.battlebags) == getAmountItems(game,game.ctrl.input.battlebags)+1
+            game.ctrl.input.inputlock = true
+            game.ctrl.input.battlebag = false
     
             createCC!(game,:scenet,sceneTransition!,(16,8,
                 stateBattleBagsClose!,(),stateBattleCtrls!,()); active=true,n=1)
@@ -37,110 +37,110 @@ function inputBattleBags!(game::GameState,input::Input)
 
         drawChoiceMenu!(game,4,getInvChoiceStr(game),7,P(120,192))
     elseif input._B
-        game.input.inputlock = true
-        game.input.battlebag = false
+        game.ctrl.input.inputlock = true
+        game.ctrl.input.battlebag = false
 
         createCC!(game,:scenet,sceneTransition!,(16,8,
             stateBattleBagsClose!,(),stateBattleCtrls!,()); active=true,n=1)
 
         return
     elseif input._down
-        if getSelect(game.input.battlebags) == getAmountItems(game,game.input.battlebags)+1
-            game.input.battlebags.select[game.input.battlebags.bag] = 1
-            game.input.battlebags.slot = 1
+        if getSelect(game.ctrl.input.battlebags) == getAmountItems(game,game.ctrl.input.battlebags)+1
+            game.ctrl.input.battlebags.select[game.ctrl.input.battlebags.bag] = 1
+            game.ctrl.input.battlebags.slot = 1
 
-            setVisibleItems!(game,game.input.battlebags)
+            setVisibleItems!(game,game.ctrl.input.battlebags)
             setPos!(game.im.sprites[1][:cursor].pos,24+22,16+114)
 
             flushLayer!(game,2)
-            drawInventoryText!(game,game.input.battlebags)
-        elseif game.input.battlebags.slot == 6 &&
-                getSelect(game.input.battlebags)+1 < getAmountItems(game,game.input.battlebags)
+            drawInventoryText!(game,game.ctrl.input.battlebags)
+        elseif game.ctrl.input.battlebags.slot == 6 &&
+                getSelect(game.ctrl.input.battlebags)+1 < getAmountItems(game,game.ctrl.input.battlebags)
             
-            game.input.battlebags.select[game.input.battlebags.bag] += 1
+            game.ctrl.input.battlebags.select[game.ctrl.input.battlebags.bag] += 1
 
-            game.input.battlebags.vis[1:7,:] = game.input.battlebags.vis[2:8,:]
-            game.input.battlebags.vis[8,:] .= getSelect(game.input.battlebags)+1 < getAmountItems(game,game.input.battlebags) ?
-                getInvSlot(game,game.input.battlebags.bag,getSelect(game.input.battlebags)+2) : (-1,0)
+            game.ctrl.input.battlebags.vis[1:7,:] = game.ctrl.input.battlebags.vis[2:8,:]
+            game.ctrl.input.battlebags.vis[8,:] .= getSelect(game.ctrl.input.battlebags)+1 < getAmountItems(game,game.ctrl.input.battlebags) ?
+                getInvSlot(game,game.ctrl.input.battlebags.bag,getSelect(game.ctrl.input.battlebags)+2) : (-1,0)
 
-            drawSlotSwitchDown!(game,game.input.battlebags)
+            drawSlotSwitchDown!(game,game.ctrl.input.battlebags)
         else
-            game.input.battlebags.slot += 1
-            game.input.battlebags.select[game.input.battlebags.bag] += 1
+            game.ctrl.input.battlebags.slot += 1
+            game.ctrl.input.battlebags.select[game.ctrl.input.battlebags.bag] += 1
 
             posAdd!(game.im.sprites[1][:cursor].pos,15,0)
         end
 
-        setInventoryItemIcon!(game,game.input.battlebags)
-        drawItemText!(game,game.input.battlebags)
+        setInventoryItemIcon!(game,game.ctrl.input.battlebags)
+        drawItemText!(game,game.ctrl.input.battlebags)
     elseif input._up
-        if getSelect(game.input.battlebags) == 1
-            game.input.battlebags.select[game.input.battlebags.bag] = getAmountItems(game,game.input.battlebags)+1
-            game.input.battlebags.slot = min(8,getAmountItems(game,game.input.battlebags))+1
+        if getSelect(game.ctrl.input.battlebags) == 1
+            game.ctrl.input.battlebags.select[game.ctrl.input.battlebags.bag] = getAmountItems(game,game.ctrl.input.battlebags)+1
+            game.ctrl.input.battlebags.slot = min(8,getAmountItems(game,game.ctrl.input.battlebags))+1
 
-            setVisibleItems!(game,game.input.battlebags)
-            game.input.battlebags.vis[8,1] = -1
+            setVisibleItems!(game,game.ctrl.input.battlebags)
+            game.ctrl.input.battlebags.vis[8,1] = -1
             setPos!(game.im.sprites[1][:cursor].pos,
-                24+22+15*(game.input.battlebags.slot-1),16+114)
+                24+22+15*(game.ctrl.input.battlebags.slot-1),16+114)
 
             flushLayer!(game,2)
-            drawInventoryText!(game,game.input.battlebags)
-        elseif game.input.battlebags.slot == 3 &&
-                getSelect(game.input.battlebags) > 3
+            drawInventoryText!(game,game.ctrl.input.battlebags)
+        elseif game.ctrl.input.battlebags.slot == 3 &&
+                getSelect(game.ctrl.input.battlebags) > 3
             
-            game.input.battlebags.select[game.input.battlebags.bag] -= 1
+            game.ctrl.input.battlebags.select[game.ctrl.input.battlebags.bag] -= 1
 
-            game.input.battlebags.vis[2:8,:] = game.input.battlebags.vis[1:7,:]
-            game.input.battlebags.vis[1,:] .= getInvSlot(game,
-                game.input.battlebags.bag,getSelect(game.input.battlebags)-2)
+            game.ctrl.input.battlebags.vis[2:8,:] = game.ctrl.input.battlebags.vis[1:7,:]
+            game.ctrl.input.battlebags.vis[1,:] .= getInvSlot(game,
+                game.ctrl.input.battlebags.bag,getSelect(game.ctrl.input.battlebags)-2)
 
-            drawSlotSwitchUp!(game,game.input.battlebags)
+            drawSlotSwitchUp!(game,game.ctrl.input.battlebags)
         else
-            game.input.battlebags.slot -= 1
-            game.input.battlebags.select[game.input.battlebags.bag] -= 1
+            game.ctrl.input.battlebags.slot -= 1
+            game.ctrl.input.battlebags.select[game.ctrl.input.battlebags.bag] -= 1
 
             posAdd!(game.im.sprites[1][:cursor].pos,-15,0)
         end
 
-        setInventoryItemIcon!(game,game.input.battlebags)
-        drawItemText!(game,game.input.battlebags)
+        setInventoryItemIcon!(game,game.ctrl.input.battlebags)
+        drawItemText!(game,game.ctrl.input.battlebags)
     elseif input._left
-        if game.input.battlebags.bag == 1
-            game.input.battlebags.bag = 5
+        if game.ctrl.input.battlebags.bag == 1
+            game.ctrl.input.battlebags.bag = 5
         else
-            game.input.battlebags.bag -= 1
+            game.ctrl.input.battlebags.bag -= 1
         end
         
-        setVisibleItems!(game,game.input.battlebags)
+        setVisibleItems!(game,game.ctrl.input.battlebags)
         flushLayer!(game,2)
 
         game.im.sprites[1][:cursor].active = false
         setPos!(game.im.sprites[1][:cursor].pos,
-            24+7+15*game.input.battlebags.slot,16+114)
+            24+7+15*game.ctrl.input.battlebags.slot,16+114)
 
         game.im.sprites[1][:icon].active = false
-        setInventoryItemIcon!(game,game.input.battlebags)
+        setInventoryItemIcon!(game,game.ctrl.input.battlebags)
 
-        game.input.inputlock = true
+        game.ctrl.input.inputlock = true
         game.callbacks[:bagswitch].active = true
     elseif input._right
-        if game.input.battlebags.bag == 5
-            game.input.battlebags.bag = 1
+        if game.ctrl.input.battlebags.bag == 5
+            game.ctrl.input.battlebags.bag = 1
         else
-            game.input.battlebags.bag += 1
+            game.ctrl.input.battlebags.bag += 1
         end
 
-        setVisibleItems!(game,game.input.battlebags)
+        setVisibleItems!(game,game.ctrl.input.battlebags)
         flushLayer!(game,2)
 
         game.im.sprites[1][:cursor].active = false
         setPos!(game.im.sprites[1][:cursor].pos,
-            24+7+15*game.input.battlebags.slot,16+114)
+            24+7+15*game.ctrl.input.battlebags.slot,16+114)
 
         game.im.sprites[1][:icon].active = false
-        setInventoryItemIcon!(game,game.input.battlebags)
+        setInventoryItemIcon!(game,game.ctrl.input.battlebags)
 
-        game.input.inputlock = true
+        game.ctrl.input.inputlock = true
         game.callbacks[:bagswitch].active = true
     end
 
@@ -148,13 +148,13 @@ function inputBattleBags!(game::GameState,input::Input)
 end
 
 function itemBattleAction!(game::GameState)
-    if game.input.battlebags.bag == 1
+    if game.ctrl.input.battlebags.bag == 1
         itemBattleActionItems!(game)
-    elseif game.input.battlebags.bag == 2
+    elseif game.ctrl.input.battlebags.bag == 2
         itemBattleActionBalls!(game)
-    elseif game.input.battlebags.bag == 3
+    elseif game.ctrl.input.battlebags.bag == 3
         resetChoice!(game)
-    elseif game.input.battlebags.bag == 4
+    elseif game.ctrl.input.battlebags.bag == 4
         itemBattleActionBerries!(game)
     else
         resetChoice!(game)
@@ -164,13 +164,13 @@ function itemBattleAction!(game::GameState)
 end
 
 function itemBattleActionItems!(game::GameState)
-    if game.input.choice.sel == 1
+    if game.ctrl.input.choice.sel == 1
         createCC!(game,:scenet,sceneTransition!,
             (16,8,stateMenuPkmnSubOpen!,(),stateMenuPkmnSubCtrls!,());
             active=true,n=1)
 
-        game.input.inputlock = true
-        game.input.battlebags.submode = 1
+        game.ctrl.input.inputlock = true
+        game.ctrl.input.battlebags.submode = 1
     end
     
     resetChoice!(game)
@@ -179,13 +179,13 @@ function itemBattleActionItems!(game::GameState)
 end
 
 function itemBattleActionBalls!(game::GameState)
-    game.input.inputlock = true
-    game.input.battlebag = false
+    game.ctrl.input.inputlock = true
+    game.ctrl.input.battlebag = false
 
-    if game.input.choice.sel == 1
+    if game.ctrl.input.choice.sel == 1
         createCC!(game,:scenet,sceneTransition!,
             (16,8,stateBattleBagsClose!,(),stateBattleItemSelected!,
-            (UInt(2),getItem(game,game.input.battlebags)));
+            (UInt(2),getItem(game,game.ctrl.input.battlebags)));
             active=true,n=1)
     end
     
@@ -195,9 +195,9 @@ function itemBattleActionBalls!(game::GameState)
 end
 
 function itemBattleActionBerries!(game::GameState)
-    if game.input.choice.sel == 1
+    if game.ctrl.input.choice.sel == 1
         return
-    elseif game.input.choice.sel == 2
+    elseif game.ctrl.input.choice.sel == 2
         return
     end
     
@@ -216,7 +216,7 @@ end
 
 function applyItem!(game::GameState)
     item = getItem(getInvSlotID(game))
-    target = game.trainer.pokemon[game.input.battlebags.subslot]
+    target = game.p.pokemon[game.ctrl.input.battlebags.subslot]
 
     applyItem!(target,item)
 

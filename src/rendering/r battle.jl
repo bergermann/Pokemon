@@ -69,42 +69,6 @@ function drawBattleTagOpp!(game::GameState,pkmn::Pkmn,sprite::Sprite)
         0x424242,0xded6b5)
 end
 
-function drawBattleBase!(game::GameState; s=Settings())
-    flushLayers!(game)
-    flushLayer!(game)
-
-    createCallback!(game,:wiggle,animWiggleBattle!,())
-    # createCC!(game,:wiggle,animWiggleBattle!,(); active=false)
-    createCC!(game,:animbattle,animBattlePhaseWild!,(); active=false,n=-1)
-
-    bg = deserialize("im/battle/backgrounds/grass1.imp")
-    game.im.layers[1][24+1:24+112,16+1:16+240] = bg.palette[bg.im]
-
-    dia = deserialize("im/menu/dialogue/1.imp")
-    game.im.layers[3][24+1+112:24+160,16+1:16+240] = dia.palette[dia.im]
-
-    createSprite!(game,:pkmn1,2,Position(90,40),1,
-        getBattlerBack(game.battle.state.pkmn1.pkmn); active=true)
-    createSprite!(game,:pkmn2,2,Position(32,160),1,
-        getBattlerFront(game.battle.state.pkmn2.pkmn); active=true)
-    
-    createSprite!(game,:cursor1,4,Position(146,136),1,
-        getSprite("im/battle/cursor.imp"))
-    createSprite!(game,:cursor2,5,Position(146,24),1,
-        getSprite("im/battle/cursor.imp"))
-    
-    createSprite!(game,:tag1,3,Position(72+24,126+16),1,
-        getSprite("im/battle/tagown.imp"); active=true)
-    createSprite!(game,:tag2,3,Position(14+24,12+16),1,
-        getSprite("im/battle/tagopp.imp"); active=true)
-
-    drawBattleTagOwn!(game,game.battle.state.pkmn1.pkmn,
-        game.im.sprites[3][:tag1])
-    drawBattleTagOpp!(game,game.battle.state.pkmn2.pkmn,
-        game.im.sprites[3][:tag2])
-
-    return
-end
 
 function drawBattleIntro!(game::GameState; s=Settings())
     if game.n.c[:battleintro].c == 0
@@ -130,9 +94,9 @@ function drawBattleIntro!(game::GameState; s=Settings())
 
         game.draw.battled = true
 
-        game.input.inputlock = false
-        game.input.battle = true
-        game.input.battled = true
+        game.ctrl.input.inputlock = false
+        game.ctrl.input.battle = true
+        game.ctrl.input.battled = true
 
         return
     end
@@ -170,16 +134,16 @@ function drawBattleMenu2!(game::GameState)
 
     drawText!(game,5,"/",UInt(3),Position(145,230),0x4a4a4a,0xd6d6ce)
     drawText!(game,5,
-        string(game.battle.state.pkmn1.pkmn.attacks[game.input.battle2menu.select+1].ap),
+        string(game.battle.state.pkmn1.pkmn.attacks[game.ctrl.input.battle2menu.select+1].ap),
         UInt(3),Position(145,218),0x4a4a4a,0xd6d6ce)
     drawText!(game,5,
-        string(game.battle.state.pkmn1.pkmn.attacks[game.input.battle2menu.select+1].apmax),
+        string(game.battle.state.pkmn1.pkmn.attacks[game.ctrl.input.battle2menu.select+1].apmax),
         UInt(3),Position(145,236),0x4a4a4a,0xd6d6ce)
 
     drawText!(game,5,"AP\\Typ:",UInt(3),Position(145,186),0x4a4a4a,0xd6d6ce;
         lineoffset=2)
     drawText!(game,5,
-        TypeNames[game.battle.state.pkmn1.pkmn.attacks[game.input.battle2menu.select+1].type],
+        TypeNames[game.battle.state.pkmn1.pkmn.attacks[game.ctrl.input.battle2menu.select+1].type],
         UInt(3),Position(161,208),0x4a4a4a,0xd6d6ce)
 
     for i in 1:length(game.battle.state.pkmn1.pkmn.attacks)

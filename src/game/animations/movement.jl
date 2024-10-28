@@ -23,7 +23,7 @@ function moveTurn!(game::GameState,dir::Int)
         game.n[:movemain].c = -1
         game.callbacks[:movemain].active = false
         
-        # checkEncounter!(game)
+        checkEncounter!(game)
 
         return
     end
@@ -52,7 +52,7 @@ function moveWalk!(game::GameState,dir::Int)
 
         checkChunks!(game,dir)
 
-        # checkEncounter!(game)
+        checkEncounter!(game)
 
         return
     end
@@ -93,7 +93,7 @@ function moveRun!(game::GameState,dir::Int)
 
         checkChunks!(game,dir)
 
-        # checkEncounter!(game)
+        checkEncounter!(game)
 
         return
     end

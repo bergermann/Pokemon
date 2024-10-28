@@ -332,11 +332,11 @@ function bswitchIn!(game::GameState)
     if game.n.c[:switchin].c == 1
         n = game.battle.state.pkmn1.command.n
 
-        swap!(game.trainer.pokemon,1,n)
+        swap!(game.p.pokemon,1,n)
         game.battle.teamperm[1], game.battle.teamperm[n] = 
             game.battle.teamperm[n], game.battle.teamperm[1]
 
-        game.battle.state.pkmn1 = PkmnBattle(game.trainer.pokemon[1],
+        game.battle.state.pkmn1 = PkmnBattle(game.p.pokemon[1],
             getPkmnName(game,activePkmn(game)))
 
         game.battle.state.pkmn1.command = CommandSwitch(n)

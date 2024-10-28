@@ -2,7 +2,7 @@
 
 
 function manageObjects(game::GameState)
-    for object in game.objects
+    for object in game.m.objects
         manageObject(game,object)
     end
 

@@ -32,15 +32,6 @@ function setupGame(windowscale::Int=4,renderdistance::Int=2,maxtextures::Int=64;
         true,
         Battle(),
 
-        UInt16[],
-        ArrayList(NPC,64),
-
-        UInt16[],
-        ArrayList(Object,64),
-
-        UInt16[],
-        ArrayList(MapItem,64),
-
         Flags(),
 
         Options()

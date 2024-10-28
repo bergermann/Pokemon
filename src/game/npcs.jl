@@ -24,7 +24,7 @@
 
 
 function manageNPCs!(game::GameState)
-    for npc in game.npcs
+    for npc in game.m.npcs
         if npc.dynamic
             manageDynamicNPC!(game,npc)
         else
@@ -137,7 +137,7 @@ function manageDynamicNPC!(game::GameState,npc::NPC)
         else
             npc.c2 = -1
 
-            setSpriteFrame!(game,npc.sprite,1+3*(npc.dir-1-2*(npc.dir == 4)))
+            setSpriteFrame!(game,npc.sprite,1+3*(npc.dir-1-2*(npc.dir==4)))
             reverseSpriteW!(game,npc.sprite,npc.dir==4)
         end
     else
@@ -147,7 +147,7 @@ function manageDynamicNPC!(game::GameState,npc::NPC)
             # npc.pos1 += dirs[npc.dir]
             @. npc.pos1 = npc.mpos; 
     
-            setSpriteFrame!(game,npc.sprite,1+3*(npc.dir-1-2*(npc.dir == 4)))
+            setSpriteFrame!(game,npc.sprite,1+3*(npc.dir-1-2*(npc.dir==4)))
         end
     end
 
@@ -214,12 +214,12 @@ function moveLinearNPC!(npc::NPC)
 end
 
 function moveAngleNPC!(npc::NPC)
-    dh = abs((npc.pos1[1]-npc.hpos[1])+16*(npc.chunk[1]-npc.hchunk[1])+dirs[npc.dir][1])
-    dw = abs((npc.pos1[2]-npc.hpos[2])+16*(npc.chunk[2]-npc.hchunk[2])+dirs[npc.dir][2])
+    dh = abs((npc.pos1[1]-npc.hpos[1])+16*(npc.chunk[1]-npc.hchunk[1]))
+    dw = abs((npc.pos1[2]-npc.hpos[2])+16*(npc.chunk[2]-npc.hchunk[2]))
 
     if dh == 0 && dw == 0 && npc.c1 == 3
         npc.dir = (npc.dir)%4+1     # turn right
-        npc.c1 = 1
+        npc.c1 = 0
     elseif (dh >= npc.parg1 || dw >= npc.parg2) && iseven(npc.c1)
         npc.dir = invdir(npc.dir)
         npc.c1 += 1
@@ -232,17 +232,15 @@ function moveAngleNPC!(npc::NPC)
 end
 
 function moveRectangleNPC!(npc::NPC,ccw::Bool)
-    dh = abs((npc.pos1[1]-npc.hpos[1])+16*(npc.chunk[1]-npc.hchunk[1])+dirs[npc.dir][1])
-    dw = abs((npc.pos1[2]-npc.hpos[2])+16*(npc.chunk[2]-npc.hchunk[2])+dirs[npc.dir][2])
+    dh = abs((npc.pos1[1]-npc.hpos[1])+16*(npc.chunk[1]-npc.hchunk[1]))
+    dw = abs((npc.pos1[2]-npc.hpos[2])+16*(npc.chunk[2]-npc.hchunk[2]))
 
     if (dh == 0 && dw == 0 && npc.c1 == 3) ||
             (((dh==npc.parg1 && dw==0) || (dh==0 && dw==npc.parg2)) && iseven(npc.c1)) ||
             (dh == npc.parg1 && dw == npc.parg2) && npc.c1 == 1
 
-        npc.dir = (npc.dir+2*cw)%4+1
-
-        npc.c1 += 1
-        npc.c1 %= 4 
+        npc.dir = (npc.dir+2*ccw)%4+1
+        npc.c1 += 1; npc.c1 %= 4 
     end
     
     return true

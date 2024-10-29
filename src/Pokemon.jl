@@ -50,7 +50,7 @@ function main()
     
     # GLFW.DestroyWindow(game.im.window); return game
     
-    # Base.GC.gc()
+    # @time Base.GC.gc()
 
     while !GLFW.WindowShouldClose(game.im.window)
         game.frame += 0x01

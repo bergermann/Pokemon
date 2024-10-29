@@ -3,30 +3,62 @@
 
 function animBattleEntry1!(game::GameState,args::Tuple{})
     if game.n[:introb].c < 48
-        game.im.l.color[4] = 1.0 - 1.0*sinpi((game.n[:introb].c+1)/8.0)
+        game.im.l.color[4] = 0.5+cospi((game.n[:introb].c+1)/8.0)/2
     elseif game.n[:introb].c < 64
         # replace this with horizontal slider effect
         game.im.l.color[4] = (59-game.n[:introb].c)/16.0
     elseif game.n[:introb].c == 64
+        game.im.l.color[4] = 1.0
+        
         stateCloseMap!(game)
         stateOpenBattle!(game)
         
         Base.GC.gc()
     elseif game.n[:introb].c < 80
-        # replace this with vertical slider effect
-        game.im.l.color[4] = (game.n[:introb].c-63)/16.0
-    elseif game.n[:introb].c == 80
-        game.im.l.color[4] = 1.0
 
-        game.battle.active = true
+    elseif game.n[:introb].c < 112
+        game.im.b.backgrounds[:s1].pos[2] -= 1
+        game.im.b.backgrounds[:s2].pos[2] += 1
+
+        moveSpriteW!(game,:grass1,-4)
+        moveSpriteW!(game,:grass2,-4)
+    elseif game.n[:introb].c < 140
+        game.im.b.backgrounds[:s1].pos[2] -= 2
+        game.im.b.backgrounds[:s2].pos[2] += 2
+
+        moveSpriteW!(game,:grass1,-4)
+        moveSpriteW!(game,:grass2,-4)
+    elseif game.n[:introb].c < 260
+        moveSpriteW!(game,:grass1,-4)
+        moveSpriteW!(game,:grass2,-4)
+        moveSpriteH!(game,:grass1, 1)
+        moveSpriteH!(game,:grass2, 1)
+
+        moveSpriteW!(game,:pad1,-2)
+        moveSpriteW!(game,:pad2, 2)
+        moveSpriteW!(game,:mc, -2)
+        moveSpriteW!(game,:pkmn2, 2)
+    elseif game.n[:introb].c == 260
+        # game.battle.active = true
+        activateSprite!(game,:tagopp)
 
         killCC!(game,:introb)
 
-        error("here")
+        # error("here")
 
         return
     end
-   
+
+    if 80 < game.n[:introb].c < 260
+        if getSpritePosW!(game,:grass1) <= -240
+            moveSpriteW!(game,:grass1,256)
+        end
+        
+        if getSpritePosW!(game,:grass2) <= -240
+            moveSpriteW!(game,:grass2,256)
+        end
+    end
+
     game.n[:introb].c += 1
 
     return

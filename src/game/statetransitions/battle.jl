@@ -70,14 +70,14 @@ function stateOpenBattle!(game::GameState)
     createText!(game,:text,4,-103,41,5,game.str[1][11]*pkmnName(game,p2)*game.str[1][12],
         [0xff,0xff,0xff,0xff],[0x6b,0x5a,0x73,0xff]; active=false,hpad=0)
 
-    createText!(game,:name1,4,40,12,5,pkmnName(game,p1),
+    createText!(game,:name1,4,40,12,6,pkmnName(game,p1),
         [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0)
-    createText!(game,:lv11,4,60,12,5,p1.stats.level,
+    createText!(game,:lvl1, 4,60,12,6,string(p1.stats.level),
         [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0)
 
-    createText!(game,:name2,4,-64-128,-50,5,pkmnName(game,p2),
+    createText!(game,:name2,4,-64-128,-50,6,pkmnName(game,p2),
         [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0)
-    createText!(game,:lv12,4,-44-128,-50,12,p2.stats.level,
+    createText!(game,:lvl2, 4,-44-128,-50,6,string(p2.stats.level),
         [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0)
 
     # createText!(game,:choice,4,-112,57,5,game.str[1][2],

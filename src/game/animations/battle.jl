@@ -40,6 +40,8 @@ function animBattleEntry1!(game::GameState,args::Tuple{})
         moveSpriteW!(game,:pkmn2, 2)
     elseif game.n[:introb].c < 260+16
         moveSpriteW!(game,:tagopp, 8)
+        moveText!(game,:name2, 8, 0)
+        moveText!(game,:lvl2, 8, 0)
         if game.n[:introb].c == 260+15; switchText!(game,:text); end
     elseif game.n[:introb].c < 260+16+8
         moveSpriteH!(game,:pkmn2, -2)

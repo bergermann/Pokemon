@@ -12,7 +12,7 @@ function stateInitMap!(game::GameState)
     game.overworld = true    
     game.im.c.projection1[1:2,4] .= -game.ctrl.pos1
 
-    loadMapStrings!(game; reset=true)
+    loadStringsMap!(game; reset=true)
 
     loadArrayTexture!(game,"tilesets",tilesets,:tiles,16,16)
     loadSpriteSheet!(game,"main1.png",:mc,32,32,9; maxsprites=1)
@@ -40,7 +40,7 @@ function stateOpenMap!(game::GameState)
     game.overworld = true    
     # game.im.c.projection1[1:2,4] .= -game.ctrl.pos1
 
-    loadMapStrings!(game; reset=true)
+    loadStringsMap!(game; reset=true)
 
     loadArrayTexture!(game,"tilesets",tilesets,:tiles,16,16)
     loadSpriteSheet!(game,"main1.png",:mc,32,32,9; maxsprites=1)

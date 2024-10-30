@@ -27,13 +27,13 @@ end
 
 function getArea(game::GameState)::Matrix{UInt16}
     p = game.ctrl.mpos
-    c = game.ctrl.mchunk
+    c = game.ctrl.chunk
 
     for area in game.m.areas.data[1:game.m.areas.idx]
         if 16*(area.cx-c[2])+area.px <= p[2] <= 16*(area.cx-c[2])+area.px+area.dx &&
                 16*(area.cy-c[1])+area.py <= p[1] <= 16*(area.cy-c[1])+area.py+area.dy
 
-            println("in area ",area.id)
+            @info "in area $area.id"
 
             return area.data
         end

@@ -38,9 +38,19 @@ function animBattleEntry1!(game::GameState,args::Tuple{})
         moveSpriteW!(game,:pad2, 2)
         moveSpriteW!(game,:mc, -2)
         moveSpriteW!(game,:pkmn2, 2)
-    elseif game.n[:introb].c == 260
-        # game.battle.active = true
-        activateSprite!(game,:tagopp)
+    elseif game.n[:introb].c < 260+16
+        moveSpriteW!(game,:tagopp, 8)
+        if game.n[:introb].c == 260+15; switchText!(game,:text); end
+    elseif game.n[:introb].c < 260+16+8
+        moveSpriteH!(game,:pkmn2, -2)
+    elseif game.n[:introb].c < 260+16+16
+        moveSpriteH!(game,:pkmn2, 2)
+    elseif game.n[:introb].c < 260+16+24
+        moveSpriteH!(game,:pkmn2, -2)
+    elseif game.n[:introb].c < 260+16+32
+        moveSpriteH!(game,:pkmn2, 2)
+    elseif game.n[:introb].c == 260+16+32
+        game.battle.active = true
 
         killCC!(game,:introb)
 
@@ -49,7 +59,7 @@ function animBattleEntry1!(game::GameState,args::Tuple{})
         return
     end
 
-    if 80 < game.n[:introb].c < 260
+    if 80 < game.n[:introb].c <= 260
         if getSpritePosW!(game,:grass1) <= -240
             moveSpriteW!(game,:grass1,256)
         end

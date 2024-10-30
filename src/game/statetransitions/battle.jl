@@ -21,10 +21,10 @@ function stateInitBattle!(game::GameState)
 end
 
 function stateOpenBattle!(game::GameState)
-    # loadBattleStrings!(game)
+    loadStringsBattle!(game)
 
     createBackground!(game,:battle,"backgrounds/battle/grass1.png",-120,-80,1; active=true)
-    createBackground!(game,:text,"textboxes/battle.png",-120,32,4; active=true)
+    createBackground!(game,:text,"textboxes/battle.png",-120,32,5; active=true)
     createBackground!(game,:s1,"backgrounds/black.png",-120,-80,6; sx=240,sy=80,active=true)
     createBackground!(game,:s2,"backgrounds/black.png",-120,  0,6; sx=240,sy=80,active=true)
 
@@ -47,28 +47,38 @@ function stateOpenBattle!(game::GameState)
     createCallback!(game,:wiggle,animWiggleBattle!,())
     createCC!(game,:animbattle,animBattlePhaseWild!,(); n=-1)
 
-    createSprite!(game,:grass1,:fol,1,1,0,0,10,3; active=true)
+    createSprite!(game,:grass1,:fol,1,1,  0,0,10,3; active=true)
     createSprite!(game,:grass2,:fol,1,1,256,0,10,3; active=true)
 
-    # createSprite!(game,:pad1,:pads,2,1,-56,16,10,2; active=true)
-    # createSprite!(game,:pad2,:pads,1,1,56,-16,10,2; active=true)
     createSprite!(game,:pad1,:pads,2,1, 120+64, 16,10,2; active=true)
     createSprite!(game,:pad2,:pads,1,1,-120-64,-16,10,2; active=true)
 
-    createSprite!(game,:mc,:battlermc,1,1,120+64,0,10,2; active=true)
+    createSprite!(game,:mc,:battlermc,1,1,120+80+3,0,10,2; active=true)
     createSprite!(game,:pkmn1,:pkmn1,1,1,-56,24,10,2; active=false)
-    # createSprite!(game,:pkmn2,:pkmn2,1,1,64,-32,10,2; active=true)
-    createSprite!(game,:pkmn2,:pkmn2,1,1,-120-64,-32,10,2; active=true)
+    createSprite!(game,:pkmn2,:pkmn2,1,1,-120-64,-28,10,2; active=true)
     
     createSprite!(game,:cursor1,:cursors,1,1,-94,66,10,2; active=true)
     createSprite!(game,:cursor2,:cursors,1,1,16,66,10,2; active=true)
     
-    createSprite!(game,:tagown,:tagown,1,1,60,12,10,2; active=false)
-    createSprite!(game,:tagopp,:tagopp,1,1,-58,-50,10,2; active=false)
+    createSprite!(game,:tagown,:tagown,1,1,60,12,10,5; active=true)
+    createSprite!(game,:tagopp,:tagopp,1,1,-58-128,-50,10,5; active=true)
     
-    createFrame!(game,:choice, 13,4,   0,32,3; active=true)
-    createFrame!(game,:info,   8 ,4,  40,32,3; active=!true)
-    createFrame!(game,:attacks,18,4,-120,32,3; active=!true)
+    createFrame!(game,:choice, 13,5,   0,32,3; active=true)
+    createFrame!(game,:info,   8 ,5,  40,32,3; active=!true)
+    createFrame!(game,:attacks,18,5,-120,32,3; active=!true)
+
+    createText!(game,:text,4,-103,41,5,game.str[1][11]*pkmnName(game,p2)*game.str[1][12],
+        [0xff,0xff,0xff,0xff],[0x6b,0x5a,0x73,0xff]; active=false,hpad=0)
+
+    createText!(game,:name1,4,40,12,5,pkmnName(game,p1),
+        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0)
+    createText!(game,:lv11,4,60,12,5,p1.stats.level,
+        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0)
+
+    createText!(game,:name2,4,-64-128,-50,5,pkmnName(game,p2),
+        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0)
+    createText!(game,:lv12,4,-44-128,-50,12,p2.stats.level,
+        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0)
 
     # createText!(game,:choice,4,-112,57,5,game.str[1][2],
     #     [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0)
@@ -387,7 +397,7 @@ function stateBattleBagsOpen!(game::GameState)
     createCC!(game,:bagswitch,animBattleBagSwitch!,(); n=1)
     createCallback!(game,:arrows,true,animArrowsMenu!,())
 
-    loadInventoryStrings!(game)
+    loadStringsInventory!(game)
     drawInventory!(game,game.ctrl.input.battlebags)
 
     return
@@ -428,7 +438,7 @@ function stateBattlePkmnOpen!(game::GameState)
 
     createCallback!(game,:wiggle,animMenuPkmnWiggle!,(); active=true)
 
-    loadTeamStrings!(game)
+    loadStringsTeam!(game)
     drawMenuPkmn!(game)
 
     return

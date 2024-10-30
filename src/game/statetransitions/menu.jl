@@ -92,7 +92,7 @@ end
 function stateMenuPkmnOpen!(game::GameState)
     stateCloseMap!(game)
 
-    loadTeamStrings!(game)
+    loadStringsTeam!(game)
 
     loadSpriteSheet!(game,"menupkmn/slotmain.png",:smain,78,49,2; maxsprites=1)
     loadSpriteSheet!(game,"menupkmn/slotside.png",:sside,142,22,2; maxsprites=5)
@@ -199,7 +199,7 @@ function stateMenuBagsOpen!(game::GameState,m::MenuBags)
 
     correctBags!(game,m)
 
-    loadInventoryStrings!(game)
+    loadStringsInventory!(game)
     
     loadSpriteSheet!(game,"menubag/arrows.png",:arrows,16,16,5; maxsprites=5)
     loadSpriteSheet!(game,"menubag/bags.png",:bags,64,64,6; maxsprites=1)

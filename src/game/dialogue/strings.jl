@@ -4,7 +4,7 @@
 
 
 
-function loadTeamStrings!(game::GameState; reset::Bool=true)
+function loadStringsTeam!(game::GameState; reset::Bool=true)
     reset && (game.str = [])
     
     push!(game.str,readlines("str/ger/system_pkmn.txt"))
@@ -12,7 +12,7 @@ function loadTeamStrings!(game::GameState; reset::Bool=true)
     return
 end
 
-function loadInventoryStrings!(game::GameState; reset::Bool=true)
+function loadStringsInventory!(game::GameState; reset::Bool=true)
     reset && (game.str = [])
     
     push!(game.str,readlines("str/ger/system_bag.txt"))
@@ -22,9 +22,9 @@ function loadInventoryStrings!(game::GameState; reset::Bool=true)
     return
 end
 
-function loadMapStrings!(game::GameState; reset::Bool=true)
+function loadStringsMap!(game::GameState; reset::Bool=true)
     if reset
-        game.str = []
+        empty!(game.str)
 
         push!(game.str,[])
         
@@ -33,6 +33,14 @@ function loadMapStrings!(game::GameState; reset::Bool=true)
     else
         game.str[1] = []
     end
+
+    return
+end
+
+function loadStringsBattle!(game::GameState)
+    empty!(game.str)
+
+    push!(game.str,readlines("str/ger/system_battle.txt"))
 
     return
 end

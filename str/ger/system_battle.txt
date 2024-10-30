@@ -1,0 +1,37 @@
+Kampf
+Beutel
+Pokémon
+Flucht
+AP
+Typ:
+
+
+
+
+Ein wildes 
+ erscheint!
+Los! 
+Was soll 
+ tun?
+ wurde besiegt.
+ erhält 
+ Erfahrungspunkte.
+Du bist entkommen!
+
+
+
+
+
+
+
+
+
+
+
+ setzt 
+  ein.
+ (wild) setzt 
+Es ist nicht sehr effektiv...
+Es ist sehr effektiv!
+Die Attacke schlug fehl.
+Mist!\Das Pokémon hat sich befreit!

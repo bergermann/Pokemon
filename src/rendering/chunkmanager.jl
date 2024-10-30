@@ -282,8 +282,6 @@ function loadAreas!(game::GameState,cx::Integer,cy::Integer)
         for area in areas[l]
             id = UInt16(i+64*cx+64*64*cy)
 
-            println("loading area $id")
-
             if id in game.m.areaids# || game.flags.items[flag]
                 continue
             else

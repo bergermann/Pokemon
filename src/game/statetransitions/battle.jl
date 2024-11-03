@@ -70,30 +70,15 @@ function stateOpenBattle!(game::GameState)
     createText!(game,:text,4,-103,41,5,game.str[1][11]*pkmnName(game,p2)*game.str[1][12],
         [0xff,0xff,0xff,0xff],[0x6b,0x5a,0x73,0xff]; active=false,hpad=0)
 
-    createText!(game,:name1,4,40,12,6,pkmnName(game,p1),
-        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0)
-    createText!(game,:lvl1, 4,60,12,6,string(p1.stats.level),
-        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0)
+    createText!(game,:name1,1,24+128,-4,6,pkmnName(game,p1),
+        [0x42,0x42,0x42,0xff],[0xde,0xd6,0xb5,0xff]; active=false,hpad=0,maxchar=16)
+    createText!(game,:lvl1, 1,93+128,-4,6,string(p1.stats.level),
+        [0x42,0x42,0x42,0xff],[0xde,0xd6,0xb5,0xff]; active=false,hpad=0,maxchar=3)
 
-    createText!(game,:name2,4,-64-128,-50,6,pkmnName(game,p2),
-        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0)
-    createText!(game,:lvl2, 4,-44-128,-50,6,string(p2.stats.level),
-        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0)
-
-    # createText!(game,:choice,4,-112,57,5,game.str[1][2],
-    #     [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0)
-    # createText!(game,:info,4,-112,57,5,game.str[1][3],
-    #     [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0)
-    
-    # for i in 1:max(4,length(p1.attacks))
-    #     createText!(game,Symbol(:attack,i),4,-112,57,5,p1.attacks[i].name,
-    #         [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=false,hpad=0)
-    # end
-
-    # for i in length(p1.attacks):4
-    #     createText!(game,Symbol(:attack,i),4,-112,57,5,"---",
-    #         [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=false,hpad=0)
-    # end
+    createText!(game,:name2,1,-101-128,-62,6,pkmnName(game,p2),
+        [0x42,0x42,0x42,0xff],[0xde,0xd6,0xb5,0xff]; active=false,hpad=0,maxchar=16)
+    createText!(game,:lvl2, 1, -33-128,-62,6,string(p2.stats.level),
+        [0x42,0x42,0x42,0xff],[0xde,0xd6,0xb5,0xff]; active=false,hpad=0,maxchar=3)
     
     return
 end

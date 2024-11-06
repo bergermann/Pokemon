@@ -53,33 +53,52 @@ function stateOpenBattle!(game::GameState)
     createSprite!(game,:pad1,:pads,2,1, 120+64, 16,10,2; active=true)
     createSprite!(game,:pad2,:pads,1,1,-120-64,-16,10,2; active=true)
 
-    createSprite!(game,:mc,:battlermc,1,1,120+80+3,0,10,2; active=true)
-    createSprite!(game,:pkmn1,:pkmn1,1,1,-56,24,10,2; active=false)
-    createSprite!(game,:pkmn2,:pkmn2,1,1,-120-64,-28,10,2; active=true)
+    createSprite!(game,   :mc,:battlermc,1,1,120+80+3,  0,10,2; active=true)
+    createSprite!(game,:pkmn1,    :pkmn1,1,1,     -56, 24,10,2; active=false)
+    createSprite!(game,:pkmn2,    :pkmn2,1,1, -120-64,-28,10,2; active=true)
     
     createSprite!(game,:cursor1,:cursors,1,1,-94,66,10,2; active=true)
-    createSprite!(game,:cursor2,:cursors,1,1,16,66,10,2; active=true)
+    createSprite!(game,:cursor2,:cursors,1,1, 16,66,10,2; active=true)
     
-    createSprite!(game,:tagown,:tagown,1,1,60,12,10,5; active=true)
-    createSprite!(game,:tagopp,:tagopp,1,1,-58-128,-50,10,5; active=true)
+    createSprite!(game,:tagown,:tagown,1,1,     60, 12,10,3; active=true)
+    createSprite!(game,:tagopp,:tagopp,1,1,-58-128,-50,10,3; active=true)
     
-    createFrame!(game,:choice, 13,5,   0,32,3; active=true)
-    createFrame!(game,:info,   8 ,5,  40,32,3; active=!true)
-    createFrame!(game,:attacks,18,5,-120,32,3; active=!true)
+    createFrame!(game,:choice, 13,4,   0,32,5; active=!true)
+    createFrame!(game,:info,   8 ,4,  40,32,6; active=true)
+    createFrame!(game,:attacks,18,4,-120,32,6; active=true)
 
     createText!(game,:text,4,-103,41,5,game.str[1][11]*pkmnName(game,p2)*game.str[1][12],
         [0xff,0xff,0xff,0xff],[0x6b,0x5a,0x73,0xff]; active=false,hpad=0)
 
-    createText!(game,:name1,1,24+128,-4,6,pkmnName(game,p1),
+    createText!(game,:name1,1,24+128,-4,3,pkmnName(game,p1),
         [0x42,0x42,0x42,0xff],[0xde,0xd6,0xb5,0xff]; active=false,hpad=0,maxchar=16)
-    createText!(game,:lvl1, 1,93+128,-4,6,string(p1.stats.level),
+    createText!(game,:lvl1, 1,93+128,-4,3,string(p1.stats.level),
         [0x42,0x42,0x42,0xff],[0xde,0xd6,0xb5,0xff]; active=false,hpad=0,maxchar=3)
 
-    createText!(game,:name2,1,-101-128,-62,6,pkmnName(game,p2),
+    createText!(game,:name2,1,-101-128,-62,3,pkmnName(game,p2),
         [0x42,0x42,0x42,0xff],[0xde,0xd6,0xb5,0xff]; active=false,hpad=0,maxchar=16)
-    createText!(game,:lvl2, 1, -33-128,-62,6,string(p2.stats.level),
+    createText!(game,:lvl2, 1, -33-128,-62,3,string(p2.stats.level),
         [0x42,0x42,0x42,0xff],[0xde,0xd6,0xb5,0xff]; active=false,hpad=0,maxchar=3)
+
+    createText!(game,:choice1,4,16,41,5,game.str[1][1]*"\\"*game.str[1][3],
+        [0x4a,0x4a,0x4a,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=2,maxchar=32)
+    createText!(game,:choice2,4,72,41,5,game.str[1][2]*"\\"*game.str[1][4],
+        [0x4a,0x4a,0x4a,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=2,maxchar=32)
+
+    for i in eachindex(p1.attacks)
+        createText!(game,Symbol(:attack,i),4,-103+64*((i-1)%2),41+16*div(i-1,2),6,
+            p1.attacks[i].name,[0x4a,0x4a,0x4a,0xff],[0xd6,0xd6,0xce,0xff];
+            active=true,hpad=0,maxchar=16)
+    end
     
+    for i in length(p1.attacks)+1:4
+        createText!(game,Symbol(:attack,i),4,-103+64*((i-1)%2),41+16*div(i-1,2),6,
+            "---", [0x4a,0x4a,0x4a,0xff],[0xd6,0xd6,0xce,0xff];
+            active=true,hpad=0,maxchar=16)
+    end
+
+    # createText!(game,:info1)
+
     return
 end
 

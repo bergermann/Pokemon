@@ -185,7 +185,9 @@ function createText!(game::GameState,name::Symbol,font::Int,x::Int,y::Int,layer:
     return
 end
 
-function setText!(game::GameState,name::Symbol,str::String; nchar::Int=-1,align::Int=-1)
+function setText!(game::GameState,name::Symbol,str::AbstractString;
+        nchar::Int=-1,align::Int=-1)
+        
     t = game.im.text.texts[name]
 
     if nchar < 0

@@ -41,6 +41,7 @@ function loadStringsBattle!(game::GameState)
     empty!(game.str)
 
     push!(game.str,readlines("str/ger/system_battle.txt"))
+    push!(game.str,readlines("str/ger/system_types.txt"))
 
     return
 end

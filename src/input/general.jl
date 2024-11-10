@@ -1,33 +1,39 @@
 
+function lockInput!(game::GameState)
+    game.ctrl.input.inputlock = true; return
+end
 
+function unlockInput!(game::GameState)
+    game.ctrl.input.inputlock = false; return
+end
 
 function inputManager!(game::GameState,inputs::Inputs)
-    if game.ctrl.input.inputlock
-        return
-    elseif game.ctrl.input.choice.active
-        inputChoice!(game,inputs)
-    elseif game.ctrl.input.dialogue
-        inputDialogue!(game,inputs)
-    elseif game.ctrl.input.map
-        inputMap!(game,inputs)
-    elseif game.ctrl.input.menu.main
-        inputMenu!(game,inputs)
-    elseif game.ctrl.input.menu.pdex
-        
-    elseif game.ctrl.input.menu.pkmn
-        inputMenuPkmn!(game,inputs)
-    elseif game.ctrl.input.menu.bags
-        inputInventory!(game,inputs)
-    elseif game.ctrl.input.menu.pnav
-        
-    elseif game.ctrl.input.menu.self
-        
-    elseif game.ctrl.input.menu.save
-        
-    elseif game.ctrl.input.menu.optn
-        
-    elseif game.ctrl.input.battle
-        inputBattle!(game,inputs)
+    if !game.ctrl.input.inputlock
+        if game.ctrl.input.choice.active
+            inputChoice!(game,inputs)
+        elseif game.ctrl.input.dialogue
+            inputDialogue!(game,inputs)
+        elseif game.ctrl.input.map
+            inputMap!(game,inputs)
+        elseif game.ctrl.input.menu.main
+            inputMenu!(game,inputs)
+        elseif game.ctrl.input.menu.pdex
+            
+        elseif game.ctrl.input.menu.pkmn
+            inputMenuPkmn!(game,inputs)
+        elseif game.ctrl.input.menu.bags
+            inputInventory!(game,inputs)
+        elseif game.ctrl.input.menu.pnav
+            
+        elseif game.ctrl.input.menu.self
+            
+        elseif game.ctrl.input.menu.save
+            
+        elseif game.ctrl.input.menu.optn
+            
+        elseif game.battle.active
+            inputBattle!(game,inputs)
+        end
     end
 
     resetInputs!(inputs)
@@ -110,26 +116,11 @@ end
 
 
 function inputDialogue!(game::GameState,inputs::Inputs)
-    if !(inputs.A.press || inputs.B.press || inputs.down.press)
-        return
-    end
+    if !(inputs.A.press || inputs.B.press || inputs.down.press); return; end
 
-    if game.dialogue.n < length(game.dialogue.str)
-        game.dialogue.n += 1
-        
-        drawDialogueUpdate!(game)
-    else
-        game.dialogue.d = false
-        game.dialogue.n = 1
-        game.ctrl.move = true
-        game.ctrl.map = true
-        game.ctrl.dialogue = false
-        game.ctrl.npclock = false
+    stateAdvanceDialogue!(game)
 
-        evalCallback(game,game.dialogue.callback)
-        
-        flushLayer!(game,6,P(24+112,16),P(48,240))
-    end
+    return
 end
 
 

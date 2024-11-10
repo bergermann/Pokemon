@@ -67,13 +67,13 @@ end
 
 
 mutable struct Dialogue
-    d::Bool
     str::Vector{String}
     n::UInt8
+    l::UInt8
     callback::Callback
 
     function Dialogue()
-        new(false,[""],0x01,Callback())
+        new([""],0x01,0x01,Callback())
     end
 end
 
@@ -146,7 +146,6 @@ mutable struct MenuOpt
 end
 
 mutable struct MenuBattle
-    d::Bool
     m1::Bool
     s1::Integer
     m2::Bool
@@ -155,7 +154,7 @@ mutable struct MenuBattle
     bags::MenuBags
 
     function MenuBattle()
-        new(false,false,0,false,0,false,MenuBags())
+        new(false,0,false,0,false,MenuBags())
     end
 end
 

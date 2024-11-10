@@ -1,18 +1,45 @@
 
 
-function stateSetDialogue!(game::GameState,set::Int,idx::Int,len::Int,
-        callback::Callback)
-        
-    game.ctrl.input.npclock = true
-    game.ctrl.input.map = false
-    game.ctrl.input.move = false
+function stateSetDialogue!(game::GameState,str::AbstractString,callback::Callback)
+    if !game.battle.active
+        game.im.b.backgrounds[:text].active = true
+        game.ctrl.input.npclock = true
+        game.ctrl.input.map = false
+        game.ctrl.input.move = false
+    end
+    
     game.ctrl.input.dialogue = true
     game.ctrl.dialogue.n = 1
-    game.ctrl.dialogue.str = game.str[set][idx:idx+len-1]
+    game.ctrl.dialogue.str = displit(str,'\\')
+    game.ctrl.dialogue.l = length(game.ctrl.dialogue.str)
     game.ctrl.dialogue.callback = callback
 
-    drawDialogue!(game)
+    setText!(game,:dialogue,game.ctrl.dialogue.str[1])
+    game.im.text.texts[:dialogue].active = true
+
+    return
 end
 
-const stateSetDialogue!(game::GameState,set::Int,idx::Int,len::Int) = 
-    stateSetDialogue!(game::GameState,set::Int,idx::Int,len::Int,Callback())
+stateSetDialogue!(game::GameState,str::AbstractString) = stateSetDialogue!(game,str,F0)
+
+function stateAdvanceDialogue!(game::GameState)
+    if game.ctrl.dialogue.n == game.ctrl.dialogue.l
+        if !game.battle.active
+            game.im.b.backgrounds[:text].active = false
+            game.ctrl.input.npclock = false
+            game.ctrl.input.map = true
+            game.ctrl.input.move = true
+        end
+
+        game.ctrl.input.dialogue = false
+        game.im.text.texts[:dialogue].active = false
+
+        evalCallback(game,game.ctrl.dialogue.callback)
+    else
+        game.ctrl.dialogue.n += 1
+        
+        setText!(game,:dialogue,game.ctrl.dialogue.str[game.ctrl.dialogue.n])
+    end
+
+    return
+end

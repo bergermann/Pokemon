@@ -1,171 +1,57 @@
 
+const alabels = [:attack1,:attack2,:attack3,:attack4]
 
-function inputBattle!(game::GameState,input::Input)
-    if game.ctrl.input.battled
-        if input._A || input._B || input._down
-            inputBattleDialogue!(game::GameState,input::Input)
+function inputBattle!(game::GameState,inputs::Inputs)
+    if game.ctrl.input.battle.m1
+        if inputs.A.press
+            inputBattleMenuSelector!(game::GameState); return
         end
 
-        return
-    end
-
-    if game.ctrl.input.battle1
-        if input._A
-            inputBattleMenuSelector!(game::GameState)
-            return
+        if inputs.B.press
+            game.ctrl.input.battle.s1 = 3
+        elseif inputs.up.press || inputs.down.press
+            game.ctrl.input.battle.s1 += 2
+        elseif inputs.left.press || inputs.right.press
+            game.ctrl.input.battle.s1 += 1+2*isodd(game.ctrl.input.battle.s1)
         end
 
-        if input._B
-            game.ctrl.input.battle1menu.select = 3
-            return
+        game.ctrl.input.battle.s1 %= 4
+
+        moveSprite!(game,:cursor1,12+48*div(game.ctrl.input.battle.s1,2),
+            46+16*(game.ctrl.input.battle.s1%2),true)
+    elseif game.ctrl.input.battle.m2
+        if inputs.A.press
+            inputBattleAttackSelector!(game::GameState); return
         end
 
-        if input._up
-            game.ctrl.input.battle1menu.select -= 2
-        elseif input._down
-            game.ctrl.input.battle1menu.select += 2
-        elseif input._left
-            if game.ctrl.input.battle1menu.select%2 == 0
-                game.ctrl.input.battle1menu.select += 1
-            else
-                game.ctrl.input.battle1menu.select -= 1
-            end
-        elseif input._right
-            if game.ctrl.input.battle1menu.select%2 == 1
-                game.ctrl.input.battle1menu.select -= 1
-            else
-                game.ctrl.input.battle1menu.select += 1
-            end
-        end
+        if inputs.B.press
+            game.ctrl.input.battle.m1 = true
+            game.ctrl.input.battle.m2 = false    
 
-        if game.ctrl.input.battle1menu.select < 0
-            game.ctrl.input.battle1menu.select += 4
-        end
-
-        game.ctrl.input.battle1menu.select %= 4
-
-        game.im.sprites[4][:cursor1].pos.h = 146+div(game.ctrl.input.battle1menu.select,2)*16
-        game.im.sprites[4][:cursor1].pos.w = 136+(game.ctrl.input.battle1menu.select%2)*58
-
-        return
-    end
-
-    if game.ctrl.input.battle2
-        if game.ctrl.input.battle1menu.select < 0
-            game.ctrl.input.battle1menu.select += 4
-        end
-
-        game.ctrl.input.battle1menu.select %= 4
-
-        if input._A
-            inputBattleAttackSelector!(game::GameState)
-            return
-        end
-
-        if input._B
-            game.ctrl.input.battle1 = true
-            game.ctrl.input.battle2 = false
-    
-            game.draw.battle1 = true
-            game.draw.battle2 = false
-
-            game.im.sprites[4][:cursor1].active = true
-            game.im.sprites[5][:cursor2].active = false
-
-            flushLayer!(game,4,Position(24+1+112,16+1),Position(48,240))
-            flushLayer!(game,5,Position(24+1+112,16+1),Position(48,240))
+            switchSprite!(game,:cursor1); switchSprite!(game,:cursor2)
+            switchFrame!(game,:choice); switchFrame!(game,:attacks); switchFrame!(game,:info)
+            switchText!.(game,alabels)
 
             return
         end
 
-        if input._up
-            if div(game.ctrl.input.battle2menu.select,2) == 0
-                game.ctrl.input.battle2menu.select += 2
-            else
-                game.ctrl.input.battle2menu.select -= 2
-            end
-
-            if game.ctrl.input.battle2menu.select >=
-                length(game.battle.state.pkmn1.pkmn.attacks)
-
-                game.ctrl.input.battle2menu.select -= 2
-            end
-        elseif input._down
-            if div(game.ctrl.input.battle2menu.select,2) == 0
-                game.ctrl.input.battle2menu.select += 2
-            else
-                game.ctrl.input.battle2menu.select -= 2
-            end
-
-            if game.ctrl.input.battle2menu.select >=
-                length(game.battle.state.pkmn1.pkmn.attacks)
-
-                game.ctrl.input.battle2menu.select -= 2
-            end
-        elseif input._left
-            if game.ctrl.input.battle2menu.select%2 == 0
-                game.ctrl.input.battle2menu.select += 1
-            else
-                game.ctrl.input.battle2menu.select -= 1
-            end
-
-            if game.ctrl.input.battle2menu.select >=
-                length(game.battle.state.pkmn1.pkmn.attacks)
-
-                game.ctrl.input.battle2menu.select -= 1
-            end
-        elseif input._right
-            if game.ctrl.input.battle2menu.select%2 == 1
-                game.ctrl.input.battle2menu.select -= 1
-            else
-                game.ctrl.input.battle2menu.select += 1
-            end
-
-            if game.ctrl.input.battle2menu.select >=
-                length(game.battle.state.pkmn1.pkmn.attacks)
-
-                game.ctrl.input.battle2menu.select -= 1
-            end
+        if inputs.up.press || inputs.down.press
+            game.ctrl.input.battle.s2 += 2
+        elseif inputs.left.press || inputs.right.press
+            game.ctrl.input.battle.s2 += 1+2*isodd(game.ctrl.input.battle.s2)
         end
 
-        if game.ctrl.input.battle1menu.select < 0
-            game.ctrl.input.battle1menu.select += 4
-        end
+        game.ctrl.input.battle.s2 %= 4
 
-        game.ctrl.input.battle1menu.select %= 4
-
-        game.im.sprites[5][:cursor2].pos.h = 146+div(game.ctrl.input.battle2menu.select,2)*16
-        game.im.sprites[5][:cursor2].pos.w = 24+(game.ctrl.input.battle2menu.select%2)*64
-
-        return
-    end
-
-    if game.ctrl.input.battlebag
+        moveSprite!(game,:cursor2,-70+48*div(game.ctrl.input.battle.s2,2),
+            46+16*(game.ctrl.input.battle.s2%2),true)
+    elseif game.ctrl.input.battle.bag
         inputBattleInventory!(game,input)
     end
 
     return
 end
 
-function inputBattleDialogue!(game::GameState,input::Input)
-    if input._A || input._B || input._down
-        if game.dialogue.n < length(game.dialogue.str)
-            game.dialogue.n += 0x01
-        else
-            game.dialogue.d = false
-            game.dialogue.n = 1
-            game.ctrl.input.battled = false
-            
-            game.draw.battled = false
-
-            game.dialogue.callback.func(game,game.dialogue.callback.args...)
-        end
-        
-        flushLayer!(game,3,Position(24+1+120,24+1),Position(32,208),0x68a0a0)
-    end
-
-    return
-end
 
 function inputBattleMenuSelector!(game::GameState)
     if game.ctrl.input.battle1menu.select == 0

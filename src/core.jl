@@ -87,6 +87,29 @@ end
 
 
 
+function displit(str::T,dlm::Char) where {T<:AbstractString}
+    idxs = findall(isequal(dlm),str)[2:2:end]
+    l = length(idxs)
+    
+    if l == 0
+        str_ = [SubString(str,1)]
+    else
+        str_ = Vector{SubString{T}}(undef,l+1)
+        
+        str_[1] = SubString(str,1,idxs[1]-1)
+
+        for i in 1:l-1
+            str_[i+1] = SubString(str,idxs[i]+1,idxs[i+1]-1)
+        end
+        
+        str_[end] = SubString(str,idxs[end]+1,length(str))
+    end
+
+    return str_
+end
+
+
+
 function discreteGaussian(type::Type,dims; μ::Real=0.,σ::Real=1.)
     return round.(type,σ*randn(Float64,dims).+μ)
 end
@@ -98,6 +121,15 @@ end
 function randN(μ::Real,σ::Real)
     return discreteGaussian(typeof(μ),(); μ=μ,σ=σ)
 end
+
+function randN(μ::Unsigned,σ::Real,dims)
+    return @. oftype(μ,min(0,discreteGaussian(Int,dims; μ=μ,σ=σ)))
+end
+
+function randN(μ::Unsigned,σ::Real)
+    return oftype(μ,min(0,discreteGaussian(Int,(); μ=μ,σ=σ)))
+end
+
 
 
 
@@ -111,6 +143,8 @@ end
 function emptyCallback(game::GameState)
     return
 end
+
+const F0 = Callback()
 
 function createCounter!(game::GameState,id::Symbol)
     push!(game.n,Counter(id))
@@ -164,22 +198,6 @@ end
 function killCC!(game::GameState,idc::Symbol,idcb::Symbol)
     killCounter!(game,idc)
     killCallback!(game,idcb)
-
-    return
-end
-
-
-## remove if works!
-# function setDialogue!(game::GameState,str::String)
-#     game.dialogue.d = true
-#     game.dialogue.n = 1
-#     game.dialogue.str = str
-# end
-
-function setBattleDialogue!(game::GameState,str::String)
-    game.battle.dialogue.d = true
-    game.battle.dialogue.n = 1
-    game.battle.dialogue.str = str
 
     return
 end

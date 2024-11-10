@@ -1,7 +1,7 @@
 
 
 
-function animBattleEntry1!(game::GameState,args::Tuple{})
+function animBattleIntro1!(game::GameState,args::Tuple{})
     if game.n[:introb].c < 48
         game.im.l.color[4] = 0.5+cospi((game.n[:introb].c+1)/8.0)/2
     elseif game.n[:introb].c < 64
@@ -11,7 +11,7 @@ function animBattleEntry1!(game::GameState,args::Tuple{})
         game.im.l.color[4] = 1.0
         
         stateCloseMap!(game)
-        stateOpenBattle!(game)
+        stateOpenBattleIntro!(game)
         
         Base.GC.gc()
     elseif game.n[:introb].c < 80
@@ -42,7 +42,6 @@ function animBattleEntry1!(game::GameState,args::Tuple{})
         moveSpriteW!(game,:tagopp, 8)
         moveText!(game,:name2, 8, 0)
         moveText!(game,:lvl2, 8, 0)
-        if game.n[:introb].c == 260+15; switchText!(game,:text); end
     elseif game.n[:introb].c < 260+16+8
         moveSpriteH!(game,:pkmn2, -2)
     elseif game.n[:introb].c < 260+16+16
@@ -53,21 +52,27 @@ function animBattleEntry1!(game::GameState,args::Tuple{})
         moveSpriteH!(game,:pkmn2, 2)
     elseif game.n[:introb].c == 260+16+32
         game.battle.active = true
+        unlockInput!(game)
 
-        killCC!(game,:introb)
+        killSprite!(game,:grass1); killSprite!(game,:grass2)
+        deleteBackground!(game,:s1); deleteBackground!(game,:s2)
 
-        # error("here")
+        game.callbacks[:introb].active = false
+
+        stateSetDialogue!(game,
+            game.str[1][11]*pkmnName(game,game.battle.state.pkmn2.pkmn)*game.str[1][12],
+            Callback(stateThrowBattle!))
 
         return
     end
 
-    if 80 < game.n[:introb].c <= 260
+    if 80 < game.n[:introb].c <= 300
         if getSpritePosW!(game,:grass1) <= -240
-            moveSpriteW!(game,:grass1,256)
+            moveSpriteW!(game,:grass1,512)
         end
         
         if getSpritePosW!(game,:grass2) <= -240
-            moveSpriteW!(game,:grass2,256)
+            moveSpriteW!(game,:grass2,512)
         end
     end
 
@@ -75,6 +80,16 @@ function animBattleEntry1!(game::GameState,args::Tuple{})
 
     return
 end
+
+function animThrowBall!(game::GameState,args::Tuple{})
+    
+
+    game.n[:introb].c += 1
+
+    return
+end
+
+
 
 function animWiggleBattle!(game::GameState)
     if game.frame%0x20 == 0x08

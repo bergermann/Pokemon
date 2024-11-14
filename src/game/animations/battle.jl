@@ -82,6 +82,23 @@ function animBattleIntro1!(game::GameState,args::Tuple{})
 end
 
 function animThrowBall!(game::GameState,args::Tuple{})
+    if game.n[:introb].c < 48
+        game.im.l.color[4] = 0.5+cospi((game.n[:introb].c+1)/8.0)/2
+    elseif game.n[:introb].c == 260+16+32
+        game.battle.active = true
+        unlockInput!(game)
+
+        killSprite!(game,:grass1); killSprite!(game,:grass2)
+        deleteBackground!(game,:s1); deleteBackground!(game,:s2)
+
+        game.callbacks[:introb].active = false
+
+        stateSetDialogue!(game,
+            game.str[1][11]*pkmnName(game,game.battle.state.pkmn2.pkmn)*game.str[1][12],
+            Callback(stateThrowBattle!))
+
+        return
+    end
     
 
     game.n[:introb].c += 1

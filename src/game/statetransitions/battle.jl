@@ -115,6 +115,9 @@ end
 function stateThrowBattle!(game::GameState,args::Tuple{})
     lockInput!(game)
 
+    stateSetDialogue!(game,game.str[1][13]*pkmnName(game,game.battle.state.pkmn2.pkmn)*"!",
+        F(stateInitBattleChoice!))
+
     game.callbacks[:introb].func = animThrowBall!
     game.callbacks[:introb].active = true
     game.n[:introb].c = 0
@@ -122,6 +125,15 @@ function stateThrowBattle!(game::GameState,args::Tuple{})
     return
 end
 
+function stateInitBattleChoice!(game::GameState,args::Tuple{})
+    unlockInput!(game)
+
+    activateFrame!(game,:choice)
+    game.im.b.backgrounds[:t1].active = true
+    activateSprite!(game,:cursor1)
+
+    return    
+end
 
 
 

@@ -357,19 +357,19 @@ end
 
 
 
-function getSpritePos!(game::GameState,id::Symbol)
+function getSpritePos(game::GameState,id::Symbol)
     s = game.im.s.sprites[id]
 
     return game.im.s.sheets[s.sheet].pos[:,s.slot]
 end
 
-function getSpritePosW!(game::GameState,id::Symbol)
+function getSpritePosW(game::GameState,id::Symbol)
     s = game.im.s.sprites[id]
 
     return game.im.s.sheets[s.sheet].pos[1,s.slot]
 end
 
-function getSpritePosH!(game::GameState,id::Symbol)
+function getSpritePosH(game::GameState,id::Symbol)
     s = game.im.s.sprites[id]
 
     return game.im.s.sheets[s.sheet].pos[2,s.slot]

@@ -57,6 +57,7 @@ function stateOpenBattleIntro!(game::GameState)
     createSprite!(game,:pad2,:pads,1,1,-120-64,-16,10,2; active=true)
 
     createSprite!(game,   :mc,:battlermc,1,1,120+80+3,  0,10,2; active=true)
+    createSprite!(game, :ball,    :balls,1,1,     -80, 0,10,2; active=true)
     createSprite!(game,:pkmn1,    :pkmn1,1,1,     -56, 24,10,2; active=false)
     createSprite!(game,:pkmn2,    :pkmn2,1,1, -120-64,-28,10,2; active=true)
     
@@ -66,8 +67,8 @@ function stateOpenBattleIntro!(game::GameState)
     createSprite!(game,:tagown,:tagown,1,1, 60+128, 12,10,3; active=true)
     createSprite!(game,:tagopp,:tagopp,1,1,-58-128,-50,10,3; active=true)
     
-    createFrame!(game,:choice, 13,4,   0,32,5; active=false)
-    createFrame!(game,:info,   8 ,4,  40,32,6; active=false)
+    createFrame!(game, :choice,13,4,   0,32,5; active=false)
+    createFrame!(game,   :info, 8,4,  40,32,6; active=false)
     createFrame!(game,:attacks,18,4,-120,32,6; active=false)
 
     createText!(game,:dialogue,4,-103,41,5,"",

@@ -67,11 +67,11 @@ function animBattleIntro1!(game::GameState,args::Tuple{})
     end
 
     if 80 < game.n[:introb].c <= 300
-        if getSpritePosW!(game,:grass1) <= -240
+        if getSpritePosW(game,:grass1) <= -240
             moveSpriteW!(game,:grass1,512)
         end
         
-        if getSpritePosW!(game,:grass2) <= -240
+        if getSpritePosW(game,:grass2) <= -240
             moveSpriteW!(game,:grass2,512)
         end
     end
@@ -82,24 +82,23 @@ function animBattleIntro1!(game::GameState,args::Tuple{})
 end
 
 function animThrowBall!(game::GameState,args::Tuple{})
-    if game.n[:introb].c < 48
-        game.im.l.color[4] = 0.5+cospi((game.n[:introb].c+1)/8.0)/2
-    elseif game.n[:introb].c == 260+16+32
-        game.battle.active = true
-        unlockInput!(game)
+    if game.n[:introb].c == 0
+        setSpriteFrame!(game,:mc,2)
+    elseif game.n[:introb].c == 20
+        setSpriteFrame!(game,:mc,3)
+    elseif game.n[:introb].c == 30
+        setSpriteFrame!(game,:mc,4)
+    elseif game.n[:introb].c == 80
+        killSprite!(game,:mc); killSprite!(game,:ball)
+        
+        stateInitBattleChoice!(game,())
 
-        killSprite!(game,:grass1); killSprite!(game,:grass2)
-        deleteBackground!(game,:s1); deleteBackground!(game,:s2)
-
-        game.callbacks[:introb].active = false
-
-        stateSetDialogue!(game,
-            game.str[1][11]*pkmnName(game,game.battle.state.pkmn2.pkmn)*game.str[1][12],
-            Callback(stateThrowBattle!))
+        killCallback!(game,:introb)
 
         return
     end
     
+    moveSpriteW!(game,:mc,-3)
 
     game.n[:introb].c += 1
 

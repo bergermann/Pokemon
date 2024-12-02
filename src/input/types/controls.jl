@@ -20,6 +20,9 @@ mutable struct Inputs
     start::Input
     select::Input
 
+    pause::Input
+    next::Input
+
     function Inputs()
         new([Input(false,false) for _ in fieldnames(Inputs)]...)
     end
@@ -51,7 +54,10 @@ const km = Base.ImmutableDict(
 
     GLFW.KEY_X => :start,
 
-    GLFW.KEY_Y => :select 
+    GLFW.KEY_Y => :select,
+
+    GLFW.KEY_P => :pause,
+    GLFW.KEY_N => :next
 )
 
 function setupInputs(km)
@@ -233,6 +239,8 @@ mutable struct InputState
 
     worldmap::Bool
 
+    pause::Bool
+
     function InputState()
         new(
             false,
@@ -250,7 +258,9 @@ mutable struct InputState
 
             MenuBattle(),
 
-            false
+            false,
+
+            false,
         )
     end
 end
@@ -290,11 +300,11 @@ mutable struct Controls
     fg::Bool
     dir::Int            # 1,2,3,4 = N,E,S,W
 
-    input::InputState
-    
     dialogue::Dialogue
+    
+    input::InputState
 
     function Controls(x::Int,y::Int,h::Int,cx::Int,cy::Int,fg::Bool,dir::Int)
-        new(P(x,y),P(x,y),P(x,y),h,P(cx,cy),P(cx,cy),fg,dir,InputState(),Dialogue())
+        new(P(x,y),P(x,y),P(x,y),h,P(cx,cy),P(cx,cy),fg,dir,Dialogue(),InputState())
     end
 end

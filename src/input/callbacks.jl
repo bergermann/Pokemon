@@ -2,9 +2,9 @@
 
 
 function keyCallback(window::GLFW.Window,key,scancode,action,mods)
-    # println("Key pressed: ",key)
+    println("Key pressed: ",key)
     # # println("Scancode:    ",scancode)
-    # println("Action:      ",action)
+    println("Action:      ",action)
     # # println("Mods:        ",mods)
     # println()
 

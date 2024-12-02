@@ -32,7 +32,7 @@ function main()
     # Base.GC.enable(false)
     # Base.GC.@preserve game sceneTransition!
 
-    inputs, keymap = setupInputs(km); global keymap
+    inputs, keymap = setupInputs(km); global keymap; pause = false
 
     include("input/callbacks.jl")
     
@@ -53,10 +53,19 @@ function main()
     # @time Base.GC.gc()
 
     while !GLFW.WindowShouldClose(game.im.window)
-        game.frame += 0x01
- 
-        # @time updateGame!(game,inputs)
-        updateGame!(game,inputs)
+        if inputs.pause.press
+            pause = !pause
+            inputs.pause.press = false
+            resetInputs!(inputs)
+            println("pausing")
+        end
+        
+        if !pause || inputs.next.press || inputs.next.hold
+            game.frame += 0x01
+    
+            # @time updateGame!(game,inputs)
+            updateGame!(game,inputs)
+        end
 
         render(game)
     end

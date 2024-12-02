@@ -137,5 +137,7 @@ function resetInputs!(inputs::Inputs)
     inputs.start.press = false
     inputs.select.press = false
 
+    inputs.next.press = false
+
     return
 end

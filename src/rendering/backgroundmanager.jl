@@ -64,3 +64,15 @@ function deleteBackground!(game::GameState,name::Symbol)
 
     return
 end
+
+function activateBackground!(game::GameState,name::Symbol)
+    game.im.b.backgrounds[name].active = true
+    
+    return
+end
+
+function deactivateBackground!(game::GameState,name::Symbol)
+    game.im.b.backgrounds[name].active = false
+    
+    return
+end

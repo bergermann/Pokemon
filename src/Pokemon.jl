@@ -57,10 +57,11 @@ function main()
             pause = !pause
             inputs.pause.press = false
             resetInputs!(inputs)
-            println("pausing")
+
+            pause ? println("unpausing") : println("pausing")
         end
         
-        if !pause || inputs.next.press || inputs.next.hold
+        if !pause || inputs.next.press# || inputs.next.hold
             game.frame += 0x01
     
             # @time updateGame!(game,inputs)

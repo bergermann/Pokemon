@@ -31,7 +31,7 @@ function stateOpenBattleIntro!(game::GameState)
     createBackground!(game,:text,"textboxes/battle.png",-120,32,5;)
     createBackground!(game,:s1,"backgrounds/black.png",-120,-80,6; sx=240,sy=80)
     createBackground!(game,:s2,"backgrounds/black.png",-120,  0,6; sx=240,sy=80)
-    createBackground!(game,:t1,"backgrounds/grey1.png",   0, 32,6; sx=120,sy=48,active=false)
+    createBackground!(game,:t1,"backgrounds/grey1.png",   0, 32,5; sx=120,sy=48,active=false)
     createBackground!(game,:t2,"backgrounds/grey1.png",-120, 32,6; sx=240,sy=48,active=false)
 
     loadSpriteSheet!(game,"battle/battlers/mc1.png",:battlermc,64,64,4; maxsprites=1)
@@ -57,8 +57,8 @@ function stateOpenBattleIntro!(game::GameState)
     createSprite!(game,:pad2,:pads,1,1,-120-64,-16,10,2; active=true)
 
     createSprite!(game,   :mc,:battlermc,1,1,120+80+3,  0,10,2; active=true)
-    createSprite!(game, :ball,    :balls,1,1,     -80, 0,10,2; active=true)
-    createSprite!(game,:pkmn1,    :pkmn1,1,1,     -56, 24,10,2; active=false)
+    createSprite!(game, :ball,    :balls,1,1,     -62, 11,10,2; active=false)
+    createSprite!(game,:pkmn1,    :pkmn1,1,1,     -48, 24,10,2; active=false)
     createSprite!(game,:pkmn2,    :pkmn2,1,1, -120-64,-28,10,2; active=true)
     
     createSprite!(game,:cursor1,:cursors,1,1,-94,66,10,2; active=true)
@@ -116,7 +116,7 @@ end
 function stateThrowBattle!(game::GameState,args::Tuple{})
     lockInput!(game)
 
-    stateSetDialogue!(game,game.str[1][13]*pkmnName(game,game.battle.state.pkmn2.pkmn)*"!",
+    stateSetDialogue!(game,game.str[1][13]*pkmnName(game,game.battle.state.pkmn1.pkmn)*"!",
         F(stateInitBattleChoice!))
 
     game.callbacks[:introb].func = animThrowBall!
@@ -130,8 +130,11 @@ function stateInitBattleChoice!(game::GameState,args::Tuple{})
     unlockInput!(game)
 
     activateFrame!(game,:choice)
-    game.im.b.backgrounds[:t1].active = true
+    activateBackground!(game,:t1)
     activateSprite!(game,:cursor1)
+
+    setText!(game,:dialogue,game.str[1][14]*pkmnName(game,game.battle.state.pkmn1.pkmn)*
+        game.str[1][15])
 
     return    
 end

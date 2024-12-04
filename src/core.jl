@@ -127,7 +127,7 @@ function randN(μ::Unsigned,σ::Real,dims)
 end
 
 function randN(μ::Unsigned,σ::Real)
-    return oftype(μ,min(0,discreteGaussian(Int,(); μ=μ,σ=σ)))
+    return oftype(μ,max(0,discreteGaussian(Int,(); μ=μ,σ=σ)))
 end
 
 

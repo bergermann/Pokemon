@@ -84,11 +84,28 @@ end
 function animThrowBall!(game::GameState,args::Tuple{})
     if game.n[:introb].c == 0
         setSpriteFrame!(game,:mc,2)
-    elseif game.n[:introb].c == 20
+        activateSprite!(game,:ball)
+    elseif game.n[:introb].c == 16
         setSpriteFrame!(game,:mc,3)
-    elseif game.n[:introb].c == 30
+        moveSprite!(game,:ball,-118,-2,true)
+    elseif game.n[:introb].c == 24
         setSpriteFrame!(game,:mc,4)
-    elseif game.n[:introb].c == 80
+        moveSprite!(game,:ball,-84,-2,true)
+    elseif 24 < game.n[:introb].c < 64
+        moveSpriteW!(game,:ball,1)
+        t = game.n[:introb].c-24
+        moveSpriteH!(game,:ball,round(Int,-2-3*t+0.5*0.1875*t^2),true)
+        println(t)
+    elseif game.n[:introb].c == 64
+        setSpriteFrame!(game,:ball,2)
+    elseif game.n[:introb].c == 70
+        activateSprite!(game,:pkmn1)
+        scaleSprite!(game,:pkmn1,0.5,0.5)
+    elseif 70 < game.n[:introb].c <= 70+16
+        moveSpriteW!(game,:tagown,-8)
+        moveText!(game,:name1,-8,0)
+        moveText!(game, :lvl1,-8,0)
+    elseif game.n[:introb].c == 70+16+1
         killSprite!(game,:mc); killSprite!(game,:ball)
         
         stateInitBattleChoice!(game,())
@@ -99,6 +116,8 @@ function animThrowBall!(game::GameState,args::Tuple{})
     end
     
     moveSpriteW!(game,:mc,-3)
+
+    if game.n[:introb].c <= 24; moveSpriteW!(game,:ball,-3); end
 
     game.n[:introb].c += 1
 

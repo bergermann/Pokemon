@@ -39,7 +39,7 @@ function animBattleIntro1!(game::GameState,args::Tuple{})
         moveSpriteW!(game,:mc, -2)
         moveSpriteW!(game,:pkmn2, 2)
     elseif game.n[:introb].c < 260+16
-        moveSpriteW!(game,:tagopp, 8)
+        moveSpriteW!(game,:tag2, 8)
         moveText!(game,:name2, 8, 0)
         moveText!(game,:lvl2, 8, 0)
     elseif game.n[:introb].c < 260+16+8
@@ -95,20 +95,30 @@ function animThrowBall!(game::GameState,args::Tuple{})
         moveSpriteW!(game,:ball,1)
         t = game.n[:introb].c-24
         moveSpriteH!(game,:ball,round(Int,-2-3*t+0.5*0.1875*t^2),true)
-        println(t)
+        # println(t)
     elseif game.n[:introb].c == 64
         setSpriteFrame!(game,:ball,2)
-    elseif game.n[:introb].c == 70
+    elseif game.n[:introb].c == 80
         activateSprite!(game,:pkmn1)
-        scaleSprite!(game,:pkmn1,0.5,0.5)
-    elseif 70 < game.n[:introb].c <= 70+16
-        moveSpriteW!(game,:tagown,-8)
+        deactivateSprite!(game,:ball)
+        scaleSprite!(game,:pkmn1,0.1,0.1,true)
+    elseif 80+16 < game.n[:introb].c <= 88+16
+        moveSpriteH!(game,:pkmn1, -2)
+    elseif 88+16 < game.n[:introb].c <= 96+16
+        moveSpriteH!(game,:pkmn1, 2)
+    elseif 96+16 < game.n[:introb].c <= 104+16
+        moveSpriteH!(game,:pkmn1, -2)
+    elseif 104+16 < game.n[:introb].c <= 112+16
+        moveSpriteH!(game,:pkmn1, 2)
+    elseif 112+16 < game.n[:introb].c <= 112+16+16
+        moveSpriteW!(game,:tag1,-8)
         moveText!(game,:name1,-8,0)
         moveText!(game, :lvl1,-8,0)
-    elseif game.n[:introb].c == 70+16+1
+    elseif game.n[:introb].c == 112+16+30
         killSprite!(game,:mc); killSprite!(game,:ball)
         
-        stateInitBattleChoice!(game,())
+        # stateInitBattleChoice!(game,())
+        stateAdvanceDialogue!(game)
 
         killCallback!(game,:introb)
 
@@ -126,25 +136,25 @@ end
 
 
 
-function animWiggleBattle!(game::GameState)
+function animWiggleBattle!(game::GameState,args::Tuple{})
     if game.frame%0x20 == 0x08
-        moveSpriteH!(game,:pkmn1,9,true)
-        # game.im.sprites[2][:pkmn1].pos.h = 89
+        moveSpriteH!(game,:pkmn1,23,true)
     elseif game.frame%0x20 == 0x10
-        moveSpriteH!(game,:tag1,15,true)
-        # game.im.sprites[3][:tag1].pos.h = 95
+        moveSpriteH!(game,:tag1,11,true)
+        moveTextH!(game,:name1,-5,true)
+        moveTextH!(game,:lvl1,-5,true)
     elseif game.frame%0x20 == 0x18
-        moveSpriteH!(game,:pkmn1,10,true)
-        # game.im.sprites[2][:pkmn1].pos.h = 90
+        moveSpriteH!(game,:pkmn1,24,true)
     elseif game.frame%0x20 == 0x00
-        moveSpriteH!(game,:tag1,16,true)
-        # game.im.sprites[3][:tag1].pos.h = 96
+        moveSpriteH!(game,:tag1,12,true)
+        moveTextH!(game,:name1,-4,true)
+        moveTextH!(game,:lvl1,-4,true)
     end
 
     return
 end
 
-function animBattlePhaseWild!(game::GameState)
+function animBattlePhaseWild!(game::GameState,args::Tuple{})
     # println("stage: ",game.battle.state.stage)
     # -1: set up
     # -2: advance queue

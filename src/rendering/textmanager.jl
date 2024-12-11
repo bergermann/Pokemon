@@ -246,3 +246,23 @@ function moveText!(game::GameState,name::Symbol,w::Int,h::Int,absolute::Bool=fal
 
     return
 end
+
+function moveTextW!(game::GameState,name::Symbol,w::Int,absolute::Bool=false)
+    if absolute
+        game.im.text.texts[name].pos[1] = w
+    else
+        game.im.text.texts[name].pos[1] += w
+    end
+
+    return
+end
+
+function moveTextH!(game::GameState,name::Symbol,h::Int,absolute::Bool=false)
+    if absolute
+        game.im.text.texts[name].pos[2] = h
+    else
+        game.im.text.texts[name].pos[2] += h
+    end
+
+    return
+end

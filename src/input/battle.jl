@@ -10,15 +10,15 @@ function inputBattle!(game::GameState,inputs::Inputs)
         if inputs.B.press
             game.ctrl.input.battle.s1 = 3
         elseif inputs.up.press || inputs.down.press
-            game.ctrl.input.battle.s1 += 2
-        elseif inputs.left.press || inputs.right.press
             game.ctrl.input.battle.s1 += 1+2*isodd(game.ctrl.input.battle.s1)
+        elseif inputs.left.press || inputs.right.press
+            game.ctrl.input.battle.s1 += 2
         end
 
         game.ctrl.input.battle.s1 %= 4
 
-        moveSprite!(game,:cursor1,12+48*div(game.ctrl.input.battle.s1,2),
-            46+16*(game.ctrl.input.battle.s1%2),true)
+        moveSprite!(game,:cursor1,12+56*div(game.ctrl.input.battle.s1,2),
+            49+16*(game.ctrl.input.battle.s1%2),true)
     elseif game.ctrl.input.battle.m2
         if inputs.A.press
             inputBattleAttackSelector!(game::GameState); return

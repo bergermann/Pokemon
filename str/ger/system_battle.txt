@@ -11,7 +11,7 @@ Typ:
 Ein wildes 
  erscheint!
 Los! 
-Was soll 
+Was soll\
  tun?
  wurde besiegt.
  erhält 

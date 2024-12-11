@@ -61,11 +61,11 @@ function stateOpenBattleIntro!(game::GameState)
     createSprite!(game,:pkmn1,    :pkmn1,1,1,     -48, 24,10,2; active=false)
     createSprite!(game,:pkmn2,    :pkmn2,1,1, -120-64,-28,10,2; active=true)
     
-    createSprite!(game,:cursor1,:cursors,1,1,-94,66,10,2; active=true)
-    createSprite!(game,:cursor2,:cursors,1,1, 16,66,10,2; active=true)
+    createSprite!(game,:cursor1,:cursors,1,4, 12,49,10,5; active=false)
+    createSprite!(game,:cursor2,:cursors,1,4,-94,49,10,6; active=false)
     
-    createSprite!(game,:tagown,:tagown,1,1, 60+128, 12,10,3; active=true)
-    createSprite!(game,:tagopp,:tagopp,1,1,-58-128,-50,10,3; active=true)
+    createSprite!(game,:tag1,:tagown,1,1, 60+128, 12,10,3; active=true)
+    createSprite!(game,:tag2,:tagopp,1,1,-58-128,-50,10,3; active=true)
     
     createFrame!(game, :choice,13,4,   0,32,5; active=false)
     createFrame!(game,   :info, 8,4,  40,32,6; active=false)
@@ -128,11 +128,17 @@ end
 
 function stateInitBattleChoice!(game::GameState,args::Tuple{})
     unlockInput!(game)
+    game.ctrl.input.battle.m1 = true
 
     activateFrame!(game,:choice)
     activateBackground!(game,:t1)
     activateSprite!(game,:cursor1)
+    game.callbacks[:wiggle].active = true
 
+    switchText!(game,:choice1)
+    switchText!(game,:choice2)
+
+    game.im.text.texts[:dialogue].active = true
     setText!(game,:dialogue,game.str[1][14]*pkmnName(game,game.battle.state.pkmn1.pkmn)*
         game.str[1][15])
 

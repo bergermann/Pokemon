@@ -19,20 +19,20 @@ void main()
 {
     uint tex = gs_in[0].texlayer;
     uvec2 rev = gs_in[0].rev;
+    vec2 s = gs_in[0].scale;
 
     // mat4 R;
-    // float r = radians(gs_in[0].rot);
-    // R[0][0] = cos(r); R[1][1] = cos(r); R[0][1] = -sin(r); R[1][0] = sin(r);
-    // R[2][2] = 1.0; R[3][3] = 1.0; 
+    float r = radians(gs_in[0].rot);
+    mat2 R; R[0][0] = cos(r); R[1][1] = cos(r); R[0][1] = -sin(r); R[1][0] = sin(r);
+    mat2 S; S[0][0] = size.x*s.x/240.0; S[1][1] = size.y*s.y/160.0;
 
-    vec2 p0 = gl_in[0].gl_Position.xy;
+    vec2 p0 = vec2(gl_in[0].gl_Position.x/120.,gl_in[0].gl_Position.y/80.);
     int z = int(6.0*gl_in[0].gl_Position.z);
     
-    // probably should put actual matrix calcs here
-    vec2 p1 = vec2((p0.x-size.x/2.0)/120,(p0.y+size.y/2.0)/80);
-    vec2 p2 = vec2((p0.x+size.x/2.0)/120,(p0.y+size.y/2.0)/80);
-    vec2 p3 = vec2((p0.x-size.x/2.0)/120,(p0.y-size.y/2.0)/80);
-    vec2 p4 = vec2((p0.x+size.x/2.0)/120,(p0.y-size.y/2.0)/80);
+    vec2 p1 = S*R*vec2(-1.0, 1.0)+p0;
+    vec2 p2 = S*R*vec2( 1.0, 1.0)+p0;
+    vec2 p3 = S*R*vec2(-1.0,-1.0)+p0;
+    vec2 p4 = S*R*vec2( 1.0,-1.0)+p0;
 
     gl_Layer = z;
     gl_Position = vec4(p1.x,p1.y,0.0,1.0);

@@ -41,6 +41,7 @@ function stateOpenBattleIntro!(game::GameState)
     loadSpriteSheet!(game,"battle/ballicons.png",:ballicons,7,7,4; maxsprites=12)
     loadSpriteSheet!(game,"battle/tagown.png",:tagown,104,37,1; maxsprites=1)
     loadSpriteSheet!(game,"battle/tagopp.png",:tagopp,100,29,1; maxsprites=1)
+    loadSpriteSheet!(game,"battle/p1.png",:part,8,8,1; maxsprites=10) # change for particles
 
     p1 = game.battle.state.pkmn1.pkmn
     path1 = "battle/battlers/back/$(p1.shiny ? "shiny" : "normal")/$(p1.id).png"
@@ -53,13 +54,17 @@ function stateOpenBattleIntro!(game::GameState)
     createSprite!(game,:grass1,:fol,1,1,  0,-8,10,3; active=true)
     createSprite!(game,:grass2,:fol,1,1,256,-8,10,3; active=true)
 
-    createSprite!(game,:pad1,:pads,2,1, 120+64, 16,10,2; active=true)
-    createSprite!(game,:pad2,:pads,1,1,-120-64,-16,10,2; active=true)
+    createSprite!(game,:pad1,:pads,2,1, 120+64, 16,10,1; active=true)
+    createSprite!(game,:pad2,:pads,1,1,-120-64,-16,10,1; active=true)
 
-    createSprite!(game,   :mc,:battlermc,1,1,120+80+3,  0,10,2; active=true)
-    createSprite!(game, :ball,    :balls,1,1,     -62, 11,10,2; active=false)
-    createSprite!(game,:pkmn1,    :pkmn1,1,1,     -48, 24,10,2; active=false)
-    createSprite!(game,:pkmn2,    :pkmn2,1,1, -120-64,-28,10,2; active=true)
+    createSprite!(game,   :mc,:battlermc,1,1,120+80+3,  0,10,3; active=true)
+    createSprite!(game, :ball,    :balls,1,1,     -62, 11,10,2; active=false,rot=18.)
+    createSprite!(game,:pkmn1,    :pkmn1,1,1,     -48, 24,10,3; wscale=0.,hscale=0.)
+    createSprite!(game,:pkmn2,    :pkmn2,1,1, -120-64,-28,10,3; active=true)
+
+    for i in 1:10
+        createSprite!(game,Symbol(:spark,i),:part,1,1,-48,24,10,4; active=false)
+    end
     
     createSprite!(game,:cursor1,:cursors,1,4, 12,49,10,5; active=false)
     createSprite!(game,:cursor2,:cursors,1,4,-94,49,10,6; active=false)

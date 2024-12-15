@@ -54,11 +54,11 @@ function main()
 
     while !GLFW.WindowShouldClose(game.im.window)
         if inputs.pause.press
+            pause ? println("unpausing") : println("pausing")
+            
             pause = !pause
             inputs.pause.press = false
             resetInputs!(inputs)
-
-            pause ? println("unpausing") : println("pausing")
         end
         
         if !pause || inputs.next.press# || inputs.next.hold

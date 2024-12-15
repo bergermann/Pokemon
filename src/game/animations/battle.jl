@@ -95,29 +95,31 @@ function animThrowBall!(game::GameState,args::Tuple{})
         moveSpriteW!(game,:ball,1)
         t = game.n[:introb].c-24
         moveSpriteH!(game,:ball,round(Int,-2-3*t+0.5*0.1875*t^2),true)
-        # println(t)
+        rotateSprite!(game,:ball,18.)
     elseif game.n[:introb].c == 64
         setSpriteFrame!(game,:ball,2)
-    elseif game.n[:introb].c == 80
+    elseif game.n[:introb].c == 72
         activateSprite!(game,:pkmn1)
-        deactivateSprite!(game,:ball)
-        scaleSprite!(game,:pkmn1,0.1,0.1,true)
-    elseif 80+16 < game.n[:introb].c <= 88+16
-        moveSpriteH!(game,:pkmn1, -2)
-    elseif 88+16 < game.n[:introb].c <= 96+16
-        moveSpriteH!(game,:pkmn1, 2)
-    elseif 96+16 < game.n[:introb].c <= 104+16
-        moveSpriteH!(game,:pkmn1, -2)
-    elseif 104+16 < game.n[:introb].c <= 112+16
-        moveSpriteH!(game,:pkmn1, 2)
-    elseif 112+16 < game.n[:introb].c <= 112+16+16
+        for i in 1:10; activateSprite!(game,Symbol(:spark,i)); end
+    elseif 72+1 <= game.n[:introb].c <= 72+32
+        t = game.n[:introb].c-72
+        scaleSprite!(game,:pkmn1,t/32,t/32,true)
+        for i in 1:10
+            moveSprite!(game,Symbol(:spark,i),
+                round(Int,1.5t*cospi(t/32+i/5))-48,round(Int,-1.5t*sinpi(t/32+i/5))+24,true)
+        end
+    elseif game.n[:introb].c == 72+32+1
+        killSprites!(game,:part)
+        moveSpriteH!(game,:ball,3)
+    elseif 72+32+1 < game.n[:introb].c <= 72+32+8
+        moveSpriteH!(game,:ball,3)
+    elseif 120 < game.n[:introb].c <= 120+16
         moveSpriteW!(game,:tag1,-8)
         moveText!(game,:name1,-8,0)
         moveText!(game, :lvl1,-8,0)
-    elseif game.n[:introb].c == 112+16+30
+    elseif game.n[:introb].c == 120+32
         killSprite!(game,:mc); killSprite!(game,:ball)
         
-        # stateInitBattleChoice!(game,())
         stateAdvanceDialogue!(game)
 
         killCallback!(game,:introb)

@@ -34,14 +34,16 @@ function stateOpenBattleIntro!(game::GameState)
     createBackground!(game,:t1,"backgrounds/grey1.png",   0, 32,5; sx=120,sy=48,active=false)
     createBackground!(game,:t2,"backgrounds/grey1.png",-120, 32,6; sx=240,sy=48,active=false)
 
-    loadSpriteSheet!(game,"battle/battlers/mc1.png",:battlermc,64,64,4; maxsprites=1)
-    loadSpriteSheet!(game,"battle/pads/grass1.png",:pads,128,32,1; maxsprites=2)
-    loadSpriteSheet!(game,"battle/intro/grass1.png",:fol,256,80,1; maxsprites=2)
-    loadSpriteSheet!(game,"battle/balls.png",:balls,16,16,2; maxsprites=2)
-    loadSpriteSheet!(game,"battle/ballicons.png",:ballicons,7,7,4; maxsprites=12)
-    loadSpriteSheet!(game,"battle/tagown.png",:tagown,104,37,1; maxsprites=1)
-    loadSpriteSheet!(game,"battle/tagopp.png",:tagopp,100,29,1; maxsprites=1)
-    loadSpriteSheet!(game,"battle/p1.png",:part,8,8,1; maxsprites=10) # change for particles
+    loadSpriteSheets!(game,
+        :battlermc,
+        :pads,
+        :fol,
+        :ballsb,
+        :ballicons,
+        :tagown,
+        :tagopp,
+        :particles,
+    )
 
     p1 = game.battle.state.pkmn1.pkmn
     path1 = "battle/battlers/back/$(p1.shiny ? "shiny" : "normal")/$(p1.id).png"
@@ -58,12 +60,12 @@ function stateOpenBattleIntro!(game::GameState)
     createSprite!(game,:pad2,:pads,1,1,-120-64,-16,10,1; active=true)
 
     createSprite!(game,   :mc,:battlermc,1,1,120+80+3,  0,10,3; active=true)
-    createSprite!(game, :ball,    :balls,1,1,     -62, 11,10,2; active=false,rot=18.)
+    createSprite!(game, :ball,   :ballsb,1,1,     -62, 11,10,2; active=false,rot=18.)
     createSprite!(game,:pkmn1,    :pkmn1,1,1,     -48, 24,10,3; wscale=0.,hscale=0.)
     createSprite!(game,:pkmn2,    :pkmn2,1,1, -120-64,-28,10,3; active=true)
 
     for i in 1:10
-        createSprite!(game,Symbol(:spark,i),:part,1,1,-48,24,10,4; active=false)
+        createSprite!(game,Symbol(:spark,i),:particles,1,1,-48,24,10,4; active=false)
     end
     
     createSprite!(game,:cursor1,:cursors,1,4, 12,49,10,5; active=false)
@@ -143,7 +145,7 @@ function stateInitBattleChoice!(game::GameState,args::Tuple{})
     switchText!(game,:choice1)
     switchText!(game,:choice2)
 
-    game.im.text.texts[:dialogue].active = true
+    switchText!(game,:dialogue)
     setText!(game,:dialogue,game.str[1][14]*pkmnName(game,game.battle.state.pkmn1.pkmn)*
         game.str[1][15])
 
@@ -175,7 +177,7 @@ function stateBattleAttackSelected!(game::GameState)
 
     game.callbacks[:wiggle].active = false
     game.callbacks[:animbattle].active = true
-    game.n.c[:animbattle].c = -1
+    game.n[:animbattle].c = -1
 
     queueSetupActions!(game,game.battle.state)
 
@@ -203,7 +205,7 @@ function stateBattleItemSelected!(game::GameState,target::UInt,item::ItemType)
 
     game.callbacks[:wiggle].active = false
     game.callbacks[:animbattle].active = true
-    game.n.c[:animbattle].c = -1
+    game.n[:animbattle].c = -1
 
     queueSetupActions!(game,game.battle.state)
 
@@ -233,7 +235,7 @@ function stateBattlePkmnSelected!(game::GameState)
 
     game.callbacks[:wiggle].active = false
     game.callbacks[:animbattle].active = true
-    game.n.c[:animbattle].c = -1
+    game.n[:animbattle].c = -1
 
     queueSetupActions!(game,game.battle.state)
 
@@ -274,12 +276,16 @@ function stateQuitBattlePhase!(game::GameState)
     return
 end
 
+
+
 function stateBattleFlee!(game::GameState)
-    game.ctrl.input.battle1 = false
+    game.ctrl.input.battle.m1 = false
 
-    game.im.sprites[4][:cursor1].active = false
-
-    flushLayer!(game,4,P(24+1+112,16+1),P(48,240))
+    switchFrame!(game,:choice)
+    switchSprite!(game,:cursor1)
+    switchText!(game,:choice1)
+    switchText!(game,:choice2)
+    switchBackground!(game,:t1)
     
     flee!(game,game.battle.state)
 
@@ -288,15 +294,7 @@ end
 
 function flee!(game::GameState,state::BattleStateWild)
     if !checkFlee(state)
-        game.dialogue.str = ["Flucht unmöglich."]
-        game.dialogue.n = 1
-        game.dialogue.callback.func = stateBattleFleeBlocked!
-        game.dialogue.callback.args = ()
-
-        game.ctrl.input.battled = true
-        game.draw.battled = true
-
-        game.im.sprites[4][:cursor1].active = false
+        stateSetDialogue!(game,game.str[1][20],stateBattleFleeBlocked!)
 
         return
     end
@@ -308,23 +306,10 @@ function flee!(game::GameState,state::BattleStateWild)
             30*state.counters.flee)%256 > rand(UInt8)
     )
     state.pkmn2.command = battleChoiceWild(game)
-    
-    game.ctrl.input.battle1 = false
-    game.ctrl.input.battle2 = false
-    game.ctrl.input.battle1menu.select = 0
-
-    game.draw.battle1 = false
-    game.draw.battle2 = false
-
-    game.im.sprites[4][:cursor1].active = false
-    game.im.sprites[5][:cursor2].active = false 
-            
-    flushLayer!(game,4,Position(24+1+112,16+1),Position(48,240))
-    flushLayer!(game,5,Position(24+1+112,16+1),Position(48,240))
 
     game.callbacks[:wiggle].active = false
     game.callbacks[:animbattle].active = true
-    game.n.c[:animbattle].c = -1
+    game.n[:animbattle].c = -1
 
     queueSetupActions!(game,game.battle.state)
 
@@ -332,31 +317,31 @@ function flee!(game::GameState,state::BattleStateWild)
 end
 
 function flee!(game::GameState,state::BattleStateTrainerSolo)
-    game.dialogue.str = ["Aus Trainerkämpfen kannst du\\nicht fliehen."]
-    game.dialogue.n = 1
-    game.dialogue.callback.func = stateBattleFleeBlocked!
-    game.dialogue.callback.args = ()
-
-    game.ctrl.input.battled = true
-    game.draw.battled = true
-
-    game.im.sprites[4][:cursor1].active = false
+    stateSetDialogue!(game,game.str[1][21],stateBattleFleeBlocked!)
 
     return
 end
 
-function stateBattleFleeBlocked!(game::GameState)
+function stateBattleFleeBlocked!(game::GameState,args::Tuple)
     game.battle.state.stage = 1
-    game.dialogue.callback.func = emptyCallback
 
-    game.ctrl.input.battle1 = true
-    game.draw.battle1 = true
+    game.ctrl.input.battle.m1 = true
 
-    game.im.sprites[4][:cursor1].active = true
+    switchSprite!(game,:cursor1)
+    switchFrame!(game,:choice)
+    switchText!(game,:choice1)
+    switchText!(game,:choice2)
+    switchBackground!(game,:t1)
+    switchText!(game,:dialogue)
+    setText!(game,:dialogue,game.str[1][14]*pkmnName(game,game.battle.state.pkmn1.pkmn)*
+        game.str[1][15])
+
     game.callbacks[:wiggle].active = true
 
     return
 end
+
+
 
 function stateEndBattle!(game::GameState)   #,state::BattleStateWild)
     killSpriteAll!(game)

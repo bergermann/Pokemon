@@ -46,7 +46,7 @@ end
 function animHealCenter!(game::GameState,ballids::Vector{Symbol})
     l = length(game.p.pokemon)
 
-    if game.n.c[:heal].c == 0
+    if game.n[:heal].c == 0
         game.ctrl.input.npclock = true
 
         updateSprite!(game,3,:npc200,3)
@@ -57,34 +57,34 @@ function animHealCenter!(game::GameState,ballids::Vector{Symbol})
                 getSprite("im/sprites/general/healballs",5);
                 active=false)
         end
-    elseif 60 <= game.n.c[:heal].c < 60+l*30
-        if game.n.c[:heal].c%30 == 0
-            id = div((game.n.c[:heal].c-60),30)+1
+    elseif 60 <= game.n[:heal].c < 60+l*30
+        if game.n[:heal].c%30 == 0
+            id = div((game.n[:heal].c-60),30)+1
             game.im.sprites[3][ballids[id]].active = true
         end
-    elseif 90+l*30 <= game.n.c[:heal].c < 90+l*30+96
-        if (game.n.c[:heal].c-(90+l*30))%8 == 0
-            f = div(game.n.c[:heal].c-(90+l*30),8)%4
+    elseif 90+l*30 <= game.n[:heal].c < 90+l*30+96
+        if (game.n[:heal].c-(90+l*30))%8 == 0
+            f = div(game.n[:heal].c-(90+l*30),8)%4
 
             for id in ballids
                 updateSprite!(game,3,id,f+2)
             end
         end
-    elseif game.n.c[:heal].c == 90+l*30+96
+    elseif game.n[:heal].c == 90+l*30+96
         for id in ballids
             updateSprite!(game,3,id,1)
         end
-    elseif game.n.c[:heal].c == 90+l*30+96+30
+    elseif game.n[:heal].c == 90+l*30+96+30
         for id in ballids
             killSprite!(game,id)
         end
-    elseif game.n.c[:heal].c == 90+l*30+96+60
+    elseif game.n[:heal].c == 90+l*30+96+60
         updateSprite!(game,3,:npc200,1)
-    elseif game.n.c[:heal].c == 90+l*30+96+90
+    elseif game.n[:heal].c == 90+l*30+96+90
         updateSprite!(game,3,:npc200,4)
-    elseif game.n.c[:heal].c == 90+l*30+96+135
+    elseif game.n[:heal].c == 90+l*30+96+135
         updateSprite!(game,3,:npc200,1)
-    elseif game.n.c[:heal].c == 90+l*30+96+160
+    elseif game.n[:heal].c == 90+l*30+96+160
         killCC!(game,:heal)
         
         game.ctrl.input.inputlock = false
@@ -94,7 +94,7 @@ function animHealCenter!(game::GameState,ballids::Vector{Symbol})
         return
     end
 
-    game.n.c[:heal].c += 1
+    game.n[:heal].c += 1
 
     return
 end

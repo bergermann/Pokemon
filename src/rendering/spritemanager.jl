@@ -61,6 +61,16 @@ function loadSpriteSheet!(game::GameState,name::Symbol,
     return
 end
 
+function loadSpriteSheets!(game::GameState,sheets::Symbol...)
+    for sheet in sheets
+        s = spritesheets[sheet]
+        loadSpriteSheet!(game,s.path,sheet,s.width,s.height,s.nframes;
+            maxsprites=s.maxsprites)
+    end
+
+    return
+end
+
 function deleteSpriteSheet!(game::GameState,name::Symbol)
     deleteArrayTexture!(game,name)
 
@@ -70,6 +80,14 @@ function deleteSpriteSheet!(game::GameState,name::Symbol)
     killSprites!(game,name)
 
     pop!(game.im.s.sheets,name)
+
+    return
+end
+
+function deleteSpriteSheets!(game::GameState,sheets::Symbol...)
+    for sheet in sheets
+        deleteSpriteSheet!(game,sheet)
+    end
 
     return
 end

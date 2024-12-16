@@ -24,6 +24,7 @@ SQLite = "0aa819cd-b072-5ff4-a722-6bc24af294d9"
 Serialization = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
+TickTock = "9ff05d80-102d-5586-aa04-3a8bd1a90d20"
 TypedTables = "9d95f2ec-7b3d-5a63-8d20-e2491e220bb9"
 
 [compat]

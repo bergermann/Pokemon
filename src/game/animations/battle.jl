@@ -109,7 +109,7 @@ function animThrowBall!(game::GameState,args::Tuple{})
                 round(Int,1.5t*cospi(t/32+i/5))-48,round(Int,-1.5t*sinpi(t/32+i/5))+24,true)
         end
     elseif game.n[:introb].c == 72+32+1
-        killSprites!(game,:part)
+        killSprites!(game,:particles)
         moveSpriteH!(game,:ball,3)
     elseif 72+32+1 < game.n[:introb].c <= 72+32+8
         moveSpriteH!(game,:ball,3)
@@ -197,7 +197,6 @@ function animBattlePhaseWild!(game::GameState,args::Tuple{})
         popfirst!(game.battle.state.animqueue)
 
         if game.battle.state.animqueue.idx == 0
-    
             game.n[:animbattle].c = -1
 
             if game.battle.state.actionqueue.idx != 0
@@ -217,19 +216,10 @@ function animBattlePhaseWild!(game::GameState,args::Tuple{})
     queueCheckStatus!(game,game.battle.state)
 
     if game.n[:animbattle].c == 1
-        if game.battle.state.animqueue[1].str != ""
-            drawText!(
-                game,4,game.battle.state.animqueue[1].str,UInt(2),
-                P(144,32),0xffffff,0x6b5a73
-            )
-        end
+        setText!(game,:dialogue,game.battle.state.animqueue[1].str)
         
         game.battle.state.animqueue[1].anim(game,game.battle.state.animqueue[1].target)
     elseif game.n[:animbattle].c == game.battle.state.animqueue[1].l
-        if game.battle.state.animqueue[1].str != ""
-            flushLayer!(game,4,P(144,32),P(32,200))
-        end
-
         game.n[:animbattle].c = -2
 
         return

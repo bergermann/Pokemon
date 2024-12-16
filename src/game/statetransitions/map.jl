@@ -15,9 +15,7 @@ function stateInitMap!(game::GameState)
     loadStringsMap!(game; reset=true)
 
     loadArrayTexture!(game,"tilesets",tilesets,:tiles,16,16)
-    loadSpriteSheet!(game,"main1.png",:mc,32,32,9; maxsprites=1)
-    loadSpriteSheet!(game,"npcs_all.png",:npcs,16,32,9; maxsprites=128)
-    loadSpriteSheet!(game,"objects.png",:objects,16,16,1; maxsprites=64)
+    loadSpriteSheets!(game,:mc1,:npcs_all,:objects)
 
     loadChunksAll!(game)
     
@@ -27,7 +25,7 @@ function stateInitMap!(game::GameState)
         [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=false,hpad=3)
     createSprite!(game,:cursor,:cursors,1,3,59,-56+game.ctrl.input.menu.select*16,0,6;
         active=false)
-    createSprite!(game,:mc,:mc,1,1+3*(game.ctrl.dir-1-2*(game.ctrl.dir==4)),0,-8,10,3;
+    createSprite!(game,:mc,:mc1,1,1+3*(game.ctrl.dir-1-2*(game.ctrl.dir==4)),0,-8,10,3;
         wreverse=game.ctrl.dir==4,active=true)
 
     createCounter!(game,:movemain,1)
@@ -47,9 +45,7 @@ function stateOpenMap!(game::GameState)
     createBackground!(game,:text,"textboxes/green.png",-120,32,6; active=false)
 
     loadArrayTexture!(game,"tilesets",tilesets,:tiles,16,16)
-    loadSpriteSheet!(game,"main1.png",:mc,32,32,9; maxsprites=1)
-    loadSpriteSheet!(game,"npcs_all.png",:npcs,16,32,9; maxsprites=128)
-    loadSpriteSheet!(game,"objects.png",:objects,16,16,1; maxsprites=64)
+    loadSpriteSheets!(game,:mc1,:npcs_all,:objects)
 
     createFrame!(game,:menu,7,18,48,-80,6; active=false)
     createText!(game,:menu,4,63,-64,6,game.str[2][1],
@@ -89,7 +85,7 @@ function createNPCSprite!(game::GameState,npc::NPC)
 
     f = 1+3*(npc.dir-1-2*(npc.dir==4))+(1+sum(npc.pos1)%2)*(0<npc.c2<=8)
     
-    createSprite!(game,npc.sprite,:npcs,npc.spriteid,f,x,y,10,3;
+    createSprite!(game,npc.sprite,:npcs_all,npc.spriteid,f,x,y,10,3;
         wreverse=npc.dir==4,active=true)
 
     return
@@ -98,12 +94,10 @@ end
 
 function stateCloseMap!(game::GameState)
     deleteArrayTexture!(game,:tiles)
-    deleteSpriteSheet!(game,:mc)
-    deleteSpriteSheet!(game,:npcs)
-    deleteSpriteSheet!(game,:objects)
+    deleteSpriteSheets!(game,:mc1,:npcs_all,:objects)
     deleteBackground!(game,:textbox)
-    deleteText!(game,:menu)
     deleteFrame!(game,:menu)
+    deleteText!(game,:menu)
 
     killSprites!(game,:cursors)
 

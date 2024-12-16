@@ -111,7 +111,8 @@ function inputMove!(game::GameState,inputs::Inputs)
         if game.ctrl.dir != dir
             game.ctrl.dir = dir
             
-            game.im.s.sheets[:mc].rev[1,1] = (dir == 4)
+            reverseSpriteW!(game,:mc,(dir == 4))
+
             setSpriteFrame!(game,:mc,1+3*(dir-1-2*(dir == 4))+1)
 
             game.callbacks[:movemain].args = (dir,3)
@@ -128,7 +129,8 @@ function inputMove!(game::GameState,inputs::Inputs)
         return
     end
     
-    game.im.s.sheets[:mc].rev[1,1] = (dir == 4)
+    reverseSpriteW!(game,:mc,(dir == 4))
+    # game.im.s.sheets[:mc].rev[1,1] = (dir == 4)
 
     game.n[:movemain].c = 1
 

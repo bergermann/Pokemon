@@ -7,6 +7,7 @@ export game, inputs
 using ModernGL, GLFW#, GLAbstraction
 # const GLA = GLAbstraction
 
+using TickTock
 using StatsBase, Images, Serialization, DelimitedFiles
 # using LinearAlgebra
 
@@ -20,6 +21,7 @@ include("game/types/types.jl")
 
 include("core.jl")
 include("rendering/rendering.jl")
+include("spritesheets.jl")
 # include("audio/audio.jl")
 include("input/input.jl")
 include("game/game.jl")
@@ -31,6 +33,8 @@ include("game/game.jl")
 function main()
     # Base.GC.enable(false)
     # Base.GC.@preserve game sceneTransition!
+
+    fps = 60.
 
     inputs, keymap = setupInputs(km); global keymap; pause = false
 
@@ -52,23 +56,32 @@ function main()
     
     # @time Base.GC.gc()
 
+    tick()
+    t0 = 0.
+
     while !GLFW.WindowShouldClose(game.im.window)
-        if inputs.pause.press
-            pause ? println("unpausing") : println("pausing")
+        t1 = peektimer()
+        if 60.0*t1 >= game.frame
+            if inputs.pause.press
+                pause ? println("unpausing") : println("pausing")
+                
+                pause = !pause
+                inputs.pause.press = false
+                resetInputs!(inputs)
+            end
             
-            pause = !pause
-            inputs.pause.press = false
-            resetInputs!(inputs)
-        end
+            if !pause || inputs.next.press# || inputs.next.hold
+                game.frame += 0x01
         
-        if !pause || inputs.next.press# || inputs.next.hold
-            game.frame += 0x01
-    
-            # @time updateGame!(game,inputs)
-            updateGame!(game,inputs)
+                # @time updateGame!(game,inputs)
+                updateGame!(game,inputs)
+            end
         end
 
-        render(game)
+        if t1-t0 >= 1/fps
+            t0 = peektimer()
+            render(game)
+        end
     end
 
     GLFW.DestroyWindow(game.im.window)

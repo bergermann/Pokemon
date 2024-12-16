@@ -31,7 +31,7 @@ end
 
 function drawSlotMain!(game::GameState)
     createSprite!(game,mplabels[1].s,:smain,1,2,-73,-30,0,1; active=true)
-    createSprite!(game,mplabels[1].b,:balls,1,2,-108,-50,0,2; active=true)
+    createSprite!(game,mplabels[1].b,:ballsm,1,2,-108,-50,0,2; active=true)
     createSprite!(game,mplabels[1].st,:status,1,1,-88,-11,1,2; active=true)
     createSprite!(game,mplabels[1].i,:item,1,1,-99,-29,2,4; active=true)
     # createSprite!(game,mplabels[1].h,:health,1,1,-96,-56,3,2; active=true)
@@ -47,7 +47,7 @@ function drawSlotMain!(game::GameState)
         [0xff,0xff,0xff,0xff],[0x73,0x73,0x73,0xff])
 
     createSprite!(game,:exit,:exit,1,1,92,64,0,1; active=true)
-    createSprite!(game,:ballexit,:balls,1,1,74,64,0,2; active=true)
+    createSprite!(game,:ballexit,:ballsm,1,1,74,64,0,2; active=true)
 
     createText!(game,:exit,1,84,58,2,game.str[1][1],
         [0xff,0xff,0xff,0xff],[0x73,0x73,0x73,0xff])
@@ -58,7 +58,7 @@ end
 function drawSlotSide!(game::GameState)
     for i in 2:length(game.p.pokemon)
         createSprite!(game,mplabels[i].s,:sside,1,1,47,-59+24*(i-2),0,1; active=true)
-        createSprite!(game,mplabels[i].b,:balls,1,1,-22,-59+24*(i-2),0,2; active=true)
+        createSprite!(game,mplabels[i].b,:ballsm,1,1,-22,-59+24*(i-2),0,2; active=true)
         createSprite!(game,mplabels[i].st,:status,1,1,59,-53+24*(i-2),1,2; active=true)
         createSprite!(game,mplabels[i].i,:item,1,1,-11,-51+24*(i-2),2,4; active=true)
         # createSprite!(game,mplabels[i].h,:health,1,1,-96,-56,3,2; active=true)
@@ -94,14 +94,24 @@ function stateMenuPkmnOpen!(game::GameState)
 
     loadStringsTeam!(game)
 
-    loadSpriteSheet!(game,"menupkmn/slotmain.png",:smain,78,49,2; maxsprites=1)
-    loadSpriteSheet!(game,"menupkmn/slotside.png",:sside,142,22,2; maxsprites=5)
-    loadSpriteSheet!(game,"menupkmn/exit.png",:exit,52,16,2; maxsprites=1)
-    loadSpriteSheet!(game,"menupkmn/pokeballs.png",:balls,20,24,2; maxsprites=7)
-    loadSpriteSheet!(game,"menupkmn/status.png",:status,20,8,1; maxsprites=6)
-    loadSpriteSheet!(game,"menupkmn/item.png",:item,8,8,1; maxsprites=6)
-    # loadSpriteSheet!(game,"menupkmn/gender.png",:gender,8,8,1; maxsprites=6)
-    # loadSpriteSheet!(game,"menupkmn/health.png",:health,1,3,3; maxsprites=6)
+    loadSpriteSheets!(game,
+        :smain
+        :sside,
+        :exit,
+        :ballsm,
+        :status,
+        :item,
+        :gender,
+        :health1,
+    )
+    # loadSpriteSheet!(game,"menupkmn/slotmain.png",:smain,78,49,2; maxsprites=1)
+    # loadSpriteSheet!(game,"menupkmn/slotside.png",:sside,142,22,2; maxsprites=5)
+    # loadSpriteSheet!(game,"menupkmn/exit.png",:exit,52,16,2; maxsprites=1)
+    # loadSpriteSheet!(game,"menupkmn/pokeballs.png",:balls,20,24,2; maxsprites=7)
+    # loadSpriteSheet!(game,"menupkmn/status.png",:status,20,8,1; maxsprites=6)
+    # loadSpriteSheet!(game,"menupkmn/item.png",:item,8,8,1; maxsprites=6)
+    # # loadSpriteSheet!(game,"menupkmn/gender.png",:gender,8,8,1; maxsprites=6)
+    # # loadSpriteSheet!(game,"menupkmn/health.png",:health,1,3,3; maxsprites=6)
     loadIcons!(game)
     
     createBackground!(game,:menupkmn,"backgrounds/menupkmn.png",-120,-80,1; active=true)
@@ -135,14 +145,7 @@ function stateMenuPkmnClose!(game::GameState)
     killCallback!(game,:wiggle)
     killSpritesAll!(game)
     
-    deleteSpriteSheet!(game,:smain)
-    deleteSpriteSheet!(game,:sside)
-    deleteSpriteSheet!(game,:exit)
-    deleteSpriteSheet!(game,:balls)
-    deleteSpriteSheet!(game,:status)
-    deleteSpriteSheet!(game,:item)
-    # deleteSpriteSheet!(game,:health)
-    deleteSpriteSheet!(game,:icons)
+    deleteSpriteSheets!(game,:smain,:sside,:exit,:ballsm,:status,:item,:health,:icons)
 
     deleteBackground!(game,:menupkmn)
     deleteTextsAll!(game)
@@ -201,10 +204,11 @@ function stateMenuBagsOpen!(game::GameState,m::MenuBags)
 
     loadStringsInventory!(game)
     
-    loadSpriteSheet!(game,"menubag/arrows.png",:arrows,16,16,5; maxsprites=5)
-    loadSpriteSheet!(game,"menubag/bags.png",:bags,64,64,6; maxsprites=1)
-    loadSpriteSheet!(game,"menubag/items.png",:items,24,24,1; maxsprites=1)
-    loadSpriteSheet!(game,"menubag/marker.png",:markers,4,4,2; maxsprites=1)
+    loadSpriteSheets!(game,:arrows,:bags,:items,:markers)
+    # loadSpriteSheet!(game,"menubag/arrows.png",:arrows,16,16,5; maxsprites=5)
+    # loadSpriteSheet!(game,"menubag/bags.png",:bags,64,64,6; maxsprites=1)
+    # loadSpriteSheet!(game,"menubag/items.png",:items,24,24,1; maxsprites=1)
+    # loadSpriteSheet!(game,"menubag/marker.png",:markers,4,4,2; maxsprites=1)
 
     createBackground!(game,:bag1,"backgrounds/bag01.png",-88,-70,1; active=true)
     createBackground!(game,:bag2,"backgrounds/bag02.png",-16,-80,2; active=true)

@@ -171,7 +171,7 @@ function loadNPCs!(game::GameState,target::Integer,cx::Integer,cy::Integer)
             push!(game.m.npcs,npc_)
             push!(game.m.chunkdata[target].npcs,Ref(npc_))
 
-            createSprite!(game,sid,:npcs,spriteid,1+3*(dir-1-2*(dir==4)),
+            createSprite!(game,sid,:npcs_all,spriteid,1+3*(dir-1-2*(dir==4)),
                 16*(16*(cx-game.ctrl.chunk[2])+(x-game.ctrl.pos1[2])),
                 16*(16*(cy-game.ctrl.chunk[1])+(y-game.ctrl.pos1[1]))-8,
                 10,3;

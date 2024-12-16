@@ -40,6 +40,7 @@ function stateSetDialogue!(game::GameState,str::Vector{AbstractString},callback:
     return
 end
 
+stateSetDialogue!(game::GameState,str,f::Function) = stateSetDialogue!(game,str,F(f))
 stateSetDialogue!(game::GameState,str) = stateSetDialogue!(game,str,F0)
 
 

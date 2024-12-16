@@ -76,3 +76,9 @@ function deactivateBackground!(game::GameState,name::Symbol)
     
     return
 end
+
+function switchBackground!(game::GameState,name::Symbol)
+    game.im.b.backgrounds[name].active = !game.im.b.backgrounds[name].active
+    
+    return
+end

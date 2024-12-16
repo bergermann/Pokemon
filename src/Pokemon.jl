@@ -52,9 +52,7 @@ function main()
 
     render(game)
     
-    # GLFW.DestroyWindow(game.im.window); return game
-    
-    # @time Base.GC.gc()
+    @time Base.GC.gc()
 
     tick()
     t0 = 0.

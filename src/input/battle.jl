@@ -44,7 +44,7 @@ function inputBattle!(game::GameState,inputs::Inputs)
 
         game.ctrl.input.battle.s2 %= 4
 
-        moveSprite!(game,:cursor2,-94+48*div(game.ctrl.input.battle.s2,2),
+        moveSprite!(game,:cursor2,-107+64*div(game.ctrl.input.battle.s2,2),
             49+15*(game.ctrl.input.battle.s2%2),true)
     elseif game.ctrl.input.battle.bag
         inputBattleInventory!(game,input)

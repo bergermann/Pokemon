@@ -49,7 +49,7 @@ function setupGame(windowscale::Int=4,renderdistance::Int=2,maxtextures::Int=64;
     loadSpriteSheet!(game,"cursors.png",:cursors,6,10,3; maxsprites=8)
 
     stateInitMap!(game)
-    stateInitMapCtrls!(game)
+    stateInitMapCtrls!(game,())
 
     return game
 end

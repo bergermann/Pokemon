@@ -1,7 +1,7 @@
 
 
 
-function stateInitMapCtrls!(game::GameState)
+function stateInitMapCtrls!(game::GameState,args::Tuple)
     game.ctrl.input.inputlock = false
 
     game.ctrl.input.map = true
@@ -53,7 +53,7 @@ function stateOpenMap!(game::GameState)
 
     createSprite!(game,:cursor,:cursors,1,3,59,-56+game.ctrl.input.menu.select*16,0,6;
         active=false)
-    createSprite!(game,:mc,:mc,1,1+3*(game.ctrl.dir-1-2*(game.ctrl.dir==4)),0,-8,10,3;
+    createSprite!(game,:mc,:mc1,1,1+3*(game.ctrl.dir-1-2*(game.ctrl.dir==4)),0,-8,10,3;
         wreverse=game.ctrl.dir==4,active=true)
 
     for npc in game.m.npcs

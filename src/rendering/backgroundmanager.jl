@@ -65,6 +65,14 @@ function deleteBackground!(game::GameState,name::Symbol)
     return
 end
 
+function deleteBackgrounds!(game::GameState,names::Symbol...)
+    for name in names
+        deleteBackground!(game,name)
+    end
+
+    return
+end
+
 function activateBackground!(game::GameState,name::Symbol)
     game.im.b.backgrounds[name].active = true
     

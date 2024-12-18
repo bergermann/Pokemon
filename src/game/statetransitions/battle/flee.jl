@@ -30,7 +30,7 @@ function flee!(game::GameState,state::BattleStateWild)
     )
     state.pkmn2.command = battleChoiceWild(game)
 
-    game.callbacks[:wiggle].active = false
+    game.callbacks[:wiggle].active = false; resetWiggle!(game)
     game.callbacks[:animbattle].active = true
     game.n[:animbattle].c = -1
 

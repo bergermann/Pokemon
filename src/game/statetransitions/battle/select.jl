@@ -9,9 +9,13 @@ function stateBattleAttackSelected!(game::GameState)
     game.ctrl.input.battle.m1 = false
     game.ctrl.input.battle.m2 = false
 
+    deactivateBackground!(game,:t1); deactivateBackground!(game,:t2)
+    switchFrame!(game,:attacks); switchFrame!(game,:info)
     switchSprite!(game,:cursor1)
+    switchText!(game,:info1); switchText!(game,:info2)
+    for l in alabels; switchText!(game,l); end
 
-    game.callbacks[:wiggle].active = false
+    game.callbacks[:wiggle].active = false; resetWiggle!(game)
     game.callbacks[:animbattle].active = true
     game.n[:animbattle].c = -1
 
@@ -39,7 +43,7 @@ function stateBattleItemSelected!(game::GameState,target::UInt,item::ItemType)
     flushLayer!(game,4,Position(24+1+112,16+1),Position(48,240))
     flushLayer!(game,5,Position(24+1+112,16+1),Position(48,240))
 
-    game.callbacks[:wiggle].active = false
+    game.callbacks[:wiggle].active = false; resetWiggle!(game)
     game.callbacks[:animbattle].active = true
     game.n[:animbattle].c = -1
 
@@ -69,7 +73,7 @@ function stateBattlePkmnSelected!(game::GameState)
     flushLayer!(game,4,Position(24+1+112,16+1),Position(48,240))
     flushLayer!(game,5,Position(24+1+112,16+1),Position(48,240))
 
-    game.callbacks[:wiggle].active = false
+    game.callbacks[:wiggle].active = false; resetWiggle!(game)
     game.callbacks[:animbattle].active = true
     game.n[:animbattle].c = -1
 

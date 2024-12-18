@@ -42,7 +42,7 @@ function stateOpenMap!(game::GameState)
 
     loadStringsMap!(game; reset=true)
     
-    createBackground!(game,:text,"textboxes/green.png",-120,32,6; active=false)
+    createBackground!(game,:textbox,"textboxes/green.png",-120,32,6; active=false)
 
     loadArrayTexture!(game,"tilesets",tilesets,:tiles,16,16)
     loadSpriteSheets!(game,:mc1,:npcs_all,:objects)

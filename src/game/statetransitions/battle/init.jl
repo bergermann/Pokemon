@@ -79,7 +79,7 @@ function stateOpenBattleIntro!(game::GameState)
 
     createText!(game,:name1,1,24+128,-4,4,pkmnName(game,p1),
         [0x42,0x42,0x42,0xff],[0xde,0xd6,0xb5,0xff]; maxchar=16)
-    createText!(game,:lvl1, 1,93+128,-4,4,string(p1.stats.level),
+    createText!(game, :lvl1,1,93+128,-4,4,string(p1.stats.level),
         [0x42,0x42,0x42,0xff],[0xde,0xd6,0xb5,0xff]; maxchar=3)
 
     createText!(game,:name2,1,-101-128,-62,4,pkmnName(game,p2),
@@ -239,7 +239,7 @@ end
 function stateCloseBattle!(game::GameState)
     deleteBackgrounds!(game,:battle,:text,:t1,:t2)
     deleteSpriteSheets!(game,
-        :battlermc,:pads,:fol,:ballsb,:ballicons,:tagown,:tagopp,:particles,)
+        :battlermc,:pads,:ballsb,:ballicons,:tagown,:tagopp,:particles,:pkmn1,:pkmn2)
     killSprites!(game,:cursors)
 
     deleteFramesAll!(game)
@@ -256,6 +256,12 @@ function stateEndBattle!(game::GameState,args::Tuple)   #,state::BattleStateWild
 
     game.battle.active = false
     stateBattleStage!(game,0)
+    game.ctrl.input.battle.m1 = false
+    game.ctrl.input.battle.m2 = false
+    game.ctrl.input.battle.s1 = 0
+    game.ctrl.input.battle.s2 = 0
+    game.ctrl.input.battle.bag = false
+    game.ctrl.input.battle.pkmn = false
 
     popall!(game.battle.state.actionqueue)
     popall!(game.battle.state.animqueue)

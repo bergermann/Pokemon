@@ -66,6 +66,9 @@ function deleteBackground!(game::GameState,name::Symbol)
 end
 
 function deleteBackgrounds!(game::GameState,names::Symbol...)
+    println("deleting backgrounds: ",names)
+    println("from ",keys(game.im.b.backgrounds))
+
     for name in names
         deleteBackground!(game,name)
     end

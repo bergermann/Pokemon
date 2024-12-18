@@ -31,9 +31,6 @@ include("game/game.jl")
 # end
 
 function main()
-    # Base.GC.enable(false)
-    # Base.GC.@preserve game sceneTransition!
-
     fps = 60.
 
     inputs, keymap = setupInputs(km); global keymap; pause = false
@@ -41,6 +38,9 @@ function main()
     include("input/callbacks.jl")
     
     @time game = setupGame()
+    
+    Base.GC.enable(false)
+    Base.GC.@preserve game sceneTransition!
     
     setInventoryTest!(game.p.inventory)
     

@@ -56,6 +56,7 @@ function animBattleIntro1!(game::GameState,args::Tuple{})
 
         killSprite!(game,:grass1); killSprite!(game,:grass2)
         deleteBackground!(game,:s1); deleteBackground!(game,:s2)
+        deleteSpriteSheet!(game,:fol)
 
         game.callbacks[:introb].active = false
 
@@ -122,7 +123,7 @@ function animThrowBall!(game::GameState,args::Tuple{})
         
         stateAdvanceDialogue!(game)
 
-        killCallback!(game,:introb)
+        killCC!(game,:introb)
 
         return
     end
@@ -156,6 +157,15 @@ function animWiggleBattle!(game::GameState,args::Tuple{})
     return
 end
 
+function resetWiggle!(game)
+    moveSpriteH!(game,:pkmn1,24,true)
+    moveSpriteH!(game,:tag1,12,true)
+    moveTextH!(game,:name1,-4,true)
+    moveTextH!(game,:lvl1,-4,true)
+
+    return
+end
+
 function animBattlePhaseWild!(game::GameState,args::Tuple{})
     # println("stage: ",game.battle.state.stage)
     # -1: set up
@@ -178,6 +188,8 @@ function animBattlePhaseWild!(game::GameState,args::Tuple{})
 
             createCC!(game,:scenet,sceneTransition!,
                 (32,8,F(stateEndBattle!),F(stateInitMapCtrls!)); active=true,n=1)
+
+            game.callbacks[:animbattle].active = false
 
             return
         end

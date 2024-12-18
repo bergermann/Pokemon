@@ -31,6 +31,7 @@ function inputBattle!(game::GameState,inputs::Inputs)
             switchBackground!(game,:t2)
             switchSprite!(game,:cursor1); switchSprite!(game,:cursor2)
             switchFrame!(game,:choice); switchFrame!(game,:attacks); switchFrame!(game,:info)
+            switchText!(game,:info1); switchText!(game,:info2)
             for l in alabels; switchText!(game,l); end
 
             return
@@ -65,6 +66,7 @@ function inputBattleMenuSelector!(game::GameState)
         switchBackground!(game,:t2)
         switchSprite!(game,:cursor1); switchSprite!(game,:cursor2)
         switchFrame!(game,:choice); switchFrame!(game,:attacks); switchFrame!(game,:info)
+        switchText!(game,:info1); switchText!(game,:info2)
         for l in alabels; switchText!(game,l); end
     elseif game.ctrl.input.battle.s1 == 1
         game.ctrl.input.inputlock = true

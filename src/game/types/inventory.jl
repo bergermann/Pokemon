@@ -1,7 +1,7 @@
 # types for item and inventory stuff
 
 mutable struct Inventory
-    nkeys::Int
+    nkeyitems::Int
     nberries::Int
     nmachines::Int
     nballs::Int
@@ -13,16 +13,16 @@ mutable struct Inventory
     balls::MMatrix{30,2,UInt16}
     machines::MMatrix{120,2,UInt16}
     berries::MMatrix{80,2,UInt16}
-    keys::MMatrix{100,2,UInt16}
+    keyitems::MMatrix{100,2,UInt16}
 
     function Inventory()
         items   = zeros(UInt16,170,2)
         balls   = zeros(UInt16, 30,2)
         tms     = zeros(UInt16,120,2)
         berries = zeros(UInt16, 80,2)
-        keys    = zeros(UInt16,100,2)
+        keyitems    = zeros(UInt16,100,2)
 
-        new(0,0,0,0,0,0,items,balls,tms,berries,keys)
+        new(0,0,0,0,0,0,items,balls,tms,berries,keyitems)
     end
 end
 
@@ -49,7 +49,7 @@ function setInventoryTest!(inv::Inventory)
     inv.nberries = 1
 
     # inv[5][1,2] = 1
-    inv.nkeys = 0
+    inv.nkeyitems = 0
 
     inv.cash = 10000
 

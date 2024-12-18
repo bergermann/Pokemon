@@ -53,7 +53,7 @@ function getItem(id::Int)
     elseif 321 <= id <= 400
         return berries[id]      # 80
     else
-        return keys[id]         # 100
+        return keyitems[id]         # 100
     end
 end
 

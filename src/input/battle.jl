@@ -29,8 +29,9 @@ function inputBattle!(game::GameState,inputs::Inputs)
             game.ctrl.input.battle.m2 = false
 
             switchBackground!(game,:t2)
-            switchSprite!(game,:cursor1); switchSprite!(game,:cursor2)
+            activateSprite!(game,:cursor1); deactivateSprite!(game,:cursor2)
             switchFrame!(game,:choice); switchFrame!(game,:attacks); switchFrame!(game,:info)
+            switchText!(game,:choice1); switchText!(game,:choice2)
             switchText!(game,:info1); switchText!(game,:info2)
             for l in alabels; switchText!(game,l); end
 
@@ -64,8 +65,9 @@ function inputBattleMenuSelector!(game::GameState)
         game.ctrl.input.battle.m2 = true
 
         switchBackground!(game,:t2)
-        switchSprite!(game,:cursor1); switchSprite!(game,:cursor2)
+        deactivateSprite!(game,:cursor1); activateSprite!(game,:cursor2)
         switchFrame!(game,:choice); switchFrame!(game,:attacks); switchFrame!(game,:info)
+        switchText!(game,:choice1); switchText!(game,:choice2)
         switchText!(game,:info1); switchText!(game,:info2)
         for l in alabels; switchText!(game,l); end
     elseif game.ctrl.input.battle.s1 == 1

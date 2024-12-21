@@ -3,7 +3,7 @@
 function stateBattleAttackSelected!(game::GameState)
     stateBattleStage!(game,10)
 
-    game.battle.state.pkmn1.command = CommandAttack(game.ctrl.input.battle2menu.select+1)
+    game.battle.state.pkmn1.command = CommandAttack(game.ctrl.input.battle.s2+1)
     game.battle.state.pkmn2.command = battleChoiceWild(game)
     
     game.ctrl.input.battle.m1 = false
@@ -11,7 +11,7 @@ function stateBattleAttackSelected!(game::GameState)
 
     deactivateBackground!(game,:t1); deactivateBackground!(game,:t2)
     switchFrame!(game,:attacks); switchFrame!(game,:info)
-    switchSprite!(game,:cursor1)
+    deactivateSprite!(game,:cursor2)
     switchText!(game,:info1); switchText!(game,:info2)
     for l in alabels; switchText!(game,l); end
 

@@ -2,7 +2,7 @@
 
 
 function stateInitBattle!(game::GameState)
-    game.ctrl.input.inputlock = true
+    lockInput!(game)
     game.ctrl.input.map = false
     game.ctrl.input.move = false
     game.ctrl.input.battle

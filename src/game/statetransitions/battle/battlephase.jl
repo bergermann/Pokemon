@@ -10,7 +10,7 @@ end
 function stateEndBattlePhase!(game::GameState)
     stateBattleStage!(game,1)
 
-    game.ctrl.input.inputlock = false
+    unlockInput!(game)
     game.ctrl.input.battle1 = true
     game.draw.battle1 = true
     

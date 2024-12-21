@@ -27,7 +27,7 @@ end
 function inputBags!(game::GameState,inputs::Inputs,m::MenuBags)
     if inputs.A.press
         if getSelect(game) == getAmountItems(game)+1
-            game.ctrl.input.inputlock = true
+            lockInput!(game)
             game.ctrl.input.menu.bags = false
     
             createCC!(game,:scenet,sceneTransition!,(16,8,
@@ -36,12 +36,9 @@ function inputBags!(game::GameState,inputs::Inputs,m::MenuBags)
             return
         end
 
-        # game.im.sprites[1][:cursor].palette[1] = 0xd0d0c8
         setChoice!(game,true,1,F(itemAction!))
-
-        # drawChoiceMenu!(game,4,getInvChoiceStr(game),7,P(120,192))
     elseif inputs.B.press
-        game.ctrl.input.inputlock = true
+        lockInput!(game)
         game.ctrl.input.menu.bags = false
 
         createCC!(game,:scenet,sceneTransition!,(16,8,
@@ -92,7 +89,7 @@ function inputBags!(game::GameState,inputs::Inputs,m::MenuBags)
             m.bag -= 1
         end
         
-        game.ctrl.input.inputlock = true
+        lockInput!(game)
         game.callbacks[:bagswitch].active = true
         game.callbacks[:bagswitch].args = (m,-1,)
     elseif inputs.right.press
@@ -102,7 +99,7 @@ function inputBags!(game::GameState,inputs::Inputs,m::MenuBags)
             m.bag += 1
         end
 
-        game.ctrl.input.inputlock = true
+        lockInput!(game)
         game.callbacks[:bagswitch].active = true
         game.callbacks[:bagswitch].args = (m,1,)
     end
@@ -141,13 +138,13 @@ function itemActionItems!(game::GameState)
         createCC!(game,:scenet,sceneTransition!,
             (16,8,stateMenuPkmnSubOpen!,(),stateMenuPkmnSubCtrls!,()); active=true,n=1)
 
-        game.ctrl.input.inputlock = true
+        lockInput!(game)
         game.ctrl.input.menu.menubags.submode = 1
     elseif game.ctrl.input.choice.sel == 2
         createCC!(game,:scenet,sceneTransition!,
             (16,8,stateMenuPkmnSubOpen!,(),stateMenuPkmnSubCtrls!,()); active=true,n=1)
 
-        game.ctrl.input.inputlock = true
+        lockInput!(game)
         game.ctrl.input.menu.menubags.submode = 2
 
         return

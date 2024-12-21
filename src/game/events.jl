@@ -87,7 +87,7 @@ function animHealCenter!(game::GameState,ballids::Vector{Symbol})
     elseif game.n[:heal].c == 90+l*30+96+160
         killCC!(game,:heal)
         
-        game.ctrl.input.inputlock = false
+        unlockInput!(game)
         
         stateSetDialogue!(game,1,4,1)
 

@@ -102,7 +102,7 @@ function stateBattleBagsOpen!(game::GameState)
 end
 
 function stateBattleBagsCtrls!(game::GameState)
-    game.ctrl.input.inputlock = false
+    unlockInput!(game)
     game.ctrl.input.battlebag = true
 
     return
@@ -143,7 +143,7 @@ function stateBattlePkmnOpen!(game::GameState)
 end
 
 # function stateBattlePkmnCtrls!(game::GameState)
-#     game.ctrl.input.inputlock = false
+#     unlockInput!(game)
 #     game.ctrl.input.menu.pkmn = true
 # end
 

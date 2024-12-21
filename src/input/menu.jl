@@ -34,19 +34,23 @@ end
 
 function inputMenuSelector!(game::GameState)
     if game.ctrl.input.menu.select == 0x00
-        game.ctrl.input.menu.pdex = true
+        game.ctrl.input.menu.dex = true
         game.ctrl.input.map = false
+        lockInput!(game)
+
+        createCC!(game,:scenet,sceneTransition!,
+            (16,8,F(stateMenuDexOpen!),F(stateMenuDexCtrls!)); active=true,n=1)
     elseif game.ctrl.input.menu.select == 0x01
         game.ctrl.input.map = false
         game.ctrl.input.menu.main = false
-        game.ctrl.input.inputlock = true
+        lockInput!(game)
 
         createCC!(game,:scenet,sceneTransition!,
             (16,8,F(stateMenuPkmnOpen!),F(stateMenuPkmnCtrls!)); active=true,n=1)
     elseif game.ctrl.input.menu.select == 0x02
         game.ctrl.input.map = false
         game.ctrl.input.menu.main = false
-        game.ctrl.input.inputlock = true
+        lockInput!(game)
 
         createCC!(game,:scenet,sceneTransition!,
             (16,8,F(stateMenuBagsOpen!,(game.ctrl.input.menu.menubags,)),

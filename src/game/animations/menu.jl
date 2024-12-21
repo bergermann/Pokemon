@@ -94,7 +94,7 @@ function animMenuPkmnSwap!(game::GameState,(p1,p2)::Tuple{Int,Int})
         setText!(game,:choose,game.str[1][2])
 
         game.ctrl.input.menu.menupkmn.swap = 0
-        game.ctrl.input.inputlock = false
+        unlockInput!(game)
 
         return
     end
@@ -176,7 +176,7 @@ function animBagSwitch!(game::GameState,(m,dir,)::Tuple{MenuBags,Int,})
         game.callbacks[:bagswitch].active = false
         game.n[:bagswitch].c = 1
 
-        game.ctrl.input.inputlock = false
+        unlockInput!(game)
 
         return
     end

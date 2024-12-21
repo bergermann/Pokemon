@@ -1,10 +1,10 @@
 
 function lockInput!(game::GameState)
-    game.ctrl.input.inputlock = true; return
+    lockInput!(game); return
 end
 
 function unlockInput!(game::GameState)
-    game.ctrl.input.inputlock = false; return
+    unlockInput!(game); return
 end
 
 function inputManager!(game::GameState,inputs::Inputs)
@@ -17,8 +17,8 @@ function inputManager!(game::GameState,inputs::Inputs)
             inputMap!(game,inputs)
         elseif game.ctrl.input.menu.main
             inputMenu!(game,inputs)
-        elseif game.ctrl.input.menu.pdex
-            
+        elseif game.ctrl.input.menu.dex
+            inputDex!(game,inputs)
         elseif game.ctrl.input.menu.pkmn
             inputMenuPkmn!(game,inputs)
         elseif game.ctrl.input.menu.bags

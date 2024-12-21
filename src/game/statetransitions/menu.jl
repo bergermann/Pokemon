@@ -19,7 +19,7 @@ function stateMenuMainOpen!(game::GameState)
     game.ctrl.input.move = false
     game.ctrl.input.map = false
     game.ctrl.input.menu.main = true
-    game.ctrl.input.inputlock = false
+    unlockInput!(game)
 
     switchFrame!(game,:menu)
     switchText!(game,:menu)
@@ -133,14 +133,14 @@ function stateMenuPkmnOpen!(game::GameState)
 end
 
 function stateMenuPkmnCtrls!(game::GameState)
-    game.ctrl.input.inputlock = false
+    unlockInput!(game)
     game.ctrl.input.menu.pkmn = true
 
     return
 end
 
 function stateMenuPkmnClose!(game::GameState)
-    game.ctrl.input.inputlock = true
+    lockInput!(game)
 
     killCallback!(game,:wiggle)
     killSpritesAll!(game)
@@ -253,14 +253,14 @@ function stateMenuBagsOpen!(game::GameState,m::MenuBags)
 end
 
 function stateMenuBagsCtrls!(game::GameState)
-    game.ctrl.input.inputlock = false
+    unlockInput!(game)
     game.ctrl.input.menu.bags = true
 
     return
 end
 
 function stateMenuBagsClose!(game::GameState)
-    game.ctrl.input.inputlock = true
+    lockInput!(game)
 
     killCallback!(game,:arrows)
     killCC!(game,:bagswitch)

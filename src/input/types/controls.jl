@@ -87,9 +87,11 @@ end
 
 mutable struct MenuDex
     select::Int
+    info::Bool
+    page::Int
 
     function MenuDex()
-        new(1)
+        new(1,false,1)
     end
 end
 
@@ -170,8 +172,8 @@ mutable struct Menu
     main::Bool
     select::Int
 
-    pdex::Bool
-    menupdex::MenuDex
+    dex::Bool
+    menudex::MenuDex
     pkmn::Bool
     menupkmn::MenuPkmn
     bags::Bool

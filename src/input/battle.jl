@@ -71,7 +71,7 @@ function inputBattleMenuSelector!(game::GameState)
         switchText!(game,:info1); switchText!(game,:info2)
         for l in alabels; switchText!(game,l); end
     elseif game.ctrl.input.battle.s1 == 1
-        game.ctrl.input.inputlock = true
+        lockInput!(game)
         game.ctrl.input.battle.m1 = false
         game.ctrl.input.battle.bag = true
 
@@ -79,7 +79,7 @@ function inputBattleMenuSelector!(game::GameState)
             (16,8,stateBattleBagsOpen!,(),stateBattleBagsCtrls!,());
             active=true,n=1)
     elseif game.ctrl.input.battle.s1 == 2
-        game.ctrl.input.inputlock = true
+        lockInput!(game)
         game.ctrl.input.battle.m1 = false
         game.ctrl.input.battle.pkmn = true
 

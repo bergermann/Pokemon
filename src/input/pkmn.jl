@@ -26,7 +26,7 @@ function inputMenuPkmn!(game::GameState,inputs::Inputs)
                 return
             end
 
-            game.ctrl.input.inputlock = true
+            lockInput!(game)
             createCC!(game,:pkmnswap,animMenuPkmnSwap!,
                 (game.ctrl.input.menu.menupkmn.swap,game.ctrl.input.menu.menupkmn.select);
                 active=true,n=1)
@@ -84,7 +84,7 @@ function inputTeam!(game::GameState,inputs::Inputs)
             inputTeamAction!(game)
         end
     elseif inputs.B.press
-        game.ctrl.input.inputlock = true
+        lockInput!(game)
         game.ctrl.input.menu.pkmn = false
         game.ctrl.input.menu.menupkmn.select = 1
 
@@ -136,7 +136,7 @@ end
 
 function inputTeamAction!(game::GameState)
     if game.ctrl.input.menu.menupkmn.select == game.p.pokemon.idx+1
-        game.ctrl.input.inputlock = true
+        lockInput!(game)
         game.ctrl.input.menu.pkmn = false
         game.ctrl.input.menu.menupkmn.select = 1
 
@@ -164,7 +164,7 @@ end
 
 function inputTeamActionBattle!(game::GameState)
     if game.ctrl.input.menu.menupkmn.select == game.p.pokemon.idx+1
-        game.ctrl.input.inputlock = true
+        lockInput!(game)
         game.ctrl.input.menu.pkmn = false
         game.ctrl.input.menu.menupkmn.select = 1
 
@@ -199,7 +199,7 @@ function pkmnAction!(game::GameState,args::Tuple{})
         # createCC!(game,:scenet,sceneTransition!,
         #     (16,8,stateMenuPkmnSubOpen!,(),stateMenuPkmnSubCtrls!,()); active=true,n=1)
 
-        # game.ctrl.input.inputlock = true
+        # lockInput!(game)
         # game.ctrl.input.menu.menupkmn.submode = 1
     elseif game.ctrl.input.choice.sel == 2
         game.ctrl.input.menu.menupkmn.swapping = true
@@ -221,7 +221,7 @@ function pkmnAction!(game::GameState,args::Tuple{})
         # createCC!(game,:scenet,sceneTransition!,
         #     (16,8,stateMenuPkmnSubOpen!,(),stateMenuPkmnSubCtrls!,()); active=true,n=1)
 
-        # game.ctrl.input.inputlock = true
+        # lockInput!(game)
         # game.ctrl.input.menu.menubags.submode = 3
 
         return
@@ -241,7 +241,7 @@ end
 function pkmnActionBattle!(game::GameState,hp::Int)
     if hp > 0
         if game.ctrl.input.choice.sel == 1
-            game.ctrl.input.inputlock = true
+            lockInput!(game)
             game.ctrl.input.menu.pkmn = false
 
             createCC!(game,:scenet,sceneTransition!,

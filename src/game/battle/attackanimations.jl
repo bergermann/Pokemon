@@ -4,44 +4,49 @@ function banimEmpty!(game::GameState,target::Int)
 end
 
 function bnoAnim!(game::GameState,target::Int)
-    if target == 1
-        createCC!(game,:dmg,btakeDamage!,(:pkmn1,:tag1,); active=true)
-    else
-        createCC!(game,:dmg,btakeDamage!,(:pkmn2,:tag2,); active=true)
-    end
+    createCC!(game,:dmg,btakeDamage!,(target,); active=true)
 
     return
 end
 
-function bhpAnim!(game::GameState,target::Int)
-    if target == 1
-        createCC!(game,:hp,bhpAnim!,(2,1,:tag1,P(18,48)); active=true,n=1)
-    else
-        createCC!(game,:hp,bhpAnim!,(1,2,:tag2,P(18,39)); active=true,n=1)
+function btakeDamage!(game::GameState,(target)::Tuple{Int,Symbol})    #length: 30
+    if game.n[:dmg].c == 0
+        switchSprite!(game,target)
+        moveSpriteH!(game,tag,-1)
+    elseif game.n[:dmg].c == 22
+        moveSpriteH!(game,tag,1)
+    elseif game.n[:dmg].c%4 == 0
+        switchSprite!(game,target)
+        moveSpriteH!(game,tag,-2)
+    elseif game.n[:dmg].c%4 == 2
+        moveSpriteH!(game,tag,2)
+    elseif game.n[:dmg].c == 23
+        killCC!(game,:dmg)
+
+        return
     end
+
+    game.n[:dmg].c += 1
 
     return
 end
 
-function bhpAnim!(game::GameState,user::Int,target::Int,tag::Symbol,
-        pos::Position)
-    
+function bhpAnim!(game::GameState,target::Int,damage::Int)
+    createCC!(game,:dmg,btakeDamage!,(target,damage); active=true,n=1)
+
+    return
+end
+
+function bhpAnim!(game::GameState,(target,damage)::Tuple{Int,Int})
     p = game.battle.state[target].pkmn
-    dmg = min(game.battle.state[user].dmg,p.stats.hp)
 
     b1 = getHealthBar(p,p.stats.hp)
-    b2 = getHealthBar(p,p.stats.hp-dmg)
-
-    drawHealthBar!(game.im.sprites[3][tag],
-        b1-trunc(Int,(b1-b2)*game.n[:hp].c/48),pos)
+    b2 = getHealthBar(p,p.stats.hp-damage)
 
     if target == 1
-        game.im.sprites[3][:tag1].im[23:30,60:76] .= 0x0f
-        
-        drawText!(game,game.im.sprites[3][:tag1],
+        setText!(game,:health,
             string(game.battle.state[1].pkmn.stats.hp-
-                trunc(Int,dmg*(game.n[:hp].c+1)/48)),
-            UInt(1),Position(20,65),0x424242,0xded6b5)
+            trunc(Int,dmg*(game.n[:hp].c)/48)))
     end
     
     if game.n[:hp].c == 48
@@ -51,53 +56,31 @@ function bhpAnim!(game::GameState,user::Int,target::Int,tag::Symbol,
             error("HP got below 0? it fucked up.")
         end
 
-        game.battle.state[user].dmg = 0
-
         killCC!(game,:hp)
 
         return
     end
 
     game.n[:hp].c += 1
-end
 
-function btakeDamage!(game::GameState,target::Symbol,tag::Symbol)    #length: 30
-    if game.n[:dmg].c == 0
-        game.im.sprites[2][target].active = false
-        posAdd!(game.im.sprites[3][tag].pos,1,0)
-    elseif game.n[:dmg].c == 22
-        posAdd!(game.im.sprites[3][tag].pos,-1,0)
-    elseif game.n[:dmg].c%4 == 0
-       game.im.sprites[2][target].active = !game.im.sprites[2][target].active
-       posAdd!(game.im.sprites[3][tag].pos,2,0)
-    elseif game.n[:dmg].c%4 == 2
-        posAdd!(game.im.sprites[3][tag].pos,-2,0)
-    elseif game.n[:dmg].c == 23
-        killCC!(game,:dmg)
-
-        return
-    end
-
-    game.n[:dmg].c += 1
+    return
 end
 
 function bfaint!(game::GameState,target::Int)
-    if target == 1
-        createCC!(game,:faint,bfaint!,(:pkmn1,:tag1); active=true)
-    else
-        createCC!(game,:faint,bfaint!,(:pkmn2,:tag2); active=true)
-    end
+    createCC!(game,:faint,bfaint!,(target,); active=true)
+
+    return
 end
 
-function bfaint!(game::GameState,target::Symbol,tag::Symbol)
+function bfaint!(game::GameState,(target,)::Tuple{Int})
     if 60 <= game.n[:faint].c <= 75
-        posAdd!(game.im.sprites[2][target].pos,4,0)
+        moveSpriteH!(game,blabels[target].pkmn,4)
     end
 
     if game.n[:faint].c == 75
-        game.im.sprites[2][target].active = false
+        deactivateSprite!(game,blabels[target].pkmn)
     elseif game.n[:faint].c == 119
-        game.im.sprites[3][tag].active = false
+        deactivateSprite!(game,blabels[target].tag)
 
         killCC!(game,:faint)
 
@@ -105,6 +88,8 @@ function bfaint!(game::GameState,target::Symbol,tag::Symbol)
     end
 
     game.n[:faint].c += 1
+
+    return
 end
 
 function bxpAnim!(game::GameState,xp::Int)
@@ -119,13 +104,15 @@ function bxpAnim!(game::GameState,xp::Int)
             xpFormulas(game.battle.state.pkmn1.pkmn.stats.level,
                 game.battle.state.pkmn1.pkmn.xptype)
         ); active=true)
+
+    return
 end
 
-function bxpAnimXp!(game::GameState,xp::Int,xpnext::Int,xplevel::Int)
+function bxpAnimXp!(game::GameState,(xp,xpnext,xplevel)::Tuple{Int,Int,Int})
     val = trunc(Int,64*(1-(xpnext+xp)/xplevel))+
         trunc(Int,64*xp/xplevel*(1-game.n[:xp].c/30))
 
-    drawXpBar!(game.im.sprites[3][:tag1],val,P(34,32))
+    # drawXpBar!(game.im.sprites[3][:tag1],val,P(34,32))
 
     if game.n[:xp].c == 30
         killCC!(game,:xp)
@@ -134,6 +121,8 @@ function bxpAnimXp!(game::GameState,xp::Int,xpnext::Int,xplevel::Int)
     end
 
     game.n[:xp].c += 1
+
+    return
 end
 
 function bxpAnimLvUp!(game::GameState,levelups::Int)
@@ -149,20 +138,22 @@ function bxpAnimLvUp!(game::GameState,levelups::Int)
             xpFormulas(game.battle.state.pkmn1.pkmn.stats.level,
                 game.battle.state.pkmn1.pkmn.xptype)
         ); active=true,n=1)
+
+    return
 end
 
 function bxpAnimLevelUp!(game::GameState,levelups::Int,xpnext::Int,xplevel::Int)
     if 1 <= game.n[:xp].c <= 30
         val = trunc(Int,64-64*xpnext/xplevel*(1-game.n[:xp].c/30))
 
-        drawXpBar!(game.im.sprites[3][:tag1],val,P(34,32))
+        # drawXpBar!(game.im.sprites[3][:tag1],val,P(34,32))
     elseif game.n[:xp].c == 31
-        game.im.sprites[3][:tag1].colortransform.active = true
-        game.im.sprites[3][:tag1].colortransform.func = scaleColor
-        game.im.sprites[3][:tag1].colortransform.args = (0xfff9e8,0x12,0x01)
+        # game.im.sprites[3][:tag1].colortransform.active = true
+        # game.im.sprites[3][:tag1].colortransform.func = scaleColor
+        # game.im.sprites[3][:tag1].colortransform.args = (0xfff9e8,0x12,0x01)
     elseif 31 < game.n[:xp].c <= 46
-        game.im.sprites[3][:tag1].colortransform.args = (0xfff9e8,0x12,
-            UInt8(game.n[:xp].c-30))
+        # game.im.sprites[3][:tag1].colortransform.args = (0xfff9e8,0x12,
+        #     UInt8(game.n[:xp].c-30))
     end
     
     if game.n[:xp].c == 46
@@ -176,8 +167,8 @@ function bxpAnimLevelUp!(game::GameState,levelups::Int,xpnext::Int,xplevel::Int)
 
         updateStats!(game.battle.state.pkmn1.pkmn)
 
-        game.im.sprites[3][:tag1].colortransform.active = false
-        updateSprite!(game.im.sprites[3][:tag1])
+        # game.im.sprites[3][:tag1].colortransform.active = false
+        # updateSprite!(game.im.sprites[3][:tag1])
 
         drawBattleTagOwn!(game,game.battle.state.pkmn1.pkmn,game.im.sprites[3][:tag1])
 
@@ -187,31 +178,31 @@ function bxpAnimLevelUp!(game::GameState,levelups::Int,xpnext::Int,xplevel::Int)
     end
 
     game.n[:xp].c += 1
+
+    return
 end
 
 function bthrowBall!(game::GameState,w::Int)
-    createSprite!(game,:ball,4,P(82+24,0*20+16),1,
-        getSprite("im/battle/balls/$(game.battle.state[1].command.item.id)",2);
-        active=true)
+    createSprite!(game,:ball,:ballsb,game.battle.state[1].command.item.id,1,-106,-16,0,5;
+        active=false)
 
     createCC!(game,:throwball,bthrowBall!,();
         active=true,n=1)
+
+    return
 end
 
-function bthrowBall!(game::GameState)
+function bthrowBall!(game::GameState,args::Tuple{})
     if game.n[:throwball].c <= 37+5
-        game.im.sprites[4][:ball].pos.w += 4
-        game.im.sprites[4][:ball].pos.h =
-            trunc(Int,(game.im.sprites[4][:ball].pos.w-(135+16))^2/300+(21+24))
-        if game.n[:throwball].c == 1
-            println(game.im.sprites[4][:ball].pos.h)
-        end
+        moveSpriteW!(game,:ball,4)
+        moveSpriteH!(game,:ball,
+            trunc(Int,(game.im.sprites[4][:ball].pos.w-(135+16))^2/300+(21+24)),true)
     elseif game.n[:throwball].c == 60
-        updateSprite!(game.im.sprites[4][:ball],2)
+        setSpriteFrame!(game,:ball,2)
     elseif game.n[:throwball].c == 70
-        game.im.sprites[2][:pkmn2].active = false
+        deactivateSprite!(game,:pkmn2)
     elseif game.n[:throwball].c == 90
-        updateSprite!(game.im.sprites[4][:ball],1)
+        setSpriteFrame!(game,:ball,1)
     elseif 100 < game.n[:throwball].c <= 110
         game.im.sprites[4][:ball].pos.h += 3
     elseif 110 < game.n[:throwball].c <= 120
@@ -229,6 +220,8 @@ function bthrowBall!(game::GameState)
     end
 
     game.n[:throwball].c += 1
+
+    return
 end
 
 function bwiggleBall!(game::GameState,w::Int)

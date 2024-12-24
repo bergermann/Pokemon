@@ -1,5 +1,18 @@
 #types commonly used in battle proceedings
 
+
+const blabels = Base.ImmutableDict(
+    [i => (
+            pkmn   = Symbol(:pkmn,i),
+            tag    = Symbol(:tag,i),
+            name   = Symbol(:name,i),
+            health = Symbol(:health,i),
+            level  = Symbol(:lvl,i),
+        )
+    for i in 1:4]...
+)
+
+
 abstract type BattleCommand end
 
 mutable struct CommandAttack <: BattleCommand

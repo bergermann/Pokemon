@@ -197,7 +197,8 @@ mutable struct PkmnBattle
     hit::Bool
     crit::Bool
     eff::Float64
-    dmg::Int
+    dmgd::Int
+    dmgt::Int
     heal::Int
     stat::Int
 
@@ -227,6 +228,7 @@ mutable struct PkmnBattle
             0,
             0,
             0,
+            0,
             false,
             0,
             false,
@@ -250,6 +252,7 @@ mutable struct PkmnBattle
             true,
             false,
             1,
+            0,
             0,
             0,
             0,

@@ -28,6 +28,8 @@ function queueSetupActions!(game::GameState,state::BattleStateWild)
     else
         state[2].attack = Attack()
     end
+
+    return
 end
 
 function queueSetupAnimation!(game::GameState,state::BattleStateWild)
@@ -62,6 +64,8 @@ function queueSetupAnimation!(game::GameState,state::BattleStateWild)
 
     queueStatusCond!(state)
     queueWeather!(state)
+
+    return
 end
 
 
@@ -76,24 +80,25 @@ function queueAttack!(game::GameState,state::BattleState,
     attacker.eff = getEff(attacker,defender)
 
     setDmgFactors!(state,attacker,defender)
-    attacker.dmg = calcDamage(attacker.factors)
+    attacker.dmgd = calcDamage(attacker.factors)
+    defender.dmgt = min(defender.pkmn.stats.hp,attacker.dmgd)
 
-    # println("$id D: ",attacker.dmg)
+    # println("$id D: ",attacker.dmgd)
     
     push!(state.animqueue,BattleAnimation(
-        id,120,getPkmnName(game,attacker.pkmn)*" setzt\\$(attacker.attack.name) ein.",
-        banimEmpty!,0
+        id,120,getPkmnName(game,attacker.pkmn)*game.str[1][31]*
+            attacker.attack.name*game.str[1][33],banimEmpty!,0
     ))
 
     if !attacker.hit
         push!(state.animqueue,BattleAnimation(
-            id,120,"Die Attacke hat\\ihr Ziel verfehlt...",banimEmpty!,0
+            id,120,game.str[1][37],banimEmpty!,0
         ))
 
         return
     elseif attacker.eff == 0
         push!(state.animqueue,BattleAnimation(
-            id,120,"Es hat keine Wirkung...",banimEmpty!,0
+            id,120,game.str[1][36],banimEmpty!,0
         ))
 
         return
@@ -109,19 +114,21 @@ function queueAttack!(game::GameState,state::BattleState,
 
     if attacker.crit
         push!(state.animqueue,BattleAnimation(
-            id,120,"Ein Volltreffer!",banimEmpty!,0
+            id,120,game.str[1][39],banimEmpty!,0
         ))
     end
 
     if attacker.eff < 1
         push!(state.animqueue,BattleAnimation(
-            id,120,"Das ist nicht sehr effektiv...",banimEmpty!,0
+            id,120,game.str[1][35],banimEmpty!,0
         ))
     elseif attacker.eff > 1
         push!(state.animqueue,BattleAnimation(
-            id,120,"Das ist sehr effektiv!",banimEmpty!,0
+            id,120,game.str[1][34],banimEmpty!,0
         ))
     end
+
+    return
 end
 
 function queueWeather!(state::BattleState)
@@ -132,6 +139,8 @@ function queueWeather!(state::BattleState)
     push!(state.animqueue,BattleAnimation(
         :w,120,"Wetter",banimEmpty!,0
     ))
+
+    return
 end
 
 function queueStatusCond!(state::BattleState)
@@ -142,6 +151,8 @@ function queueStatusCond!(state::BattleState)
     if state.pkmn2.pkmn.status != 0x00
         0
     end
+
+    return
 end
 
 
@@ -152,8 +163,8 @@ function queueItem!(game::GameState,state::BattleState,
         user::Int,target::PkmnBattle,item::ItemType,id::Symbol)
     
     push!(state.animqueue,BattleAnimation(
-        id,30,"$(game.p.name) setzt\\"*
-            "$(game.str[2][getInvSlotID(game,game.ctrl.input.battlebags)]) ein.",
+        id,30,game.p.name*game.str[1][31]*
+            game.str[2][getInvSlotID(game,game.ctrl.input.battlebags)]*game.str[1][33],
         banimEmpty!,0
     ))
 
@@ -162,14 +173,16 @@ function queueItem!(game::GameState,state::BattleState,
     elseif item isa Pokeball
         queueBall!(game,state,target,item,id)
     end
+
+    return
 end
 
 function queueBall!(game::GameState,state::BattleState,target::PkmnBattle,
         ball::ItemType,id::Symbol)
 
     push!(state.animqueue,BattleAnimation(
-        id,160,"$(game.p.name) setzt\\"*
-            "$(game.str[2][getInvSlotID(game,game.ctrl.input.battlebags)]) ein.",
+        id,160,game.p.name*game.str[1][31]*
+            game.str[2][getInvSlotID(game,game.ctrl.input.battlebags)]*game.p.name*game.str[1][33],
         bthrowBall!,2
     ))
 
@@ -209,12 +222,12 @@ function queueBall!(game::GameState,state::BattleState,target::PkmnBattle,
 
     if w == 4
         push!(state.animqueue,BattleAnimation(
-            id,60,"Toll! $(getPkmnName(game,target.pkmn)) wurde gefangen.",
+            id,60,game.str[1][41]*getPkmnName(game,target.pkmn)*game.str[1][42],
             bcaughtBall!,w
         ))
     else
         push!(state.animqueue,BattleAnimation(
-            id,60,"Mist! Das wilde Pokémon hat sich befreit.",
+            id,60,game.str[1][42],
             bbreakBall!,w
         ))
     end
@@ -228,6 +241,8 @@ function queueBall!(game::GameState,state::BattleState,target::PkmnBattle,
     #         id,60*w,"",bescape!,2
     #     ))
     # end
+
+    return
 end
 
 
@@ -238,14 +253,16 @@ function queueSwitch!(game::GameState,state::BattleStateWild,user::Int,
         target::Int,id::Symbol)
     
     push!(state.animqueue,BattleAnimation(
-        id,60,"Genug, $(getPkmnName(game,state[1].pkmn)).\\Komm zurück!",
+        id,60,game.str[1][22]*getPkmnName(game,state[1].pkmn)*game.str[1][23],
         bswitchOut!,user
     ))
     
     push!(state.animqueue,BattleAnimation(
-        id,60,"Los, $(getPkmnName(game,game.p.pokemon[target])).",
+        id,60,game.str[1][24]*getPkmnName(game,game.p.pokemon[target])*".",
         bswitchIn!,user
     ))
+
+    return
 end
 
 
@@ -258,29 +275,31 @@ function queueFlee!(state::BattleState,user::PkmnBattle)
             state.stage = 250
 
             push!(state.animqueue,BattleAnimation(
-                :p1,120,"Du bist entkommen!",banimEmpty!,0
+                :p1,120,game.str[1][19],banimEmpty!,0
             ))
         else
             state.counters.flee += 1
 
             push!(state.animqueue,BattleAnimation(
-                :p1,120,"Flucht gescheitert!",banimEmpty!,0
+                :p1,120,game.str[1][20],banimEmpty!,0
             ))
         end
     else
         state.stage = 250
 
         push!(state.animqueue,BattleAnimation(
-            :p2,120,"Der Gegner ist geflohen!",banimEmpty!,0
+            :p2,120,game.str[1][25],banimEmpty!,0
         ))
     end
+
+    return
 end
 
 
 
 
 
-function queueCheckStatus!(game::GameState,state::BattleStateWild)
+function queueCheckStatus!(game::GameState,state::BattleStateWild)::Bool
     F = false
 
     if state[1].pkmn.stats.hp == 0
@@ -292,7 +311,7 @@ function queueCheckStatus!(game::GameState,state::BattleStateWild)
         end
 
         push!(state.animqueue,BattleAnimation(
-            :p1,30,"$(state[1].name) wurde besiegt.",bfaint!,1
+            :p1,30,state[1].name*game.str[1][16],bfaint!,1
         ))
 
         state[1].pkmn.stats.hp = -1
@@ -309,11 +328,12 @@ function queueCheckStatus!(game::GameState,state::BattleStateWild)
         end
 
         push!(state.animqueue,BattleAnimation(
-            :p2,120,"$(state[2].name) wurde besiegt.",bfaint!,2
+            :p2,120,state[2].name*game.str[1][16],bfaint!,2
         ))
 
         push!(state.animqueue,BattleAnimation(
-            :p1,60,"$(state[1].name) erhält $(calcXpDrop1(state,state[1],state[2])) E.-Punkte.",
+            :p1,60,state[1].name*game.str[1][17]*
+            string(calcXpDrop1(state,state[1],state[2]))*game.str[1][18],
             banimEmpty!,1
         ))
 
@@ -337,7 +357,8 @@ function queueCheckStatus!(game::GameState,state::BattleStateWild)
         end
 
         push!(state.animqueue,BattleAnimation(
-            :p1,60,"$(state[1].name) erhält $(calcXpDrop1(state,state[1],state[2])) E.-Punkte.",
+            :p1,60,state[1].name*game.str[1][17]*
+                string(calcXpDrop1(state,state[1],state[2]))*game.str[1][18],
             banimEmpty!,1
         ))
 
@@ -347,12 +368,12 @@ function queueCheckStatus!(game::GameState,state::BattleStateWild)
 
         if game.p.pokemon.idx < 6
             push!(state.animqueue,BattleAnimation(
-                :p1,60,"$(state[2].name) wurde dem Team\\hinzugefügt.",
+                :p1,60,state[2].name*game.str[1][43],
                 banimEmpty!,1
             ))
         else
             push!(state.animqueue,BattleAnimation(
-                :p1,60,"$(state[2].name) wurde auf den PC\\übertragen.",
+                :p1,60,state[2].name*game.str[1][44],
                 banimEmpty!,1
             ))
         end
@@ -369,7 +390,7 @@ function queueCheckStatus!(game::GameState,state::BattleStateWild)
     return F
 end
 
-function checkFlee(state::BattleStateWild)
+function checkFlee(state::BattleStateWild)::Bool
     if state.pkmn1.secstatus.escapeblock
         return false
     end
@@ -399,7 +420,7 @@ function queueCheckXp!(state::BattleState)
         ))
         
         push!(state.animqueue,BattleAnimation(
-            :p1,120,"$(state[1].name) erreicht Lv. $(state[1].pkmn.stats.level+levelups)!",
+            :p1,120,state[1].name*game.str[1][26]*state[1].pkmn.stats.level+levelups*"!",
             banimEmpty!,1
         ))
 
@@ -410,4 +431,6 @@ function queueCheckXp!(state::BattleState)
                 state[1].pkmn.stats.xp
         ))
     end
+
+    return
 end

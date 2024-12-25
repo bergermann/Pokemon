@@ -37,7 +37,7 @@ function main()
 
     include("input/callbacks.jl")
     
-    @time game = setupGame()
+    @time game = setupGame(4)
     
     Base.GC.enable(false)
     Base.GC.@preserve game sceneTransition!

@@ -9,17 +9,17 @@ function bnoAnim!(game::GameState,target::Int)
     return
 end
 
-function btakeDamage!(game::GameState,(target)::Tuple{Int,Symbol})    #length: 30
+function btakeDamage!(game::GameState,(target,)::Tuple{Int})    #length: 30
     if game.n[:dmg].c == 0
-        switchSprite!(game,target)
-        moveSpriteH!(game,tag,-1)
+        switchSprite!(game,blabels[target].pkmn)
+        moveSpriteH!(game,blabels[target].tag,-1)
     elseif game.n[:dmg].c == 22
-        moveSpriteH!(game,tag,1)
+        moveSpriteH!(game,blabels[target].tag,1)
     elseif game.n[:dmg].c%4 == 0
-        switchSprite!(game,target)
-        moveSpriteH!(game,tag,-2)
+        switchSprite!(game,blabels[target].pkmn)
+        moveSpriteH!(game,blabels[target].tag,-2)
     elseif game.n[:dmg].c%4 == 2
-        moveSpriteH!(game,tag,2)
+        moveSpriteH!(game,blabels[target].tag,2)
     elseif game.n[:dmg].c == 23
         killCC!(game,:dmg)
 
@@ -31,28 +31,28 @@ function btakeDamage!(game::GameState,(target)::Tuple{Int,Symbol})    #length: 3
     return
 end
 
-function bhpAnim!(game::GameState,target::Int,damage::Int)
-    createCC!(game,:dmg,btakeDamage!,(target,damage); active=true,n=1)
+function bhpAnim!(game::GameState,target::Int)
+    createCC!(game,:hp,bhpAnim!,(target,); active=true,n=1)
 
     return
 end
 
-function bhpAnim!(game::GameState,(target,damage)::Tuple{Int,Int})
-    p = game.battle.state[target].pkmn
+function bhpAnim!(game::GameState,(target,)::Tuple{Int})
+    p = game.battle.state[target]
 
-    b1 = getHealthBar(p,p.stats.hp)
-    b2 = getHealthBar(p,p.stats.hp-damage)
+    b1 = getHealthBar(p.pkmn,p.pkmn.stats.hp)
+    b2 = getHealthBar(p.pkmn,p.pkmn.stats.hp-p.dmgt)
 
-    if target == 1
-        setText!(game,:health,
-            string(game.battle.state[1].pkmn.stats.hp-
-            trunc(Int,dmg*(game.n[:hp].c)/48)))
-    end
+    # if target == 1
+    #     setText!(game,:health1,
+    #         string(p.pkmn.stats.hp-
+    #         trunc(Int,dmg*(game.n[:hp].c)/48)))
+    # end
     
     if game.n[:hp].c == 48
-        game.battle.state[target].pkmn.stats.hp -= dmg
+        p.pkmn.stats.hp -= p.dmgt
 
-        if game.battle.state[target].pkmn.stats.hp < 0x0000   # fix
+        if p.pkmn.stats.hp < 0x0000   # fix
             error("HP got below 0? it fucked up.")
         end
 
@@ -81,6 +81,8 @@ function bfaint!(game::GameState,(target,)::Tuple{Int})
         deactivateSprite!(game,blabels[target].pkmn)
     elseif game.n[:faint].c == 119
         deactivateSprite!(game,blabels[target].tag)
+        deactivateText!(game,blabels[target].name)
+        deactivateText!(game,blabels[target].level)
 
         killCC!(game,:faint)
 
@@ -93,16 +95,15 @@ function bfaint!(game::GameState,(target,)::Tuple{Int})
 end
 
 function bxpAnim!(game::GameState,xp::Int)
+    p = game.battle.state.pkmn1.pkmn
+
     createCC!(game,:xp,bxpAnimXp!,(
             xp,
-            xpFormulas(game.battle.state.pkmn1.pkmn.stats.level+1,
-                game.battle.state.pkmn1.pkmn.xptype)-
-            (game.battle.state.pkmn1.pkmn.stats.xp-calcXpDrop1(game.battle.state,
+            xpFormulas(p.stats.level+1,p.xptype)-
+            (p.stats.xp-calcXpDrop1(game.battle.state,
                 game.battle.state.pkmn1,game.battle.state.pkmn2)),
-            xpFormulas(game.battle.state.pkmn1.pkmn.stats.level+1,
-                game.battle.state.pkmn1.pkmn.xptype)-
-            xpFormulas(game.battle.state.pkmn1.pkmn.stats.level,
-                game.battle.state.pkmn1.pkmn.xptype)
+            xpFormulas(p.stats.level+1,p.xptype)-
+            xpFormulas(p.stats.level,p.xptype)
         ); active=true)
 
     return
@@ -126,23 +127,22 @@ function bxpAnimXp!(game::GameState,(xp,xpnext,xplevel)::Tuple{Int,Int,Int})
 end
 
 function bxpAnimLvUp!(game::GameState,levelups::Int)
+    p = game.battle.state.pkmn1.pkmn
+
     createCC!(game,:xp,bxpAnimLevelUp!,(
             levelups,
-            xpFormulas(game.battle.state.pkmn1.pkmn.stats.level+1,
-                game.battle.state.pkmn1.pkmn.xptype)-
-            (game.battle.state.pkmn1.pkmn.stats.xp-
+            xpFormulas(p.stats.level+1,p.xptype)-
+            (p.stats.xp-
                 calcXpDrop1(game.battle.state,game.battle.state.pkmn1,
                     game.battle.state.pkmn2)),
-            xpFormulas(game.battle.state.pkmn1.pkmn.stats.level+1,
-                game.battle.state.pkmn1.pkmn.xptype)-
-            xpFormulas(game.battle.state.pkmn1.pkmn.stats.level,
-                game.battle.state.pkmn1.pkmn.xptype)
+            xpFormulas(p.stats.level+1,p.xptype)-
+            xpFormulas(p.stats.level,p.xptype)
         ); active=true,n=1)
 
     return
 end
 
-function bxpAnimLevelUp!(game::GameState,levelups::Int,xpnext::Int,xplevel::Int)
+function bxpAnimLevelUp!(game::GameState,(levelups,xpnext,xplevel)::Tuple{Int,Int,Int})
     if 1 <= game.n[:xp].c <= 30
         val = trunc(Int,64-64*xpnext/xplevel*(1-game.n[:xp].c/30))
 
@@ -170,7 +170,7 @@ function bxpAnimLevelUp!(game::GameState,levelups::Int,xpnext::Int,xplevel::Int)
         # game.im.sprites[3][:tag1].colortransform.active = false
         # updateSprite!(game.im.sprites[3][:tag1])
 
-        drawBattleTagOwn!(game,game.battle.state.pkmn1.pkmn,game.im.sprites[3][:tag1])
+        # drawBattleTagOwn!(game,game.battle.state.pkmn1.pkmn,game.im.sprites[3][:tag1])
 
         killCC!(game,:xp)
 
@@ -204,15 +204,15 @@ function bthrowBall!(game::GameState,args::Tuple{})
     elseif game.n[:throwball].c == 90
         setSpriteFrame!(game,:ball,1)
     elseif 100 < game.n[:throwball].c <= 110
-        game.im.sprites[4][:ball].pos.h += 3
+        moveSpriteH!(game,:ball,+3)
     elseif 110 < game.n[:throwball].c <= 120
-        game.im.sprites[4][:ball].pos.h -= 2
+        moveSpriteH!(game,:ball,-2)
     elseif 120 < game.n[:throwball].c <= 130
-        game.im.sprites[4][:ball].pos.h += 2
+        moveSpriteH!(game,:ball,+2)
     elseif 130 < game.n[:throwball].c <= 140
-        game.im.sprites[4][:ball].pos.h -= 1
+        moveSpriteH!(game,:ball,-1)
     elseif 140 < game.n[:throwball].c <= 150
-        game.im.sprites[4][:ball].pos.h += 1
+        moveSpriteH!(game,:ball,+1)
     elseif game.n[:throwball].c == 160
         killCC!(game,:throwball)
 
@@ -227,16 +227,18 @@ end
 function bwiggleBall!(game::GameState,w::Int)
     createCC!(game,:wiggleball,bwiggleBall!,((w%2==0 ? Int8(1) : Int8(-1)),);
         active=true,n=1)
+
+    return
 end
 
 function bwiggleBall!(game::GameState,dir::Int8)
     if game.n[:wiggleball].c <= 15
         if game.n[:wiggleball].c%5 == 0
-            game.im.sprites[4][:ball].pos.w += dir
+            moveSpriteW!(game,:ball,+dir)
         end
     elseif game.n[:wiggleball].c <= 30
         if game.n[:wiggleball].c%5 == 0
-            game.im.sprites[4][:ball].pos.w -= dir
+            moveSpriteW!(game,:ball,-dir)
         end
     elseif game.n[:wiggleball].c == 60
         killCC!(game,:wiggleball)
@@ -245,42 +247,50 @@ function bwiggleBall!(game::GameState,dir::Int8)
     end
 
     game.n[:wiggleball].c += 1
+
+    return
 end
 
 function bbreakBall!(game::GameState,w::Int)
     createCC!(game,:breakball,bbreakBall!,();
         active=true,n=1)
+
+    return
 end
 
 function bbreakBall!(game::GameState)
     if game.n[:breakball].c == 1
-        updateSprite!(game.im.sprites[4][:ball],2)
+        setSpriteFrame!(game,:ball,2)
     elseif game.n[:breakball].c == 20
-        game.im.sprites[2][:pkmn2].active=true
+        activateSprite!(game,:pkmn2)
     elseif game.n[:breakball].c == 30
-        killSprite!(game,4,:ball)
+        killSprite!(game,:ball)
         killCC!(game,:breakball)
 
         return
     end
 
     game.n[:breakball].c += 1
+
+    return
 end
 
 function bcaughtBall!(game::GameState,w::Int)
     createCC!(game,:caughtball,bcaughtBall!,();
         active=true,n=1)
+
+    return
 end
 
 function bcaughtBall!(game::GameState)
     if game.n[:caughtball].c == 1
-        game.im.sprites[4][:ball].colortransform.active = true
-        game.im.sprites[4][:ball].colortransform.func = scaleColor
-        game.im.sprites[4][:ball].colortransform.args = (0x0a0a0a,0x0a,0x01)
+        # game.im.sprites[4][:ball].colortransform.active = true
+        # game.im.sprites[4][:ball].colortransform.func = scaleColor
+        # game.im.sprites[4][:ball].colortransform.args = (0x0a0a0a,0x0a,0x01)
     elseif game.n[:caughtball].c <= 32
         if game.n[:caughtball].c%4 == 0
-            game.im.sprites[4][:ball].colortransform.args =
-                (0x0a0a0a,0x0a,UInt8(game.n[:caughtball].c/4))
+            # game.im.sprites[4][:ball].colortransform.args =
+            #     (0x0a0a0a,0x0a,UInt8(game.n[:caughtball].c/4))
         end
     elseif game.n[:caughtball].c == 60
         killSprite!(game,:ball)
@@ -292,6 +302,8 @@ function bcaughtBall!(game::GameState)
     end
 
     game.n[:caughtball].c += 1
+
+    return
 end
 
 
@@ -301,27 +313,33 @@ end
 function bswitchOut!(game::GameState,user::Int)
     createCC!(game,:switchout,bswitchOut!,();
         active=true,n=1)
+
+    return
 end
 
 function bswitchOut!(game::GameState)
     if game.n[:switchout].c == 30
-        killSprite!(game,:pkmn1)
+        deleteSpriteSheet!(game,:pkmn1)
     elseif game.n[:switchout].c == 60
-        killSprite!(game,:tag1)
+        deactivateSprite!(game,:tag1)
         killCC!(game,:switchout)
 
         return
     end
 
     game.n[:switchout].c += 1
+
+    return
 end
 
 function bswitchIn!(game::GameState,user::Int)
     createCC!(game,:switchin,bswitchIn!,();
         active=true,n=1)
+
+    return
 end
 
-function bswitchIn!(game::GameState)
+function bswitchIn!(game::GameState,args::Tuple{})
     if game.n[:switchin].c == 1
         n = game.battle.state.pkmn1.command.n
 
@@ -334,14 +352,15 @@ function bswitchIn!(game::GameState)
 
         game.battle.state.pkmn1.command = CommandSwitch(n)
     elseif game.n[:switchin].c == 30
-        createSprite!(game,:pkmn1,2,Position(90,40),1,
-            getBattlerBack(game.battle.state.pkmn1.pkmn); active=true)
+        p1 = game.battle.state.pkmn1.pkmn
+        path1 = "battle/battlers/back/$(p1.shiny ? "shiny" : "normal")/$(p1.id).png"
 
-        createSprite!(game,:tag1,3,Position(72+24,126+16),1,
-            getSprite("im/battle/tagown.imp"); active=true)
+        loadSpriteSheet!(game,path1,:pkmn1,64,64,2; maxsprites=1)
+        createSprite!(game,:pkmn1,:pkmn1,1,1,-48,24,10,3; wscale=1.,hscale=1.)
 
-        drawBattleTagOwn!(game,game.battle.state.pkmn1.pkmn,
-            game.im.sprites[3][:tag1])
+        setText!(game,:name1,game.battle.state.pkmn1.name)
+        setText!(game,:pkmn1,string(p1.level))
+        activateSprite!(game,:tag1)
     elseif game.n[:switchin].c == 60
         killCC!(game,:switchin)
 
@@ -358,70 +377,70 @@ end
 
 
 
-function bmoveHorizontal!(game::GameState,distance::Int,speed::Int,
-        target::Symbol,kill::Bool)
+# function bmoveHorizontal!(game::GameState,distance::Int,speed::Int,
+#         target::Symbol,kill::Bool)
     
-    if distance%speed != 0
-        error("Distance needs to integer multiple of speed.")
-    end
+#     if distance%speed != 0
+#         error("Distance needs to integer multiple of speed.")
+#     end
 
-    posAdd!(game.im.sprites[2][target].pos,0,speed)
+#     posAdd!(game.im.sprites[2][target].pos,0,speed)
     
-    game.n[:moveh].c += 1
+#     game.n[:moveh].c += 1
 
-    if game.n[:moveh].c == div(distance,speed)
-        if kill
-            killSprite!(game,target)
-        end
+#     if game.n[:moveh].c == div(distance,speed)
+#         if kill
+#             killSprite!(game,target)
+#         end
 
-        killCC!(game,:moveh)
+#         killCC!(game,:moveh)
 
-        return
-    end
-end
+#         return
+#     end
+# end
 
-function bmoveVertical!(game::GameState,distance::Int,speed::Int,
-        target::Symbol,kill::Bool)
+# function bmoveVertical!(game::GameState,distance::Int,speed::Int,
+#         target::Symbol,kill::Bool)
 
-    if distance%speed != 0
-        error("Distance needs to integer multiple of speed.")
-    end
+#     if distance%speed != 0
+#         error("Distance needs to integer multiple of speed.")
+#     end
 
-    posAdd!(game.im.sprites[2][target].pos,speed,0)
+#     posAdd!(game.im.sprites[2][target].pos,speed,0)
     
-    game.n[:movew].c += 1
+#     game.n[:movew].c += 1
 
-    if game.n[:movew].c == div(distance,speed)
-        if kill
-            killSprite!(game,target)
-        end
+#     if game.n[:movew].c == div(distance,speed)
+#         if kill
+#             killSprite!(game,target)
+#         end
         
-        killCC!(game,:movew)
+#         killCC!(game,:movew)
 
-        return
-    end
-end
+#         return
+#     end
+# end
 
-function bmoveLinear!(game::GameState,distanceh::Int,distancew::Int,
-        speedh::Int,speedw::Int,target::Symbol)
+# function bmoveLinear!(game::GameState,distanceh::Int,distancew::Int,
+#         speedh::Int,speedw::Int,target::Symbol)
     
-    if distanceh%speedh != 0 || distancew%speedw != 0
-        error("Distance needs to integer multiple of speed.")
-    end
+#     if distanceh%speedh != 0 || distancew%speedw != 0
+#         error("Distance needs to integer multiple of speed.")
+#     end
 
-    posAdd!(game.im.sprites[2][target].pos,speedh,speedw)
+#     posAdd!(game.im.sprites[2][target].pos,speedh,speedw)
     
-    game.n[:movel].c += 1
+#     game.n[:movel].c += 1
 
-    if game.n[:movel].c == div(distanceh,speedh) ||
-            game.n[:movel].c == div(distancew,speedw)
+#     if game.n[:movel].c == div(distanceh,speedh) ||
+#             game.n[:movel].c == div(distancew,speedw)
 
-        killCC!(game,:movel)
+#         killCC!(game,:movel)
 
-        return
-    end
-end
+#         return
+#     end
+# end
 
-function bTackle!(game::GameState,target::Int)
+# function bTackle!(game::GameState,target::Int)
     
-end
+# end

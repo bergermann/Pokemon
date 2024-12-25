@@ -1,10 +1,10 @@
 
 function lockInput!(game::GameState)
-    lockInput!(game); return
+    game.ctrl.input.inputlock = true; return
 end
 
 function unlockInput!(game::GameState)
-    unlockInput!(game); return
+    game.ctrl.input.inputlock = false; return
 end
 
 function inputManager!(game::GameState,inputs::Inputs)

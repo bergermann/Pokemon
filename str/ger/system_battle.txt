@@ -15,23 +15,30 @@ Was soll\
  tun?
  wurde besiegt.
  erhält 
- Erfahrungspunkte.
+ E.-Punkte.
 Du bist entkommen!
-Flucht unmöglich.
+Flucht gescheitert.
 Aus Trainerkämpfen kannst du\nicht fliehen.
-
-
-
-
-
+Genug, 
+.\Komm zurück!
+Los, 
+Der Gegner ist geflohen.
+ erreicht Lv. 
 
 
 
 
  setzt 
-  ein.
  (wild) setzt 
-Es ist nicht sehr effektiv...
-Es ist sehr effektiv!
+ ein.
+Das ist nicht sehr effektiv...
+Das ist sehr effektiv!
+Es hat keine Wirkung...
+Die Attacke hat\ihr Ziel verfehlt...
 Die Attacke schlug fehl.
+Ein Volltreffer!
 Mist!\Das Pokémon hat sich befreit!
+Toll! 
+ wurde gefangen.
+ wurde dem Team\hinzugefügt.
+ wurde auf den PC\übertragen.

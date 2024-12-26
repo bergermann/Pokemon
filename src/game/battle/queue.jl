@@ -59,7 +59,7 @@ function queueSetupAnimation!(game::GameState,state::BattleStateWild)
             state.actionqueue[1].user == 1 ? :p1 : :p2
         )
     elseif command isa CommandFlee
-        queueFlee!(state,state[state.actionqueue[1].user])
+        queueFlee!(game,state,state[state.actionqueue[1].user])
     end
 
     queueStatusCond!(state)
@@ -269,7 +269,7 @@ end
 
 
 
-function queueFlee!(state::BattleState,user::PkmnBattle)
+function queueFlee!(game::GameState,state::BattleState,user::PkmnBattle)
     if state.actionqueue[1].user == 1
         if user.command.success
             state.stage = 250

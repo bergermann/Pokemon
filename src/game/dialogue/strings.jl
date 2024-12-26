@@ -45,3 +45,12 @@ function loadStringsBattle!(game::GameState)
 
     return
 end
+
+function loadStringsDex!(game::GameState)
+    empty!(game.str)
+
+    push!(game.str,readlines("str/ger/system_dex.txt"))
+    push!(game.str,readlines("str/ger/pkmn_names.txt"))
+    
+    return
+end

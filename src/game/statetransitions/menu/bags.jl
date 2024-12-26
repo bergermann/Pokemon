@@ -39,7 +39,7 @@ function getAmountsStr(game::GameState,m::MenuBags)
     end
 end
 
-function stateMenuBagsOpen!(game::GameState,m::MenuBags)
+function stateMenuBagsOpen!(game::GameState,(m,)::Tuple{MenuBags})
     stateCloseMap!(game)
 
     correctBags!(game,m)

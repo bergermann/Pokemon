@@ -73,6 +73,7 @@ function loadChunk!(game::GameState,target::Integer,cx::Integer,cy::Integer)
         game.m.chunkdata[target].height[:] = deserialize("maps/$cx-$cy/heights.hm")
         game.m.chunkdata[target].collision[:] = deserialize("maps/$cx-$cy/col.cm")
 
+        loadTeleports!(game,target,cx,cy)
         loadNPCs!(game,target,cx,cy)
         loadObjects!(game,target,cx,cy)
         loadItems!(game,target,cx,cy)
@@ -118,6 +119,25 @@ function loadChunks!(game::GameState,targets::AbstractVector{<:Integer},
 
     updateChunkIdxs(game)
 
+    return
+end
+
+function loadTeleports!(game::GameState,target::Integer,cx::Integer,cy::Integer)
+    tps = deserialize("maps/$cx-$cy/teleports.tp"); i = 1
+
+    for l in 1:2
+        for tp in tps[l]
+            id = UInt16(i+64*cx+64*64*cy)
+
+            if id in game.m.teleportids
+                continue
+            else
+                push!(game.m.teleportids,id)
+            end
+
+            tp_ = Teleport(tp...)
+        end
+    end
     return
 end
 

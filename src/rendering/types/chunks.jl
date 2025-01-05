@@ -5,9 +5,9 @@ mutable struct ChunkData
     collision::MArray{Tuple{16,16,2},UInt8}
 
     events::Vector{UInt8}
-    npcs::Array{Base.RefValue{NPC}}
-    objects::Array{Base.RefValue{Object}}
-    items::Array{Base.RefValue{MapItem}}
+    npcs::Vector{Base.RefValue{NPC}}
+    objects::Vector{Base.RefValue{Object}}
+    items::Vector{Base.RefValue{MapItem}}
 
     function ChunkData()
         new(
@@ -21,7 +21,19 @@ mutable struct ChunkData
     end
 end
 
-mutable struct Area
+struct Teleport
+    id::UInt16
+
+    px::Int; py::Int
+    dx::Int; dy::Int
+    cx::Int; cy::Int
+    tx::Int; ty::Int
+    tmapx::Int; tmapy::Int
+
+    transition::UInt8
+end
+
+struct Area
     id::UInt16
 
     px::Int; py::Int
@@ -41,6 +53,9 @@ mutable struct MapData{R,R2}
     tilemap::MArray{Tuple{16,16,5,R2},UInt16}
     chunkdata::MVector{R2,ChunkData}
 
+    teleportids::Vector{UInt16}
+    teleports::ArrayList{Teleport}
+
     npcids::Vector{UInt16}
     npcs::ArrayList{NPC}
 
@@ -54,10 +69,10 @@ mutable struct MapData{R,R2}
     areas::ArrayList{Area}
 
     function MapData{R,R2}(idxs,didxs,tilemap,chunkdata,
-            npcids,npcs,objectids,objects,itemids,items,areaids,areas) where {R,R2}
+            tpids,tps,npcids,npcs,objectids,objects,itemids,items,areaids,areas) where {R,R2}
 
         new(idxs,didxs,tilemap,chunkdata,
-            npcids,npcs,objectids,objects,itemids,items,areaids,areas)
+            tpids,tps,npcids,npcs,objectids,objects,itemids,items,areaids,areas)
     end
 
     function MapData(renderdistance)
@@ -69,6 +84,7 @@ mutable struct MapData{R,R2}
             MArray{Tuple{16,16,5,r^2},UInt16}(undef),
             [ChunkData() for _ in 1:r^2],
 
+            UInt16[],ArrayList(Teleport,32),
             UInt16[],ArrayList(NPC,64),
             UInt16[],ArrayList(Object,64),
             UInt16[],ArrayList(MapItem,64),

@@ -18,8 +18,7 @@ include("events.jl")
 function setupGame(windowscale::Int=4,renderdistance::Int=2,maxtextures::Int=64;)
     game = GameState(
         0,
-        PlayerData("Void",0x0000,0x02,ArrayList(Pkmn,6),Inventory(),
-            [ArrayList(Pkmn,30) for _ in 1:8],[],falses(151)),
+        PlayerData("Void",2),
         Im(windowscale,renderdistance,maxtextures),
         Controls(10,10,1,1,1,false,4),
         MapData(renderdistance),

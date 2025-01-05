@@ -1,0 +1,31 @@
+0 - none
+1 - blocked
+2 - water
+3 - deep water
+4 - waterfall
+5 - shallow water
+6 - grass
+7 - tall grass
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17 - ledge left
+18 - ledge down
+19 - ledge right
+20 - teleport
+21 - signs
+22 - event - stand on
+23 - event - click on
+
+computer? put as event? npc?
+dirt slide
+bike tracks a - hor/vert
+bike tracks b - hor/vert
+sand/snow
+berries

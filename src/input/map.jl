@@ -1,7 +1,7 @@
 
-const walkable::Vector{UInt16} = [0x0000,0x0005,0x00006,0x00007]
-const bikeable::Vector{UInt16} = [0x0000,0x0005,0x00006]
-const swimmable::Vector{UInt16} = [0x0002,0x0003]
+const walkable::Vector{UInt16}  = UInt8[0,5,6,7,20,22,23]
+const bikeable::Vector{UInt16}  = UInt8[0,5,6,  20,22,23]
+const swimmable::Vector{UInt16} = UInt8[  2,3,  20,22,23]
 
 
 
@@ -9,7 +9,7 @@ function getCollision(game::GameState,mpos::Pos,mchunk::Pos,l::Int)::UInt16
     return game.m.chunkdata[game.m.idxs[mchunk]].collision[mpos[1],mpos[2],l]
 end
 
-function checkWalkable(game::GameState,mpos::Pos,mchunk::Pos,l::Int)
+function checkWalkable(game::GameState,mpos::Pos,mchunk::Pos,l::Int,col::UInt8)::Bool
     if !(1 <= mchunk[1] <= game.im.c.r2) || !(1 <= mchunk[2] <= game.im.c.r2)
         return false
     end
@@ -33,13 +33,11 @@ function checkWalkable(game::GameState,mpos::Pos,mchunk::Pos,l::Int)
         end
     end
 
-    col = getCollision(game,mpos,mchunk,l)
-
-    return |(col ∈ walkable,
-        (0x14 <= col <= 0x3b),
-        (0xa0 <= col <= 0xb3),
-        (0xc8 <= col <= 0xdb))
+    return col ∈ walkable
 end
+
+checkWalkable(game::GameState,mpos::Pos,mchunk::Pos,l::Int) = 
+    checkWalkable(game,mpos,mchunk,l,getCollision(game,mpos,mchunk,l))
 
 function checkEncounter!(game::GameState)
     if !(getCollision(game,game.ctrl.mpos,game.ctrl.mchunk,game.ctrl.fg+1)==0x06) ||
@@ -105,15 +103,17 @@ function inputMove!(game::GameState,inputs::Inputs)
     @. game.ctrl.mchunk = modc(game.ctrl.mpos)+(game.im.c.renderdistance+1)
     @. game.ctrl.mpos = (game.ctrl.mpos+15)%16+1
 
-    if !checkWalkable(game,game.ctrl.mpos,game.ctrl.mchunk,1+game.ctrl.fg)
+    col = getCollision(game,mpos,mchunk,l)
+
+    if !checkWalkable(game,game.ctrl.mpos,game.ctrl.mchunk,1+game.ctrl.fg,col)
         setSpriteIdx!(game,:mc,1)
 
         if game.ctrl.dir != dir
             game.ctrl.dir = dir
             
-            reverseSpriteW!(game,:mc,(dir == 4))
+            reverseSpriteW!(game,:mc,dir==4)
 
-            setSpriteFrame!(game,:mc,1+3*(dir-1-2*(dir == 4))+1)
+            setSpriteFrame!(game,:mc,1+3*(dir-1-2*(dir==4))+1)
 
             game.callbacks[:movemain].args = (dir,3)
         end
@@ -124,13 +124,14 @@ function inputMove!(game::GameState,inputs::Inputs)
             game.callbacks[:movemain].args = (dir,3)
         end
 
-        checkTeleport!(game,game.ctrl.mpos)
-
         return
     end
+
+    if col == 0x14
+        teleport!(game)
+    end
     
-    reverseSpriteW!(game,:mc,(dir == 4))
-    # game.im.s.sheets[:mc].rev[1,1] = (dir == 4)
+    reverseSpriteW!(game,:mc,dir == 4)
 
     game.n[:movemain].c = 1
 

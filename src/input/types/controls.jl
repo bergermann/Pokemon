@@ -89,9 +89,10 @@ mutable struct MenuDex
     select::Int
     info::Bool
     page::Int
+    speed::Int
 
     function MenuDex()
-        new(1,false,1)
+        new(1,false,0,0)
     end
 end
 

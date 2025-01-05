@@ -20,7 +20,6 @@ function inputMenu!(game::GameState,inputs::Inputs)
         game.ctrl.input.map = true
         game.ctrl.input.menu.main = false
         game.ctrl.input.menu.select = 0x01
-        moveSprite!(game,:cursor,59,-56+game.ctrl.input.menu.select*16,true)
         
         switchFrame!(game,:menu)
         switchText!(game,:menu)
@@ -33,44 +32,34 @@ end
 
 
 function inputMenuSelector!(game::GameState)
-    if game.ctrl.input.menu.select == 0x00
-        game.ctrl.input.menu.dex = true
-        game.ctrl.input.map = false
-        lockInput!(game)
+    lockInput!(game)
 
+    game.ctrl.input.map = false
+    game.ctrl.input.menu.main = false
+
+    if game.ctrl.input.menu.select == 0x00
         createCC!(game,:scenet,sceneTransition!,
             (16,8,F(stateMenuDexOpen!),F(stateMenuDexCtrls!)); active=true,n=1)
     elseif game.ctrl.input.menu.select == 0x01
-        game.ctrl.input.map = false
-        game.ctrl.input.menu.main = false
-        lockInput!(game)
-
         createCC!(game,:scenet,sceneTransition!,
             (16,8,F(stateMenuPkmnOpen!),F(stateMenuPkmnCtrls!)); active=true,n=1)
     elseif game.ctrl.input.menu.select == 0x02
-        game.ctrl.input.map = false
-        game.ctrl.input.menu.main = false
-        lockInput!(game)
-
         createCC!(game,:scenet,sceneTransition!,
             (16,8,F(stateMenuBagsOpen!,(game.ctrl.input.menu.menubags,)),
                 F(stateMenuBagsCtrls!)); active=true,n=1)
     elseif game.ctrl.input.menu.select == 0x03
         game.ctrl.input.menu.pnav = true
-        game.ctrl.input.map = false
     elseif game.ctrl.input.menu.select == 0x04
         game.ctrl.input.menu.self = true
-        game.ctrl.input.map = false
     elseif game.ctrl.input.menu.select == 0x05
         game.ctrl.input.menu.save = true
-        game.ctrl.input.map = false
     elseif game.ctrl.input.menu.select == 0x06
         game.ctrl.input.menu.optn = true
-        game.ctrl.input.map = false
     else
+        unlockInput!(game)
+
         game.ctrl.input.move = true
         game.ctrl.input.map = true
-        game.ctrl.input.menu.main = false
         game.ctrl.input.menu.select = 0x01
 
         switchFrame!(game,:menu)

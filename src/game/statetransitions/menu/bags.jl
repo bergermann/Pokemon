@@ -90,14 +90,14 @@ function stateMenuBagsOpen!(game::GameState,(m,)::Tuple{MenuBags})
     return
 end
 
-function stateMenuBagsCtrls!(game::GameState)
+function stateMenuBagsCtrls!(game::GameState,args::Tuple{})
     unlockInput!(game)
     game.ctrl.input.menu.bags = true
 
     return
 end
 
-function stateMenuBagsClose!(game::GameState)
+function stateMenuBagsClose!(game::GameState,args::Tuple{})
     lockInput!(game)
 
     killCallback!(game,:arrows)

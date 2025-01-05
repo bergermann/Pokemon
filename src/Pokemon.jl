@@ -7,7 +7,7 @@ export game, inputs
 using ModernGL, GLFW#, GLAbstraction
 # const GLA = GLAbstraction
 
-using TickTock
+# using TickTock
 using StatsBase, Images, Serialization, DelimitedFiles
 # using LinearAlgebra
 
@@ -39,7 +39,7 @@ function main()
     
     @time game = setupGame(4)
     
-    Base.GC.enable(false)
+    # Base.GC.enable(false)
     Base.GC.@preserve game sceneTransition!
     
     setInventoryTest!(game.p.inventory)
@@ -50,16 +50,23 @@ function main()
     push!(game.p.pokemon,generatePkmn(game,0x0004,0x08))
     push!(game.p.pokemon,generatePkmn(game,0x0005,0x13))
 
+    game.p.dex[1:5,2] .= true
+    game.p.dex[1:15,1] .= true
+
     render(game)
     
     @time Base.GC.gc()
 
-    tick()
-    t0 = 0.
+    # tick()
+    # t0 = 0.
+    t0 = time()
+    t1 = 0.
 
     while !GLFW.WindowShouldClose(game.im.window)
-        t1 = peektimer()
-        if 60.0*t1 >= game.frame
+        # t1 = peektimer()
+        t2 = time()-t0
+        
+        if 60.0*t2 >= game.frame
             if inputs.pause.press
                 pause ? println("unpausing") : println("pausing")
                 
@@ -76,8 +83,9 @@ function main()
             end
         end
 
-        if t1-t0 >= 1/fps
-            t0 = peektimer()
+        if t2-t1 >= 1/fps
+            # t0 = peektimer()
+            t1 = t2
             render(game)
         end
     end

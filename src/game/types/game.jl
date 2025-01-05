@@ -179,8 +179,22 @@ mutable struct PlayerData
 
     boxes::Array{ArrayList{Pkmn}}
 
-    badges::Vector{UInt8}
-    pokedex::Vector{Bool}
+    badges::Vector{Bool}
+    dex::Matrix{Bool}
+
+    function PlayerData()
+        new("Test",rand(UInt16),2,ArrayList(Pkmn,6),Inventory(),
+            [ArrayList(Pkmn,30) for _ in 1:8],falses(8),falses(151,2))
+    end
+
+    function PlayerData(name,gender)
+        new(name,rand(UInt16),gender,ArrayList(Pkmn,6),Inventory(),
+            [ArrayList(Pkmn,30) for _ in 1:8],falses(8),falses(151,2))
+    end
+
+    function PlayerData(name,id,gender,pokemon,inventory,boxes,badges,dex)
+        new(name,id,gender,pokemon,inventory,boxes,badges,dex)
+    end
 end
 
 mutable struct GameState

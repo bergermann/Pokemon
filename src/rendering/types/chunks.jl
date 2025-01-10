@@ -20,54 +20,6 @@ mutable struct ChunkData
     end
 end
 
-struct Teleport
-    id::UInt16
-
-    px::Int; py::Int
-    dx::Int; dy::Int
-    cx::Int; cy::Int
-    tx::Int; ty::Int
-    tmapx::Int; tmapy::Int
-    fg::Bool
-
-    transition::UInt8
-
-    function Teleport(); new(0,0,0,0,0,0,0,0,0,0,0,false,0); end
-    function Teleport(id,px,py,dx,dy,cx,cy,tx,ty,tmapx,tmapy,fg,transition); 
-        new(id,px,py,dx,dy,cx,cy,tx,ty,tmapx,tmapy,fg,transition); end
-end
-
-struct Event
-    id::UInt16
-
-    px::Int; py::Int
-    dx::Int; dy::Int
-    cx::Int; cy::Int
-    fg::Bool
-
-    flag::UInt16
-    onclick::Bool
-    callback::Callback
-
-    function Event(); new(0,0,0,0,0,0,0,false,0,false,F0); end
-    function Event(id,px,py,dx,dy,cx,cy,fg,flag,onclick,callback);
-        new(id,px,py,dx,dy,cx,cy,fg,flag,onclick,callback); end
-end
-
-struct Area
-    id::UInt16
-
-    px::Int; py::Int
-    dx::Int; dy::Int
-    cx::Int; cy::Int
-    fg::Bool
-
-    data::Matrix{UInt16}
-
-    function Area(); new(0,0,0,0,0,0,0,false,zeros(Int,0,4)); end
-    function Area(id,px,py,dx,dy,cx,cy,fg,data); new(id,px,py,dx,dy,cx,cy,fg,data); end
-end
-
 mutable struct MapData{R,R2}
     idxs::MMatrix{R,R,Int8}
     didxs::MMatrix{R,R,Int8}

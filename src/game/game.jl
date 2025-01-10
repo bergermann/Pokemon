@@ -6,11 +6,11 @@ include("dialogue/dialogue.jl")
 include("pokemons.jl")
 include("npcs.jl")
 include("objects.jl")
-include("maps.jl")
+include("events/events.jl")
+# include("maps.jl")
 # include("controls.jl")
 include("animations/animations.jl")
 include("npcs.jl")
-include("events.jl")
 
 
 

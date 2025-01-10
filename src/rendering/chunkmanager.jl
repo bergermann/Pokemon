@@ -108,7 +108,6 @@ function loadChunksAll!(game::GameState; reset::Bool=true)
     return
 end
 
-
 function loadChunks!(game::GameState,targets::AbstractVector{<:Integer},
         cx::AbstractVector{<:Integer},cy::AbstractVector{<:Integer})
 
@@ -123,8 +122,10 @@ function loadChunks!(game::GameState,targets::AbstractVector{<:Integer},
     return
 end
 
+
+
 function loadTeleports!(game::GameState,cx::Integer,cy::Integer)
-    tps = deserialize("maps/$cx-$cy/teleports.tp"); i = 1
+    tps = deserialize("maps/$cx-$cy/teleports.tm"); i = 1
 
     for l in 1:2
         for tp in tps[l]
@@ -136,14 +137,17 @@ function loadTeleports!(game::GameState,cx::Integer,cy::Integer)
                 push!(game.m.teleportids,id)
             end
 
-            tp_ = Teleport(tp...)
+            push!(game.m.teleports,Teleport(id,tp[1:10]...,l==2,tp[11]))
+
+            i += 1
         end
     end
+
     return
 end
 
 function loadEvents!(game::GameState,cx::Integer,cy::Integer)
-    events = deserialize("maps/$cx-$cy/events.ev"); i = 1
+    events = deserialize("maps/$cx-$cy/events.em"); i = 1
 
     for l in 1:2
         for event in events[l]
@@ -156,7 +160,7 @@ function loadEvents!(game::GameState,cx::Integer,cy::Integer)
             end
 
             push!(game.m.events,Event(
-                id,px,py,dx,dy,cx,cy,fg,flag,onclick,callback))
+                id,event[1:6]...,l==2,events[event[7]][1],p[8],events[event[7]][2]))
 
             i += 1
         end

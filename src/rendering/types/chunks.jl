@@ -4,7 +4,6 @@ mutable struct ChunkData
     height::MMatrix{16,16,UInt8}
     collision::MArray{Tuple{16,16,2},UInt8}
 
-    events::Vector{UInt8}
     npcs::Vector{Base.RefValue{NPC}}
     objects::Vector{Base.RefValue{Object}}
     items::Vector{Base.RefValue{MapItem}}
@@ -13,7 +12,7 @@ mutable struct ChunkData
         new(
             MMatrix{16,16,UInt8}(undef),
             MArray{Tuple{16,16,2},UInt8}(undef),
-            [],
+            
             Array{Base.RefValue{NPC}}([]),
             Array{Base.RefValue{Object}}([]),
             Array{Base.RefValue{MapItem}}([]),
@@ -29,8 +28,30 @@ struct Teleport
     cx::Int; cy::Int
     tx::Int; ty::Int
     tmapx::Int; tmapy::Int
+    fg::Bool
 
     transition::UInt8
+
+    function Teleport(); new(0,0,0,0,0,0,0,0,0,0,0,false,0); end
+    function Teleport(id,px,py,dx,dy,cx,cy,tx,ty,tmapx,tmapy,fg,transition); 
+        new(id,px,py,dx,dy,cx,cy,tx,ty,tmapx,tmapy,fg,transition); end
+end
+
+struct Event
+    id::UInt16
+
+    px::Int; py::Int
+    dx::Int; dy::Int
+    cx::Int; cy::Int
+    fg::Bool
+
+    flag::UInt16
+    onclick::Bool
+    callback::Callback
+
+    function Event(); new(0,0,0,0,0,0,0,false,0,false,F0); end
+    function Event(id,px,py,dx,dy,cx,cy,fg,flag,onclick,callback);
+        new(id,px,py,dx,dy,cx,cy,fg,flag,onclick,callback); end
 end
 
 struct Area
@@ -56,6 +77,9 @@ mutable struct MapData{R,R2}
     teleportids::Vector{UInt16}
     teleports::ArrayList{Teleport}
 
+    eventids::Vector{UInt16}
+    events::ArrayList{Event}
+
     npcids::Vector{UInt16}
     npcs::ArrayList{NPC}
 
@@ -69,10 +93,20 @@ mutable struct MapData{R,R2}
     areas::ArrayList{Area}
 
     function MapData{R,R2}(idxs,didxs,tilemap,chunkdata,
-            tpids,tps,npcids,npcs,objectids,objects,itemids,items,areaids,areas) where {R,R2}
+            tpids,tps,
+            eventids,events,
+            npcids,npcs,
+            objectids,objects,
+            itemids,items,
+            areaids,areas) where {R,R2}
 
         new(idxs,didxs,tilemap,chunkdata,
-            tpids,tps,npcids,npcs,objectids,objects,itemids,items,areaids,areas)
+            tpids,tps,
+            eventids,events,
+            npcids,npcs,
+            objectids,objects,
+            itemids,items,
+            areaids,areas)
     end
 
     function MapData(renderdistance)
@@ -85,6 +119,7 @@ mutable struct MapData{R,R2}
             [ChunkData() for _ in 1:r^2],
 
             UInt16[],ArrayList(Teleport,32),
+            UInt16[],ArrayList(Event,32),
             UInt16[],ArrayList(NPC,64),
             UInt16[],ArrayList(Object,64),
             UInt16[],ArrayList(MapItem,64),

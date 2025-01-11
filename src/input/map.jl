@@ -5,7 +5,7 @@ const swimmable::Vector{UInt16} = UInt8[  2,3,  20,22,23]
 
 
 
-function getCollision(game::GameState,mpos::Pos,mchunk::Pos,l::Int)::UInt16
+function getCollision(game::GameState,mpos::Pos,mchunk::Pos,l::Int)::UInt8
     return game.m.chunkdata[game.m.idxs[mchunk]].collision[mpos[1],mpos[2],l]
 end
 
@@ -103,7 +103,7 @@ function inputMove!(game::GameState,inputs::Inputs)
     @. game.ctrl.mchunk = modc(game.ctrl.mpos)+(game.im.c.renderdistance+1)
     @. game.ctrl.mpos = (game.ctrl.mpos+15)%16+1
 
-    col = getCollision(game,mpos,mchunk,l)
+    col = getCollision(game,game.ctrl.mpos,game.ctrl.mchunk,1+game.ctrl.fg)
 
     if !checkWalkable(game,game.ctrl.mpos,game.ctrl.mchunk,1+game.ctrl.fg,col)
         setSpriteIdx!(game,:mc,1)

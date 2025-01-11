@@ -1,5 +1,5 @@
 
-include.(readdir("events/"))
+include.(joinpath.("events",readdir("src/game/events/events")))
 
 
 function evalEvent(game::GameState,event::Event)

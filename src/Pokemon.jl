@@ -12,12 +12,10 @@ using StatsBase, Images, Serialization, DelimitedFiles
 # using LinearAlgebra
 
 include("types.jl")
-include("game/types/npcs.jl")
-include("game/types/objects.jl")
-include("game/types/items.jl")
+include("game/types/types1.jl")
 include("rendering/types/types.jl")
 include("input/types/controls.jl")
-include("game/types/types.jl")
+include("game/types/types2.jl")
 
 include("core.jl")
 include("rendering/rendering.jl")

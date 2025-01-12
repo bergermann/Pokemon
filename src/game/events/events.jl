@@ -1,33 +1,17 @@
 
 include.(joinpath.("events",readdir("src/game/events/events")))
 
-
 function evalEvent(game::GameState,event::Event)
-    if event.onpress != 0 && event.dir != game.direction
+    if (event.dir != 0 && event.dir != game.direction) && !evalFlagSet(game,event.flags)
         return
     end
 
-    for i in eachindex(event.flags)
-        if event.flagvals[i] !=
-                getfield(game.flags,event.flagtypes[i])[event.flags[i]]
-            
-            return
-        end
-    end
-
-    for i in eachindex(event.counters)
-        if event.countervals[i] > game.flags.counters[event.counters[i]]
-            return
-        end
-    end
-
-    events[event.id](game)
+    evalCallback(game,event.callback)
 
     return
 end
 
-
-
 const events = Base.ImmutableDict(
-    :healcenter => (0xc8,F(eventHealCenter!)),
+    :healcenter => (FlagSet(; flags=[(0xc8,false,1)]),
+        F(eventHealCenter!)),
 )

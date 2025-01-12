@@ -15,7 +15,7 @@ struct Event
     flags::FlagSet
     callback::Callback
 
-    function Event(); new(0,0,0,0,0,0,0,false,0,false,F0); end
-    function Event(id,px,py,dx,dy,cx,cy,fg,flag,onpress,callback);
-        new(id,px,py,dx,dy,cx,cy,fg,flag,onpress,callback); end
+    function Event(); new(0,0,0,0,0,0,0,false,false,0,FlagSet(),F0); end
+    function Event(id,px,py,dx,dy,cx,cy,fg,onpress,dir,flags,callback);
+        new(id,px,py,dx,dy,cx,cy,fg,onpress,dir,flags,callback); end
 end

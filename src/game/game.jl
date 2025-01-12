@@ -1,4 +1,5 @@
 
+include("flags.jl")
 include("battle/battle.jl")
 include("statetransitions/general.jl")
 include("inventory/inventory.jl")

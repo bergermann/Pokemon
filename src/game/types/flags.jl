@@ -27,7 +27,9 @@ struct FlagSet{N1,N2}
         new{N1,N2}(flags,flagvals,flagtypes,counters,countervals,countertype,N1==0 && N2==0)
     end
 
-    function FlagSet(; flags::AbstractVector{Tuple}=[], counters::AbstractVector{Tuple}=[])
+    function FlagSet(; flags::AbstractVector=[],
+            counters::AbstractVector=[])
+
         N1 = length(flags); N2 = length(counters)
 
         flags_ = zeros(UInt8,N1)

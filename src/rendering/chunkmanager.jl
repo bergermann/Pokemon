@@ -70,7 +70,7 @@ function loadChunk!(game::GameState,target::Integer,cx::Integer,cy::Integer)
     else
         game.m.tilemap[1+1280*(target-1):1280*target] =
             deserialize("maps/$cx-$cy/tiles.tm")
-        game.m.chunkdata[target].height[:] = deserialize("maps/$cx-$cy/heights.hm")
+        game.m.chunkdata[target].height[:] = deserialize("maps/$cx-$cy/height.hm")
         game.m.chunkdata[target].collision[:] = deserialize("maps/$cx-$cy/col.cm")
 
         loadNPCs!(     game,target,cx,cy)

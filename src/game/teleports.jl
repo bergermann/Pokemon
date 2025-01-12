@@ -4,10 +4,11 @@ function findTeleport(game::GameState)
     c = game.ctrl.chunk
 
     for (i,tp) in enumerate(game.m.teleports[1:game.m.teleports.idx])
-        if 16*(tp.cx-c[2])+tp.px <= p[2] <= 16*(tp.cx-c[2])+tp.px+tp.dx &&
+        if game.ctrl.fg==tp.fg &&
+                16*(tp.cx-c[2])+tp.px <= p[2] <= 16*(tp.cx-c[2])+tp.px+tp.dx &&
                 16*(tp.cy-c[1])+tp.py <= p[1] <= 16*(tp.cy-c[1])+tp.py+tp.dy
 
-            @info "at teleport $(tp.id)"
+            @info "At teleport $(tp.id)."
 
             return i
         end
@@ -18,15 +19,33 @@ function findTeleport(game::GameState)
     return 0
 end
 
-function teleport!(game::GameState)
+function checkTeleport!(game::GameState)
     idx = findTeleport(game)
     if idx == 0; return; end
 
     tp = game.m.teleports[idx]
 
+    display(tp)
+
     lockInput!(game)
 
-    createCC!(game,)
+    createCC!(game,:scenet,sceneTransition!,(16,8,
+        F(teleport!,(tp,)),F(stateInitMapCtrls!)); active=true,n=1)
 
     return
 end
+
+function teleport!(game::GameState,tx::Int,ty::Int,tcx::Int,tcy::Int)
+    game.ctrl.pos1 .= tx, ty
+    game.ctrl.pos2 .= game.ctrl.pos1
+
+    game.ctrl.chunk .= tcx, tcy
+
+    killSprites!(game,:npcs_all,:objects)
+
+    loadChunksAll!(game)
+    
+    return
+end
+
+teleport!(game::GameState,(tp,)::Tuple{Teleport}) = teleport!(game,tp.cx,tp.cy,tp.tcx,tp.tcy)

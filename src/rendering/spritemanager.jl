@@ -339,6 +339,14 @@ function killSprites!(game::GameState,sheet::Symbol)
     return
 end
 
+function killSprites!(game::GameState,sheets::Symbol...)
+    for sheet in sheets
+        killSprites!(game,sheet)
+    end
+
+    return
+end
+
 function killSpritesAll!(game::GameState)
     for (name,sheet) in game.im.s.sheets
         sheet.active .= false

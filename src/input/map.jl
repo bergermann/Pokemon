@@ -128,7 +128,7 @@ function inputMove!(game::GameState,inputs::Inputs)
     end
 
     if col == 0x14
-        teleport!(game)
+        checkTeleport!(game)
     end
     
     reverseSpriteW!(game,:mc,dir == 4)

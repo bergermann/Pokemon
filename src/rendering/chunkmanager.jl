@@ -122,6 +122,18 @@ function loadChunks!(game::GameState,targets::AbstractVector{<:Integer},
     return
 end
 
+function ID(x::Integer,y::Integer,i::Integer)
+    x_ = (x%64)*64
+    y_ = (y%64)*64*64
+    
+    return UInt16(x_+y_+i)
+end
+
+function ID(id::UInt16)
+    x = id &&
+
+    return 
+end
 
 
 function loadTeleports!(game::GameState,cx::Integer,cy::Integer)

@@ -1,7 +1,7 @@
 
 
 mutable struct Object
-    id::UInt16
+    id::UInt32
     
     type::UInt8
     pos::Position

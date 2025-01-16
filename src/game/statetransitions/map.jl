@@ -9,8 +9,8 @@ function stateInitMapCtrls!(game::GameState,args::Tuple)
 end
 
 function stateInitMap!(game::GameState)
+    setProjection!(game)
     game.overworld = true    
-    game.im.c.projection1[1:2,4] .= -game.ctrl.pos1
 
     loadStringsMap!(game; reset=true)
 

@@ -61,7 +61,7 @@ function sceneTransition!(game::GameState, # pause >= 1!
     if game.n[:scenet].c <= len
         game.im.l.color[4] = 1.0 - game.n[:scenet].c/len
     elseif game.n[:scenet].c == len+1
-        Base.GC.gc()
+        # Base.GC.gc()
 
         evalCallback(game,state1)
         # state1.func(game,state1.args)

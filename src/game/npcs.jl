@@ -22,7 +22,6 @@
 
 
 
-
 function manageNPCs!(game::GameState)
     for npc in game.m.npcs
         if npc.dynamic
@@ -144,7 +143,6 @@ function manageDynamicNPC!(game::GameState,npc::NPC)
         moveSprite!(game,npc.sprite,dirs[npc.dir][2],dirs[npc.dir][1])
 
         if npc.c2 == 8
-            # npc.pos1 += dirs[npc.dir]
             @. npc.pos1 = npc.mpos; 
     
             setSpriteFrame!(game,npc.sprite,1+3*(npc.dir-1-2*(npc.dir==4)))
@@ -171,6 +169,8 @@ function checkChunks!(game::GameState,npc::NPC)
         push!(game.m.chunkdata[game.m.idxs[npc.mchunk]].npcs,
             popat!(game.m.chunkdata[game.m.idxs[mchunk]].npcs,idx))
     end
+
+    return
 end
 
 function moveRandomNPC!(npc::NPC)

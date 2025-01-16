@@ -259,49 +259,30 @@ function pushat!(a::ArrayList,x,idx::Int)
 end
 
 function Base.pop!(a::ArrayList)
-    if a.idx == 0
-        # error("ArrayList is empty, can't pop element.");
-        return
-    end
-
-    a.data[a.idx] = eltype(a.data).name.wrapper()
-    a.idx -= 1
-
-    return
+    a.idx = min(1,a.idx-1); return
 end
 
 function Base.popat!(a::ArrayList,id::Symbol)
-    if a.idx == 0
-        # error("ArrayList is empty, can't pop element."); return
-        return
-    end
+    if a.idx == 0; return; end
+
     i = findfirst(x -> x.id==id, a.data[1:a.idx])
     if isnothing(i); return; end
 
     a.data[i:a.idx-1] = a.data[i+1:a.idx]
-    a[a.idx] = eltype(a.data).name.wrapper()
-
     a.idx -= 1
 
     return
 end
 
 function Base.popat!(a::ArrayList,ids::Symbol...)
-    for id in ids
-        popat!(a,id)
-    end
-
-    return
+    for id in ids; popat!(a,id); end; return
 end
 
 function Base.popat!(a::ArrayList,i::Int)
-    if a.idx == 0
-        error("ArrayList is empty, can't pop element."); return
+    if a.idx == 0; return
     elseif i < 1 || i > a.idx
         error("Invalid index, can't pop element."); return
     end
-
-    # a[i] = eltype(a.data).name.wrapper()
 
     a.data[i:a.idx-1] = a.data[i+1:a.idx]
     a.idx -= 1
@@ -309,39 +290,21 @@ function Base.popat!(a::ArrayList,i::Int)
     return
 end
 
-function popall!(a::ArrayList)
-    for i in 1:a.idx
-        a.data[i] = eltype(a.data).name.wrapper()
-    end
-
-    a.idx = 0
-
-    return
+function empty!(a::ArrayList)
+    a.idx = 0; return
 end
 
 function Base.popfirst!(a::ArrayList)
-    if a.idx == 0
-        error("ArrayList is empty, can't pop element.")
-    end
+    if a.idx == 0; error("ArrayList is empty, can't pop element."); end
 
-    if a.idx == 1
-        a.data[1] = eltype(a.data).name.wrapper()
-        a.idx -= 1
-
-        return
-    end
-
-    a.data[1:a.idx-1] = a.data[2:a.idx]
-    a.data[a.idx] = eltype(a.data).name.wrapper()
-    a.idx -= 1
+    a.data[1:a.idx-1] .= a.data[2:a.idx]
+    a.idx = min(1,a.idx-1)
 
     return
 end
 
 function swap!(a::ArrayList,idx1::Int,idx2::Int)
-    a[idx1], a[idx2] = a[idx2], a[idx1]
-
-    return
+    a[idx1], a[idx2] = a[idx2], a[idx1]; return
 end
 
 function swap!(a::ArrayList,id1::Symbol,id2::Symbol)

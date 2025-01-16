@@ -26,22 +26,22 @@ mutable struct MapData{R,R2}
     tilemap::MArray{Tuple{16,16,5,R2},UInt16}
     chunkdata::MVector{R2,ChunkData}
 
-    teleportids::Vector{UInt16}
+    teleportids::Vector{UInt32}
     teleports::ArrayList{Teleport}
 
-    eventids::Vector{UInt16}
+    eventids::Vector{UInt32}
     events::ArrayList{Event}
 
-    npcids::Vector{UInt16}
+    npcids::Vector{UInt32}
     npcs::ArrayList{NPC}
 
-    objectids::Vector{UInt16}
+    objectids::Vector{UInt32}
     objects::ArrayList{Object}
 
-    itemids::Vector{UInt16}
+    itemids::Vector{UInt32}
     items::ArrayList{MapItem}
 
-    areaids::Vector{UInt16}
+    areaids::Vector{UInt32}
     areas::ArrayList{Area}
 
     function MapData{R,R2}(idxs,didxs,tilemap,chunkdata,

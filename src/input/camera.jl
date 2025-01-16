@@ -4,6 +4,13 @@
 # const trans3 = trans(Float32, 1/240,0,0)
 # const trans4 = trans(Float32,-1/240,0,0)
 
+function setProjection!(game::GameState)
+    game.im.c.projection1[1,4] = -game.ctrl.pos1[2]
+    game.im.c.projection1[2,4] = -game.ctrl.pos1[1]
+
+    return
+end
+
 function moveScreen!(game::GameState,dir::Int,n::Int)
     if dir == 1
         game.im.c.projection1[2,4] += Float32(n/16)

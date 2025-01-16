@@ -29,7 +29,7 @@ include("game/game.jl")
 # end
 
 function main()
-    fps = 60.
+    fps = 120.
 
     inputs, keymap = setupInputs(km); global keymap; pause = false
 
@@ -55,13 +55,9 @@ function main()
     
     @time Base.GC.gc()
 
-    # tick()
-    # t0 = 0.
-    t0 = time()
-    t1 = 0.
+    t0 = time(); t1 = 0.
 
     while !GLFW.WindowShouldClose(game.im.window)
-        # t1 = peektimer()
         t2 = time()-t0
         
         if 60.0*t2 >= game.frame
@@ -82,7 +78,6 @@ function main()
         end
 
         if t2-t1 >= 1/fps
-            # t0 = peektimer()
             t1 = t2
             render(game)
         end
@@ -94,5 +89,11 @@ function main()
 end
 
 end
+
+# for (name,sprite) in game.im.s.sprites
+#     if sprite.sheet == :npcs_all
+#         println(name,", ",sprite.slot)
+#     end
+# end
 
 game, inputs = Pokemon.main();

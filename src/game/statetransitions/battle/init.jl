@@ -263,10 +263,10 @@ function stateEndBattle!(game::GameState,args::Tuple)   #,state::BattleStateWild
     game.ctrl.input.battle.bag = false
     game.ctrl.input.battle.pkmn = false
 
-    popall!(game.battle.state.actionqueue)
-    popall!(game.battle.state.animqueue)
+    empty!(game.battle.state.actionqueue)
+    empty!(game.battle.state.animqueue)
 
-    game.p.pokemon.data = game.p.pokemon.data[game.battle.teamperm]
+    game.p.pokemon.data .= game.p.pokemon.data[game.battle.teamperm]
 
     stateOpenMap!(game)
 

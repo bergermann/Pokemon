@@ -1,6 +1,6 @@
 
 struct Teleport
-    id::UInt16
+    id::UInt32
 
     px::Int; py::Int
     dx::Int; dy::Int

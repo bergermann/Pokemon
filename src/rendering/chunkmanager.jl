@@ -59,10 +59,6 @@ end
 function loadChunk!(game::GameState,target::Integer,cx::Integer,cy::Integer)
     @info "loading chunk $cx-$cy"
 
-    unloadNPCs!(game,target)
-    unloadObjects!(game,target)
-    unloadItems!(game,target)
-
     if !isdir("maps/$cx-$cy/")
         game.m.tilemap[1+1280*(target-1):1280*target] .= 1
         game.m.chunkdata[target].height .= 0
@@ -99,8 +95,10 @@ function loadChunksAll!(game::GameState; reset::Bool=true)
         end
     end
 
+    unloadChunksAll!(game)
+
     for i in -rd:rd, j in -rd:rd
-        loadChunk!(game,game.m.idxs[j+rd+1,i+rd+1],i+c[1],j+c[2])
+        loadChunk!(game,game.m.idxs[j+rd+1,i+rd+1],i+c[2],j+c[1])
     end
 
     updateChunkIdxs(game)
@@ -113,6 +111,10 @@ function loadChunks!(game::GameState,targets::AbstractVector{<:Integer},
 
     @assert length(targets) == length(cx) == length(cy) "Inputs must be of same length."
 
+    for target in targets
+        unloadChunk!(game,target)
+    end
+
     for i in eachindex(targets)
         loadChunk!(game,targets[i],cx[i],cy[i])
     end
@@ -122,18 +124,43 @@ function loadChunks!(game::GameState,targets::AbstractVector{<:Integer},
     return
 end
 
+function unloadChunk!(game::GameState,target::Integer)
+    unloadNPCs!(game,target)
+    unloadObjects!(game,target)
+    unloadItems!(game,target)
+
+    return
+end
+
+function unloadChunksAll!(game::GameState)
+    for idx in game.m.idxs
+        empty!(game.m.npcs)
+        empty!(game.m.npcids)
+        empty!(game.m.chunkdata[idx].npcs)
+
+        empty!(game.m.objects)
+        empty!(game.m.objectids)
+        empty!(game.m.chunkdata[idx].objects)
+        
+        empty!(game.m.items)
+        empty!(game.m.itemids)
+        empty!(game.m.chunkdata[idx].items)
+    end
+
+    return
+end
+
 function ID(x::Integer,y::Integer,i::Integer)
-    x_ = (x%64)*64
-    y_ = (y%64)*64*64
+    x_ = UInt32(x&0x0fff)<<20
+    y_ = UInt32(y&0x0fff)<<8
     
-    return UInt16(x_+y_+i)
+    return UInt32(x_+y_+i&0xff)
 end
 
-function ID(id::UInt16)
-    x = id &&
-
-    return 
+function ID(id::UInt32)
+    return Int((id&0xfff00000)>>20), Int((id&0x000fff00)>>8), Int(id&0xff)
 end
+
 
 
 function loadTeleports!(game::GameState,cx::Integer,cy::Integer)
@@ -141,7 +168,7 @@ function loadTeleports!(game::GameState,cx::Integer,cy::Integer)
 
     for l in 1:2
         for tp in tps[l]
-            id = UInt16(i+64*cx+64*64*cy)
+            id = ID(cx,cy,i)
 
             if id in game.m.teleportids
                 continue
@@ -149,8 +176,10 @@ function loadTeleports!(game::GameState,cx::Integer,cy::Integer)
                 push!(game.m.teleportids,id)
             end
 
-            push!(game.m.teleports,Teleport(id,tp[1:10]...,l==2,tp[11]))
+            display(tp)
 
+            push!(game.m.teleports,
+                Teleport(id,tp[1:4]...,cx,cy,tp[7:10]...,l==2,tp[11]))
             i += 1
         end
     end
@@ -159,11 +188,11 @@ function loadTeleports!(game::GameState,cx::Integer,cy::Integer)
 end
 
 function loadEvents!(game::GameState,cx::Integer,cy::Integer)
-    events = deserialize("maps/$cx-$cy/events.em"); i = 1
+    events_ = deserialize("maps/$cx-$cy/events.em"); i = 1
 
     for l in 1:2
-        for event in events[l]
-            id = UInt16(i+64*cx+64*64*cy)
+        for event in events_[l]
+            id = ID(cx,cy,i)
 
             if id in game.m.eventids# || game.flags.items[flag]
                 continue
@@ -172,7 +201,7 @@ function loadEvents!(game::GameState,cx::Integer,cy::Integer)
             end
 
             push!(game.m.events,Event(
-                id,event[1:6]...,l==2,events[event[7]][1],p[8],events[event[7]][2]))
+                id,event[1:4]...,cx,cy,l==2,event[7:8]...,events[event[9]]...))
 
             i += 1
         end
@@ -186,7 +215,7 @@ function loadNPCs!(game::GameState,target::Integer,cx::Integer,cy::Integer)
 
     for l in 1:2
         for npc in npcs[l]
-            id = UInt16(i+64*cx+64*64*cy)
+            id = ID(cx,cy,i)
 
             if id in game.m.npcids
                 continue
@@ -249,7 +278,7 @@ function loadObjects!(game::GameState,target::Integer,cx::Integer,cy::Integer)
 
     for l in 1:2
         for object in objects[l]
-            id = UInt16(i+64*cx+64*64*cy)
+            id = ID(cx,cy,i)
 
             if id in game.m.objectids
                 continue
@@ -292,7 +321,7 @@ function loadItems!(game::GameState,target::Integer,cx::Integer,cy::Integer)
 
     for l in 1:2
         for item in items[l]
-            id = UInt16(i+64*cx+64*64*cy)
+            id = ID(cx,cy,i)
 
             type = item[1]
             x = item[2]; y = item[3]
@@ -340,7 +369,7 @@ function loadAreas!(game::GameState,cx::Integer,cy::Integer)
 
     for l in 1:2
         for area in areas[l]
-            id = UInt16(i+64*cx+64*64*cy)
+            id = ID(cx,cy,i)
 
             if id in game.m.areaids# || game.flags.items[flag]
                 continue
@@ -372,6 +401,8 @@ function unloadNPCs!(game::GameState,target::Integer)
     end
 
     empty!(game.m.chunkdata[target].npcs)
+
+    return
 end
 
 function unloadObjects!(game::GameState,target::Integer)
@@ -385,6 +416,8 @@ function unloadObjects!(game::GameState,target::Integer)
     end
 
     empty!(game.m.chunkdata[target].objects)
+
+    return
 end
 
 function unloadItems!(game::GameState,target::Integer)
@@ -398,6 +431,8 @@ function unloadItems!(game::GameState,target::Integer)
     end
 
     empty!(game.m.chunkdata[target].items)
+
+    return
 end
 
 

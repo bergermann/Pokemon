@@ -8,7 +8,7 @@ function findTeleport(game::GameState)
                 16*(tp.cx-c[2])+tp.px <= p[2] <= 16*(tp.cx-c[2])+tp.px+tp.dx &&
                 16*(tp.cy-c[1])+tp.py <= p[1] <= 16*(tp.cy-c[1])+tp.py+tp.dy
 
-            @info "At teleport $(tp.id)."
+            @info "At teleport $(ID(tp.id))."
 
             return i
         end
@@ -38,14 +38,19 @@ end
 function teleport!(game::GameState,tx::Int,ty::Int,tcx::Int,tcy::Int)
     game.ctrl.pos1 .= tx, ty
     game.ctrl.pos2 .= game.ctrl.pos1
-
+    
     game.ctrl.chunk .= tcx, tcy
+    
+    setProjection!(game)
 
+    display(game.im.s.sprites)
     killSprites!(game,:npcs_all,:objects)
+    display(game.im.s.sprites)
 
     loadChunksAll!(game)
+    display(game.im.s.sprites)
     
     return
 end
 
-teleport!(game::GameState,(tp,)::Tuple{Teleport}) = teleport!(game,tp.cx,tp.cy,tp.tcx,tp.tcy)
+teleport!(game::GameState,(tp,)::Tuple{Teleport}) = teleport!(game,tp.tx,tp.ty,tp.tcx,tp.tcy)

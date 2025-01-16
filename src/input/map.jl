@@ -131,7 +131,7 @@ function inputMove!(game::GameState,inputs::Inputs)
         checkTeleport!(game)
     end
     
-    reverseSpriteW!(game,:mc,dir == 4)
+    reverseSpriteW!(game,:mc,dir==4)
 
     game.n[:movemain].c = 1
 

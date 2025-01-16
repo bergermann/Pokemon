@@ -1,7 +1,7 @@
 
 
 mutable struct MapItem
-    id::UInt16
+    id::UInt32
     
     type::UInt16
     flag::UInt16

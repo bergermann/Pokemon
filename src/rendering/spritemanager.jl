@@ -179,11 +179,6 @@ end
 function moveSprites!(game::GameState,sheet::Symbol,d::Pos)
     @views game.im.s.sheets[sheet].pos[1:2,:] .+= d
 
-    # @inbounds @simd for i in axes(game.im.s.sheets[sheet].pos,2)
-    #     game.im.s.sheets[sheet].pos[1,i] += d[1]
-    #     game.im.s.sheets[sheet].pos[2,i] += d[2]
-    # end
-
     return
 end
 
@@ -200,7 +195,7 @@ end
 
 function moveSpritesAll!(game::GameState,d::Pos)
     for (name,sheet) in game.im.s.sheets
-        sheet.pos[1:2,:] .+= d
+        @views sheet.pos[1:2,:] .+= d
     end
 
     return
@@ -323,15 +318,15 @@ function killSprite!(game::GameState,id::Symbol)
     return
 end
 
-function killSprites!(game::GameState,sheet::Symbol)
-    sheet = game.im.s.sheets[sheet]
+function killSprites!(game::GameState,sheetname::Symbol)
+    sheet = game.im.s.sheets[sheetname]
 
     sheet.active .= false
     sheet.idx .= 0
     sheet.slots .= false
 
     for (id,sprite) in game.im.s.sprites
-        if sprite.sheet == sheet
+        if sprite.sheet == sheetname
             pop!(game.im.s.sprites,id)
         end
     end

@@ -1,7 +1,7 @@
 # types for npcs on map stuff
 
 mutable struct NPC
-    id::UInt16
+    id::UInt32
 
     pos1::Position
     pos2::Position
@@ -43,7 +43,7 @@ mutable struct NPC
 end
 
 # mutable struct TrainerStatic <: NPCTrainer
-#     id::UInt16
+#     id::UInt32
 
 #     pos1::Position
 #     pos2::Position
@@ -63,7 +63,7 @@ end
 # end
 
 # mutable struct TrainerMove <: NPCTrainer
-#     id::UInt16
+#     id::UInt32
 
 #     pos::Position
 #     dir::Int

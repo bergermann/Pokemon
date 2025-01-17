@@ -1,6 +1,5 @@
 old guy with dog pokemons trying to find the bestest of bois
 lapras counter
 
-add area/teleport/event unloading
 optimize teleports?
 rework scene transition

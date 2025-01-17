@@ -90,10 +90,4 @@ end
 
 end
 
-# for (name,sprite) in game.im.s.sprites
-#     if sprite.sheet == :npcs_all
-#         println(name,", ",sprite.slot)
-#     end
-# end
-
 game, inputs = Pokemon.main();

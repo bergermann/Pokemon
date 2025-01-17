@@ -11,7 +11,7 @@ include("queue.jl")
 function initBattleWild!(game::GameState)
     stateInitBattle!(game)
 
-    data = getArea(game); idx = sample(fweights(data[:,4]))
+    data = findArea(game); idx = sample(fweights(data[:,4]))
     lvl = UInt8(clamp(randN(data[idx,2],data[idx,3]),2,100))
 
     pb1 = PkmnBattle(game.p.pokemon[1],getPkmnName(game,activePkmn(game)))
@@ -25,21 +25,21 @@ function initBattleWild!(game::GameState)
     return
 end
 
-function getArea(game::GameState)::Matrix{UInt16}
+function findArea(game::GameState)::Matrix{UInt16}
     p = game.ctrl.mpos
     c = game.ctrl.chunk
 
-    for area in game.m.areas.data[1:game.m.areas.idx]
-        if 16*(area.cx-c[2])+area.px <= p[2] <= 16*(area.cx-c[2])+area.px+area.dx &&
-                16*(area.cy-c[1])+area.py <= p[1] <= 16*(area.cy-c[1])+area.py+area.dy
+    for ar in game.m.areas.data[1:game.m.areas.idx]
+        if 16*(ar.cx-c.x)+ar.px <= p.x <= 16*(ar.cx-c.x)+ar.px+ar.dx &&
+                16*(ar.cy-c.y)+ar.py <= p.y <= 16*(ar.cy-c.y)+ar.py+ar.dy
 
-            @info "in area $(area.id)"
+            @info "Me when i'm in area $(ar.id)."
 
-            return area.data
+            return ar.data
         end
     end
 
-    @warn "no area found, deploying default rattata"
+    @warn "No area found, deploying default Rattata."
 
     return UInt16[19 3 1 1]
 end

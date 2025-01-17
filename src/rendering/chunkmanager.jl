@@ -62,7 +62,7 @@ function loadChunk!(game::GameState,target::Integer,cx::Integer,cy::Integer)
     if !isdir("maps/$cx-$cy/")
         game.m.tilemap[1+1280*(target-1):1280*target] .= 1
         game.m.chunkdata[target].height .= 0
-        game.m.chunkdata[target].collision .= 0
+        game.m.chunkdata[target].collision .= 1
     else
         game.m.tilemap[1+1280*(target-1):1280*target] =
             deserialize("maps/$cx-$cy/tiles.tm")
@@ -111,6 +111,10 @@ function loadChunks!(game::GameState,targets::AbstractVector{<:Integer},
 
     @assert length(targets) == length(cx) == length(cy) "Inputs must be of same length."
 
+    unloadTeleports!(game)
+    unloadEvents!(game)
+    unloadAreas!(game)
+
     for target in targets
         unloadChunk!(game,target)
     end
@@ -133,19 +137,32 @@ function unloadChunk!(game::GameState,target::Integer)
 end
 
 function unloadChunksAll!(game::GameState)
-    for idx in game.m.idxs
-        empty!(game.m.npcs)
-        empty!(game.m.npcids)
-        empty!(game.m.chunkdata[idx].npcs)
+    empty!(game.m.teleports)
+    empty!(game.m.teleportids)
 
-        empty!(game.m.objects)
-        empty!(game.m.objectids)
-        empty!(game.m.chunkdata[idx].objects)
+    empty!(game.m.events)
+    empty!(game.m.eventids)
+
+    empty!(game.m.npcs)
+    empty!(game.m.npcids)
+
+    empty!(game.m.objects)
+    empty!(game.m.objectids)
         
-        empty!(game.m.items)
-        empty!(game.m.itemids)
+    empty!(game.m.items)
+    empty!(game.m.itemids)
+
+    empty!(game.m.areas)
+    empty!(game.m.areaids)
+
+    for idx in game.m.idxs
+        empty!(game.m.chunkdata[idx].npcs)
+        empty!(game.m.chunkdata[idx].objects)
         empty!(game.m.chunkdata[idx].items)
     end
+
+    if haskey(game.im.s.sheets,:npcs_all); killSprites!(game,:npcs_all); end
+    if haskey(game.im.s.sheets,:objects);  killSprites!(game,:objects);  end
 
     return
 end
@@ -179,7 +196,7 @@ function loadTeleports!(game::GameState,cx::Integer,cy::Integer)
             display(tp)
 
             push!(game.m.teleports,
-                Teleport(id,tp[1:4]...,cx,cy,tp[7:10]...,l==2,tp[11]))
+                Teleport(id,tp[1:4]...,cy,cx,tp[5:8]...,l==2,tp[9]))
             i += 1
         end
     end
@@ -201,7 +218,7 @@ function loadEvents!(game::GameState,cx::Integer,cy::Integer)
             end
 
             push!(game.m.events,Event(
-                id,event[1:4]...,cx,cy,l==2,event[7:8]...,events[event[9]]...))
+                id,event[1:4]...,cy,cx,l==2,event[5:6]...,events[event[7]]...))
 
             i += 1
         end
@@ -261,8 +278,8 @@ function loadNPCs!(game::GameState,target::Integer,cx::Integer,cy::Integer)
             push!(game.m.chunkdata[target].npcs,Ref(npc_))
 
             createSprite!(game,sid,:npcs_all,spriteid,1+3*(dir-1-2*(dir==4)),
-                16*(16*(cx-game.ctrl.chunk[2])+(x-game.ctrl.pos1[2])),
-                16*(16*(cy-game.ctrl.chunk[1])+(y-game.ctrl.pos1[1]))-8,
+                16*(16*(cx-game.ctrl.chunk.y)+(x-game.ctrl.pos1.y)),
+                16*(16*(cy-game.ctrl.chunk.x)+(y-game.ctrl.pos1.x))-8,
                 10,3;
                 wreverse=dir==4,active=true)
 
@@ -352,8 +369,8 @@ function loadItems!(game::GameState,target::Integer,cx::Integer,cy::Integer)
 
             if vis
                 createSprite!(game,sid,:objects,1,1,
-                    16*(16*(cx-game.ctrl.chunk[2])+(x-game.ctrl.pos1[2])),
-                    16*(16*(cy-game.ctrl.chunk[1])+(y-game.ctrl.pos1[1])),
+                    16*(16*(cx-game.ctrl.chunk.y)+(x-game.ctrl.pos1.y)),
+                    16*(16*(cy-game.ctrl.chunk.x)+(y-game.ctrl.pos1.x)),
                     10,3; active=true)
             end
 
@@ -381,7 +398,7 @@ function loadAreas!(game::GameState,cx::Integer,cy::Integer)
                 id,
                 area[1][1],area[1][2],
                 area[1][3],area[1][4],
-                cx,cy,l==2,area[2]))
+                cy,cx,l==2,area[2]))
 
             i += 1
         end
@@ -394,6 +411,8 @@ function unloadNPCs!(game::GameState,target::Integer)
     for npc in game.m.chunkdata[target].npcs
         idx1 = findfirst(x->x.id==npc[].id,game.m.npcs.data[1:game.m.npcs.idx])
         idx2 = findfirst(isequal(npc[].id),game.m.npcids)
+
+        println("unload npc idxs: ",idx1,", ",idx2)
         
         killSprite!(game,npc[].sprite)
         popat!(game.m.npcs,idx1)
@@ -411,8 +430,8 @@ function unloadObjects!(game::GameState,target::Integer)
         idx2 = findfirst(isequal(object[].id),game.m.objectids)
         
         killSprite!(game,object[].sprite)
-        popat!(game.m.objects,idx1)
         popat!(game.m.objectids,idx2)
+        popat!(game.m.objects,idx1)
     end
 
     empty!(game.m.chunkdata[target].objects)
@@ -426,8 +445,8 @@ function unloadItems!(game::GameState,target::Integer)
         idx2 = findfirst(isequal(item[].id),game.m.itemids)
         
         killSprite!(game,item[].sprite)
-        popat!(game.m.items,idx1)
         popat!(game.m.itemids,idx2)
+        popat!(game.m.items,idx1)
     end
 
     empty!(game.m.chunkdata[target].items)
@@ -435,4 +454,42 @@ function unloadItems!(game::GameState,target::Integer)
     return
 end
 
+function unloadTeleports!(game::GameState)
+    for (i,tp) in Iterators.reverse(eachindex(game.m.teleports))
+        if abs(tp.cx-game.chunk.x) > game.im.c.renderdistance ||
+                abs(tp.cy-game.chunk.y) > game.im.c.renderdistance
+
+            popat!(game.m.teleports,i)
+            popat!(game.m.teleportids,i)
+        end
+    end
+
+    return
+end
+
+function unloadEvents!(game::GameState)
+    for (i,ev) in Iterators.reverse(eachindex(game.m.events))
+        if abs(ev.cx-game.chunk.x) > game.im.c.renderdistance ||
+                abs(ev.cy-game.chunk.y) > game.im.c.renderdistance
+
+            popat!(game.m.events,i)
+            popat!(game.m.eventids,i)
+        end
+    end
+
+    return
+end
+
+function unloadAreas!(game::GameState)
+    for (i,ar) in Iterators.reverse(eachindex(game.m.areas))
+        if abs(ar.cx-game.chunk.x) > game.im.c.renderdistance ||
+                abs(ar.cy-game.chunk.y) > game.im.c.renderdistance
+
+            popat!(game.m.areas,i)
+            popat!(game.m.areaids,i)
+        end
+    end
+
+    return
+end
 

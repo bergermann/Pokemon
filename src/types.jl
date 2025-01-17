@@ -290,6 +290,7 @@ function Base.popat!(a::ArrayList,i::Int)
     return
 end
 
+import Base: empty!
 function empty!(a::ArrayList)
     a.idx = 0; return
 end

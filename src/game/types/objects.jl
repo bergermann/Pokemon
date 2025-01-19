@@ -5,8 +5,8 @@ mutable struct Object
     
     type::UInt8
     pos::Position
-    # height::Int
     chunk::Position
+    # height::Int
     fg::Bool
 
     c::Int

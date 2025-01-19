@@ -217,8 +217,8 @@ function loadEvents!(game::GameState,cx::Integer,cy::Integer)
                 push!(game.m.eventids,id)
             end
 
-            push!(game.m.events,Event(
-                id,event[1:4]...,cy,cx,l==2,event[5:6]...,events[event[7]]...))
+            push!(game.m.events,
+                Event(id,event[1:4]...,cy,cx,l==2,event[5:6]...,events[event[7]]...))
 
             i += 1
         end
@@ -247,10 +247,10 @@ function loadNPCs!(game::GameState,target::Integer,cx::Integer,cy::Integer)
             npc_ = NPC(
                 id,
 
-                P(y,x),
-                P(y,x),
-                P(y,x),
-                P(y,x),
+                P(x,y),
+                P(x,y),
+                P(x,y),
+                P(x,y),
                 game.m.chunkdata[target].height[y,x]*(l==1),
                 P(cy,cx),
                 P(cy,cx),
@@ -278,8 +278,8 @@ function loadNPCs!(game::GameState,target::Integer,cx::Integer,cy::Integer)
             push!(game.m.chunkdata[target].npcs,Ref(npc_))
 
             createSprite!(game,sid,:npcs_all,spriteid,1+3*(dir-1-2*(dir==4)),
-                16*(16*(cx-game.ctrl.chunk.y)+(x-game.ctrl.pos1.y)),
-                16*(16*(cy-game.ctrl.chunk.x)+(y-game.ctrl.pos1.x))-8,
+                16*(16*(cx-game.ctrl.chunk.y)+(y-game.ctrl.pos1.y)),
+                16*(16*(cy-game.ctrl.chunk.x)+(x-game.ctrl.pos1.x))-8,
                 10,3;
                 wreverse=dir==4,active=true)
 
@@ -310,8 +310,8 @@ function loadObjects!(game::GameState,target::Integer,cx::Integer,cy::Integer)
             obj_ = Object(
                 id,
                 type,
-                P(y,x),
-                P(cx,cy),
+                P(x,y),
+                P(cy,cx),
                 l == 2,
                 0,
                 sid
@@ -321,8 +321,8 @@ function loadObjects!(game::GameState,target::Integer,cx::Integer,cy::Integer)
             push!(game.m.chunkdata[target].objects,Ref(obj_))
 
             createSprite!(game,sid,:objects,1,9+4*(type-1),
-                16*(16*(cx-game.ctrl.chunk[2])+(x-game.ctrl.pos1[2])),
-                16*(16*(cy-game.ctrl.chunk[1])+(y-game.ctrl.pos1[1])),
+                16*(16*(cx-game.ctrl.chunk.y)+(y-game.ctrl.pos1.y)),
+                16*(16*(cy-game.ctrl.chunk.x)+(x-game.ctrl.pos1.x)),
                 10,3;
                 active=true)
 
@@ -357,8 +357,8 @@ function loadItems!(game::GameState,target::Integer,cx::Integer,cy::Integer)
                 id,
                 type,
                 0,#flag
-                P(y,x),
-                P(cx,cy),
+                P(x,y),
+                P(cy,cx),
                 l == 2,
                 vis,
                 sid
@@ -369,8 +369,8 @@ function loadItems!(game::GameState,target::Integer,cx::Integer,cy::Integer)
 
             if vis
                 createSprite!(game,sid,:objects,1,1,
-                    16*(16*(cx-game.ctrl.chunk.y)+(x-game.ctrl.pos1.y)),
-                    16*(16*(cy-game.ctrl.chunk.x)+(y-game.ctrl.pos1.x)),
+                    16*(16*(cx-game.ctrl.chunk.y)+(y-game.ctrl.pos1.y)),
+                    16*(16*(cy-game.ctrl.chunk.x)+(x-game.ctrl.pos1.x)),
                     10,3; active=true)
             end
 
@@ -406,6 +406,9 @@ function loadAreas!(game::GameState,cx::Integer,cy::Integer)
 
     return
 end
+
+
+
 
 function unloadNPCs!(game::GameState,target::Integer)
     for npc in game.m.chunkdata[target].npcs

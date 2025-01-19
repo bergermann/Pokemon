@@ -1,9 +1,17 @@
 
+function findSign(game::GameState,chunk::Pos,pos::Position)
+    for sign in game.m.chunkdata[chunk].signs
+        if sign[].x == pos.x && sign[].y == pos.y
+            return sign[].str
+        end
+    end
 
+    return ["No sign found."]
+end
 
 function mapAction!(game::GameState)
-    game.ctrl.mpos = game.ctrl.pos1+dirs[game.ctrl.dir]
-    game.ctrl.mchunk = modc.(game.ctrl.mpos).+(game.im.c.renderdistance+1)
+    @. game.ctrl.mpos = game.ctrl.pos1+dirs[dir]
+    @. game.ctrl.mchunk = modc(game.ctrl.mpos)+(game.im.c.renderdistance+1)
     @. game.ctrl.mpos = (game.ctrl.mpos+15)%16+1
 
     # b, npc = checkTileNPC(game)
@@ -20,8 +28,8 @@ function mapAction!(game::GameState)
 
     tile = getCollision(game,game.ctrl.mpos,game.ctrl.mchunk,game.ctrl.l)
 
-    if 0x003c <= tile <= 0x004f
-        stateSetDialogue!(game,1,tile-59,1)
+    if tile == 0x15
+        stateSetDialogue!(game,)
 
         return
     end

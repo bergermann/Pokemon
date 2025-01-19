@@ -6,8 +6,8 @@ mutable struct MapItem
     type::UInt16
     flag::UInt16
     pos::Position
-    # height::Int
     chunk::Position
+    # height::Int
     fg::Bool
 
     vis::Bool

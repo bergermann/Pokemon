@@ -7,6 +7,7 @@ mutable struct ChunkData
     npcs::Vector{Base.RefValue{NPC}}
     objects::Vector{Base.RefValue{Object}}
     items::Vector{Base.RefValue{MapItem}}
+    signs::Vector{Base.RefValue{Signs}}
 
     function ChunkData()
         new(
@@ -16,6 +17,7 @@ mutable struct ChunkData
             Array{Base.RefValue{NPC}}([]),
             Array{Base.RefValue{Object}}([]),
             Array{Base.RefValue{MapItem}}([]),
+            Array{Base.RefValue{Signs}}([]),
         )
     end
 end
@@ -44,13 +46,17 @@ mutable struct MapData{R,R2}
     areaids::Vector{UInt32}
     areas::ArrayList{Area}
 
+    signids::Vector{UInt32}
+    signs::ArrayList{Sign}
+
     function MapData{R,R2}(idxs,didxs,tilemap,chunkdata,
             tpids,tps,
             eventids,events,
             npcids,npcs,
             objectids,objects,
             itemids,items,
-            areaids,areas) where {R,R2}
+            areaids,areas,
+            signids,signs) where {R,R2}
 
         new(idxs,didxs,tilemap,chunkdata,
             tpids,tps,
@@ -58,7 +64,8 @@ mutable struct MapData{R,R2}
             npcids,npcs,
             objectids,objects,
             itemids,items,
-            areaids,areas)
+            areaids,areas,
+            signids,signs)
     end
 
     function MapData(renderdistance)
@@ -76,6 +83,7 @@ mutable struct MapData{R,R2}
             UInt16[],ArrayList(Object,64),
             UInt16[],ArrayList(MapItem,64),
             UInt16[],ArrayList(Area,16),
+            UInt16[],ArrayList(Sign,16),
         )
     end
 end

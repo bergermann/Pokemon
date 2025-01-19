@@ -1,7 +1,7 @@
 
 function findSign(game::GameState,chunk::Pos,pos::Position)
     for sign in game.m.chunkdata[chunk].signs
-        if sign[].x == pos.x && sign[].y == pos.y
+        if isequal(sign[].pos,pos)
             return sign[].str
         end
     end
@@ -29,7 +29,7 @@ function mapAction!(game::GameState)
     tile = getCollision(game,game.ctrl.mpos,game.ctrl.mchunk,game.ctrl.l)
 
     if tile == 0x15
-        stateSetDialogue!(game,)
+        stateSetDialogue!(game,findSign(game,game.ctrl.mchunk,game.ctrl.mpos))
 
         return
     end

@@ -75,6 +75,7 @@ function loadChunk!(game::GameState,target::Integer,cx::Integer,cy::Integer)
         loadTeleports!(game,cx,cy)
         loadEvents!(   game,cx,cy)
         loadAreas!(    game,cx,cy)
+        loadSigns!(    game,cx,cy,target)
     end
 
     return
@@ -340,11 +341,6 @@ function loadItems!(game::GameState,target::Integer,cx::Integer,cy::Integer)
         for item in items[l]
             id = ID(cx,cy,i)
 
-            type = item[1]
-            x = item[2]; y = item[3]
-            vis = item[4]
-            # flag = item[5]
-
             if id in game.m.itemids# || game.flags.items[flag]
                 continue
             else
@@ -355,12 +351,12 @@ function loadItems!(game::GameState,target::Integer,cx::Integer,cy::Integer)
 
             item_ = MapItem(
                 id,
-                type,
-                0,#flag
-                P(x,y),
+                item[1],
+                0,#flag item[5]
+                P(item[2],item[3]),
                 P(cy,cx),
                 l == 2,
-                vis,
+                item[4],
                 sid
             )
 
@@ -373,6 +369,31 @@ function loadItems!(game::GameState,target::Integer,cx::Integer,cy::Integer)
                     16*(16*(cy-game.ctrl.chunk.x)+(x-game.ctrl.pos1.x)),
                     10,3; active=true)
             end
+
+            i += 1
+        end
+    end
+
+    return
+end
+
+function loadSigns(game::GameState,target::Integer,cx::Integer,cy::Integer)
+    signs = deserialize("maps/$cx-$cy/signs.sm"); i = 1
+
+    for l in 1:2
+        for sign in signs[l]
+            id = ID(cx,cy,i)
+
+            if id in game.m.signids
+                continue
+            else
+                push!(game.m.signids,id)
+            end
+
+            sign_ = Sign(id,P(sign[1],sign[2]),P(cy,cx),l==2,sign[3])
+
+            push!(game.m.signs,sign_)
+            push!(game.m.chunkdata[target].signs,Ref(sign_))
 
             i += 1
         end

@@ -64,9 +64,9 @@ struct FlagSet{N1,N2}
     end
 end
 
-import Base: size
-Base.size(::FlagSet{N1,N2}) where {N1,N2} = (N1,N2)
+import Base: size, isempty
 
-isempty(flags::FlagSet) = flags.empty
+Base.size(::FlagSet{N1,N2}) where {N1,N2} = (N1,N2)
+Base.isempty(flags::FlagSet) = flags.empty
 
 

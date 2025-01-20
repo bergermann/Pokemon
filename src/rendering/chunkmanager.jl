@@ -434,7 +434,7 @@ end
 function unloadNPCs!(game::GameState,target::Integer)
     if isempty(game.m.chunkdata[target].npcs); return; end
 
-    c = game.m.chunkdata[target].npcs[1].chunk
+    c = game.m.chunkdata[target].npcs[1][].chunk
     
     for (i,npc) in Iterators.reverse(enumerate(game.m.npcs[1:game.m.npcs.idx]))
         if isequal(npc.chunk,c)
@@ -452,7 +452,7 @@ end
 function unloadObjects!(game::GameState,target::Integer)
     if isempty(game.m.chunkdata[target].objects); return; end
 
-    c = game.m.chunkdata[target].objects[1].chunk
+    c = game.m.chunkdata[target].objects[1][].chunk
     
     for (i,object) in Iterators.reverse(enumerate(game.m.objects[1:game.m.objects.idx]))
         if isequal(object.chunk,c)
@@ -470,7 +470,7 @@ end
 function unloadItems!(game::GameState,target::Integer)
     if isempty(game.m.chunkdata[target].items); return; end
 
-    c = game.m.chunkdata[target].items[1].chunk
+    c = game.m.chunkdata[target].items[1][].chunk
     
     for (i,item) in Iterators.reverse(enumerate(game.m.items[1:game.m.items.idx]))
         if isequal(item.chunk,c)
@@ -488,7 +488,7 @@ end
 function unloadSigns!(game::GameState,target::Integer)
     if isempty(game.m.chunkdata[target].signs); return; end
 
-    c = game.m.chunkdata[target].signs[1].chunk
+    c = game.m.chunkdata[target].signs[1][].chunk
 
     for (i,sign) in Iterators.reverse(enumerate(game.m.signs[1:game.m.signs.idx]))
         if isequal(sign.chunk,c)
@@ -504,8 +504,8 @@ end
 
 function unloadTeleports!(game::GameState)
     for (i,tp) in Iterators.reverse(enumerate(game.m.teleports[1:game.m.teleports.idx]))
-        if abs(tp.cx-game.chunk.x) > game.im.c.renderdistance ||
-                abs(tp.cy-game.chunk.y) > game.im.c.renderdistance
+        if abs(tp.cx-game.ctrl.mchunk.x) > game.im.c.renderdistance ||
+                abs(tp.cy-game.ctrl.mchunk.y) > game.im.c.renderdistance
 
             popat!(game.m.teleports,i)
             popat!(game.m.teleportids,i)
@@ -516,9 +516,9 @@ function unloadTeleports!(game::GameState)
 end
 
 function unloadEvents!(game::GameState)
-    for (i,ev) in Iterators.reverse(eachindex(game.m.events))
-        if abs(ev.cx-game.chunk.x) > game.im.c.renderdistance ||
-                abs(ev.cy-game.chunk.y) > game.im.c.renderdistance
+    for (i,ev) in Iterators.reverse(enumerate(game.m.events[1:game.m.events.idx]))
+        if abs(ev.cx-game.ctrl.mchunk.x) > game.im.c.renderdistance ||
+                abs(ev.cy-game.ctrl.mchunk.y) > game.im.c.renderdistance
 
             popat!(game.m.events,i)
             popat!(game.m.eventids,i)
@@ -529,9 +529,9 @@ function unloadEvents!(game::GameState)
 end
 
 function unloadAreas!(game::GameState)
-    for (i,ar) in Iterators.reverse(eachindex(game.m.areas))
-        if abs(ar.cx-game.chunk.x) > game.im.c.renderdistance ||
-                abs(ar.cy-game.chunk.y) > game.im.c.renderdistance
+    for (i,ar) in Iterators.reverse(enumerate(game.m.areas[1:game.m.areas.idx]))
+        if abs(ar.cx-game.ctrl.mchunk.x) > game.im.c.renderdistance ||
+                abs(ar.cy-game.ctrl.mchunk.y) > game.im.c.renderdistance
 
             popat!(game.m.areas,i)
             popat!(game.m.areaids,i)

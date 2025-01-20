@@ -19,5 +19,3 @@ struct Event
     function Event(id,px,py,dx,dy,cx,cy,fg,onpress,dir,flags,callback);
         new(id,px,py,dx,dy,cx,cy,fg,onpress,dir,flags,callback); end
 end
-
-const E0 = Event()

@@ -140,7 +140,7 @@ function evalCallback(game::GameState,f::Callback)
     return
 end
 
-function emptyCallback(game::GameState)
+function emptyCallback(game::GameState,args::Tuple)
     return
 end
 

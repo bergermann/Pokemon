@@ -1,7 +1,7 @@
 
-function findSign(game::GameState,chunk::Pos,pos::Position)
-    for sign in game.m.chunkdata[chunk].signs
-        if isequal(sign[].pos,pos)
+function findSign(game::GameState,chunk::Pos,pos::Position,fg::Bool)
+    for sign in game.m.chunkdata[game.m.idxs[chunk]].signs
+        if sign[].fg==fg && isequal(sign[].pos,pos)
             return sign[].str
         end
     end
@@ -10,7 +10,7 @@ function findSign(game::GameState,chunk::Pos,pos::Position)
 end
 
 function findEvent(game::GameState,chunk::Pos,pos::Position)
-    for event in game.m.chunkdata[chunk].events
+    for event in game.m.chunkdata[game.m.idxs[chunk]].events
         if event.px <= pos.x <= event.px+event.dx && event.py <= pos.y <= event.py+event.dy
             @info "At event $(event.id)."
 
@@ -38,10 +38,10 @@ function mapAction!(game::GameState)
     #     return
     # end
 
-    tile = getCollision(game,game.ctrl.mpos,game.ctrl.mchunk,game.ctrl.l)
+    col = getCollision(game,game.ctrl.mpos,game.ctrl.mchunk,1+game.ctrl.fg)
 
-    if tile == 0x15
-        stateSetDialogue!(game,findSign(game,game.ctrl.mchunk,game.ctrl.mpos))
+    if col == 0x15
+        stateSetDialogue!(game,findSign(game,game.ctrl.mchunk,game.ctrl.mpos,game.ctrl.fg))
 
         return
     end
@@ -50,7 +50,6 @@ function mapAction!(game::GameState)
 
     return
 end
-
 
 
 

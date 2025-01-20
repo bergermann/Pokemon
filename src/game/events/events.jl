@@ -11,6 +11,8 @@ function evalEvent(game::GameState,event::Event)
     return
 end
 
+
+const E0 = Event()
 const events = Base.ImmutableDict(
     :healcenter => (FlagSet(; flags=[(0xc8,false,1)]),
         F(eventHealCenter!)),

@@ -54,3 +54,24 @@ function setupGame(windowscale::Int=4,renderdistance::Int=2,maxtextures::Int=64;
 
     return game
 end
+
+function updateGame!(game::GameState,inputs::Inputs)
+    inputManager!(game,inputs)
+
+    if game.overworld
+        # arrange sprites here
+
+        if !game.ctrl.input.npclock
+            # @time manageNPCs!(game)
+            manageNPCs!(game)
+        end
+    end
+
+    for i in 1:game.callbacks.idx
+        if game.callbacks[i].active
+            evalCallback(game,game.callbacks[i])
+        end
+    end
+
+    return
+end

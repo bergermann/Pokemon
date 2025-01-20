@@ -9,8 +9,20 @@ function findSign(game::GameState,chunk::Pos,pos::Position)
     return ["No sign found."]
 end
 
+function findEvent(game::GameState,chunk::Pos,pos::Position)
+    for event in game.m.chunkdata[chunk].events
+        if event.px <= pos.x <= event.px+event.dx && event.py <= pos.y <= event.py+event.dy
+            @info "At event $(event.id)."
+
+            return event
+        end
+    end
+
+    return E0
+end
+
 function mapAction!(game::GameState)
-    @. game.ctrl.mpos = game.ctrl.pos1+dirs[dir]
+    @. game.ctrl.mpos = game.ctrl.pos1+dirs[game.ctrl.dir]
     @. game.ctrl.mchunk = modc(game.ctrl.mpos)+(game.im.c.renderdistance+1)
     @. game.ctrl.mpos = (game.ctrl.mpos+15)%16+1
 
@@ -34,17 +46,7 @@ function mapAction!(game::GameState)
         return
     end
 
-    tile = getCollision(game,game.ctrl.pos1,game.ctrl.chunk,game.ctrl.l)
-
-    if 0x00a0 <= tile <= 0x00b3
-        event = game.maps.map.events[tile-159]
-
-        if event.onpress
-            evalEvent(game,event)
-        end
-
-        return
-    end
+    evalEvent(game,findEvent(game,game.ctrl.mchunk,game.ctrl.mpos))
 
     return
 end
@@ -53,23 +55,3 @@ end
 
 
 
-function updateGame!(game::GameState,inputs::Inputs)
-    inputManager!(game,inputs)
-
-    if game.overworld
-        # arrange sprites here
-
-        if !game.ctrl.input.npclock
-            # @time manageNPCs!(game)
-            manageNPCs!(game)
-        end
-    end
-
-    for i in 1:game.callbacks.idx
-        if game.callbacks[i].active
-            evalCallback(game,game.callbacks[i])
-        end
-    end
-
-    return
-end

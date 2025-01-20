@@ -72,10 +72,10 @@ function loadChunk!(game::GameState,target::Integer,cx::Integer,cy::Integer)
         loadNPCs!(     game,target,cx,cy)
         loadObjects!(  game,target,cx,cy)
         loadItems!(    game,target,cx,cy)
+        loadSigns!(    game,target,cx,cy)
         loadTeleports!(game,cx,cy)
         loadEvents!(   game,cx,cy)
         loadAreas!(    game,cx,cy)
-        loadSigns!(    game,cx,cy,target)
     end
 
     return
@@ -99,7 +99,7 @@ function loadChunksAll!(game::GameState; reset::Bool=true)
     unloadChunksAll!(game)
 
     for i in -rd:rd, j in -rd:rd
-        loadChunk!(game,game.m.idxs[j+rd+1,i+rd+1],i+c[2],j+c[1])
+        loadChunk!(game,game.m.idxs[j+rd+1,i+rd+1],i+c.y,j+c.x)
     end
 
     updateChunkIdxs(game)
@@ -133,6 +133,7 @@ function unloadChunk!(game::GameState,target::Integer)
     unloadNPCs!(game,target)
     unloadObjects!(game,target)
     unloadItems!(game,target)
+    unloadSigns!(game,target)
 
     return
 end
@@ -152,6 +153,9 @@ function unloadChunksAll!(game::GameState)
         
     empty!(game.m.items)
     empty!(game.m.itemids)
+        
+    empty!(game.m.signs)
+    empty!(game.m.signids)
 
     empty!(game.m.areas)
     empty!(game.m.areaids)
@@ -160,6 +164,7 @@ function unloadChunksAll!(game::GameState)
         empty!(game.m.chunkdata[idx].npcs)
         empty!(game.m.chunkdata[idx].objects)
         empty!(game.m.chunkdata[idx].items)
+        empty!(game.m.chunkdata[idx].signs)
     end
 
     if haskey(game.im.s.sheets,:npcs_all); killSprites!(game,:npcs_all); end
@@ -181,53 +186,6 @@ end
 
 
 
-function loadTeleports!(game::GameState,cx::Integer,cy::Integer)
-    tps = deserialize("maps/$cx-$cy/teleports.tm"); i = 1
-
-    for l in 1:2
-        for tp in tps[l]
-            id = ID(cx,cy,i)
-
-            if id in game.m.teleportids
-                continue
-            else
-                push!(game.m.teleportids,id)
-            end
-
-            display(tp)
-
-            push!(game.m.teleports,
-                Teleport(id,tp[1:4]...,cy,cx,tp[5:8]...,l==2,tp[9]))
-            i += 1
-        end
-    end
-
-    return
-end
-
-function loadEvents!(game::GameState,cx::Integer,cy::Integer)
-    events_ = deserialize("maps/$cx-$cy/events.em"); i = 1
-
-    for l in 1:2
-        for event in events_[l]
-            id = ID(cx,cy,i)
-
-            if id in game.m.eventids# || game.flags.items[flag]
-                continue
-            else
-                push!(game.m.eventids,id)
-            end
-
-            push!(game.m.events,
-                Event(id,event[1:4]...,cy,cx,l==2,event[5:6]...,events[event[7]]...))
-
-            i += 1
-        end
-    end
-
-    return
-end
-
 function loadNPCs!(game::GameState,target::Integer,cx::Integer,cy::Integer)
     npcs = deserialize("maps/$cx-$cy/npcs.nm"); i = 1
 
@@ -248,14 +206,9 @@ function loadNPCs!(game::GameState,target::Integer,cx::Integer,cy::Integer)
             npc_ = NPC(
                 id,
 
-                P(x,y),
-                P(x,y),
-                P(x,y),
-                P(x,y),
+                P(x,y),P(x,y),P(x,y),P(x,y),
                 game.m.chunkdata[target].height[y,x]*(l==1),
-                P(cy,cx),
-                P(cy,cx),
-                P(cy,cx),
+                P(cy,cx),P(cy,cx),P(cy,cx),
                 l==2,
                 dir,
 
@@ -346,14 +299,14 @@ function loadItems!(game::GameState,target::Integer,cx::Integer,cy::Integer)
             else
                 push!(game.m.itemids,id)
             end
-
             sid = Symbol(:item,id)
+            x = item[2]; y = item[3]
 
             item_ = MapItem(
                 id,
                 item[1],
                 0,#flag item[5]
-                P(item[2],item[3]),
+                P(x,y),
                 P(cy,cx),
                 l == 2,
                 item[4],
@@ -363,7 +316,7 @@ function loadItems!(game::GameState,target::Integer,cx::Integer,cy::Integer)
             push!(game.m.items,item_)
             push!(game.m.chunkdata[target].items,Ref(item_))
 
-            if vis
+            if item[4]
                 createSprite!(game,sid,:objects,1,1,
                     16*(16*(cx-game.ctrl.chunk.y)+(y-game.ctrl.pos1.y)),
                     16*(16*(cy-game.ctrl.chunk.x)+(x-game.ctrl.pos1.x)),
@@ -377,7 +330,7 @@ function loadItems!(game::GameState,target::Integer,cx::Integer,cy::Integer)
     return
 end
 
-function loadSigns(game::GameState,target::Integer,cx::Integer,cy::Integer)
+function loadSigns!(game::GameState,target::Integer,cx::Integer,cy::Integer)
     signs = deserialize("maps/$cx-$cy/signs.sm"); i = 1
 
     for l in 1:2
@@ -394,6 +347,53 @@ function loadSigns(game::GameState,target::Integer,cx::Integer,cy::Integer)
 
             push!(game.m.signs,sign_)
             push!(game.m.chunkdata[target].signs,Ref(sign_))
+
+            i += 1
+        end
+    end
+
+    return
+end
+
+function loadTeleports!(game::GameState,cx::Integer,cy::Integer)
+    tps = deserialize("maps/$cx-$cy/teleports.tm"); i = 1
+
+    for l in 1:2
+        for tp in tps[l]
+            id = ID(cx,cy,i)
+
+            if id in game.m.teleportids
+                continue
+            else
+                push!(game.m.teleportids,id)
+            end
+
+            display(tp)
+
+            push!(game.m.teleports,
+                Teleport(id,tp[1:4]...,cy,cx,tp[5:8]...,l==2,tp[9]))
+            i += 1
+        end
+    end
+
+    return
+end
+
+function loadEvents!(game::GameState,cx::Integer,cy::Integer)
+    events_ = deserialize("maps/$cx-$cy/events.em"); i = 1
+
+    for l in 1:2
+        for event in events_[l]
+            id = ID(cx,cy,i)
+
+            if id in game.m.eventids# || game.flags.items[flag]
+                continue
+            else
+                push!(game.m.eventids,id)
+            end
+
+            push!(game.m.events,
+                Event(id,event[1:4]...,cy,cx,l==2,event[5:6]...,events[event[7]]...))
 
             i += 1
         end
@@ -432,15 +432,16 @@ end
 
 
 function unloadNPCs!(game::GameState,target::Integer)
-    for npc in game.m.chunkdata[target].npcs
-        idx1 = findfirst(x->x.id==npc[].id,game.m.npcs.data[1:game.m.npcs.idx])
-        idx2 = findfirst(isequal(npc[].id),game.m.npcids)
+    if isempty(game.m.chunkdata[target].npcs); return; end
 
-        println("unload npc idxs: ",idx1,", ",idx2)
-        
-        killSprite!(game,npc[].sprite)
-        popat!(game.m.npcs,idx1)
-        popat!(game.m.npcids,idx2)
+    c = game.m.chunkdata[target].npcs[1].chunk
+    
+    for (i,npc) in Iterators.reverse(enumerate(game.m.npcs[1:game.m.npcs.idx]))
+        if isequal(npc.chunk,c)
+            killSprite!(game,npc.sprite)
+            popat!(game.m.npcids,i)
+            popat!(game.m.npcs,i)
+        end
     end
 
     empty!(game.m.chunkdata[target].npcs)
@@ -449,13 +450,16 @@ function unloadNPCs!(game::GameState,target::Integer)
 end
 
 function unloadObjects!(game::GameState,target::Integer)
-    for object in game.m.chunkdata[target].objects
-        idx1 = findfirst(x->x.id==object[].id,game.m.objects.data[1:game.m.objects.idx])
-        idx2 = findfirst(isequal(object[].id),game.m.objectids)
-        
-        killSprite!(game,object[].sprite)
-        popat!(game.m.objectids,idx2)
-        popat!(game.m.objects,idx1)
+    if isempty(game.m.chunkdata[target].objects); return; end
+
+    c = game.m.chunkdata[target].objects[1].chunk
+    
+    for (i,object) in Iterators.reverse(enumerate(game.m.objects[1:game.m.objects.idx]))
+        if isequal(object.chunk,c)
+            killSprite!(game,object.sprite)
+            popat!(game.m.objectids,i)
+            popat!(game.m.objects,i)
+        end
     end
 
     empty!(game.m.chunkdata[target].objects)
@@ -464,13 +468,16 @@ function unloadObjects!(game::GameState,target::Integer)
 end
 
 function unloadItems!(game::GameState,target::Integer)
-    for item in game.m.chunkdata[target].items
-        idx1 = findfirst(x->x.id==item[].id,game.m.items.data[1:game.m.items.idx])
-        idx2 = findfirst(isequal(item[].id),game.m.itemids)
-        
-        killSprite!(game,item[].sprite)
-        popat!(game.m.itemids,idx2)
-        popat!(game.m.items,idx1)
+    if isempty(game.m.chunkdata[target].items); return; end
+
+    c = game.m.chunkdata[target].items[1].chunk
+    
+    for (i,item) in Iterators.reverse(enumerate(game.m.items[1:game.m.items.idx]))
+        if isequal(item.chunk,c)
+            if item.vis; killSprite!(game,item.sprite); end
+            popat!(game.m.itemids,i)
+            popat!(game.m.items,i)
+        end
     end
 
     empty!(game.m.chunkdata[target].items)
@@ -478,8 +485,25 @@ function unloadItems!(game::GameState,target::Integer)
     return
 end
 
+function unloadSigns!(game::GameState,target::Integer)
+    if isempty(game.m.chunkdata[target].signs); return; end
+
+    c = game.m.chunkdata[target].signs[1].chunk
+
+    for (i,sign) in Iterators.reverse(enumerate(game.m.signs[1:game.m.signs.idx]))
+        if isequal(sign.chunk,c)
+            popat!(game.m.signids,i)
+            popat!(game.m.signs,i)
+        end
+    end
+
+    empty!(game.m.chunkdata[target].signs)
+
+    return
+end
+
 function unloadTeleports!(game::GameState)
-    for (i,tp) in Iterators.reverse(eachindex(game.m.teleports))
+    for (i,tp) in Iterators.reverse(enumerate(game.m.teleports[1:game.m.teleports.idx]))
         if abs(tp.cx-game.chunk.x) > game.im.c.renderdistance ||
                 abs(tp.cy-game.chunk.y) > game.im.c.renderdistance
 

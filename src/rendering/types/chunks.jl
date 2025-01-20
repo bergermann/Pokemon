@@ -7,7 +7,7 @@ mutable struct ChunkData
     npcs::Vector{Base.RefValue{NPC}}
     objects::Vector{Base.RefValue{Object}}
     items::Vector{Base.RefValue{MapItem}}
-    signs::Vector{Base.RefValue{Signs}}
+    signs::Vector{Base.RefValue{Sign}}
 
     function ChunkData()
         new(
@@ -17,7 +17,7 @@ mutable struct ChunkData
             Array{Base.RefValue{NPC}}([]),
             Array{Base.RefValue{Object}}([]),
             Array{Base.RefValue{MapItem}}([]),
-            Array{Base.RefValue{Signs}}([]),
+            Array{Base.RefValue{Sign}}([]),
         )
     end
 end

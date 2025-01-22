@@ -29,7 +29,7 @@ include("game/game.jl")
 # end
 
 function main()
-    fps = 120.
+    fps = 60.
 
     inputs, keymap = setupInputs(km); global keymap; pause = false
 

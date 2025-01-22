@@ -1,4 +1,14 @@
 
+function findNPC(game::GameState,chunk::Pos,pos::Position,fg::Bool)
+    for npc in game.m.chunkdata[game.m.idxs[chunk]].npcs
+        if npc[].fg==fg && isequal(npc[].pos,pos)
+            return true,npc[].str
+        end
+    end
+
+    return false,[""]
+end
+
 function findSign(game::GameState,chunk::Pos,pos::Position,fg::Bool)
     for sign in game.m.chunkdata[game.m.idxs[chunk]].signs
         if sign[].fg==fg && isequal(sign[].pos,pos)
@@ -9,12 +19,15 @@ function findSign(game::GameState,chunk::Pos,pos::Position,fg::Bool)
     return ["No sign found."]
 end
 
-function findEvent(game::GameState,chunk::Pos,pos::Position)
-    for event in game.m.chunkdata[game.m.idxs[chunk]].events
-        if event.px <= pos.x <= event.px+event.dx && event.py <= pos.y <= event.py+event.dy
-            @info "At event $(event.id)."
+function findEvent(game::GameState,chunk::Pos,pos::Position,fg::Bool)
+    for ev in game.m.events
+        if ev.fg==fg &&
+                16*(ev.cx-chunk.x)+ev.px <= pos.x <= 16*(ev.cx-chunk.x)+ev.px+ev.dx &&
+                16*(ev.cy-chunk.y)+ev.py <= pos.y <= 16*(ev.cy-chunk.y)+ev.py+ev.dy
 
-            return event
+            @info "At event $(ev.id)."
+
+            return ev
         end
     end
 
@@ -26,17 +39,13 @@ function mapAction!(game::GameState)
     @. game.ctrl.mchunk = modc(game.ctrl.mpos)+(game.im.c.renderdistance+1)
     @. game.ctrl.mpos = (game.ctrl.mpos+15)%16+1
 
-    # b, npc = checkTileNPC(game)
+    b, npcstr = findNPC(game,game.ctrl.mpos,game.ctrl.mchunk,1+game.ctrl.fg)
 
-    # if b
-    #     if npc.dialogue == 0    # FIX
-    #         return
-    #     end
+    if b
+        stateSetDialogue!(game,npcstr)
 
-    #     stateSetDialogue!(game,1,npc.dialogue,npc.dialoguelen)
-
-    #     return
-    # end
+        return
+    end
 
     col = getCollision(game,game.ctrl.mpos,game.ctrl.mchunk,1+game.ctrl.fg)
 
@@ -46,7 +55,7 @@ function mapAction!(game::GameState)
         return
     end
 
-    evalEvent(game,findEvent(game,game.ctrl.mchunk,game.ctrl.mpos))
+    evalEvent(game,findEvent(game,game.ctrl.mchunk,game.ctrl.mpos,game.ctrl.fg))
 
     return
 end

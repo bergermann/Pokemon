@@ -28,8 +28,8 @@ function stateInitMap!(game::GameState)
     createSprite!(game,:mc,:mc1,1,1+3*(game.ctrl.dir-1-2*(game.ctrl.dir==4)),0,-8,10,3;
         wreverse=game.ctrl.dir==4,active=true)
 
-    createText!(game,:dialogue,1,-120+8,32+4,6,"",
-        [0x00,0x00,0x00,0xff],[0xff,0xff,0xff,0xff]; maxchar=128,active=false)
+    createText!(game,:dialogue,2,-106,40,6,"",
+        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; maxchar=128,active=false)
 
     createCounter!(game,:movemain,1)
     createCallback!(game,:movemain,false,moveMain!,(game.ctrl.dir,-1))

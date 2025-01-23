@@ -2,7 +2,7 @@
 include.(joinpath.("events",readdir("src/game/events/events")))
 
 function evalEvent(game::GameState,event::Event)
-    if (event.dir != 0 && event.dir != game.direction) && !evalFlagSet(game,event.flags)
+    if (event.dir != 0 && event.dir != game.dir) && !evalFlagSet(game,event.flags)
         return
     end
 

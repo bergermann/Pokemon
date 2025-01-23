@@ -2,17 +2,18 @@
 
 function eventHealCenter!(game::GameState)
     if game.flags.general[0xc8]
-        stateSetDialogue!(game,1,4,1)
+        stateSetDialogue!(game,game.str[2][5])
 
         return
     end
 
+    game.flags.general[0xc8] = true
+
     healAll!(game)
 
-    createCC!(game,:heal,animHealCenter!,
-        ([Symbol(:ball,i) for i in 1:length(game.p.pokemon)],))
+    createCC!(game,:heal,animHealCenter!,())
 
-    stateSetDialogue!(game,1,1,2,F((game,)->(game.callbacks[:heal].active=true;
+    stateSetDialogue!(game,1,game.str[2][4],F((game,)->(game.callbacks[:heal].active=true;
         game.ctrl.input.inputlock=true; game.ctrl.input.npclock=true)),)
 
     return

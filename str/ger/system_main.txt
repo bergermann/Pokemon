@@ -1,1 +1,5 @@
 Pokédex\Pokémon\Beutel\Pokénav\ \Sichern\Optionen\Schließen
+Willkommen im Pokémon-Center! Wir heilen\deine Pokémon und machen sie wieder fit.
+Okay, ich nehme deine Pokémon für einen\Moment in meine Obhut.
+Danke! Deine Pokémon sind wieder top-fit.
+Komm jederzeit wieder vorbei!

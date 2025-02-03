@@ -2,7 +2,7 @@
 
 function stateSetDialogue!(game::GameState,str::AbstractString,callback::Callback)
     if !game.battle.active
-        game.im.b.backgrounds[:text].active = true
+        game.im.b.backgrounds[:textbox].active = true
         game.ctrl.input.npclock = true
         game.ctrl.input.map = false
         game.ctrl.input.move = false

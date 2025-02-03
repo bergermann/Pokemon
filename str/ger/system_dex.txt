@@ -1,0 +1,6 @@
+GESEHEN\
+\\GEFANGEN\
+Nr 
+Größe\Gewicht
+ m\
+ kg

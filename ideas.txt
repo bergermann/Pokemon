@@ -3,3 +3,6 @@ lapras counter
 
 optimize teleports?
 rework scene transition
+
+fix color/color
+add genders to menupkmn

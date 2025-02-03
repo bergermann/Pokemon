@@ -42,8 +42,9 @@ function teleport!(game::GameState,tx::Int,ty::Int,tcx::Int,tcy::Int)
     game.ctrl.chunk .= tcx, tcy
     
     setProjection!(game)
-
     loadChunksAll!(game)
+
+    game.flags.general[0xc8] = false
     
     return
 end

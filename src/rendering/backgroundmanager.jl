@@ -3,6 +3,7 @@
 function setupBackgrounds(game::GameState)
     game.im.b.ulocpos = glGetUniformLocation(game.im.programs[5],"pos")
     game.im.b.ulocscale = glGetUniformLocation(game.im.programs[5],"scale")
+    game.im.b.uloccolor = glGetUniformLocation(game.im.programs[5],"color")
 
     checkError("bg setup")
 
@@ -10,11 +11,12 @@ function setupBackgrounds(game::GameState)
 end
 
 function createBackground!(game::GameState,name::Symbol,path::String,x::Int,y::Int,l::Int;
-        sx::Real=1.0,sy::Real=1.0,active::Bool=true)
+        sx::Real=1.0,sy::Real=1.0,color::AbstractVector{Float32}=Float32[1,1,1,1],
+        active::Bool=true)
 
     tex, w, h = loadImage(path); checkError("create bg 0")
 
-    b = game.im.b.backgrounds[name] = Background(x,y,l,sx,sy; active=active)
+    b = game.im.b.backgrounds[name] = Background(x,y,l,sx,sy; color=color,active=active)
     buffer = Float32[
         0,0,0,0,
         w,0,1,0,

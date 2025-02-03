@@ -1,0 +1,649 @@
+Samen|0.7|6.9|Bisasam macht gern einmal ein Nickerchen im\Sonnenschein. Auf seinem Rücken trägt es einen\Samen. Indem es Sonnenstrahlen aufsaugt, wird\der Samen zunehmend größer.
+Samen|1.0|13.0|Bisaknosp hat eine Knospe auf seinem Rücken.\Beine und Rumpf sind kräftig genug, um sein\Gewicht zu tragen. Wenn es lange in der Sonne\liegt, ist das ein Anzeichen dafür, dass die\Knospe bald blüht.
+Samen|2.0|100.0|Bisaflor hat eine Blume auf seinem Rücken. Wenn\sie viel Nahrung und Sonne aufnimmt, verfärbt\sie sich bunt. Der Duft der Blume mildert die\Emotionen der Menschen.
+Echsen|0.6|8.5|Die Flamme auf seiner Schweifspitze zeigt seine\Gefühlslage an. Sie flackert, wenn Glumanda\zufrieden ist. Wenn dieses Pokémon wütend\wird, lodert die Flamme gewaltig.
+Flammen|1.1|19.0|Gnadenlos besiegt Glutexo seine Gegner mit\seinen scharfen Klauen. Wenn es auf starke\Gegner trifft, wird es wütend und die Flamme\auf seiner Schweifspitze flackert in einem\bläulichen Ton.
+Flammen|1.7|90.5|Glurak fliegt durch die Lüfte, um starke Gegner\aufzuspüren. Sein heißer Feueratem bringt\alles zum Schmelzen. Aber es richtet seinen\Feueratem nie auf schwächere Gegner.
+Minikröten|0.5|9.0|Schiggys Panzer dient nicht nur zum Schutz. Die\runde Form und die Furchen auf der Oberfläche\verringern den Widerstand im Wasser, so dass\dieses Pokémon sehr schnell schwimmen kann.
+Kröten|1.0|22.5|Schillok hat einen langen, buschigen Schweif,\dessen Farbe intensiver wird, wenn es altert.\Die Kratzer auf seinem Panzer zeugen von seiner\Kampfkraft.
+Panzertier|1.6|85.5|Turtok besitzt Wasserdüsen, die aus seinem\Panzer herausragen. Diese sind sehr präzise. Es\kann Wassergeschosse so genau verschießen, dass\es damit aus fast 50 Metern leere Dosen trifft.
+Wurm|0.3|2.9|Raupy ist sehr gefräßig, es kann Blätter\verschlingen, die größer sind als es selbst.\Seine Antennen sondern einen übel riechenden\Gestank ab.
+Kokon|0.7|9.9|Der Panzer dieses Pokémon ist hart wie Stahl.\Safcon bewegt sich kaum, da es das weiche Innere\unter seiner harten Schale auf seine Entwicklung\vorbereitet.
+Falter|1.1|32.0|Smettbos größte Fähigkeit ist das Aufspüren\köstlichen Blütenhonigs. Es findet sogar Honig\in Blumen, die fast 10 km von seinem Nest\entfernt blühen.
+Raupen|0.3|3.2|Hornliu verfügt über einen ausgezeichneten\Geruchssinn. So kann es seine Lieblingsblätter\von denen unterscheiden, die es nicht mag, indem\es mit seiner großen roten Nase daran\schnuppert.
+Kokon|0.6|10.0|Kokuna bewegt sich kaum, wenn es an einem Baum\haftet. In seinem Inneren jedoch regt sich\einiges, da es sich auf seine bevorstehende\Entwicklung vorbereitet. Dabei wird seine Schale\sehr heiß.
+Giftbienen|1.0|29.5|Bibor sind sehr wehrhaft. Es sollte sich besser\niemand ihrem Nest nähern. Wenn man sie\ärgert, greifen sie in Schwärmen an.
+Kleinvogel|0.3|1.8|Taubsi verfügt über einen sehr geschulten\Orientierungssinn. Es kehrt zielsicher zu seinem\Nest zurück, egal, wie weit es sich von seiner\gewohnten Umgebung entfernt hat.
+Vogel|1.1|30.0|Tauboga nennt ein großes Gebiet sein Eigen. Es\fliegt umher und kontrolliert seinen Lebensraum.\Wenn jemand sein Gebiet betritt, zeigt es keine\Gnade und greift seine Gegner mit seinen\scharfen Krallen an.
+Vogel|1.5|39.5|Dieses Pokémon hat ein wunderschönes,\glänzendes Gefieder. Viele Trainer sind von der\auffälligen Schönheit seines Federkleids\begeistert, so dass sie Tauboss als ihr Pokémon\wählen.
+Maus|0.3|3.5|Rattfratz ist extrem vorsichtig. Sogar im Schlaf\nimmt es alles wahr, indem es seine Ohren\bewegt. Es stellt keine großen Ansprüche an\seinen Lebensraum und richtet sein Nest überall\ein.
+Maus|0.7|18.5|Rattikarls kräftige Zähne wachsen ständig.\Deshalb nagt es unablässig Steine und\Baumstämme an, um sie abzuwetzen. Manchmal\knabbert es sogar Hauswände an.
+Kleinvogel|0.3|2.0|Habitak kann einen sehr lauten Schrei\ausstoßen, den man über die Entfernung von 1\km vernehmen kann. Durch das Echo seiner hohen,\wehklagenden Schreie warnt dieses Pokémon seine\Artgenossen vor drohender Gefahr.
+Pickvogel|1.2|38.0|Ibitak erkennt man an seinem langen Hals und\Schnabel. Er ist hervorragend dafür geeignet,\im Erdreich oder im Wasser Beute zu jagen. Es\setzt seinen langen, dünnen Schnabel dabei sehr\geschickt ein.
+Schlangen|2.0|6.9|Rettan rollt sich zu einer Spirale zusammen,\wenn es sich ausruht. Aus dieser Haltung kann es\blitzschnell auf Bedrohungen aus allen\Richtungen reagieren, indem es seinen Kopf hebt.
+Kobra|3.5|65.0|Dieses Pokémon ist unheimlich stark. Es kann\seine Beute mit seinem Körper umwickeln und\sogar Ölfässer zerdrücken. Wenn Arbok einen\Gegner umwickelt, ist es unmöglich, seinem\Würgegriff zu entkommen.
+Maus|0.4|6.0|Immer wenn Pikachu auf etwas Neues stößt, jagt\es einen Elektroschock hindurch. Wenn du eine\verkohlte Beere findest, hat dieses Pokémon\seine elektrische Ladung falsch eingeschätzt.
+Maus|0.8|30.0|Wenn seine elektrische Ladung zu groß wird,\entlädt Raichu seine Energie ins Erdreich.\Neben dem Nest dieses Pokémon findet man\häufig versengtes Erdreich.
+Maus|0.6|12.0|Sandans Körper kann sehr viel Wasser aufnehmen,\so dass es auch in der Wüste überleben kann.\Dieses Pokémon rollt sich zusammen, um sich vor\Feinden zu schützen.
+Maus|1.0|29.5|Sandamers Körper ist übersät mit spitzen\Stacheln, die eigentlich Hauthärtungen\darstellen. Einmal im Jahr fallen die alten\Stacheln aus und werden durch neue ersetzt.
+Giftdorn|0.4|7.0|Nidoran besitzt Widerhaken, die ein starkes Gift\ausstoßen. Sie sind vermutlich zum Schutz\dieses schmächtigen Pokémon entstanden. Wenn\es wütend wird, stößt es ein gefährliches\Gift aus seinem Horn aus.
+Giftdorn|0.8|20.0|Wenn Nidorina mit seinen Freunden oder seiner\Familie zusammen ist, zieht es seine Widerhaken\ein, damit es niemanden verletzt. Dieses\Pokémon wird nervös, wenn man es von seinen\Artgenossen trennt.
+Bohrer|1.3|60.0|Nidoqueens Körper ist mit sehr harten Schuppen\bedeckt. Es ist sehr geschickt darin, Gegner mit\starken Attacken wegzuschleudern. Dieses\Pokémon entwickelt am meisten Kraft, wenn es\seine Jungen verteidigt.
+Giftdorn|0.5|9.0|Das männliche Nidoran hat Muskeln entwickelt,\um seine Ohren bewegen zu können. Dadurch kann\es sie in jede beliebige Richtung drehen. Diesem\Pokémon entgeht nicht einmal das leiseste\Geräusch.
+Giftdorn|0.9|19.5|Nidorino besitzt ein Horn, das sogar härter ist\als ein Diamant. Wenn es einen Feind wahrnimmt,\stellen sich all die Widerhaken auf seinem\Rücken auf und es schlägt den Gegner mit aller\Kraft in die Flucht.
+Bohrer|1.4|62.0|Nidokings Schweif ist enorm stark. Mit einer\Bewegung kann es einen metallenen Sendemast zum\Einsturz bringen. Wenn es in Rage gerät, ist es\nur schwer aufzuhalten.
+Feen|0.6|7.5|In Vollmondnächten sammeln sich einige dieser\Pokémon, um zu spielen. Wird es Tag, kehrt\Piepi zu seinem Zufluchtsort in den Bergen\zurück und schläft eingekuschelt neben seinen\Artgenossen ein.
+Feen|1.3|40.0|Pixi bewegt sich fort, indem es leicht mit den\Flügeln schlägt. Durch seinen federnden Gang\kann es sogar über Wasser gehen. Bei Mondschein\unternimmt es Spaziergänge auf Seen.
+Fuchs|0.6|9.9|Vulpix kommt mit einem weißen Schweif zur Welt.\Dieser teilt sich sechsfach, wenn das Pokémon\von seinem TRAINER viel Zuneigung bekommt. Seine\sechs Schweife kräuseln sich schließlich.
+Fuchs|1.1|19.9|Vulnona sendet einen unheimlichen Lichtstrahl\aus seinen hellroten Augen aus, um totale\Kontrolle über die Gedanken seines Gegners zu\erlangen. Man sagt, dieses Pokémon könne 1000\Jahre leben.
+Ballon|0.5|5.5|Pummeluffs Stimmbänder können die Tonlage\seiner Stimme beliebig variieren. Dieses\Pokémon benutzt diese Fähigkeit, um seine\Gegner mit monotonem Gesang in Tiefschlaf zu\versetzen.
+Ballon|1.0|12.0|Knuddeluff hat handtellergroße Augen, die immer\mit Tränenflüssigkeit bedeckt sind. Gerät\Staub in die Augen dieses Pokémon, so wird\dieser sofort ausgespült.
+Fledermaus|0.8|7.5|Tagsüber bleibt Zubat an einem dunklen Ort und\bewegt sich kaum. Wenn es dem Sonnenlicht\längere Zeit ausgesetzt wird, zieht es sich\Verbrennungen an seinem Körper zu.
+Fledermaus|1.6|55.0|Golbat hat es auf das Blut von Lebewesen\abgesehen. Im Schutze der Nacht wird es\besonders aktiv. Dieses Pokémon fliegt durch\die Nacht, um nach frischem Blut zu suchen.
+Unkraut|0.5|5.4|Am Tage vergräbt sich Myrapla im Boden, um mit\seinem ganzen Körper Nahrung aufzunehmen. Je\fruchtbarer der Boden ist, desto glänzender\werden seine Blätter.
+Unkraut|0.8|8.6|Duflor produziert einen Ekel erregenden Gestank\aus dem Stempel seiner Blume. Wenn es in Gefahr\gerät, wird der Gestank noch unerträglicher.\Wenn sich dieses Pokémon in Sicherheit\befindet, stößt es keinen Gestank aus.
+Blumen|1.2|18.6|Giflors giftige Pollen rufen böse allergische\Anfälle hervor. Deshalb ist es ratsam, sich\keiner schönen Blume im Dschungel zu nähern,\so anziehend sie auch sein mag.
+Pilz|0.3|5.4|Auf Paras’ Rücken wachsen parasitäre Pilze,\die Tochukaso genannt werden. Sie wachsen, indem\sie dem KÄFER/PFLANZEN-PKMN Nährstoffe\entziehen. Sie sind sehr wertvoll als\lebensverlängernde Medizin.
+Pilz|1.0|29.5|Parasek sucht große Bäume heim und entzieht\Nährstoffe aus Stamm und Wurzeln. Wenn ein\befallener Baum stirbt, sucht es sich zusammen\mit seinen Artgenossen einen neuen Wirt.
+Insekten|1.0|30.0|Bluzuk hat einen Pelz aus dünnen Borsten\entwickelt, der dem Schutz seines Körpers\dient. Es hat große Augen, denen auch winzig\kleine Beute nicht entgeht.
+Giftmotten|1.5|12.5|Omot ist ein nachtaktives Pokémon. Kleine\Insekten, die vom Licht in der Dunkelheit\angezogen Straßenlaternen umschwärmen, sind\seine bevorzugte Beute.
+Maulwurf|0.2|0.8|Digda wird zumeist auf Farmen gezüchtet. Denn\wo auch immer dieses Pokémon zu graben beginnt,\hinterlässt es Erde, die für das Anpflanzen\von Feldfrüchten perfekt geeignet und für den\Anbau köstlichen Gemüses ideal ist.
+Maulwurf|0.7|33.3|Digdri sind Drillinge, die aus einem Körper\entstanden sind. Daher denken alle Köpfe\gleich. Sie arbeiten so gut zusammen, dass sie\endlos graben können.
+Katzen|0.4|4.2|Mauzi zieht seine scharfen Krallen ein, um\umherschleichen zu können, ohne verräterische\Spuren zu hinterlassen. Dieses Pokémon hat eine\Vorliebe für Münzen, die im Licht glitzern.
+Rassekatzen|1.0|32.0|Snobilikat hat sechs dicke Schnurrhaare, wodurch\es Furcht einflößend wirkt. Durch diese nimmt\es wahr, wenn sich etwas in seiner Nähe bewegt.\Es wird sehr zutraulich, wenn man es an den\Schnurrhaaren berührt.
+Enten|0.8|19.6|Enton verwendet eine geheimnisvolle Kraft. Dabei\erzeugt es Gehirnströme, die man sonst nur von\Schlafenden kennt. Diese Entdeckung führte zu\einer umstrittenen Diskussion unter\Wissenschaftlern.
+Enten|1.7|76.6|Die schwimmhäutigen Flossen an seinen Vorder-\und Hinterbeinen und der stromlinienförmige\Körper machen Entoron unheimlich schnell.\Dieses Pokémon ist auf jeden Fall schneller als\die meisten Hochleistungsschwimmer.
+Schwein/Affen|0.5|28.0|Wenn Menki sich schüttelt und schwer durch die\Nase atmet, dann ist es wütend. Da es\blitzartig in Raserei gerät, ist es unmöglich\seinem Zorn zu entkommen.
+Schwein/Affen|1.0|32.0|Wenn Rasaff wütend ist, wird seine\Blutzirkulation gesteigert und seine Muskeln\werden noch stärker. Allerdings mindert das\auch die Fähigkeit zum logischen Denken.
+Welpen|0.7|19.0|Fukano hat einen ausgezeichneten Geruchssinn.\Wenn dieses Pokémon einmal einen Geruch\wahrgenommen hat, vergisst es ihn nicht mehr. Es\benutzt diese Fähigkeit dazu, die Gefühlslage\von Lebewesen auszuloten.
+Legendär|1.9|155.0|Arkani ist sehr schnell. Es kann an einem Tag\fast 10.000 km zurücklegen. Das Feuer, das im\Innern dieses Pokémon lodert, dient ihm als\Energiequelle.
+Kaulquappen|0.6|12.4|Quapsel hat eine sehr dünne Haut. Durch sie\hindurch kann man sogar sein spiralförmiges\Inneres sehen. Obwohl seine Haut so dünn ist,\ist sie sehr elastisch. Selbst scharfe\Reißzähne können sie nicht durchdringen.
+Kaulquappen|1.0|20.0|Quaputzis Körper ist immer feucht und\glitschig. Dadurch kann es während eines\Kampfes leicht der Umklammerung eines Gegners\entkommen.
+Kaulquappen|1.3|54.0|Quappo besitzt hochentwickelte, starke Muskeln,\die niemals ermüden, egal, wie sehr es sie auch\beansprucht. Es ist so kräftig, dass es\mühelos den Pazifik durchschwimmen kann.
+Psi|0.9|19.5|Abra schläft 18 Stunden am Tag. Es nimmt die\Gegenwart von Feinden aber auch im Schlaf wahr.\In einer solchen Situation bringt es sich\umgehend mit Teleport in Sicherheit.
+Psi|1.3|56.5|Kadabra sendet Alphawellen aus, wenn es\Kopfschmerzen hat. Nur wer eine besonders starke\Psyche hat, kann dieses Pokémon unter seine\Fittiche nehmen.
+Psi|1.5|48.0|Simsalas Gehirn hört nicht auf zu wachsen, so\dass sein Kopf zu schwer für seine\Nackenmuskulatur wird. Dieses Pokémon hält\seinen Kopf mit psychokinetischer Energie\aufrecht.
+Kraftprotz|0.8|19.5|Machollos Muskeln sind etwas Besonderes. Sie\schmerzen nie, egal, wie sehr sie beansprucht\werden. Dieses Pokémon hat genug Kraft, um 100\Erwachsene umherzuwerfen.
+Kraftprotz|1.5|70.5|Maschocks starke Muskeln sind so hart wie Stahl.\Dieses Pokémon hat so viel Kraft, dass es mit\nur einem Finger einen Sumo-Ringer in der Luft\halten kann.
+Kraftprotz|1.6|130.0|Machomei hat genug Kraft, um alles Mögliche zu\stemmen. Bei Tätigkeiten, die Geschick und\Sorgfalt erfordern, machen es ihm seine Arme\jedoch nicht leicht. Dieses Pokémon neigt dazu,\zuerst zu handeln und dann zu denken.
+Blumen|0.7|4.0|Knofensas schlanker und elastischer Körper\ermöglicht es ihm, jedem Angriff auszuweichen,\so heftig dieser auch sein mag. Dieses Pokémon\spuckt eine ätzende Flüssigkeit aus, die sogar\Eisen zersetzen kann.
+Fliegentod|1.0|6.4|Ultrigaria hat einen großen Haken an seinem\Hinterteil. Nachts hängt sich dieses Pokémon\zum Schlafen an einen Ast. Wenn es sich im\Schlaf bewegt, kann es passieren, dass es auf\dem Boden wieder aufwacht.
+Fliegentod|1.7|15.5|Aus Sarzenias Kopf ragt eine lange Ranke hervor.\Diese schwingt hin und her, als ob sie etwas\fangen möchte. Wenn sich ahnungslose Beute\nähert, wird sie von diesem Pokémon im Ganzen\verschlungen.
+Quallen|0.9|45.5|Tentachas Körper setzt sich zum größten Teil\aus Wasser zusammen. Wenn es das Meer verlässt,\vertrocknet es. Wenn dieses Pokémon\auszutrocknen beginnt, sollte man es schnell\wieder ins Wasser zurückbringen.
+Quallen|1.6|55.0|Tentoxa hat große, rote Kugeln auf seinem Kopf.\Sie glühen auf, bevor sie seine Gegner mit\Ultraschall erschüttern. Ein Ausbruch dieses\Pokémon erzeugt starke Wellen in seiner\Umgebung.
+Gesteins|0.4|20.0|Je länger ein Kleinstein lebt, desto mehr wird\seine raue Oberfläche abgeschliffen, so dass es\runder wird. Das Herz dieses Pokémon bleibt\aber für immer versteinert, hart und rau.
+Gesteins|1.0|105.0|Georok wächst, indem es sich von Steinen\ernährt. Am liebsten mag es Steine, die mit\Moos überzogen sind. Dieses Pokémon frisst\sich täglich durch eine riesige Menge von\Steinen.
+Urgesteins|1.4|300.0|Geowaz lebt hoch in den Bergen. Gibt es ein\starkes Erdbeben, rollt dieses Pokémon so lange\den Berg hinunter, bis es schließlich unten\angekommen ist.
+Feuerpferd|1.0|30.0|Nach seiner Geburt ist Ponita so schwach, dass\es kaum von alleine aufstehen kann. Dieses\Pokémon wird dadurch schnell stärker, dass es\sich beim Versuch, mit seinen Eltern Schritt zu\halten, immer wieder aufrappeln muss.
+Feuerpferd|1.7|95.0|Man kann Gallopa dabei beobachten, wie es\lässig über Felder und Wiesen galoppiert. Wenn\dieses Pokémon jedoch Ernst macht, erreicht es\bis zu 240 km/h. Dann beginnt seine Mähne zu\lodern.
+Schnarcher|1.2|36.0|Flegmon benutzt seinen Schweif, um Beute zu\fangen, indem es ihn an einem Flussufer ins\Wasser taucht. Dieses Pokémon vergisst häufig,\was es gerade tun wollte, und verbringt ganze\Tage damit, am Ufer herumzutrödeln.
+Symbiose|1.6|78.5|An Lahmus’ Rute hat sich ein Muschas\festgebissen. Daher kann es ihn nicht mehr zum\Angeln benutzen und es ist dazu gezwungen,\umherzuschwimmen und nach Beute Ausschau zu\halten.
+Magnet|0.3|6.0|Magnetilo ernährt sich von Elektrizität aus\Stromleitungen. Dieses Pokémon hängt sich gern\an Sicherungskästen. Wenn es in deinem Haus zu\einem Stromausfall kommt, solltest du die\Sicherungen überprüfen.
+Magnet|1.0|60.0|Magneton erzeugt ein sehr starkes Magnetfeld,\das Maschinen zerstören kann. Deshalb hört man\in großen Städten oft Sirenen, die die Bürger\vor Scharen dieses Pokémon warnen sollen.
+Wildenten|0.8|15.0|Porenta trifft man immer mit einer Lauchstange\an. Es gibt gute und schlechte Stangen. Dieses\Pokémon kämpft mit Hilfe seiner Stange gegen\seine Gegner.
+Duovogel|1.4|39.2|Dodu hat zwei Köpfe, die nie zur selben Zeit,\sondern abwechselnd schlafen. Während ein Kopf\schläft, hält der andere Ausschau nach\Feinden.
+Trivogel|1.8|85.2|Dodris drei Köpfe blicken in drei verschiedene\Richtungen. Es ist immer auf der Hut. Du\solltest dich diesem Pokémon nicht nähern,\wenn es bereits misstrauisch ist. Es könnte\nach dir hacken.
+Seehund|1.1|90.0|Jurob jagt unter der eisigen Oberfläche des\Eismeeres nach Beute. Zum Luft holen schlägt es\mit dem vorstehenden Teil seines Kopfes ein Loch\ins Eis.
+Seehund|1.7|120.0|Jugong liebt es, auf bitterkalten Eisschollen\ein Nickerchen zu machen. Ein Seemann, der\einmal ein solches Pokémon schlafend auf einem\Eisberg sah, hielt es irrtümlicherweise für\eine Meerjungfrau.
+Schlamm|0.9|30.0|Sleimas glitschiger, gummiartiger Körper passt\durch jede noch so kleine Öffnung. Dieses\Pokémon steigt in die Kanalisation hinab, um\fauliges Abwasser zu trinken.
+Schlamm|1.2|30.0|Sleimok scheidet eine widerlich stinkende\Substanz aus. Ein einziger Tropfen seiner\Körpersubstanz reicht aus, um ein Gewässer zu\verseuchen.
+Muschel|0.3|4.0|Nachts benutzt dieses Pokémon seine breite\Zunge, um ein Loch in den Meeresboden zu graben.\Darin schläft es. Dabei schließt es seine\Schale, aber die Zunge hängt heraus.
+Muschel|1.5|132.5|Austos kann im Meerwasser schwimmen, indem es\Wasser schluckt und wieder herausspritzt. Dieses\Pokémon kann sich auch verteidigen, indem es\spitze Stacheln mit Hilfe des Wasserdrucks\verschießt.
+Gas|1.3|0.1|Nebulak hat einen gasförmigen Körper. Wenn es\starkem Wind ausgesetzt wird, kann es\davongeweht werden. Scharen dieses Pokémon\sammeln sich unter Dachrinnen, um sich vor dem\gefährlichen Wind zu schützen.
+Gas|1.6|0.1|Alpollo ist ein gefährliches Pokémon. Wenn es\dich zu sich lockt, während es durch die\Dunkelheit schwebt, darfst du ihm keinesfalls zu\nahe kommen. Dieses Pokémon wird versuchen, an\dir zu lecken und dein Leben zu stehlen.
+Schatten|1.5|40.5|Nachts kann es passieren, dass dich dein\Schatten im Licht einer Straßenlaterne\plötzlich überholt. Dann ist es ein Gengar,\das an dir vorbeiläuft und sich als dein\Schatten ausgibt.
+Felsnatter|8.8|210.0|Onix hat einen Magneten in seinem Gehirn. Er\dient ihm als Kompass, so dass es beim Graben\von Tunneln nicht die Orientierung verliert.\Wenn es älter wird, wird sein Körper immer\runder und glatter.
+Hypnose|1.0|32.4|Wenn dir im Schlaf die Nase juckt, ist das ein\sicheres Zeichen dafür, dass eines dieser\Pokémon auf deinem Kissen sitzt, um deinen\Traum durch deine Nasenlöcher hindurch zu\verspeisen.
+Hypnose|1.6|75.6|Hypno hält ein Pendel in der Hand. Das\Schwingen und Glitzern des Pendels versetzt\seine Feinde in eine tiefe Hypnose. Während\dieses Pokémon auf der Suche nach Beute ist,\poliert es sein Pendel.
+Krabben|0.4|6.5|Krabby lebt an Stränden, in Löchern im Sand.\An Sandstränden, an denen es wenig Nahrung\findet, sieht man dieses Pokémon mit\Artgenossen um sein Revier streiten.
+Kneifer|1.3|60.0|Kingler hat eine riesige Schere. Es winkt damit,\um mit anderen zu kommunizieren. Da seine Schere\aber so schwer ist, wird dieses Pokémon schnell\müde.
+Ball|0.5|10.4|Voltobal wurde zuerst bei einer Firma\beobachtet, die POKéBÄLLE herstellt. Der\Zusammenhang zwischen dieser Beobachtung und der\Tatsache, dass dieses Pokémon wie ein Pokéball\aussieht, ist noch ungeklärt.
+Ball|1.2|66.6|Lektrobal ernährt sich von Elektrizität aus\der Atmosphäre. An Tagen, an denen es blitzt,\explodiert dieses Pokémon dauernd, da es zu\viel Elektrizität zu sich nimmt.
+Ei|0.4|2.5|Dieses Pokémon besteht aus sechs Eiern, die ein\engmaschiges Netz bilden. Die sechs Eier ziehen\sich gegenseitig an und drehen sich. Wenn die\Eier Risse bekommen, steht Owei kurz vor seiner\Entwicklung.
+Palmfrucht|2.0|120.0|Kokowei stammt ursprünglich aus den Tropen.\Seine Köpfe wachsen stetig, wenn es starkem\Sonnenlicht ausgesetzt ist. Wenn seine Köpfe\abfallen, bilden sie zusammen ein OWEI.
+Einsam|0.4|6.5|Tragosso sehnt sich nach seiner Mutter, die\nicht mehr da ist. Wenn es im Vollmond das\Ebenbild seiner Mutter erblickt, muss es weinen.\Die Flecken auf dem Totenkopf, den es trägt,\stammen von vergossenen Tränen.
+Knochenfan|1.0|45.0|Knogga ist eine entwickelte Form von Tragosso,\die den Verlust der Mutter überwunden hat und\stärker geworden ist. Die temperamentvolle und\gestärkte Seele dieses Pokémon ist nur schwer\zu brechen.
+Kicker|1.5|49.8|Kicklee kann seine Beine ausfahren und\einziehen. Es verblüfft seine Gegner mit\brutalen Tritten. Nach einem Kampf massiert es\seine Beine und lockert die Muskeln, um der\Erschöpfung vorzubeugen.
+Puncher|1.4|50.2|Nockchan besitzt das Herz eines Boxers, der sich\auf eine Weltmeisterschaft vorbereitet. Dieses\Pokémon hat einen unbeugsamen Willen und gibt\niemals auf.
+Schlecker|1.2|65.5|Wenn Schlurp etwas Neues entdeckt, leckt es\daran. Es merkt sich Gegenstände anhand der\Struktur und des Geschmacks. Saure Sachen\schrecken es eher ab.
+Giftwolken|0.6|1.0|Wenn Smogon sich aufregt, lässt es das giftige\Gas in seinem Inneren entweichen. Wenn es sich\zu sehr aufbläht, explodiert dieses Pokémon.
+Giftwolken|1.2|9.5|Smogmog liebt die Gase verrottender, fauler\Küchenabfälle. Dieses Pokémon sucht sich ein\vernachlässigtes, schmutziges Gebäude und\richtet sich dort häuslich ein. Nachts, wenn\die Menschen schlafen, wühlt es im Müll.
+Stachler|1.0|115.0|Rihorn läuft immer geradeaus und zerstampft\alles, was ihm in die Quere kommt. Es macht ihm\auch nichts aus, wenn es mit dem Kopf voran\gegen einen Stahlklotz rennt. Am nächsten Tag\allerdings könnte es Schmerzen haben.
+Bohrer|1.9|120.0|Mit seinem Horn kann Rizeros selbst Diamanten\zerbrechen. Ein einziger Hieb mit seinem Schweif\kann ein Haus zum Einsturz bringen. Die Haut\dieses Pokémon ist so hart, dass nicht einmal\Kanonenkugeln Kratzer hinterlassen.
+Ei|1.1|34.6|Chaneira legt täglich ausgesprochen nahrhafte\Eier. Sie sind so köstlich, dass sie sogar von\Menschen verspeist werden, die gar keinen\Appetit haben.
+Ranken|1.0|35.0|Wenn man Tangelas Ranken berührt, fallen diese\sofort ab. Das tut ihm aber nicht weh und es\kann sich schnell in Sicherheit bringen.\Verliert es Ranken, werden diese am nächsten\Tag durch neue ersetzt.
+Muttertier|2.2|80.0|Wenn du auf ein spielendes Kangama stößt,\solltest du es nicht stören oder versuchen, es\einzufangen. Die Mutter dieses Baby-Pokémon ist\bestimmt in Reichweite und könnte sehr wütend\auf dich werden.
+Drachen|0.4|8.0|Seeper ernährt sich von kleinen Insekten und\dem Moos auf Steinen. Bei unruhiger See\verankert sich dieses Pokémon mit seinem\Schweif an Steinen oder Korallen, damit es nicht\weggespült wird.
+Drachen|1.2|25.0|Sobald sich Seemon um eine Koralle gewickelt\hat, schläft es. Von Zeit zu Zeit werden\Menschen durch die Widerhaken dieses Pokémon\verletzt, wenn sie versuchen, Korallen zu ernten\und es dabei nicht bemerken.
+Goldfisch|0.6|15.0|Goldini ist ein wunderschönes Pokémon, dessen\Flossen sich elegant im Wasser wiegen. Aber man\muss auf dieses Pokémon Acht geben. Es könnte\einen sonst heftig mit seinem Horn rammen.
+Goldfisch|1.3|39.0|Im Herbst kann man männliche Golking dabei\beobachten, wie sie Balztänze in Flussbetten\aufführen, um die weiblichen Exemplare zu\beeindrucken. Während dieser Zeit ist die Farbe\dieser Pokémon am schönsten.
+Sternform|0.8|34.5|In Sterndus Körpermitte befindet sich ein\hellrot leuchtendes Organ - sein Kern. Wenn du\im Spätsommer an einen Strand gehst, sehen die\leuchtenden Kerne dieser Pokémon aus wie\Sterne.
+Mysteriös|1.1|80.0|Starmies Mittelteil, sein Kern, leuchtet in\sieben Farben. Aufgrund dieser Eigenschaft wird\es auch “Juwel des Meeres” genannt.
+Sperren|1.3|54.5|Pantimos ist ein Meister der Pantomime. Seine\Gesten und Bewegungen machen den Zuschauer\glauben, dass etwas Unsichtbares tatsächlich\existiert. Wenn ein Objekt für real gehalten\wird, beginnt es wirklich zu existieren.
+Mantis|1.5|56.0|Sichlor ist unheimlich schnell. Dadurch werden\die beiden Sensen an seinen Unterarmen noch\effektiver. Dieses Pokémon kann mit seinen\Sensen in Sekundenschnelle Baumstämme\zerteilen.
+Humanotyp|1.4|40.6|Rossana bewegt sich rhythmisch fort. Es wiegt\und schwingt seine Hüften, als würde es\tanzen. Seine Bewegungen wirken so anziehend auf\Menschen, dass diese beginnen, mit den Hüften\zu schwingen, ohne darüber nachzudenken.
+Elektro|1.1|30.0|Bei Gewitter konkurrieren diese Pokémon darum,\wie viele Spannungseinheiten sie erreichen, wenn\sie vom Blitz getroffen werden. Einige\Ortschaften benutzen Elektek an Stelle von\Blitzableitern.
+Brenner|1.3|44.5|Im Kampf stößt Magmar glühend heiße Flammen\aus, um seinen Gegner einzuschüchtern. Diese\Feuersalven erzeugen Hitzewellen, die das Gras\und die Bäume der Umgebung in Brand setzen.
+Kneifkäfer|1.5|55.0|Pinsir ist erstaunlich stark. Es kann einen\Feind, der doppelt so viel wiegt wie es selbst,\mit seinen Hörnern packen und hochheben. Bei\niedrigen Temperaturen werden die Bewegungen\dieses Pokémon schwerfällig.
+Wildbullen|1.4|88.4|Dieses Pokémon ist nur zufrieden, wenn es\kämpfen kann. Wenn Tauros keinen Gegner findet,\sucht es sich starke Bäume und lässt sich an\ihnen aus, um sich abzureagieren.
+Fisch|0.9|10.0|Karpador ist ein armseliges Pokémon, das nur\platschen kann. Sein merkwürdiges Verhalten hat\so manchen Wissenschaftler zum Forschen\angeregt.
+Grausam|6.5|235.0|Wenn sich Karpador zu Garados entwickelt,\durchlaufen seine Gehirnzellen eine strukturelle\Veränderung, was wohl der Grund für die\zügellose, gewalttätige Natur dieses Pokémon\ist.
+Transport|2.5|220.0|Die Menschen sind dafür verantwortlich, dass\Lapras fast ausgestorben wäre. Abends singt es\traurige Klagelieder, da nur noch wenige seiner\Artgenossen übrig sind.
+Transform|0.3|4.0|Ditto verändert seine Zellstruktur, um sich in\eine andere Form zu verwandeln. Wenn es sich\dabei jedoch auf sein Gedächtnis verlässt,\unterlaufen diesem Pokémon schon mal Fehler.
+Evolutions|0.3|6.5|Evolis genetisches Erbmaterial ist so instabil,\dass die Umgebung Mutationen auslösen kann. Die\Wirkung verschiedener Steine führt zur\Entwicklung dieses Pokémon.
+Blubbblasen|1.0|29.0|Aquana hat eine spontane Mutation durchgemacht\und ihm sind Flossen und Kiemen gewachsen.\Dadurch kann es unter Wasser leben. Dieses\Pokémon kann Wasser nach Belieben manipulieren.
+Blitz|0.8|24.5|Blitzas Zellen erzeugen schwache Elektrizität.\Diese wird aber durch die statische Aufladung\seines Fells verstärkt, so dass es\Blitzschläge erzeugen kann. Sein Fell besteht\aus elektrisch geladenen Nadeln.
+Feuer|0.9|25.0|Flamaras flauschiges Fell dient einem besonderen\Zweck. Es gibt Hitze an die Luft ab, damit sein\Körper nicht zu heiß wird. Die\Körpertemperatur dieses Pokémon kann bis auf\900 Grad ansteigen.
+Virtuell|0.8|36.5|Porygon ist in der Lage, sich in Daten\zurückzuverwandeln und in den Cyberspace zu\gelangen. Dieses Pokémon ist kopiergeschützt,\so dass es durch Kopieren nicht vervielfältigt\werden kann.
+Spiralen|0.4|7.5|Amonitas ist ein Pokémon, das seit langer Zeit\ausgestorben war, aber von den Menschen aus\Fossilien reproduziert wurde. Wenn es von einem\Feind angegriffen wird, zieht es sich in sein\hartes Gehäuse zurück.
+Spiralen|1.0|35.0|Amoroso benutzt seine Tentakel, um Beute\einzufangen. Man nimmt an, dass es ausgestorben\ist, weil seine Schale zu groß und zu schwer\geworden war, so dass seine Bewegungen immer\langsamer und schwerfälliger wurden.
+Schaltier|0.5|11.5|Kabuto ist ein Pokémon, das aus einem Fossil\reproduziert wurde. Höchst selten wurden\lebende Exemplare dieser Art entdeckt. Dieses\Pokémon hat sich seit 300 Mio. Jahren\überhaupt nicht verändert.
+Schaltier|1.3|40.5|In der Antike jagte Kabutops unter Wasser nach\Beute. Es hat sich von einem Meeresbewohner zu\einem Landbewohner entwickelt, was man an den\Veränderungen seiner Kiemen und Beine sehen\kann.
+Fossil|1.8|59.0|Aerodactyl ist ein Pokémon aus dem Zeitalter\der Dinosaurier. Es wurde aus genetischem\Material reproduziert, das aus Bernstein\gewonnen wurde. Man geht davon aus, dass es in\der Antike der König der Lüfte war.
+Tagträumer|2.1|460.0|Der typische Tagesablauf von Relaxo besteht\lediglich aus Essen und Schlafen. Es ist so\zutraulich, dass Kinder seinen dicken Bauch als\Platz zum Spielen nutzen.
+Eis|1.7|55.4|Arktos ist ein sagenumwobenes Vogel-Pokémon,\das Eis manipulieren kann. Das Schlagen seiner\Flügel bringt die Luft zum Gefrieren. Es wird\behauptet, dass es zu schneien beginnt, wenn\dieses Pokémon fliegt.
+Elektro|1.6|52.6|Zapdos ist ein legendäres Vogel-Pokémon, das\die Fähigkeit besitzt, Elektrizität zu\manipulieren. Es lebt in Gewitterwolken. Dieses\Pokémon nimmt Energie auf, wenn es vom Blitz\getroffen wird.
+Flammen|2.0|60.0|Lavados ist ein legendäres Vogel-Pokémon, das\Feuer manipulieren kann. Wenn es verletzt wird,\taucht es seinen Körper in das Magma eines\Vulkans, um sich zu verbrennen und selbst zu\heilen.
+Drachen|1.8|3.3|Dratini häutet sich ständig und entledigt sich\so seiner Haut, da die Lebensenergie in seinem\Körper stetig und unkontrollierbar ansteigt.
+Drachen|4.0|16.5|Dragonir speichert eine enorme Menge an Energie\in seinem Körper. Es kann die Witterung in\seiner Umgebung ändern, indem es Energie aus\den Kristallen an seinem Nacken und an seinem\Schweif entlädt.
+Drachen|2.2|210.0|Dragoran kann die Welt innerhalb von 16 Stunden\umkreisen. Es ist ein gutherziges Pokémon, das\vermisste und sinkende Schiffe bei Unwetter\sicher an Land zurückbringt.
+Genmutanten|2.0|122.0|Mewtu ist ein Pokémon, das durch\Genmanipulation entstanden ist. Die Menschen\haben es zwar mit ihrem wissenschaftlichen\Sachverstand erzeugt, aber nicht mit einem\mitfühlenden Herzen ausgestattet.
+Neue Art|0.4|4.0|Mew soll die genetische Zusammensetzung aller\Pokémon besitzen. Es kann sich unsichtbar\machen, so dass es sich auch Menschen nähern\kann, ohne bemerkt zu werden.
+Laub|0.9|6.4|Im Kampf wedelt Endivie mit seinem Blatt, um den\Feind fern zu halten. Von dem Blatt geht auch\ein süßlicher Duft aus, der die kämpfenden\Pokémon beruhigt und eine gemütliche,\freundliche Atmosphäre schafft.
+Laub|1.2|15.8|Lorblatts Nacken ist mit zusammengerollten\Blättern behangen. In jedem Blatt befindet sich\ein kleiner Trieb eines Baumes. Der Duft dieses\Triebes bringt Menschen auf Trab.
+Kräuter|1.8|100.5|Der Duft von Meganies Blume besänftigt\Gemüter. Im Kampf gibt dieses Pokémon mehr von\seinem beruhigenden Duftstoff ab, um den\Kampfgeist des Gegners zu schwächen.
+Feuermaus|0.5|7.9|Feurigel lässt Flammen aus seinem Rücken\lodern, wenn es sich schützen muss. Die Flammen\sind sehr verzehrend, wenn dieses Pokémon\wütend ist. Ist es aber müde, flackern die\Flammen nur unregelmäßig und schwach.
+Vulkan|0.9|19.0|Igelavar hält seine Gegner mit Flammen und\Böen heißer Luft auf Distanz. Dieses Pokémon\nutzt seine außergewöhnliche Gewandtheit dazu,\Angriffen auszuweichen und seinen Gegner\gleichzeitig zu versengen.
+Vulkan|1.7|79.5|Tornupto versteckt sich hinter einem flimmernden\Hitzeschild, den es mit Hilfe seiner heißen\Flammen erzeugt. Dieses Pokémon erzeugt\Explosionen, die alles in Schutt und Asche\legen.
+Großmaul|0.6|9.5|Karnimani ist zwar sehr klein, aber seine Kiefer\sind sehr stark. Wenn die Pokémon denken, dass\es nur spielerisch an ihnen knabbert, sollten\sie vorsichtig sein, denn sein Biss kann zu\schweren Verletzungen führen.
+Großmaul|1.1|25.0|Wenn Tyracroc einen Feind mit seinen Kiefern\eingeklemmt hat, lässt es ihn nicht mehr los.\Da seine Zahnspitzen wie Angelhaken gebogen\sind, kann man sie nicht mehr entfernen, wenn\sie sich verfangen haben.
+Großmaul|2.3|88.8|Impergator schüchtert seine Feinde dadurch ein,\dass es sein riesiges Maul aufreißt. Im Kampf\erschüttert es den Boden mit seinen kräftigen\Hinterbeinen, wenn es mit unglaublicher\Geschwindigkeit auf seinen Gegner losrennt.
+Späher|0.8|6.0|Wenn Wiesor schläft, hält immer jemand Wache.\Beim ersten Anflug von Gefahr weckt die Wache\die anderen auf. Wenn dieses Pokémon von seinen\Artgenossen getrennt wird, kann es vor Angst\nicht mehr schlafen.
+Langleib|1.8|32.5|Wiesenior ist sehr schlank. Wenn es angegriffen\wird, kann es sich durch enge Zwischenräume\schlängeln und entkommen. Trotz seiner kurzen\Gliedmaßen ist dieses Pokémon sehr wendig und\flink.
+Eulen|0.7|21.2|Hoothoot besitzt ein inneres Organ, das die\Erdumdrehung wahrnimmt. Dieses besondere Organ\ermöglicht es diesem Pokémon, jeden Tag zur\selben Zeit zu schreien.
+Eulen|1.6|40.8|Dank seines hervorragenden Sehvermögens, mit\dem es auch bei geringer Beleuchtung sehen kann,\und dank seiner geschmeidigen Flügel, mit denen\es geräuschlos fliegt, entgeht Noctuh keine\Beute.
+Fünf-Punkt|1.0|10.8|Ledyba sondert eine duftende Flüssigkeit ab.\Darüber kommuniziert es mit anderen. Dieses\Pokémon übermittelt seine Gefühle, indem es\die Duftnote des Sekrets verändert.
+Fünf-Punkt|1.4|35.6|In Ländern mit frischer Luft und Sternen am\Himmel leben unzählig viele Ledian. Dafür gibt\es einen guten Grund: Dieses Pokémon nutzt das\Licht der Sterne als Energie.
+Fadenwurf|0.5|8.5|Das von Webarak gesponnene Netz ist sein zweites\Nervensystem. Dieses Pokémon kann anhand der\feinen Vibrationen der Netzfäden bestimmen,\welche Art Beute sich darauf befindet.
+Langbein|1.1|33.5|Ariados hat kleine hakenförmige Krallen an\seinen Füßen. Damit kann es an Decken und\Wänden entlang flitzen. Dieses Pokémon\erdrückt seine Gegner mit starkem, dünnem\Seidenfaden.
+Fledermaus|1.8|75.0|Wenn Iksbat fliegt, indem es nur ein Paar\Flügel, entweder an seinen Vorder- oder\Hinterbeinen bewegt, ist dies ein Anzeichen\dafür, dass dieses Pokémon bereits eine lange\Strecke hinter sich hat. Dann wechselt es die\Flügel häufig.
+Angler|0.5|12.0|Lampi gibt positive und negative elektrische\Ladungen durch seine Antennen ab, um seine Beute\zu lähmen. Dieses Pokémon lässt seine Lichter\aufflackern und tauscht Signale mit seinen\Artgenossen aus.
+Leuchten|1.2|22.5|Lanturn wird auch “Tiefseestern” genannt, da\es leuchtende Antennen besitzt. Dieses Pokémon\erzeugt Licht, indem es in den Antennen eine\chemische Reaktion zwischen Bakterien und seinen\Körperflüssigkeiten erzeugt.
+Babymaus|0.3|2.0|An Gewittertagen oder Tagen, an denen die Luft\sehr trocken ist, kann sich Pichu leichter mit\Elektrizität aufladen. Dann kann man das\Knistern statischer Aufladung hören.
+Sternform|0.3|3.0|In Nächten mit vielen Sternschnuppen, kann man\Pii im Kreis tanzen sehen. Es tanzt die ganze\Nacht hindurch und hört erst bei Sonnenaufgang\auf, um seinen Durst mit Morgentau zu stillen.
+Ballon|0.3|1.0|Fluffeluffs Stimmbänder sind noch nicht voll\entwickelt. Wenn es zu viel singt, schmerzt ihm\die Kehle. Dieses Pokémon gurgelt mit\Süßwasser aus einem sauberen Fluss.
+Zackenball|0.3|1.5|Togepi nutzt die positiven Emotionen, wie Freude\und Mitgefühl, von Menschen und Pokémon als\Energie. Dieses Pokémon speichert\Glücksgefühle in seiner Schale und teilt sie\mit anderen.
+Freuden|0.6|3.2|Togetic ist ein Pokémon, das Glück bringt.\Wenn es jemanden trifft, der reinen Herzens ist,\zeigt es sich und teilt sein Glück mit dieser\Person.
+Kleinvogel|0.2|2.0|Natu kann nicht fliegen, da seine Flügel noch\nicht ausgewachsen sind. Wenn du diesem Pokémon\in die Augen schaust, starrt es dich\konzentriert an. Wenn du dich aber bewegst,\hüpft es weg, um sich in Sicherheit zu bringen.
+Mystik|1.5|15.0|Xatu bleibt den ganzen Tag an ein und demselben\Ort wie angewurzelt stehen. Die Menschen\glauben, dass es dies aus Angst vor den Dingen\tut, die es für die Zukunft vorausgesehen hat.
+Wolle|0.6|7.8|Voltilamms flauschiges, wollenes Fell erzeugt\Reibung und statische Aufladung. Je höher die\elektrische Ladung wird, desto heller leuchtet\die Glühbirne an seinem Schweif.
+Wolle|0.8|13.3|Die Qualität von Waatys Wolle verändert sich,\so dass es mit nur wenig Wolle eine große\statische Aufladung erzeugen kann. Die kahlen\Stellen in seinem Fell sind gegen Elektrizität\abgeschirmt.
+Leuchten|1.4|61.5|Ampharos strahlt so viel Licht aus, dass es\sogar aus dem Weltraum noch gesehen werden kann.\In der Antike benutzten die Menschen das Licht\dieses Pokémon dazu, Signale über weite\Entfernungen auszutauschen.
+Blumen|0.4|5.8|Wenn Blubella starkem Sonnenlicht ausgesetzt\ist, beginnen sich die Blätter an seinem\Körper zu drehen. Der Tanz dieses Pokémon ist\in südlichen Ländern sehr bekannt.
+Aquamaus|0.4|8.5|Marills Schweif ist mit Öl gefüllt und dient\ihm als eine Art Rettungsring. Wenn nur sein\Schweif an der Wasseroberfläche zu sehen ist,\taucht dieses Pokémon gerade, um sich von\Wasserpflanzen zu ernähren.
+Aquahasen|0.8|28.5|Azumarills lange Ohren dienen ihm als\unentbehrliche Sensoren. Wenn es sein Gehör\fokussiert, kann dieses Pokémon auch in\reißenden Flüssen identifizieren, welche Art\von Beute sich in seiner Nähe befindet.
+Imitations|1.2|38.0|Mogelbaum tarnt sich als Baum, um Angriffen von\Feinden aus dem Weg zu gehen. Da seine\Vorderbeine aber das ganze Jahr über grün\bleiben, fällt seine Tarnung im Winter leicht\auf.
+Frosch|1.1|33.9|Quaxo hat gelocktes Haar, das ihm den Status\eines Königs bescheinigt. Je länger und\lockiger sein Haar ist, desto mehr Respekt\erntet dieses Pokémon von seinen Artgenossen.
+Löwenzahn|0.4|0.5|Hoppspross lässt sich vom Wind treiben. Wenn es\bemerkt, dass ein Sturm aufkommt, verbindet es\seine Blätter mit anderen Hoppspross, damit es\nicht davongeweht wird.
+Löwenzahn|0.6|1.0|Hubelupfs Blume beginnt zu blühen, wenn die\Temperatur über 18 Grad steigt. Wie weit sich\die Blüte öffnet, hängt von der Höhe der\Temperatur ab. Daher wird dieses Pokémon\manchmal als Thermometer eingesetzt.
+Löwenzahn|0.8|3.0|Papungha nutzt den Südwind, um das Meer zu\überqueren und in ferne Länder zu fliegen.\Dieses Pokémon sinkt zu Boden, wenn es während\seines Fluges auf kalte Luftschichten stößt.
+Langschweif|0.8|11.5|An Griffels Schweif befindet sich ein\handähnliches Anhängsel, mit dem es geschickt\zu Werke gehen kann. Da dieses Pokémon sehr\häufig seinen Schweif einsetzt, wirken seine\Hände eher plump.
+Samen|0.3|1.8|Sonnkern versucht, sich so wenig wie möglich zu\bewegen, um alle gespeicherten Nährstoffe für\seine Entwicklung aufzusparen. Außer Morgentau\nimmt es nichts weiter zu sich.
+Sonnen|0.8|8.5|Sonnflora verwandelt Solarenergie in\Nährstoffe. Tagsüber, wenn es warm ist, ist es\sehr aktiv. Wenn aber die Sonne untergegangen\ist, hört es auf sich zu bewegen.
+Libellen|1.2|38.0|Yanma hat einen Blickwinkel von 360 Grad, ohne\die Augen bewegen zu müssen. Es ist ein\großartiger Flieger und geübt darin,\plötzlich anzuhalten oder Wendemanöver\vorzunehmen. So kann es sich blitzschnell auf\Beute stürzen.
+Fisch|0.4|8.5|Felino lebt eigentlich im Wasser. Manchmal kommt\es jedoch an Land, um nach Nahrung zu suchen. An\Land bedeckt es seinen Körper mit einem\schleimigen Giftfilm.
+Fisch|1.4|75.0|Morlord jagt seine Nahrung, indem es im Wasser\sein Maul weit aufmacht und auf unvorsichtige\Beute wartet. Da sich dieses Pokémon nicht\bewegt, wird es auch nicht besonders hungrig.
+Sonnen|0.9|26.5|Psiana ist jedem Trainer treu, dem es zugetan\ist. Dieses Pokémon hat die Fähigkeit der\Prophezeiung entwickelt, um seine Trainer vor\Unheil zu bewahren.
+Mondschein|1.0|27.0|Nachtara hat sich dadurch entwickelt, dass es\den Mondwellen ausgesetzt war. Es versteckt sich\im Schutze der Dunkelheit und wartet darauf,\dass sich ein Feind bewegt. Die Ringe an seinem\Körper leuchten auf, wenn es angreift.
+Finsternis|0.5|2.1|Kramurx wurde als vermeintlicher Überbringer\des Unheils verabscheut und gefürchtet. Dieses\Pokémon hat ein großes Interesse an allem, was\funkelt und glitzert. Es stiehlt auch Ringe von\Frauen.
+Monarchen|2.0|79.5|Laschoking betreibt jeden Tag Forschung, um die\Geheimnisse der Welt zu lüften. Dieses Pokémon\vergisst aber alles, was es bereits\herausgefunden hat, wenn das MUSCHAS auf seinem\Kopf abfällt.
+Kreischer|0.7|1.0|Traunfugil erschreckt Menschen mit einem\markerschütternden Schrei. Dieses Pokémon\verwendet seine roten Kraftfelder dazu, die\Ängste seiner Feinde aufzunehmen und sie in\Nahrung umzuwandeln.
+Symbol|0.5|5.0|Icognito hat die Form antiker Schriftzeichen.\Bis heute ist unklar, was zuerst da war: Die\antiken Schriftzeichen oder die vielen\unterschiedlichen Icognito. Trotz umfangreicher\Forschung bleiben Fragen offen.
+Gedulds|1.3|28.5|Wenn zwei oder mehr Woingenau aufeinander\treffen, versuchen sie, gegenseitig ihre Geduld\zu übertreffen. Sie möchten herausfinden,\welches Pokémon es am längsten ohne Nahrung\aushält. Darauf müssen Trainer achten.
+Langhals|1.5|41.5|Der Kopf an Girafarigs Hinterteil hat ein\eigenes Gehirn. Er reagiert mit Angriffen auf\Gerüche und Geräusche. Wenn man sich diesem\Pokémon von hinten nähert, könnte der hintere\Kopf plötzlich vorschnellen und zubeißen.
+Beutelwurm|0.6|7.2|Tannza hängt an Ästen und wartet auf Beute.\Wenn man dieses Pokémon bei einer Mahlzeit\stört, indem man den Baum, auf dem es sich\befindet, schüttelt, fällt es herunter und\explodiert ohne Vorwarnung.
+Beutelwurm|1.2|125.8|Forstellka versteckt sich in seiner stahlharten\Schale. Die Schale öffnet sich, wenn es nach\Beute schnappt. Dies geht jedoch so schnell,\dass man das Innere der Schale nicht zu Gesicht\bekommt.
+Schlangen|1.5|14.0|Dummisel hat einen Bohrer als Schweif. Diesen\benutzt es, um sich rückwärts in den Boden\einzugraben. Dieses Pokémon baut seinen\Nestkomplex tief unter der Erdoberfläche auf.
+Flugskorpi|1.1|64.8|Skorgla segelt lautlos durch die Lüfte. Es\verankert sich mit Hilfe der Krallen an seinen\Hinterbeinen und der riesigen Scheren an seinen\Vorderbeinen am Gesicht eines Feindes fest und\vergiftet ihn mit seinem Giftstachel.
+Stahlboa|9.2|400.0|Stahlos lebt noch tiefer unter der Erde als\Onix. Dieses Pokémon gräbt immer in Richtung\des Erdkerns. Nachweislich hat dieses Pokémon\bereits Tiefen von einem Kilometer erreicht.
+Feen|0.6|7.8|Indem es seine Zähne fletscht und ein Furcht\erregendes Gesicht macht, schlägt Snubbull\kleinere Pokémon in die Flucht. Es scheint\darüber jedoch etwas traurig zu sein.
+Feen|1.4|48.7|Granbull besitzt einen besonders ausgeprägten\Unterkiefer. Wegen seiner schweren Zähne\wackelt es mit dem Kopf. Es beißt nur zu, wenn\es erschreckt wird.
+Ballon|0.5|3.9|Baldorfish saugt Wasser ein, um sich\aufzublasen. Dieses Pokémon nutzt den Druck des\Wassers dazu, giftige Stacheln aus seinem\Körper zu verschießen. Es betrachtet Schwimmen\als eine echte Herausforderung.
+Kneifer|1.8|118.0|Scherox’ Körper ist hart wie Stahl.\Gewöhnliche Angriffe jagen ihm keine Angst ein.\Dieses Pokémon schlägt mit den Flügeln, um\seine Körpertemperatur zu regulieren.
+Schimmel|0.6|20.5|Pottrott versteckt sich leise unter Steinen und\verbirgt seinen Körper in seiner harten Schale,\wenn es gesammelte Beeren zu sich nimmt. Die\Beeren vermischen sich mit seinen\Körperflüssigkeiten zu einem Saft.
+Einzelhorn|1.5|54.0|Skaraborn geht direkt auf seinen Gegner los,\rutscht auf ihn zu, um ihn auszuhebeln und mit\seinem mächtigen Horn wegzuschleudern. Dieses\Pokémon hat genug Kraft, um einen massigen Baum\umzustoßen.
+Stichklauen|0.9|28.0|Sniebel klettert an Bäumen hoch, indem es seine\hakenförmigen Krallen in die Rinde schlägt.\Dieses Pokémon sucht nach unbewachten Nestern\und stiehlt die Eier, wenn die Eltern auf\Nahrungssuche sind. Davon ernährt es sich.
+Kleinbären|0.6|8.8|Teddiursa leckt gern seine mit Honig bedeckten\Pranken ab. Dieses Pokémon bereitet seinen\eigenen Honig zu, indem es die von BIBOR\gesammelten Früchte und Pollen miteinander\vermengt.
+Schläfer|1.8|125.8|In den von Ursaring bewohnten Wäldern gibt es\viele Flüsse und hohe Bäume, in denen es\Nahrung findet. Dieses Pokémon läuft täglich\durch den Wald, um nach Essbarem zu suchen.
+Lava|0.7|35.0|Durch Schneckmags Kreislaufsystem fließt Magma.\Wenn dieses Pokémon erkältet ist, kühlt das\Magma aus und erhärtet. Sein Körper wird\spröde und es brechen Stücke heraus, so dass\es kleiner wird.
+Lava|0.8|55.0|Magcargos Schale ist eigentlich seine Haut, die\erhärtet ist, als es auskühlte. Seine Schale\ist sehr spröde und zerbrechlich. Schon bei\einer leichten Berührung bricht sie\auseinander. Dann muss es ein Bad in Magma\nehmen.
+Ferkel|0.4|6.5|Auf Nahrungssuche schnüffelt Quiekel am Boden\entlang. Seine Lieblingsspeise ist ein Pilz, der\unter verwesendem Gras wächst. Manchmal spürt\dieses Pokémon heiße Quellen auf.
+Schwein|1.1|55.8|Keifel hat ein dichtes Fell aus langen Haaren.\Dadurch ist es gegen eisige Kälte gewappnet.\Dieses Pokémon benutzt seine Hauer, um an\Nahrung zu gelangen, die unter dem Eis\eingeschlossen ist.
+Korallen|0.6|5.0|Wenn Corasonns Arme Sonnenlicht abbekommen,\glitzern sie wunderschön in sieben Farben. Wenn\ein Arm abbricht, wächst über Nacht ein neuer\nach.
+Hochdruck|0.6|12.0|Remoraid saugt Wasser ein und spritzt es unter\Einsatz seiner Bauchmuskeln mit Hochdruck wieder\heraus. So schießt es fliegende Beute ab. Wenn\seine Entwicklung näher rückt, wandert dieses\Pokémon flussabwärts.
+Hochdruck|0.9|28.5|Octillery saugt sich mit seinen Tentakeln an\einem Feind fest. Dieses Pokémon betäubt\seinen Gegner, bevor es ihm den Rest gibt. Wenn\ein Feind zu stark ist, speit es Tinte aus und\flüchtet.
+Lieferanten|0.9|16.0|Botogel sammelt seine Nahrung in seinem Schweif.\Es gab einmal einen berühmten Entdecker, der es\dank eines Botogels geschafft hat, einen der\höchsten Berge der Welt zu besteigen. Es hatte\seine Nahrung mit ihm geteilt.
+Flugrochen|2.1|220.0|An schönen Tagen sieht man Schwärme von Mantax\elegant über die Wellen des Ozeans springen.\Durch REMORAID, die an ihm haften und ihn\begleiten, fühlt sich dieses Pokémon nicht\belästigt.
+Flugstahl|1.7|50.5|Panzaeron ist komplett in einen harten,\schützenden Panzer eingehüllt. Dieses Pokémon\fliegt 300 km/h. Es greift seine Feinde mit\seinen messerscharfen Flügeln an.
+Hades|0.6|10.8|Hunduster jagen in Gruppen. Sie kommunizieren\miteinander über verschiedene Arten von Geheul\und treiben ihre Feinde in die Enge. Die\Zusammenarbeit dieser Pokémon ist einzigartig.
+Hades|1.4|35.0|In einer Gruppe von Hundemon ist dasjenige mit\den nach hinten gebogenen Hörnern der\Anführer. Diese Pokémon bestimmen ihren\Anführer durch das Ausfechten von Kämpfen\untereinander.
+Drachen|1.8|152.0|Seedraking lebt in den Tiefen des Ozeans, die\ansonsten verwaist sind. Lange hat man geglaubt,\dass das Gähnen dieses Pokémon Strudel\auslöst.
+Langrüssel|0.5|33.5|Um sich ein Nest zu bauen, gräbt Phanpy am\Flussufer ein Loch ins Erdreich. Es markiert die\Umgebung seines Nests mit Hilfe seines Rüssels,\damit seine Artgenossen wissen, dass dieses\Gebiet vergeben ist.
+Panzer|1.1|120.0|Donphans Lieblingsattacke ist es, als Ball\zusammengerollt mit voller Wucht gegen seine\Gegner zu krachen. Wenn es erst einmal rollt,\ist dieses Pokémon nur schwer aufzuhalten.
+Virtuell|0.6|32.5|Porygon2 wurde in einem wissenschaftlichen\Experiment von Menschen erzeugt. Es verfügt\über künstliche Intelligenz, wodurch es\selbstständig neue Gesten und Gefühle erlernen\kann.
+Vielender|1.4|71.2|Damhirplex hat ein prächtiges Geweih, für das\hohe Preise gezahlt werden, da sie als\Kunstwerke gelten. Daher wurde dieses Pokémon\gejagt und wäre beinahe ausgestorben.
+Maler|1.2|58.0|Farbeagle markiert sein Revier mit einer\Flüssigkeit, die aus seiner Schweifspitze\austritt. Es wurden über 5000 unterschiedliche\Markierungen entdeckt, die dieses Pokémon\hinterlassen hat.
+Racker|0.7|21.0|Rabauz muss jeden Tag trainieren, sonst ist es\nicht ausgelastet und reagiert gestresst. Wenn\man dieses Pokémon trainiert, muss man\zahlreiche Trainingsmethoden einsetzen und sie\ständig ausbauen.
+Kopfstand|1.4|48.0|Kapoera dreht sich auf dem Kopf stehend um die\eigene Achse und teilt Tritte aus. Seine Technik\ist eine bemerkenswerte Mischung aus Angriff und\Verteidigung. Es bewegt sich drehend schneller\voran als laufend.
+Kuss|0.4|6.0|Kussilla läuft hektisch umher, fällt aber auch\ziemlich oft hin. Es lässt keine Möglichkeit\aus sein Spiegelbild zu betrachten, um\sicherzustellen, dass sein Gesicht nicht\schmutzig geworden ist.
+Elektro|0.6|23.5|Elekid speichert Elektrizität in seinem\Körper. Wenn es Metall berührt und\versehentlich die aufgestaute Energie entlädt,\rotiert es mit den Armen, um sich wieder\aufzuladen.
+Glutherd|0.7|21.4|Magbys Gesundheitszustand kann man am Feuer\erkennen, das es ausatmet. Wenn es gelbe Flammen\ausstößt, ist es in guter Verfassung. Ist es\erschöpft, vermischen sich die Flammen mit\schwarzem Rauch.
+Milchkuh|1.2|75.5|Miltank gibt täglich 20 Liter Milch. Sie ist\süßlich und wird von Kindern und Erwachsenen\gleichermaßen genossen. Menschen, die keine\Milch trinken, essen sie stattdessen als\Joghurt.
+Freuden|1.5|46.8|Heiteira nimmt mit seinem flauschigen Fell\Traurigkeit wahr. Es hastet zu einer traurigen\Person, egal, wie weit diese entfernt ist und\teilt ein Gücks-Ei mit ihr, um sie zum Lächeln\zu bringen.
+Donner|1.9|178.0|Raikou ist so schnell wie der Blitz. Das\Gebrüll dieses Pokémon sendet Schockwellen\aus, die wie Donnerschläge durch die Luft beben\und den Boden erschüttern.
+Vulkan|2.1|198.0|Entei verfügt über die Leidenschaft von Magma.\Dieses Pokémon wurde bei einem Vulkanausbruch\geboren und bringt Feuersbrünste hervor, die\alles auslöschen, was mit ihnen in Kontakt\kommt.
+Polarlicht|2.0|187.0|Suicune wohnt die Reinheit einer Quelle inne. Es\bewegt sich graziös und hat die Macht,\schmutziges Wasser zu reinigen.
+Felshaut|0.6|72.0|Larvitar wurde tief unter der Erde geboren. Um\an die Oberfläche zu gelangen, muss es sich\durch das Erdreich fressen. Erst dann bekommt es\seine Eltern zu Gesicht.
+Hartschalen|1.2|152.0|Pupitar erzeugt in seinem Körper ein Gas, das\es komprimiert und kraftvoll ausstößt, um sich\wie ein Düsenflugzeug anzutreiben. Sein Körper\ist sehr robust und er hält auch massivem Stahl\stand.
+Panzer|2.0|202.0|Despotar ist erstaunlich stark. Es kann einen\ganzen Berg vernichten, um sein Nest zu bauen.\Dieses Pokémon wandert in den Bergen umher und\sucht nach Gegnern für einen Kampf.
+Taucher|5.2|216.0|Lugias Flügel haben eine zerstörerische Kraft.\Bereits ein leichtes Flattern kann Häuser\hinfortwehen. Daher hat sich dieses Pokémon\dafür entschieden, tief unter dem Meer zu\leben, wo es niemand sieht.
+Regenbogen|3.8|199.0|Ho-Ohs Federn leuchten in sieben Farben, je\nachdem aus welchem Winkel das Licht auf sie\fällt. Die Federn sollen ihrem Besitzer Glück\bringen. Dieses Pokémon lebt am Fuße eines\Regenbogens.
+Zeitreise|0.6|5.0|Dieses Pokémon kommt aus der Zukunft und ist\durch die Zeit gereist. Solange Celebi\auftaucht, ist der Menschheit angeblich eine\rosige Zukunft beschieden.
+Waldgecko|0.5|5.0|Mit den kleinen Haken unter seinen Füßen kann\Geckarbor an Wänden hochklettern. Dieses\Pokémon greift Feinde an, indem es mit seinem\mächtigen Schweif zuschlägt.
+Waldgecko|0.9|21.6|Reptain kann sich mit den Blättern, die aus\seinem Körper herauswachsen, im Wald\hervorragend tarnen. Dieses Pokémon ist ein\wahrer Meister darin, auf die Bäume des\Dschungels zu klettern.
+Dschungel|1.7|52.2|Die Blätter, die auf Gewaldros Körper wachsen,\sind sehr scharfkantig. Dieses Pokémon ist sehr\agil. Es hüpft von Ast zu Ast und springt seine\Feinde von oben oder hinten an.
+Küken|0.4|2.5|Flemmli hängt an seinem Trainer wie eine\Klette. Es schlurft immer hinter ihm her. Dieses\Pokémon spuckt 1000 Grad heißes Feuer, das\seinen Feinden ordentlich einheizt.
+Jungvogel|0.9|19.5|Jungglut trainiert seine Beine und Oberschenkel,\indem es über Felder und Berge läuft. Die\Beine dieses Pokémon sind sowohl schnell als\auch kräftig, so dass es 10 Tritte pro Sekunde\ausführen kann.
+Großbrand|1.9|52.0|Lohgock stößt heftige Flammen aus seinen\Handgelenken aus und greift seine Feinde mutig\an. Je stärker ein Feind ist, desto stärker\lodern die Handgelenke dieses Pokémon.
+Lehmhüpfer|0.4|7.6|Die Flosse an Hydropis Kopf dient als\hochempfindliches Radar. Damit kann es\Bewegungen im Wasser und in der Luft wahrnehmen.\So weiß es jederzeit, was in seiner Umgebung\passiert, ohne dabei seine Augen zu benutzen.
+Lehmhüpfer|0.7|28.0|Moorabbels Körper ist mit einem klebrigen Film\überzogen, durch den es an Land überleben\kann. Dieses Pokémon spielt bei Ebbe in den\Schlammpfützen am Strand.
+Lehmhüpfer|1.5|81.9|Sumpex ist sehr stark. Es kann mit Leichtigkeit\einen Felsblock bewegen, der über eine Tonne\wiegt. Weiterhin ist es mit einem exzellenten\Sehvermögen ausgestattet, wodurch es auch in\trüben Gewässern sehen kann.
+Biss|0.5|13.6|Sobald Fiffyen eine Bewegung wahrnimmt, schnappt\es zu. Es jagt seine Beute so lange, bis sie\vollkommen erschöpft ist. Wenn sich die Beute\allerdings wehrt, kann es passieren, dass\Fiffyen klein beigibt und flieht.
+Biss|1.0|37.0|Magnayen sendet deutliche Signale aus, wenn es\sich auf einen Angriff vorbereitet. Es knurrt\heftig und macht sich flach. Dieses Pokémon\kann mit seinen spitzen Zähnen brutal\zubeißen.
+Kleindachs|0.4|17.5|Zigzachs ist ein rastloser Wanderer. Dieses\Pokémon ist nämlich sehr neugierig und es\inspiziert alles, was ihm zufällig begegnet.
+Sprinter|0.5|32.5|Geradaks rennt immer mit vollem Tempo und nie im\Zickzack, sondern nur gerade. Wenn ihm ein\Hindernis im Weg ist, läuft es rechtwinklig\daran vorbei. Für dieses Pokémon stellen\leichte Kurven eine große Herausforderung dar.
+Wurm|0.3|3.6|Waumpel kann mit den Stacheln an seinem\Hinterteil die Rinde von Bäumen entfernen und\ernährt sich von dem austretenden Saft. An den\Füßen dieses Pokémon befinden sich\Saugnäpfe, mit denen es auch an Glas nicht\abrutscht.
+Kokon|0.6|10.0|Schaloko bindet sich mit einem Seidenfaden an\einen Ast. Es baumelt dort und wartet auf seine\Entwicklung. Durch ein kleines Loch in seinem\Seidenkokon lugt es heraus.
+Falter|1.0|28.4|Papinellas Lieblingsspeise ist Blütenstaub.\Wenn du dieses Pokémon beobachten möchtest,\musst du bloß einen Blumentopf vor ein\geöffnetes Fenster stellen. Papinella wird sich\diese Leckerei nicht entgehen lassen.
+Kokon|0.7|11.5|Panekon baut seinen schützenden Kokon, indem es\seinen Körper mit feiner Seide einwickelt, die\aus seinem Mund austritt. Wenn sein Körper mit\Seide bedeckt ist, wird diese hart. Im Kokon\wartet es auf seine Entwicklung.
+Giftmotten|1.2|31.6|Pudox wird instinktiv vom Licht angezogen. In\hell erleuchteten Städten kann man Scharen\dieses Pokémon dabei beobachten, die großen\Schaden anrichten, indem sie die Blätter von\Bäumen abfressen.
+Wasserlinsen|0.5|2.6|Loturzel lebt auf der Wasseroberfläche von\Teichen oder Seen. Es wird schwächer, wenn sein\breites Blatt abstirbt. Nur selten geht dieses\Pokémon an Land, um nach sauberem Wasser\Ausschau zu halten.
+Frohmut|1.2|32.5|Lombrero liebt die Nacht und wird mit Einbruch\der Dunkelheit aktiv. Es spielt auch gerne\Streiche. Wenn es Angler sieht, zieht es unter\Wasser an ihren Angelschnüren und erfreut sich\an ihrer Entrüstung.
+Sorglos|1.5|55.0|Kappalores fängt sofort zu tanzen an, wenn es\stimmungsvolle, feierliche Musik vernimmt.\Dieses Pokémon erscheint angeblich, wenn es\Kinder auf Wanderausflügen singen hört.
+Eichelnuss|0.5|4.0|Samurzel hängt sich mit dem Kopf an einen Ast.\Dabei entzieht es dem Baum Feuchtigkeit. Je mehr\Wasser es trinkt, desto glänzender wird der\Körper dieses Pokémon.
+Hinterlist|1.0|28.0|Blanas lebt in dichten Wäldern. Manchmal wagt\es sich aus dem Wald heraus, um Menschen zu\erschrecken. Dieses Pokémon mag es überhaupt\nicht, wenn man seine lange Nase zwickt.
+Verschlagen|1.3|59.6|Tengulist ist ein geheimnisvolles Pokémon, das\angeblich auf hohen Bäumen lebt, die tausende\von Jahren alt sind. Mit den\Blätterventilatoren an seinen Händen kann es\heftige Stürme erzeugen.
+Schwälblein|0.3|2.3|Mutig behauptet Schwalbini sein Territorium\gegen Eindringlinge, so stark diese auch sein\mögen. Dieses unerschrockene Pokémon bleibt\trotz einer Niederlage angriffslustig, heult\aber laut, wenn es Hunger hat.
+Schwalben|0.7|19.8|Dieses Pokémon taucht in einem steilen Winkel\ab, sobald es Beute wahrgenommen hat. Es packt\seine Beute mit seinen Krallen und lässt sie\nicht mehr entkommen.
+Seemöwen|0.6|9.5|Man sieht Wingull oft mit seiner Beute oder\seinen Besitztümern im Schnabel herumfliegen\auf der Suche nach geeigneten Verstecken. Dieses\Pokémon fliegt durch die Lüfte, als würde es\gleiten.
+Wasservogel|1.2|28.0|Pelipper transportiert kleine Pokémon und Eier\in seinem riesigen Schnabel durch die Lüfte.\Dieses Pokémon baut sein Nest auf steilen\Klippen am Meer.
+Gefühls|0.4|6.6|Trasla nimmt mit den Hörnern an seinem Kopf die\Gefühle von Menschen wahr. Menschen bekommen\dieses Pokémon nur selten zu Gesicht. Wenn es\bemerkt, dass eine Person gut gelaunt ist, traut\es sich näher an sie heran.
+Emotions|0.8|20.2|Man sagt, dass ein Kirlia, das häufig positive\Emotionen seines Trainers wahrnimmt, sehr schön\wird. Dieses Pokémon kontrolliert\psychokinetische Energie mit seinem\hochentwickelten Gehirn.
+Umarmungs|1.6|48.4|Guardevoir kann in die Zukunft schauen. Wenn es\eine Gefahr für seinen Trainer voraussieht,\entlädt es seine psychokinetische Energie mit\voller Kraft.
+Wassergeher|0.5|1.7|Gehweiher scheidet aus seinen Zehen ein Öl aus,\das es ihm ermöglicht, über Wasser zu gleiten.\Dieses Pokémon ernährt sich von\Mikroorganismen aus Teichen und Seen.
+Augen|0.8|3.6|Maskeregen schüchtert seine Feinde mit den\augenähnlichen Mustern auf seinen Antennen ein.\Dieses Pokémon kann mit seinen vier Flügeln\wie ein Hubschrauber in jede Richtung fliegen,\sogar seitwärts und rückwärts.
+Pilz|0.4|4.5|Knilz lebt im feuchten Erdboden finsterer\Wälder. Es wird oft reglos unter\herabgefallenen Blättern gefunden. Dieses\Pokémon ernährt sich von Kompost aus\verrotteten Blättern.
+Pilz|1.2|39.2|Mit leichtfüßiger Beinarbeit nähert sich\Kapilz seinen Feinden und schlägt dann mit\seinen dehnbaren Armen um sich. Die Kampftechnik\dieses Pokémon treibt Profiboxern die\Schamesröte ins Gesicht.
+Faulpelz|0.8|24.0|Bummelz geht zwanzig Stunden pro Tag müßig. Da\es sich sehr wenig bewegt, braucht es auch nicht\viel Nahrung. Seine Tagesration besteht\lediglich aus drei Blättern.
+Wildaffen|1.4|46.5|Muntier brennt darauf, sich auszutoben. Es kann\nicht einmal für eine Minute stillsitzen. Es\gerät in Stress, wenn es sich nicht andauernd\bewegen kann.
+Müßig|2.0|130.5|Letarking verbringt den Tag damit, herumzuliegen\und nichts zu tun. Es ernährt sich von Gras,\das in seiner Reichweite wächst. Hat es alles\aufgefressen, so sucht es sich widerwillig ein\anderes Plätzchen.
+Vorbereiter|0.5|5.5|Nincada lebt viele Jahre in absoluter Dunkelheit\unter der Erde. Dieses Pokémon nimmt\Nährstoffe aus Baumwurzeln auf. Es rührt sich\nicht, da es auf seine Entwicklung wartet.
+Ninja|0.8|12.0|Ninjask bewegt sich so schnell, dass man es\nicht sehen kann. Seine Schreie sind aber laut\und deutlich zu hören. Deshalb hielt man dieses\Pokémon lange für unsichtbar.
+Häutungs|0.8|1.2|Ninjatoms harter Körper bewegt sich überhaupt\nicht. Er scheint bloß eine hohle Schale zu\sein. Dieses Pokémon soll angeblich die Seele\eines jeden stehlen, der hinterrücks einen\Blick in seinen hohlen Körper riskiert.
+Flüster|0.6|16.3|Normalerweise ist Flurmels Stimme sehr leise,\selbst mit größter Anstrengung ist sie kaum\hörbar. Wenn dieses Pokémon jedoch eine Gefahr\wittert, stößt es ohrenbetäubende Schreie\aus.
+Lauthals|1.0|40.5|Krakeelos Brüllen kann ein Holzhaus zum\Einsturz bringen. Es setzt seine Stimme ein, um\seine Gegner anzugreifen. Die runden Ohren\dieses Pokémon dienen als Lautsprecher.
+Krach|1.5|84.0|Krawumms kann durch sein Brüllen Erdbeben\auslösen. Wenn dieses Pokémon durch seine\Körperöffnungen kräftig einatmet, ist es kurz\davor, ein mächtiges Brüllen von sich zu\geben.
+Courage|1.0|86.4|Makuhita ist sehr zäh. Selbst wenn es im Kampf\mehrfach niedergeschlagen wurde, steht es immer\wieder auf und greift seinen Gegner an. Bei\jedem Mal speichert es mehr Energie in seinem\Körper für seine Entwicklung.
+Armwurf|2.3|253.8|Hariyama führt seinen berüchtigten\Streckarm-Schlag überall aus. Ein Schlag von\diesem Pokémon reicht aus, um einen Strommast\zu zerlegen.
+Gepunktet|0.2|2.0|Azurill schleudert seinen Schweif wie ein Lasso\weit aus und fliegt dann selbst hinterher. Ein\Azurill hat es auf diese Weise geschafft, die\Rekordweite von 10 Metern zurückzulegen.
+Kompass|1.0|97.0|Nasgnet besitzt eine magnetische Nase, die immer\nach Norden zeigt. Wenn sich zwei Nasgnet\treffen, können sie sich einander nicht\zuwenden, da ihre magnetischen Nasen sich\gegenseitig abstoßen.
+Kätzchen|0.6|11.0|Eneco ist davon fasziniert, Gegenstände zu\bewegen und sie zu jagen. Dieses Pokémon jagt\häufig seinen eigenen Schweif, so dass ihm\schwindlig wird.
+Eingebildet|1.1|32.6|Enekoro liebt seine Eigenständigkeit. So kann\es das tun, was es möchte, und kann selbst das\Tempo bestimmen. Da dieses Pokémon schläft und\isst, wenn es Lust dazu hat, ist sein\Tagesablauf eher zufälliger Natur.
+Finsternis|0.5|11.0|Zobiris führt ein ruhiges, zurückgezogenes\Leben tief im Innern einer Höhle. Es ist aber\trotzdem sehr gefürchtet, da man sagt, es\stehle die Seelen der Menschen, wenn seine Augen\im Dunkeln Furcht erregend funkeln.
+Schwindler|0.6|11.5|Flunkifers sagenhafte Kiefer sind eigentlich\umgewandelte Stahlhörner. Sein unterwürfiger\Gesichtsausdruck dient dazu, seinen Gegner in\Sicherheit zu wiegen, so dass er unaufmerksam\wird. Dann schnappt es zu!
+Eisenpanzer|0.4|60.0|Dieses Pokémon hat einen Körper aus Stahl.\Stollunior ernährt sich von Eisenerz aus den\Bergen. Zuweilen richtet es großen Schaden an,\weil es Brücken und Bahngleise auffrisst.
+Eisenpanzer|0.9|120.0|Stollrak temperiert seinen Körper, indem es\ausgesprochen nahrhaftes Quellwasser trinkt, bis\es völlig aufgebläht ist. Dieses Pokémon baut\sein Nest in der Nähe von Quellen, aus denen\köstliches Wasser sprudelt.
+Eisenpanzer|2.1|360.0|Stolloss nennt einen ganzen Berg sein\Territorium. Gnadenlos schlägt es jeden in die\Flucht, der sein Reich betritt. Dieses Pokémon\behält sein Territorium jederzeit im Auge.
+Meditations|0.6|11.2|Meditie unterzieht sich einem strikten mentalen\Training tief in den Bergen. Wenn es meditiert,\verliert es jedoch immer seine Konzentration.\Deshalb wird sein Training niemals ein Ende\haben.
+Meditations|1.3|31.5|Mittels Meditation erhöht Meditalis seine\Körperenergie und schärft seinen sechsten\Sinn. Dieses Pokémon verbirgt sich, indem es\eins mit den Feldern und Bergen wird.
+Gewitter|0.6|15.2|Frizelbliz speichert Elektrizität in seiner\langen Körperbehaarung. Dieses Pokémon\stimuliert seine Beinmuskulatur durch\Stromstöße. Dadurch ist es in der Lage,\explosiv zu beschleunigen.
+Entladungs|1.5|40.2|Voltenso entlädt ständig Elektrizität aus\seiner Mähne. Es fliegen dabei Funken, die\zuweilen zu Waldbränden führen. In einem Kampf\erzeugt dieses Pokémon Gewitterwolken.
+Jubel|0.4|4.2|Plusle dient seinen Artgenossen als Cheerleader.\Wenn ein Teamkamerad im Kampf erfolgreich ist,\erzeugt es das prasselnde Geräusch von Funken,\um so seine Freude zu zeigen.
+Jubel|0.4|4.2|Minun kümmert sich mehr um das Anfeuern seiner\Partner als um seine eigene Sicherheit. Es nutzt\die Elektrizität in seinem Körper dazu, einen\Funkenregen zu erzeugen und seine Teamkameraden\anzufeuern.
+Glühwürmchen|0.7|17.7|Wenn es Nacht wird, beginnt Volbeats Schweif zu\leuchten. Es kommuniziert mit anderen, indem es\die Helligkeit und das Blinken dieses Lichts\reguliert. Dieses Pokémon wird vom süßen Duft\der ILLUMISE angezogen.
+Glühwürmchen|0.6|17.7|Illumise zieht ganze VOLBEAT-Scharen mit seinem\süßlichen Duft an. Dann führt es diesen hell\leuchtenden Schwarm an, indem es geometrische\Figuren an den Nachthimmel malt.
+Dorn|0.3|2.0|Roselia verschießt scharfe Stacheln auf jeden\Feind, der versucht, die Blumen an seinen Armen\zu stehlen. Der Duft dieses Pokémon beruhigt\Lebewesen.
+Magen|0.4|10.3|Eigentlich besteht Schluppucks Körper nur aus\einem Magen. Daher kann es etwas verschlingen,\das beinahe seine Größe hat. Sein Magen\enthält eine spezielle Flüssigkeit, die\wirklich alles verdauen kann.
+Giftbeutel|1.7|80.0|Wenn Schlukwech Beute sichtet, verspritzt es\eine höchst giftige Substanz aus seinen Poren\und besprüht damit sein Ziel. Wenn die Beute\geschwächt ist, schluckt es sie mit seinem\riesigen Maul im Ganzen herunter.
+Gnadenlos|0.8|20.8|Kanivanhas starke Kiefer und seine spitzen\Zähne verfügen über die zerstörerische\Kraft, Bootsrümpfe verschlingen zu können.\Dieses Pokémon hat schon viele Boote versenkt.
+Brutal|1.8|88.8|Tohaido trägt den Spitznamen “Tyrann des\Meeres” und ist sehr gefürchtet. Seine\grausamen Zähne wachsen sofort nach, wenn sie\ausgebrochen sind. Es kann sogar einen Öltanker\zerreißen.
+Kugelwal|2.0|130.0|Wailmers Nasenlöcher liegen über seinen Augen.\Dieses verspielte Pokémon erschreckt gern\Menschen, indem es das Meerwasser, das es in\seinem Körper speichert, mit aller Kraft\herausprustet.
+Flutwal|14.5|398.0|Wailord ist bisher das größte aller\identifizierten Pokémon. Es schwimmt reglos auf\dem offenen Meer und nimmt mit seinem enormen\Maul riesige Mengen an Nahrung auf.
+Taubheits|0.7|24.0|Camaub ist nicht besonders helle. Es nimmt nicht\einmal wahr, wenn es getroffen wurde. Ein\Hungergefühl allerdings kann es nicht einmal\eine Sekunde lang aushalten. In seinem Körper\brodelt glühend heißes Magma.
+Ausbruch|1.9|220.0|Camerupt trägt einen Vulkan in seinem Körper.\10.000 Grad heißes Magma fließt in ihm.\Manchmal brechen die Höcker auf seinem Rücken\aus und verspucken glühend heißes Magma.
+Kohle|0.5|80.4|Qurtel schaufelt sich auf der Suche nach Kohle\durch die Berge. Wenn es welche findet, füllt\es die Hohlräume seines Panzers mit Kohle und\verbrennt diese. Wenn es angegriffen wird,\stößt es dicken schwarzen Rauch aus.
+Sprungfeder|0.7|30.6|Spoink hüpft auf seinem Schweif durch die\Gegend. Die Erschütterung des Hüpfens bringt\sein Herz zum Schlagen. Deshalb kann dieses\Pokémon das Hüpfen nicht sein lassen,\ansonsten würde sein Herz aufhören zu\schlagen.
+Manipulator|0.9|71.5|Groink benutzt die schwarzen Perlen an seinem\Körper dazu, die psychischen Kraftwellen zu\verstärken. Wenn es diese spezielle Fähigkeit\nutzt, wird sein schnaubender Atem\schwerfällig.
+Punkt-Panda|1.1|5.0|Jedes Pandir auf der Welt soll ein einzigartiges\Fleckenmuster haben. Der schwankende Gang dieses\Pokémon erweckt den Eindruck, es würde tanzen.
+Ameisenlöwen|0.7|15.0|Knacklions Bau ist eine Art in den Sand\gegrabener Kessel. Dieses Pokémon wartet\geduldig auf Beute, um sie in seinen Bau zu\werfen. Seine gigantischen Kiefer verfügen\über genügend Kraft, um einen Felsen zu\zerquetschen.
+Vibrations|1.1|15.3|Um seine Beute zu schwächen, erzeugt Vibrava\Ultraschallwellen, indem es seine Flügel\vibrieren lässt. Die Ultraschallwellen dieses\Pokémon sind so stark, dass sie bei Menschen\Kopfschmerzen verursachen können.
+Mystik|2.0|82.0|Libelldra wird auch “Geist der Wüste”\genannt. Da seine flatternden Flügel eine\Sandwolke aufwirbeln, ist dieses Pokémon beim\Fliegen immer von einem Sandsturm umgeben.
+Kaktus|0.4|51.3|Tuska lebt an trockenen Orten, z. B. in Wüsten.\Es versprüht einen starken Duft aus seiner\Blume, um Beute anzuziehen. Wenn sich Beute\nähert, verschießt es scharfe Stacheln, um\seinen Gegner zu überwältigen.
+Vogelschock|1.3|77.4|Am Tage bleibt Noktuska reglos, damit es in der\brennenden Wüstenhitze keine Feuchtigkeit\verliert. Dieses Pokémon wird bei Nacht aktiv,\wenn die Temperatur sinkt.
+Wollvogel|0.4|1.2|Wablu hat leichte, flauschige Flügel, die wie\Schäfchenwolken aussehen. Dieses Pokémon hat\keine Angst vor Menschen. Es landet auf ihren\Köpfen und bleibt dort sitzen wie ein\wattierter Hut.
+Summsel|1.1|20.6|Altaria tanzt und dreht sich in der Luft durch\viele Schäfchenwolken. Indem es mit seiner\kristallklaren Stimme Melodien singt, versetzt\es seine Zuhörer in verträumtes Erstaunen.
+Frettkatz|1.3|40.3|Die Erinnerungen an den Kampf mit seinem\Erzrivalen VIPITIS haben sich in jede Zelle von\Sengos Körper eingebrannt. Dieses Pokémon\weicht feindlichen Angriffen unheimlich\raffiniert und geschickt aus.
+Reißzahn|2.7|52.5|Vipitis lebt seit Generationen in Fehde mit\SENGO. Die Narben auf seinem Körper sind Zeugen\grausamer Kämpfe. Dieses Pokémon greift seine\Gegner mit seinem scharfkantigen Schweif an.
+Meteoriten|1.0|168.0|Lunastein wurde in der Nähe eines\Meteoritenkraters entdeckt. Daher nehmen einige\Menschen an, dass dieses Pokémon aus dem\Weltall stammt. Diese Theorie konnte allerdings\bisher noch nicht belegt werden.
+Meteoriten|1.2|154.0|Sonnfel ist eine neue Pokémon-Spezies, die\angeblich aus dem Weltall kam. Es gleitet durch\die Luft und bewegt sich leise. Im Kampf setzt\dieses Pokémon sehr helles Licht ein.
+Barthaar|0.4|1.9|Schmerbes empfindliche Barthaare dienen ihm als\hervorragendes Radarsystem. Dieses Pokémon\versteckt sich im Schlamm, so dass nur noch\seine Barthaare herausgucken, und wartet auf\Beute.
+Barthaar|0.9|23.6|Welsar legt viel Wert auf sein Territorium. Ein\einzelnes Pokémon dieser Art nennt einen Teich\sein Eigen. Wenn sich ein Feind nähert,\schlägt es um sich und verursacht ein\gewaltiges Erdbeben.
+Grobian|0.6|11.5|Krebscorps ist kein heimisches Pokémon, sondern\wurde als Haustier importiert. Schließlich\verwilderte es. Dieses Pokémon ist mittlerweile\sehr robust und hat seine Population\vergrößert.
+Schlingel|1.1|32.8|Krebutack ist von Natur aus sehr gewalttätig,\so dass es dauernd andere Lebewesen zum Kampf\herausfordern muss. Andere Lebensformen lehnen\es ab, mit diesem Pokémon in ein und demselben\Teich zu leben.
+Lehmpuppen|0.5|21.5|Puppance bewegt sich, indem es sich auf seinem\Fuß im Kreis dreht. In sehr alten Ruinen wurden\primitive Wandmalereien entdeckt, die dieses\Pokémon in Begleitung von Menschen zeigen.
+Lehmpuppen|1.5|108.0|Lepumentas sind aus Schlamm gefertigte Puppen,\die von primitiven Menschen hergestellt und\durch mysteriöse Strahlen zum Leben erweckt\wurden. Diese Pokémon bewegen sich schwebend\fort.
+Seeanemonen|1.0|23.8|Von Liliep nahm man an, es sei seit etwa hundert\Millionen Jahren ausgestorben. Mit seinen wie\Blütenblätter geformten Tentakeln heftet es\sich an einen Felsen auf dem Meeresboden und\fängt Beute.
+Rankfüßer|1.5|60.4|Wielie durchforstet den Meeresboden nach Beute.\Dieses Pokémon fährt seinen baumstammartigen\Nacken aus und fängt mit seinen acht Tentakeln\Beute.
+Urgarnelen|0.7|12.5|Anorith wurde aus einem prähistorischen Fossil\erzeugt. Dieses primitive Pokémon lebte einst\in warmen Gewässern. Es klemmt seine Beute fest\zwischen seine beiden riesigen Klauen ein.
+Schild|1.5|68.2|Von Armaldos hartem Panzer prallen alle Angriffe\ab. Dieses Pokémon hat zwei mächtige Klauen,\die es ausfahren oder einziehen kann. Es hat so\viel Kraft, dass es damit eine Stahlplatte\pulverisieren kann.
+Fisch|0.6|7.4|Barschwas Flossen waren schon immer zerfetzt.\Wegen seines merkwürdigen Aussehens wird dieses\Pokémon weitgehend ignoriert. Es kann sowohl im\Meer als auch in Flüssen leben.
+Zartheits|6.2|162.0|Milotic soll das Schönste aller Pokémon sein.\Es hat die Macht, Emotionen wie Wut und\Feindseligkeit zu besänftigen und somit\erbitterten Streit zu vermeiden.
+Wetter|0.3|0.8|Formeos Erscheinung ändert sich mit dem Wetter.\Dieses Pokémon hat die Fähigkeit erworben, die\mächtige Kraft der Natur zu nutzen, um seinen\winzigen Körper zu schützen.
+Farbenspiel|1.0|22.0|Kecleon kann die Farbe seines Körpers bei\Bedarf verändern, um sich seiner Umgebung\anzupassen. Es gibt allerdings eine Ausnahme:\Das Zickzackmuster auf seinem Bauch kann es\nicht verändern.
+Puppen|0.6|2.3|Shuppet wird durch Gefühle wie Neid und\Rachsucht angezogen. Wenn jemand starke\Rachegelüste entwickelt, erscheint dieses\Pokémon in Scharen und reiht sich unter der\Dachrinne der Person auf.
+Marionetten|1.1|12.5|Banette belegt andere mit Flüchen, indem es\Nadeln in seinen eigenen Körper sticht. Dieses\Pokémon war ursprünglich eine Mitleid\erregende Plüschpuppe, die weggeworfen wurde.
+Requiem|0.8|15.0|Zwirrlicht kann durch jede Wand gehen, egal, wie\dick diese ist. Wenn dieses Pokémon sich ein\Ziel gesucht hat, verfolgt es seinen Feind\unnachgiebig bis zum Sonnenaufgang.
+Wink|1.6|30.6|Zwirrklops Körper ist komplett hohl. Es wird\auch mit einem Schwarzen Loch verglichen. Dieses\Pokémon nimmt alles in seinem Körper auf, es\kommt jedoch nichts wieder heraus.
+Obst|2.0|100.0|Die Früchte am Nacken von Tropius sind bei\Kindern sehr beliebt. Dieses Pokémon liebt\Früchte und isst sie ständig. Offensichtlich\sind ihm wegen dieser Vorliebe selber Früchte\gewachsen.
+Windspiel|0.6|1.0|Palimpalims Schreie hallen durch seinen hohlen\Körper. Wenn dieses Pokémon wütend wird,\erzeugen seine Schreie Ultraschallwellen, die\seine Feinde buchstäblich wegfegen können.
+Desaster|1.2|47.0|Jedes Mal, wenn Absol sich den Menschen zeigt,\endet dies in einer Katastrophe wie Erdbeben\oder Sturmflut. Deswegen ist es auch als das\Katastrophen-Pokémon bekannt.
+Strahlekind|0.6|14.0|Isso hat immer ein breites, fröhliches Lächeln\auf seinem Gesicht. Um festzustellen, ob es\wütend ist, muss man seinen Schweif betrachten.\Wenn es wütend ist, schlägt es damit auf den\Boden.
+Schneehut|0.7|16.8|Schneppke lebt in Gebieten mit heftigem\Schneefall. In Jahreszeiten, in denen es nicht\schneit, wie im Frühling oder im Sommer, nimmt\das Pokémon Reißaus, um in einer Höhle ein\ruhiges Leben unter Stalaktiten und Stalagmiten\zu führen.
+Antlitz|1.5|256.5|Firnontor hat einen Körper aus Stein, den es\mit einem Panzer aus Eis noch verstärkt. Dieses\Pokémon kann die Luftfeuchtigkeit der\Atmosphäre einfrieren und in jegliche Form\verwandeln.
+Applaus|0.8|39.5|Seemops kann schneller rollen als laufen. Wenn\Gruppen dieses Pokémon zusammen essen,\klatschen sie gleichzeitig, um ihre Freude zu\zeigen. Deswegen sind ihre Mahlzeiten sehr laut.
+Spielball|1.1|87.6|Seejong hat die Angewohnheit, alles, was es zum\ersten Mal sieht, auf seiner Nasenspitze zu\jonglieren. Dieses Pokémon hält sich bei\Laune, indem es manchmal ein Seemops auf seiner\Nase balanciert und hin- und herrollt.
+Eisbrecher|1.4|150.6|Walraisa hat zwei massive Stoßzähne, die mit\einem Hieb Eisblöcke zertrümmern können, die\bis zu 10 Tonnen wiegen. Es besitzt eine dicke\Speckschicht, die es vor eisigen Temperaturen\schützt.
+Muschel|0.4|52.5|Perlus kräftige Schale dient nicht nur dem\Schutz, es nutzt sie auch zum Fangen von Beute.\Die ausgewachsene Schale eines Perlu weist viele\Kerben und Kratzer auf.
+Tiefsee|1.7|27.0|Aalabyss entging lange der Aufmerksamkeit des\Menschen, da es in extremen Tiefen des Meeres\lebt. Die Augen dieses Pokémon können selbst\in den dunklen und trüben Tiefen des Meeres\einwandfrei sehen.
+Südsee|1.8|22.6|Saganabyss lebt in extremen Tiefen des\Südmeeres. Sein Körper ist so angelegt, dass\er dem enormen Wasserdruck dieser unglaublichen\Tiefe standhalten kann. Daher übersteht dieses\Pokémon gewöhnliche Attacken unbeschadet.
+Bestand|1.0|23.4|Relicanth ist eine Pokémon-Spezies, die vor\hundert Millionen Jahren existierte, ohne jemals\ihre Form zu verändern. Dieses antike Pokémon\hat ein zahnloses Maul und ernährt sich von\Mikroorganismen.
+Rendezvous|0.6|8.7|Liebiskus lebt in den seichten Gewässern der\Tropen. Dieses herzförmige Pokémon verdankt\seinen Namen der Tatsache, dass es hinter\Liebespaaren herschwamm, die es in den Wellen\des Ozeans beobachtet hatte.
+Steinhaupt|0.6|42.1|Kindwurm hat den Traum, fliegen zu können. In\zahlreichen vergeblichen Versuchen stürzte es\sich die Klippen herunter. Daher ist sein Kopf\sehr robust und so hart wie Stahl geworden.
+Durchsteher|1.1|110.5|In Draschels panzerartiger Schale vollziehen\seine Zellen eine Transformation, um einen\völlig neuen Körper zu bilden. Die Schale\dieses Pokémon ist ausgesprochen schwer, so\dass seine Bewegungen träge wirken.
+Drachen|1.5|102.6|Brutalanda träumte sehr lange davon, dass ihm\Flügel wachsen mögen. Dieser sehnliche Wunsch\hat wohl eine plötzliche Mutation in den Zellen\dieses Pokémon hervorgerufen, so dass ihm\plötzlich prächtige Flügel wuchsen.
+Eisenkugel|0.6|95.2|Anstelle von Blut fließt eine starke\magnetische Energie durch Tanhels Körper.\Dieses Pokémon kommuniziert mit anderen, indem\es kontrollierte magnetische Impulse aussendet.
+Eisenklauen|1.2|202.5|Wenn zwei Tanhel miteinander verschmelzen,\entsteht daraus Metang. Die Gehirne der Tahels\werden mit einem magnetischen Nervensystem\verbunden. Dadurch erzeugt es starke\psychokinetische Energie.
+Eisenfuß|1.6|550.0|Metagross hat insgesamt vier Gehirne. Diese\können schwierige Berechnungen schneller lösen\als ein Supercomputer. Dieses Pokémon kann\durch die Lüfte schweben, indem es seine vier\Beine einklappt.
+Steingipfel|1.7|230.0|Regirock wurde vor langer Zeit von Menschen\weggeschlossen. Wenn der Körper dieses Pokémon\im Kampf Schaden nimmt, sucht es nach passenden\Steinen, um sich selber zu reparieren.
+Eisberg|1.8|175.0|Regices tiefgefrorener Körper entstand während\der Eiszeit. Es kann nicht einmal durch Feuer\geschmolzen werden. Dieses Pokémon kontrolliert\eisige Luft von minus 200 Grad.
+Eisen|1.9|205.0|Registeel hat einen Körper, der härter ist als\jede Art von Metall. Sein Körper scheint hohl\zu sein. Niemand hat eine Ahnung, was dieses\Pokémon wohl frisst.
+Äon|1.4|40.0|Latias ist in höchstem Maße empfindlich\gegenüber den Emotionen der Menschen. Wenn es\den Anflug von Feindseligkeit wahrnimmt, werden\seine Federn zerzaust und es stößt schrille\Schreie aus, um seinen Gegner einzuschüchtern.
+Äon|2.0|60.0|Latios kann seinem Feind ein Bild von etwas, das\dieser einmal gesehen hat, in den Kopf\projizieren. Dieses Pokémon ist intelligent und\es versteht die menschliche Sprache.
+Seegründler|4.5|352.0|Kyogre kann riesige Regenwolken erzeugen, die\den gesamten Himmel bedecken, und\wolkenbruchartige Niederschläge hervorrufen.\Dieses Pokémon hat vielen Menschen das Leben\gerettet, die unter einer Dürre litten.
+Kontinent|3.5|950.0|Groudon wurde lange Zeit in der Mythologie als\ein Pokémon beschrieben, das Land erschaffen\und Kontinente vergrößern kann. Dieses\Pokémon fiel nach einem erbitterten Kampf mit\KYOGRE in den Schlaf.
+Himmelhoch|7.0|206.5|Rayquaza lebte für hunderte Millionen Jahre in\der Ozonschicht und stieg nie zur Erde hinab.\Dieses Pokémon lebt von Wasser und Partikeln\aus der Atmosphäre.
+Wünscher|0.3|1.1|Einer Legende nach erfüllt Jirachi jeden\Wunsch, der auf einen Notizzettel an seinem Kopf\geschrieben wird. Wenn dieses Pokémon Gefahr\wittert, kämpft es bereits, bevor es überhaupt\aufgewacht ist.
+DNS|1.7|60.8|Die DNS eines Weltraumvirus hat eine spontane\Mutation erfahren, da sie einem Laserstrahl\ausgesetzt wurde. Daraus entstand Deoxys. Das\kristallartige Organ auf der Brust dieses\Pokémon ist sein Gehirn.
+Winziglaub|0.4|10.2|Es besteht aus Erdreich. Trinkt es Wasser,\verhärtet sich der Panzer auf seinem Rücken.\Es lebt an Seen.
+Hain|1.1|97.0|Es lebt in der Nähe von Wasser in Wäldern.\Tagsüber verlässt es diese, um ein Sonnenbad\zu nehmen.
+Kontinent|2.2|310.0|Kleine Pokémon fangen manchmal an, auf dem\bewegungslosen Rücken Nester zu bauen.
+Schimpansen|0.5|6.2|Es klettert behände steile Felsen hinauf, um\auf Bergen zu leben. Sein Feuer ist aus, wenn es\schläft.
+Verspielt|0.9|22.0|Um Angreifer abzuschrecken, verstärkt es das\Feuer auf seinem Schweif, wodurch es größer\wirkt.
+Flammen|1.2|55.0|Es kämpft auf besondere Art, indem es alle\Gliedmaßen einsetzt. Sein Feuer erlischt nie.
+Pinguin|0.4|5.2|Es ist sehr stolz und nimmt daher kein Futter\von anderen an. Seine dicken Daunen schützen\vor Kälte.
+Pinguin|0.8|23.0|Es lebt allein, entfernt von anderen. Jedes von\ihnen denkt, es sei das bedeutendste unter\ihnen.
+Kaiser|1.7|84.5|Die 3 Hörner, die aus dem Schnabel wachsen,\stehen für Kraft. Ein Anführer hat die\größten Hörner.
+Star|0.3|2.0|Ihr Schwarm ist stets groß. Obwohl es kleine\Pokémon sind, schwingen sie ihre Flügel mit\enormer Kraft.
+Star|0.6|15.5|Auf der Suche nach Käfer-Pokémon fliegt es\über Wiesen und Wälder. Es bleibt in einem\großen Schwarm.
+Raubtier|1.2|24.9|Es hat ein wildes Wesen. Mutig fordert es immer\wieder Gegner heraus, die viel größer sind.
+Dickmaus|0.5|20.0|Es hat Nerven wie Drahtseile, nichts kann es\erschüttern. Es ist agiler und aktiver, als es\scheint.
+Biber|1.0|31.5|Es baut sein Nest, indem es in Flüssen Dämme\aus Schlamm und Ästen baut. Ein fleißiger\Arbeiter.
+Zirper|0.3|2.2|Es schüttelt seinen Kopf, so dass die beiden\Antennen sich berühren und wie ein Xylophon\klingen.
+Zirper|1.0|25.5|Wenn es ruft, verschränkt es seine\messerartigen Arme vor der Brust. Es komponiert\aus dem Stegreif.
+Flacker|0.5|9.5|In Gefahr blendet es seinen Gegner mit seinem\Fell und flieht, während der Gegner einen\Moment blind ist.
+Funken|0.9|30.5|Seine Krallen geben Elektrizität ab, die stark\genug ist, jemanden bewusstlos zu machen.
+Glühaugen|1.4|42.0|Mit seinen Augen kann es durch alles hindurch\sehen. So findet es auch Beute, die sich\versteckt hat.
+Knospen|0.2|1.2|Im Winter schließt es die Knospe. Im Frühjahr\öffnet es die Knospe und gibt Pollen ab.
+Blumenstrauß|0.9|14.5|Mit einem süßen Duft lockt es Beute an, die es\dann mit den dornigen Ranken in seinen Armen\schlägt.
+Kopfstoß|0.9|31.5|Vor über 100 Millionen Jahren lebte es in den\Dschungeln. Sein Schädel ist hart wie Eisen.
+Kopfstoß|1.6|102.5|Sein kräftiger Kopfstoß hat genug Kraft, um\selbst die stabilsten Dinge zu zerschmettern.
+Schutzschild|0.5|57.0|Vor über 100 Millionen Jahren lebte es in den\Dschungeln. Seine Gesichtshaut ist extrem hart.
+Schutzschild|1.3|149.5|Jeder Frontalangriff wird abgeschmettert. Dieses\friedliche Pokémon ernährt sich von Gras und\Beeren.
+Beutelwurm|0.2|3.4|Um sich vor dem eisigen Winterwind zu schützen,\legt es sich unter einen Umhang aus Ästen und\Laub.
+Beutelwurm|0.5|6.5|Als sich Burmy entwickelte, wurde sein Umhang\Teil des Körpers. Es legt den Umhang niemals\ab.
+Motten|0.9|23.3|Es liebt Honig und stiehlt den Honig, der von\Wadribie gesammelt wurde.
+Kleinbienen|0.3|5.5|Ein Pokémon, geformt aus 3 einzelnen Pokémon.\Fleißig bringt es Blütenhonig zu Honweisel.
+Bienenstock|1.2|38.5|Ihr Bauch ist die Wabe für die Larven. Sie\füttert ihre Larven mit dem Honig, den Wadribie\sammelt.
+Elektrohörnchen|0.4|3.9|Es bildet ein Fellknäuel, der vor statischer\Energie knistert. Es speichert die Energie in\Bäumen.
+Meereswiesel|0.7|29.5|Es hat eine Art Rettungsring um den Hals. Wenn\es schwimmt, gerät sein Kopf niemals unter\Wasser.
+Meereswiesel|1.1|33.5|Es treibt mithilfe einer Art Rettungsring auf\dem Wasser und hilft dem, der zu ertrinken\droht.
+Kirschen|0.4|3.3|Das kleine Bällchen enthält alles, was es für\die Entwicklung braucht. Es ist süß und\lecker.
+Blüten|0.5|9.3|In Zeiten mit viel Sonnenschein blüht es auf.\Es holt nach, was ihm als Knospe verwehrt blieb.
+Seeschnecken|0.3|6.3|Sein Aussehen ist von Region zu Region\unterschiedlich. In Sinnoh finden sich zwei\Arten.
+Seeschnecken|0.9|29.9|Es hat einen biegsamen Körper ohne einen\Knochen. Wird ein Körperteil abgetrennt,\wächst er nach.
+Langschweif|1.2|20.3|Wenn es hungrig ist, knackt es Nüsse mit seinen\beiden Schweifen. Nur selten verwendet es die\Arme.
+Ballon|0.4|1.2|Ein Pokémon, entstanden aus den Gefühlen von\Menschen und Pokémon. Es mag feuchte\Jahreszeiten.
+Luftschiff|1.2|15.0|Tagsüber treibt es faul vor sich hin, nachts\fliegt es mit anderen umher. Niemand weiß\wohin.
+Hasen|0.4|5.5|Es entrollt seine Ohren sehr schnell, um seine\Gegner schmerzhaft zu schlagen.
+Hasen|1.2|33.3|Ein sehr vorsichtiges Pokémon. Nimmt es Gefahr\wahr, schützt es seinen Körper mit seinen\weichen Ohren.
+Magisch|0.9|4.4|Seine Rufe klingen wie Beschwörungen. Die, die\sie hören, kriegen Kopfschmerzen und\Halluzinationen.
+Anführer|0.9|27.3|Ein nachtaktives Pokémon, das sich in\Schwärmen mit Kramurx durch die Nacht bewegt.
+Fies|0.5|3.9|Es schlägt mit Krallen zu oder schnurrt, je\nachdem, ob es gerade wütend oder zutraulich\ist.
+Tigerkatzen|1.0|43.8|Dieses Pokémon ist ein Grobian, der sich in die\Nester anderer Pokémon einnistet und sie sich\damit aneignet.
+Glöckchen|0.2|0.6|Es ruft, indem es eine Kugel in seiner Kehle\bewegt. Es bewegt sich mit eiligen Hopsern fort.
+Stinktier|0.4|19.2|Um sich zu schützen, versprüht es eine\Substanz aus seinem Hinterleib, die 24 Stunden\stinkt.
+Stinktier|1.0|38.0|Über seine Schweifspitze versprüht es eine\übelriechende Substanz. Die Reichweite liegt\bei über 50 Metern.
+Bronze|0.5|60.5|Sein Körper sieht aus, als seien Teile davon in\alten Gräbern gefunden worden.
+Bronzeglocken|1.3|187.0|Dieses Pokémon fand man bei Grabungen auf einer\Baustelle, an deren Ort es 2000 Jahre geschlafen\hatte.
+Bonsai|0.5|15.0|Es sieht aus, als würde es immer weinen. Dabei\reguliert es nur seinen Wasserhaushalt.
+Mimen|0.6|13.0|Es ahmt seinen Gegner nach. Der kann den Blick\danach nicht von ihm abwenden.
+Spielhaus|0.6|24.4|Es liebt runde, weiße Dinge. Es trägt einen\eiförmigen Stein bei sich, und imitiert damit\Chaneira.
+Musiknoten|0.5|1.9|Es kann die menschliche Sprache lernen.\Versammeln sie sich, bringen sie sich alle\dasselbe bei.
+Verboten|1.0|108.0|Ein Pokémon, das aus 108 Geistern besteht. Es\ist an einen Spalt in einem mysteriösen Stein\gebunden.
+Landhai|0.7|20.5|Es nistet in kleinen Löchern in Höhlenwänden.\Es springt Beute, die sich zu nah heranwagt, an.
+Höhlen|1.4|56.0|Es gibt einen uralten Glauben, dass Medizin, die\aus seinen Schuppen gewonnen wird, alles heilen\kann.
+Rasanz|1.9|95.0|Spannt es seinen Körper und seine Flügel,\sieht es aus wie ein Jet. Es fliegt mit\Schallgeschwindigkeit.
+Nimmersatt|0.6|105.0|Einmal am Tag verschlingt es eine Nahrungsmenge,\die seinem Gewicht entspricht. Und das ohne zu\kauen.
+Wellenspiel|0.7|20.2|Die Aura, die dieses Pokémon umgibt, verstärkt\sich, wenn es zeigen will, dass es ängstlich\oder traurig ist.
+Aura|1.2|54.0|Es besitzt die Fähigkeit, die Aura aller Dinge\zu spüren. Es versteht die menschliche Sprache.
+Flusspferd|0.8|49.5|Es lebt in ausgetrockneten Gebieten. Statt zu\schwitzen, sondert sein Körper Sand ab.
+Schwergewichts|2.0|300.0|Es wirbelt im Körper gespeicherten Sand durch\Öffnungen und generiert so einen\Sandwirbelsturm.
+Skorpion|0.8|12.0|Es greift seine Beute mit den Krallen an seinem\Schweif und vergiftet sie. Dann wartet es ab...
+Ogerskorpion|1.3|61.5|In seinen Armen steckt so viel Kraft, dass es\mit seinen giftigen Krallen Autos zerquetschen\kann.
+Giftmund|0.7|23.0|In seinen Backen sammelt sich Gift. Es versucht,\Beute zu überraschen und mit Giftfingern zu\schnappen.
+Giftmund|1.3|44.4|Die Gelenke an seinen Klauen geben ein so\starkes Gift ab, dass selbst ein kleiner Kratzer\fatal ist.
+Käfertod|1.4|27.0|Sein süßlich riechender Speichel zieht Beute\an, die es frisst. Es braucht einen Tag, sie zu\fressen.
+Flügelfisch|0.4|7.0|Wurden die Flossen lange dem Sonnenlicht\ausgesetzt, leuchten sie in der Dunkelheit.
+Neon|1.2|24.0|Es lebt tief auf dem Meeresboden. Das blinkende\Muster auf seinen vier Rückenflossen zieht\Beute an.
+Flugrochen|1.0|65.0|Ein freundliches Pokémon, das mit seinen zwei\Antennen die Strömungen des Meeres erkennt.
+Frostbaum|1.0|50.5|Es lebt im Schnee der Berge. Es hatte bisher\kaum Kontakt zu Menschen und ist daher sehr\neugierig.
+Frostbaum|2.2|135.5|Es löst in den Bergen, wo ewiger Schnee liegt,\Blizzards aus. Es ist ein scheußlicher\Schneemann.
+Stichklauen|1.1|34.0|Es lebt in kalten Gebieten in Gruppen von 4 oder\5 Pokémon, die bei der Jagd großes Geschick\zeigen.
+Magnetgebiets|1.2|180.0|Es entwickelte sich, als es einem besonderen\Magnetfeld ausgesetzt wurde.
+Schlecker|1.7|140.0|Es umklammert Dinge mit seiner dehnbaren Zunge.\Kommt man ihm zu nahe, wird man eingespeichelt.
+Bohrer|2.4|282.8|Es legt Steine in die Löcher seiner Hände und\wirft sie mit Muskelkraft. Sogar Georok werden\verwendet.
+Ranken|2.0|128.6|Es umwickelt Beute, indem es seine Arme, die aus\Ranken bestehen, verlängert.
+Donnerkeil|1.8|138.6|Es berührt den Gegner mit seinen beiden\Schweifspitzen und entlädt dann über 20 000\Volt.
+Detonations|1.6|68.0|Aus den Enden seiner Arme schießen Feuerbälle\mit 2000 Grad. Es lebt in Vulkankratern.
+Jubilierer|1.5|38.0|Es zeigt sich niemals dort, wo es Streitigkeiten\gibt. In letzter Zeit wurde es nur selten\gesehen.
+Agrion|1.9|51.5|Durch die Bewegung seiner Flügel entstehen\Schockwellen, die dem Gegn. innere Verletzungen\zufügen.
+Frischgrün|1.0|25.5|Genau wie eine Pflanze führt es die\Photosynthese aus. Deshalb ist es ständig von\reiner Luft umgeben.
+Neuschnee|0.8|25.9|Will es sich schützen, kann es sein Fell\gefrieren, so dass jedes Haar wie eine Nadel\absteht.
+Zahnskorpi|2.0|42.5|Es hängt kopfüber von einem Ast und beobachtet\seine Beute. Bei Gelegenheit stürzt es sich auf\sie.
+Doppelstoßzahn|2.5|291.0|Die beeindruckenden Stoßzähne dieser Pokémon\sind aus Eis. Nach der Eiszeit nahm ihre\Population ab.
+Virtuell|0.9|34.0|Zusätzliche Software wurde installiert, um das\Pokémon zu verbessern. Seitdem benimmt es sich\seltsam.
+Klingen|1.6|52.0|Es kämpft, indem es die Schwerter an seinen\Ellbogen verlängert. Es ist ein Meister des\Kampfes.
+Kompass|1.4|340.0|Es gibt starken Magnetismus ab. Es steuert drei\kleine Einheiten, die sich Mininasen nennen.
+Greifer|2.2|106.6|Die Antenne auf seinem Kopf empfängt\Radiowellen aus einer anderen Dimension.
+Schneegebiets|1.3|26.6|Sein eisiger Atem mit minus 50 Grad friert\Gegner ein. Was aussieht wie sein Körper, ist\tatsächlich hohl.
+Plasma|0.3|0.3|Sein Körper besteht aus Plasma. Mit ihm kann es\in elektrische Geräte eindringen und für Chaos\sorgen.
+Wissens|0.3|0.3|“Das wissende Wesen”. Es soll die\Erinnerungen derer löschen, die ihm in die\Augen sehen.
+Emotions|0.3|0.3|“Das fühlende Wesen”. Es lehrt die Menschen\die Ideale von Trauer, Schmerz und Freude.
+Willenskraft|0.3|0.3|“Das starke Wesen”. Es schläft auf dem\Grund eines Sees und hält so die Welt in\Balance.
+Zeitweilig|5.4|683.0|Es besitzt die Macht, die Zeit zu kontrollieren.\In den Mythen von Sinnoh erscheint es als\Gottheit.
+Räumlich|4.2|336.0|Es hat die Macht, den Raum zu krümmen. In den\Mythen von Sinnoh erscheint es als Gottheit.
+Lavadom|1.7|430.0|Es lebt in vulkanischen Höhlen. Mit seinen\kreuzförmigen Klauen kann es sogar an der Decke\laufen.
+Kolossal|3.7|420.0|Es gibt eine Legende, wonach dieses Pokémon die\Kontinente mit einem Seil gezogen hat.
+Rebellen|4.5|750.0|Ein Pokémon, von dem man sagt, es lebt in der\Spiegelwelt unserer Welt. Es erscheint auf alten\Friedhöfen.
+Lunar|1.5|85.6|Seine Flügel geben schimmernde Partikel ab, wie\einen Schleier. Man sagt, es steht für die\Mondsichel.
+Seedrift|0.4|3.1|Es lebt in warmen Meeren. Geht es auf\Nahrungssuche, füllt es den Beutel auf seinem\Kopf mit Luft.
+Seefahrer|0.3|1.4|Geboren auf dem Meeresboden, legt es große\Entfernungen zurück, um dorthin\zurückzukehren.
+Dunkelnacht|1.5|50.5|Es kann andere in Schlaf versetzen und ihnen\Träume geben. Es ist nur bei Neumond aktiv.
+Dankbarkeits|0.2|2.1|Es lebt auf Blumenwiesen und rollt sich ein, um\wie eine Blume auszusehen u. nicht entdeckt zu\werden.
+Alpha|3.2|320.0|Die Mythologie nennt dieses Pokémon als Former\des Universums, wobei es seine tausend Arme\eingesetzt hat.
+Triumph|0.4|4.0|Ein siegverheißendes Pokémon. Man sagt,\Trainer, die ein Victini in ihrem Team haben,\seien unschlagbar.
+Grasschlangen|0.6|8.1|Eine kühle Denkernatur. Bekommt es genügend\Sonnenlicht ab, erhöht sich die Geschwindigkeit\seiner Bewegungen.
+Grasschlangen|0.8|16.0|Huscht beinahe gleitend über den Boden und\täuscht Gegner mit agilen Manövern, bis es\mithilfe seiner Efeurute obsiegt.
+Hoheits|3.3|63.0|Bringt Gegner mit einem einzigen kühlen Blick\zum Erstarren. In seinem Inneren verstärkt es\die Energie der Sonne.
+Feuerferkel|0.5|9.9|Weicht flink gegnerischen Angriffen aus und\schießt Flammen aus dem Rüssel, mit denen es\gern auch mal Nüsse röstet.
+Feuerferkel|1.0|55.5|Lodert das Feuer in ihm auf, bewegt es sich\geschmeidiger und schneller. Bei Gefahr lässt\es ordentlich Dampf ab.
+Feuerschwein|1.6|150.0|Steckt mit dem Feuer um sein Kinn seine Fäuste\in Brand und holt zu feurigen Fausthieben aus.\Zeigt großen Teamgeist.
+Otter|0.5|5.9|Kämpft mit der Muschel auf seinem Bauch.\Pariert es einen Angriff, schlägt es sofort mit\einer Schnitt-Attacke zurück.
+Schulungs|0.8|24.5|Es eignet sich durch strenges Training elegant\ineinander übergehende Attacken mit seinen zwei\Muscheln an.
+Würde|1.5|94.6|Besiegt Gegner durch einen einzigen Hieb mit der\Klinge an seinem Panzer. Ein böser Blick und\seine Feinde verstummen.
+Späher|0.5|11.6|Hortet in seinen Backentaschen Futter, um\tagelang Wache stehen zu können, und gibt\Kameraden über seine Rute Signale.
+Wachsamkeits|1.1|27.0|Bespuckt Gegner mit Kernen von Beeren aus seinen\Backentaschen. Erspäht es einen Feind, richtet\es den Schweif auf.
+Welpen|0.4|4.1|Ein kluges Pokémon, das sich zwar tapfer auch\starken Gegnern zum Kampf stellt, aber unfaire\Begegnungen zu meiden weiß.
+Treuhund|0.9|14.7|Das dunkle Fell, das es wie ein Mantel umgibt,\ist äußerst widerstandsfähig und mindert den\Schaden durch Attacken.
+Großmut|1.2|61.0|Es rettet Menschen, die aufgrund eines\Schneesturmes im Gebirge festsitzen. Sein langes\Fell schützt es vor Kälte.
+Schelm|0.4|10.1|Es stibitzt den Leuten spaßeshalber ihr Hab und\Gut, doch dank seiner reizenden Natur kann ihm\niemand lang böse sein.
+Gefühlskälte|1.1|37.5|Kommt und geht, wann es will. Sein reizendes\Aussehen und Fell ziehen Trainer in Scharen an.
+Grasaffen|0.6|10.5|Es lebt tief im Wald. Beißt man in die Kräuter\auf seinem Kopf, fühlt man sich auf wundersame\Weise erfrischt.
+Stachelaffen|1.1|30.5|Ein hitziger Geselle, der im Kampf seinen\dornigen Schweif umherschwingt. Auf seinem Kopf\wachsen bittere Kräuter.
+Hitze|0.6|11.0|Ist es wütend, erreicht das Büschel auf seinem\Kopf Temperaturen von bis zu 300 Grad. Es\röstet sich damit auch Nüsse.
+Funkenregen|1.0|28.0|Am liebsten isst es Süßigkeiten. Es wandelt\sie in Energie um, mit der es das Feuer in\seinem Körper schürt.
+Wasserstrahl|0.6|13.5|Das Wasser, das es im Büschel auf seinem Kopf\sammelt, ist äußerst nahrhaft und verhilft\Pflanzen zu großem Wachstum.
+Drainage|1.0|29.0|Speichert Wasser im Büschel auf seinem Kopf.\Sinkt der Wasserstand, tankt es über seinen\Schweif neue Flüssigkeit.
+Traumfresser|0.6|23.3|Frisst es den Traum eines Menschen, vergisst der\Träumer dessen Inhalt. Es schwebt stets durch\die Luft.
+Halbschlaf|1.1|60.5|Der Dunst, der aus seiner Stirn tritt, enthält\die Träume unzähliger Menschen und Pokémon.
+Täubchen|0.3|2.1|Gewöhnlich hört es zwar auf das, was sein\Trainer sagt, doch manchmal kommt es mit\komplizierten Befehlen nicht klar.
+Wildtauben|0.6|15.0|Egal wie weit es auch von seinem Trainer\entfernt ist, es findet immer wieder zu ihm\zurück.
+Stolz|1.2|29.0|Männchen schrecken Gegner ab, indem sie ihren\Kopfschmuck schütteln. Weibchen verfügen über\bessere Flugfertigkeiten.
+Hochspannungs|0.8|29.8|Wenn es Strom entlädt, blitzt seine Mähne auf.\Auf diese Weise kann es auch mit Artgenossen\kommunizieren.
+Donnerkeil|1.6|79.5|Es ist explosiv wie ein Blitz. Galoppiert es mit\voller Geschwindigkeit drauflos, kann man\Donnerhall vernehmen.
+Erdmantel|0.4|18.0|Hat ein sechseckiges Ohr. Sein durch das\Erdreich gepresster Körper steht Stahl in\Sachen Härte in nichts nach.
+Erz|0.9|102.0|Wenn es voller Kraft steckt, funkeln die\orangefarbenen Kristalle an seinem Leib. Es\sucht Höhlen nach Grundwasser ab.
+Kompressions|1.7|260.0|Es kann ganze Berge einebnen, indem es Energie\entlädt, die es in seinem Kern gesammelt und\verdichtet hat.
+Fledermaus|0.4|2.1|Wohnt in dunklen Wäldern und Höhlen. Es sendet\Ultraschallwellen mit seiner Nase aus, um die\Gegend abzutasten.
+Balz|0.9|10.5|Es sendet über seine Nase Schallwellen mit\verschiedenen Frequenzen aus. Mit manchen kann\es sogar Felsen zerstören.
+Maulwurf|0.3|8.5|Es gräbt sich mit 50 km/h durch das Erdreich\und kann beinahe schon mit den Autos an der\Oberfläche Schritt halten.
+Untergrund|0.7|40.4|Seine zu Stahl weiterentwickelten Bohrer kriegen\selbst Eisenplatten klein. Im Tunnelbau ist es\ein absolutes Ass.
+Gehör|1.1|31.0|Berührt es jemanden mit den Fühlern an seinen\Ohren, erfährt es durch den Herzschlag der\Person, wie es ihr geht.
+Muskel|0.6|12.5|Greift Gegner mit einem Holzbalken an. Fällt es\ihm leicht, den schweren Balken zu tragen, ist\seine Entwicklung nah.
+Muskel|1.2|40.0|Selbst wenn es mit voller Wucht von einem\Profi-Ringer angegriffen wird, lässt es dies\dank seines Muskeltrainings kalt.
+Muskel|1.4|87.0|Man nimmt an, dass es der Menschheit vor ca. 2\000 Jahren das Betonmischen beigebracht hat.
+Kaulquappen|0.5|4.5|Bei Gefahr alarmiert es Artgenossen durch ein\schrilles Warnsignal, das es mit seinen Wangen\erzeugt.
+Vibrations|0.8|17.0|Wenn es die Beulen auf seinem Kopf zum Schwingen\bringt, tobt je nach Umgebung entweder das\Wasser oder die Erde bebt.
+Vibrations|1.5|62.0|Es schießt eine lähmende Flüssigkeit aus den\Beulen auf seinem Kopf. Es plagt seine Gegner\mit Schallwellen.
+Judo|1.3|55.5|Zurrt es seinen Gürtel fest, gewinnt es an\Kraft. Wilde Exemplare flechten sich ihren\Gürtel in Handarbeit aus Ranken.
+Karate|1.4|51.0|Am Fuß von Bergen, wo Karadonis trainiert,\ertönt das Echo von Fäusten, die gegen Felsen\und Bäume schlagen.
+Schneider|0.3|2.5|Gleich nach dem Schlüpfen näht Matrifol ihm\ein Kleidchen. Wenn es schläft, verbirgt es den\Kopf unter einer Haube.
+Wickelblatt|0.5|7.3|Es wandelt herabgefallenes Laub in Nährstoffe\um. In Wäldern, wo es Folikon gibt, fühlen\sich Pflanzen pudelwohl.
+Kinderpflege|1.2|20.5|Findet es ein junges Pokémon, kann es nicht\anders, als ihm mit seinen Scheren und\Klebefäden ein Kleidchen zu nähen.
+Tausendfüßer|0.4|5.3|Es beißt Angreifer und injiziert ihnen Gift,\das selbst große Vogel-Pokémon, seine\natürlichen Feinde, lähmt.
+Kokonfüßer|1.2|58.5|Von einem harten Schutzpanzer umgeben. Es greift\seine Gegner an, indem es mit Karacho wie ein\Rad in sie hineinrollt.
+Riesenfüßer|2.5|200.5|Holt Gegner flinken Fußes ein und greift sie\mit den Hörnern an seinem Kopf an. Gnade ist\ihm ein Fremdwort.
+Wattebausch|0.3|0.6|Wird es angegriffen, verstreut es zur Täuschung\Watte. Es flieht, während der Gegner nach dem\wahren Waumboll sucht.
+Windschatten|0.7|6.6|Passiert wie ein Luftzug mühelos jeden noch so\engen Spalt und hinterlässt dort nichts als ein\weißes Fellknäuel.
+Wurzel|0.5|6.6|Die Blätter auf seinem Kopf schmecken furchtbar\bitter, doch sie helfen ausgezeichnet gegen\Erschöpfung.
+Blumenzier|1.1|16.3|Bei Promis ist es sehr beliebt. Auch gestandene\Trainer tun sich schwer damit, seine Blüte\schön aufblühen zu lassen.
+Grobheits|1.0|18.0|Rot gestreifte und blau gestreifte Exemplare\kriegen sich sofort in die Haare. Ein äußerst\aggressives Pokémon.
+Wüstenkroko|0.7|15.2|Es lebt im Wüstensand. Der durch die Sonne\erhitzte Sand gewährleistet, dass es immer\schön warm eingepackt ist.
+Wüstenkroko|1.0|33.4|Bildet mit mehreren Artgenossen ein Rudel. Eine\Membran schützt seine Augen vor Sandstürmen.
+Abschreckungs|1.5|96.3|Hat es seine Beute erblickt, gibt es kein\Entrinnen mehr. Sein mächtiger Kiefer knackt\selbst Karosserien.
+Lampion|0.6|37.5|Solang das Feuer in ihm brennt, rennt es rastlos\durch die Gegend. Geht ihm das Brennmaterial\aus, wird es schläfrig.
+Lichterloh|1.3|92.9|Erhitzt das Innere seines Körpers auf 1 400\Grad und erlangt so die Kraft, um mit der Faust\Laster zu zerstören.
+Kaktus|1.0|28.0|Verjagt Vogel-Pokémon, die auf seine Blüten\aus sind, mit einem flotten Tänzchen und lauter\Untermalung.
+Steinhaus|0.3|14.5|Das ätzende Sekret aus seinem Mund erlaubt es\ihm, ohne Weiteres Steine auszuhöhlen.
+Felshaus|1.4|200.0|Revierkonflikte führen oft zu heftigen Kämpfen\zwischen ihnen. Gewonnen hat, wer das\gegnerische Haus zerstört.
+Hautwechsel|0.6|11.8|Es zieht seine gummiartige Haut bis zum Hals\hinauf und nimmt eine Abwehrhaltung ein, um sich\vor Schaden zu schützen.
+Halunken|1.1|30.0|Es geht im Rudel gegen Eindringlinge vor. Aus\seinem Mund speit es eine ätzende Flüssigkeit.
+Vogelgleich|1.4|14.0|Erinnerungen an seine Tage als Wächter einer\uralten Stadt veranlassen es, Tag für Tag\dieselbe Route abzufliegen.
+Seelen|0.5|1.5|Seine Maske ist ein Abbild des Gesichts, das es\als Mensch hatte. Manchmal weint es, wenn man\ihm in die Augen sieht.
+Sarkophag|1.7|76.5|Angeblich verschlingt es jeden, der sich ihm\auch nur nähert. Besonders gern frisst es\Klumpen aus reinem Gold.
+Urzeitkröten|0.7|16.5|Es wurde aus einem urzeitlichen Fossil\reanimiert. Es kann in Tiefen von bis zu 1 000\Metern abtauchen.
+Urzeitkröten|1.2|81.0|Es lebt im Meer und an Land. Es ist so stark,\dass es mit einem einzigen Hieb ein Loch in ein\Schiff reißen kann.
+Urzeitvogel|0.5|9.5|Man nennt es den Urvater der Vogel-Pokémon. Da\es nicht fliegen kann, bewegt es sich hüpfend\von Ast zu Ast.
+Urzeitvogel|1.4|32.0|Bevor es abhebt, nimmt es am Boden Anlauf. Es\ist schlau genug, seine Beute zusammen mit\Artgenossen zu jagen.
+Mülltüten|0.6|31.0|Hat ein Faible für schmutzige Orte. Wer das Gas\einatmet, das es mit Rülpslauten ausstößt,\schläft eine Woche durch.
+Müllhalden|1.9|107.3|Es nimmt mit dem rechten Arm Gegner in die\Mangel und gibt ihnen mit dem giftigen Gas aus\seinem Maul den Rest.
+Lausefuchs|0.7|12.5|Es übertölpelt andere, indem es verschiedene\Gestalten annimmt. Angeblich tarnt es sich oft\als wortkarges Kind.
+Polymorfuchs|1.6|81.1|Seit jeher beschützt es das Rudel, indem es die\Gestalt des Feindes annimmt. Es ist sehr loyal\zu seinen Artgenossen.
+Chinchilla|0.4|5.8|Sie sorgen dafür, dass ihre Schweife stets\schön sauber sind, da sie diese zur Begrüßung\aneinanderreiben.
+Schal|0.5|7.5|Sein weißer Flaum ist mit einem speziellen Öl\überzogen. Gegnerische Angriffe gleiten daran\einfach ab.
+Glotz|0.4|5.8|Die schleifenförmigen Fühler erhöhen seine\Psycho-Kräfte. Es scheint stets irgendetwas\anzustarren.
+Manipulator|0.7|18.0|Es manipuliert Pokémon und Menschen mit\Hypnosetricks. In Märchen tritt es oft als\Entführer auf.
+Gestirns|1.5|44.0|Durch seine mächtigen Psycho-Kräfte krümmt\sich der Raum und Bilder eines Lichtjahre\entfernten Ortes erscheinen.
+Zellen|0.3|1.0|Es wehrt Angreifer ab, indem es Psycho-Kräfte\auf sie ansetzt. Es kommuniziert telepathisch\mit Artgenossen.
+Zellteilungs|0.6|8.0|Wegen seines gespaltenen Denkapparates kann es\vorkommen, dass es sich abrupt einer anderen\Tätigkeit zuwendet.
+Vermehrungs|1.0|20.1|Schütteln sich zwei von ihnen die Hände,\bilden ihre Denkapparate ein Netzwerk und ihre\Psycho-Kräfte werden stärker.
+Wasservogel|0.5|5.5|Es schwimmt das Gewässer auf der Suche nach\Torfmoos, seiner Leibspeise, ab. Ein\talentierter Taucher.
+Schwan|1.3|24.2|Wenn der Morgen dämmert, fangen sie an zu\tanzen. Das Swaroness in der Mitte führt die\Gruppe an.
+Neuschnee|0.4|5.7|Die Temperatur seines Odems liegt bei minus\50°C. Es erzeugt Eiskristalle und lässt es in\seiner Umgebung schneien.
+Firn|1.1|41.0|Es lebt auf schneebedeckten Bergen. Vor vielen\Jahren fand es während einer Eiszeit seinen Weg\in den Süden.
+Schneesturm|1.3|57.5|Schluckt Unmengen an Wasser, die es in sich zu\Schneewolken verwandelt, und plagt Gegner mit\hartem Schneetreiben.
+Jahreszeiten|0.6|19.5|Sein Fell nimmt Farbe und Duft des Feldes oder\des Grases unter ihm an. Bei Gefahr sucht es im\hohen Gras Schutz.
+Jahreszeiten|1.9|92.5|An seinem Geweih kann man ablesen, wann eine\neue Jahreszeit beginnt. Sein Revier wechselt\mit jeder neuen Jahreszeit.
+Flughörnchen|0.4|5.0|Im Flug entlädt es Strom, den es mit seinen\Backentaschen erzeugt und in seinen Fluglappen\gespeichert hat.
+Schnappbiss|0.5|5.9|Ein mysteriöses Pokémon, das sich entwickelt,\wenn es zusammen mit Schnuthelm einen\Stromschlag abbekommt.
+Kavallerie|1.0|33.0|Jagt durch die Luft und spießt Gegner mit\seinen Lanzen auf. Auch überlegenen Gegnern\stellt es sich ohne Furcht.
+Pilz|0.2|1.0|Fällt ein Trainer auf sein Äußeres herein,\das komischerweise einem Pokéball ähnelt,\besprüht es ihn mit Giftsporen.
+Pilz|0.6|10.5|Es lockt seine Beute an, indem es die Hüte in\Form von Pokébällen an seinen Armen rüttelt\und einen Tanz aufführt.
+Gleit|1.2|33.0|Schlingt seine dünnen, schleierartigen Arme um\den Gegner und lässt sich mit ihm zum\Meeresgrund sinken.
+Gleit|2.2|135.0|Dringt ein Schiff in sein Revier ein, bringt es\dieses zum Kentern und saugt die Lebensenergie\aus der Besatzung.
+Fürsorge|1.2|31.6|Die spezielle Schleimschicht, die seinen Körper\umgibt, besitzt heilende Kräfte.
+Kleben|0.1|0.6|Wattzapf, die in der Stadt leben, haben die\Fähigkeit, aus den Steckdosen von Wohnhäusern\Strom abzuzapfen.
+Stromspinnen|0.8|14.3|Wird es angegriffen, spuckt es mit vielen\elektrisch geladenen Fäden um sich und baut\sich eine Elektrobarriere.
+Dornfrucht|0.6|18.8|Fühlt es sich bedroht, wehrt es sich, indem es\eine großzügige Salve Dornen abfeuert.
+Dornkugel|1.0|110.0|Seine drei dornengespickten Schlingen, unter\denen sogar große Felsen zu Bruch gehen, dienen\ihm als Angriffswerkzeug.
+Getriebe|0.3|21.0|Seine zwei Teile greifen ineinander wie ein\Uhrwerk. Jedes andere Objekt, das man mit ihm\kombinieren will, wird abgestoßen.
+Getriebe|0.6|51.0|Teilt Artgenossen seine Gefühlslage mit, indem\es die Umlaufrichtung ändert. Wenn es wütend\ist, dreht es sich schneller.
+Getriebe|0.6|81.0|Der rote Zentralbestandteil dient als\Energiespeicher. Darin geladene Energie feuert\es über seine Stacheln ab.
+Stromfisch|0.2|0.3|Allein erzeugt es nur wenig Strom, doch tritt es\geschlossen im Schwarm auf, gleicht seine Kraft\der eines Blitzes.
+Stromfisch|1.2|22.0|Die rund gemaserten Flächen erzeugen Strom. Es\schlingt sich um den Gegner, presst sie gegen\ihn und aktiviert sie.
+Stromfisch|2.1|80.5|Es schleppt sich mithilfe seiner Arme an Land,\schnappt nach seiner Beute und zerrt sie\augenblicklich ins Meer.
+Grips|0.5|9.0|Es verfügt über mächtige Psycho-Kräfte, mit\denen es die Hirne seiner Gegner verwirrt, um\ihnen Kopfweh zu bereiten.
+Grips|1.0|34.5|Manipuliert das gegnerische Gedächtnis. Lässt\es seine drei bunten Finger aufleuchten,\kommuniziert es offenbar.
+Kerzen|0.3|3.1|Es entfacht eine Flamme, die von der\Lebensenergie eines Menschen oder eines Pokémon\zehrt.
+Lampen|0.6|13.0|Es irrt ziellos auf der Suche nach den Seelen\der Verstorbenen durch die Stadt. Als\Unglücksbringer gefürchtet.
+Geleit|1.0|34.3|Es saugt die Seelen seiner Opfer aus und\verbrennt sie. Nutzt seine Arme als Pendel, um\den Gegner zu hypnotisieren.
+Stoßzahn|0.6|18.0|Es knackt sich mit seinen Hauern Nüsse. Brechen\seine Fangzähne ab, wächst an ihrer Stelle ein\stärkeres Ersatzpaar.
+Beilkiefer|1.0|36.0|Da seine Hauer nicht mehr nachwachsen, wetzt es\sie nach einem Kampf sachte an den Felsen eines\Flussbettes.
+Beilkiefer|1.8|105.5|Hat eine eher sanfte Natur, doch bei\Eindringlingen kennt es keine Gnade. Seine\Stoßzähne durchbohren sogar Eisen.
+Eisschollen|0.5|8.5|Wenn es kränkelt, wird der Schleim aus seiner\Nase flüssiger und seine Eis-Attacken verlieren\an Stärke.
+Packeis|2.6|260.0|Kann seinen eigenen Atem zum Gefrieren bringen.\Es schwimmt auf der Suche nach Beute die\nördlichen Meere ab.
+Kristall|1.1|148.0|Steigt seine Körpertemperatur, wird es zu\Wasser und verschwindet. Kühlt es wieder ab,\nimmt es seine alte Form an.
+Schnecken|0.4|7.7|Bei Gefahr zieht es sich zum Schutz in seine\Muschel zurück und schießt eine klebrige\Flüssigkeit aus dem Spalt.
+Entschalungs|0.8|25.3|Da es ohne Flüssigkeit an Kraft verliert,\schützt es sich mit mehreren dünnen\Hautschichten vor dem Austrocknen.
+Falle|0.7|11.0|Dank seiner dicken Haut hält es selbst das\Gewicht eines Sumoringers aus. Wenn es\Stromschläge verteilt, grinst es.
+Kampfkünste|0.9|20.0|Es deckt seine Gegner mit filigranen Attacken in\Serie ein und schlitzt sie mit seinen spitzen\Klauen auf.
+Kampfkünste|1.4|35.5|Es benutzt das Fell an seinen Armen als\Peitsche. Beide Arme bewegen sich dabei mit\atemberaubender Geschwindigkeit.
+Höhlen|1.6|139.0|Es erwärmt seinen Körper, indem es mit den\Flügeln das Sonnenlicht einfängt. Kühlt sein\Körper ab, erstarrt es.
+Urgolem|1.0|92.0|Es wird durch eine Energie angetrieben, die\seinem Körper entspringt. Keiner weiß jedoch,\woher diese Energie stammt.
+Urgolem|2.8|330.0|Es jagt mit Schallgeschwindigkeit durch die\Lüfte. Nimmt man das Siegel auf der Brust ab,\gerät es außer Kontrolle.
+Stahlklingen|0.5|10.2|Sein Körper ist mit Klingen übersät, die es\an Felsen eines Flussbettes schärft, wenn sie\im Kampf schartig werden.
+Schwertklingen|1.6|70.0|Anführer einer Schar von Gladiantri. Verliert\es den Kampf um den Titel des Anführers, wird\es ausgestoßen.
+Kopfstoßrind|1.6|94.6|Sein zotteliges Fell fängt selbst nach einer\seiner wuchtigen Rempelattacken einiges an\Schaden ab.
+Adlerküken|0.5|10.5|Kann mit seinen Füßen Nüsse zermalmen. Es\stellt sich jedem noch so starken Gegner tapfer\zum Kampf.
+Kühnheits|1.5|41.0|Für Freunde stürzt es sich selbstlos in den\Kampf. Es kann mit seinen Krallen Autos durch\die Lüfte tragen.
+Windel|0.5|9.0|Seine Flügel sind noch zu klein zum Fliegen.\Kurz bevor es sich entwickelt, wirft es seine\Schädelwindel ab.
+Knochenadler|1.2|39.5|Es baut sein Nest aus Knochen. Ist seine Beute\geschwächt, packt es sie mit den Beinen und\trägt sie zu seinem Nest.
+Ameisenbären|1.4|58.0|Es saugt über das Loch in seinem Schweif Luft\auf, um in sich Feuer zu schüren. Es ist der\Erzfeind von Fermicula.
+Eisenameisen|0.3|33.0|Ein eiserner Panzer umgibt seinen Leib. Angriffe\von Furnifraß, seinem Feind, schlägt es in der\Gruppe zurück.
+Haudrauf|0.8|17.3|Es beißt einfach alles und jeden und frisst,\was ihm zwischen die Zähne kommt. Man nähert\sich ihm besser mit Bedacht.
+Grobheits|1.4|50.0|Wenn es sein Revier leergejagt hat, sucht es\sich ein neues. Seine beiden Köpfe liegen\ständig im Streit.
+Brutal|1.8|160.0|Es fliegt rastlos durch die Lüfte und greift\jeden an, der ihm unter die Augen kommt. Ein\äußerst kaltblütiges Pokémon.
+Fackel|1.1|28.8|Bislang vermutet man, es sei ein Produkt der\Sonne. Bei der Entwicklung ist sein ganzer\Körper in Flammen gehüllt.
+Sonnen|1.6|46.0|Es heißt, als das Land einst unter einer\düsteren Wolke aus Vulkanasche lag, übernahm\es die Rolle der Sonne.
+Eisenkern|2.1|250.0|Ein Legendäres Pokémon, das sich zum Schutz\der Pokémon mit den Menschen anlegte. Eine\kühle, gelassene Natur.
+Felsenhöhlen|1.9|260.0|Einst bäumte es sich gegen die Menschen auf,\deren Kriege zahllose Pokémon heimatlos gemacht\hatten.
+Wiesen|2.0|200.0|Es kämpfte einst gegen die Menschen, um seine\Freunde zu beschützen. Nun erzählt man sich\Legenden von ihm.
+Wirbelsturm|1.5|63.0|Sein Unterkörper ist in eine wolkenartige\Energieschicht gehüllt. Es jagt mit bis zu 300\km/h durch die Lüfte.
+Torpedo|1.5|61.0|Überall, wo es hingeht, hinterlässt es\zahllose Brandflecken am Boden, als hätte dort\der Blitz eingeschlagen.
+Wahres Weiß|3.2|330.0|Ein aus Mythen bekanntes Pokémon. Es wirbelt\mit seinem Schweif Feuer auf, mit dem es alles\in Asche legt.
+Reines Schwarz|2.9|345.0|Sein Schweif erzeugt Strom. Es verbirgt sich\hinter dichten Gewitterwolken und fliegt durch\den Luftraum über Einall.
+Reichtums|1.5|68.0|Da an Orten, wo es sich blicken lässt, mit\reicher Ernte zu rechnen ist, nennt man es auch\den „Herrn des Ackerbaus“.
+Schwellen|3.0|325.0|Sein Körper erzeugt in seinem Inneren gewaltige\Mengen an Kälteenergie. Tritt diese jedoch aus,\gefriert sein Körper.
+Fohlen|1.4|48.5|Gleitet über das Wasser, indem es seine Hufe\als Wasserdüsen nutzt. Seine Beintechnik\verschafft ihm im Kampf Vorteile.
+Melodie|0.6|6.5|Wer die Melodie hört, die es in einer\speziellen Stimmlage von sich gibt, steht voll\in seinem Bann.
+Paläozoikums|1.5|82.5|Vor 300 Millionen Jahren war es als der\mächtigste aller Jäger gefürchtet. Es wurde\von Team Plasma umgemodelt.

@@ -1,6 +1,6 @@
 
-function getColourID(colour,colours)
-    return findfirst(isequal(colour),colours)
+function getColorID(color,colors)
+    return findfirst(isequal(color),colors)
 end
 
 function setupFonts(game::GameState)
@@ -41,14 +41,14 @@ function setupFonts(game::GameState)
     glBindTexture(GL_TEXTURE_2D,0); checkError("setup fonts")
 
     game.im.text.ulocpos = glGetUniformLocation(game.im.programs[3],"pos")
-    game.im.text.uloccolours = glGetUniformLocation(game.im.programs[3],"colours")
+    game.im.text.uloccolors = glGetUniformLocation(game.im.programs[3],"colors")
 
     return
 end
 
 
 
-function string2buffer!(buffer::Matrix,font::Font,str::String,maxchar::Int,
+function string2buffer!(buffer::Matrix,font::Font,str::AbstractString,maxchar::Int,
         wpad::Int,hpad::Int,align::Int)
 
     ch = font.charheight
@@ -125,30 +125,30 @@ function string2buffer!(buffer::Matrix,font::Font,str::String,maxchar::Int,
     return buffer
 end
 
-function setTextColours!(text::Text,
-        colour0::Vector{UInt8},colour1::Vector{UInt8},colour2::Vector{UInt8})
+function setTextColors!(text::Text,
+        color0::Vector{UInt8},color1::Vector{UInt8},color2::Vector{UInt8})
 
-    text.colours[:,1] .= colour0/255
-    text.colours[:,2] .= colour1/255
-    text.colours[:,3] .= colour2/255
+    text.colors[:,1] .= color0/255
+    text.colors[:,2] .= color1/255
+    text.colors[:,3] .= color2/255
 
     return
 end
 
-function setTextColours!(text::Text,
-        colour0::RGBA{N0f8},colour1::RGBA{N0f8},colour2::RGBA{N0f8})
+function setTextColors!(text::Text,
+        color0::RGBA{N0f8},color1::RGBA{N0f8},color2::RGBA{N0f8})
 
-    text.colours[:,1] = colour0.r, colour0.g, colour0.b, colour0.alpha
-    text.colours[:,2] = colour1.r, colour1.g, colour1.b, colour1.alpha
-    text.colours[:,3] = colour2.r, colour2.g, colour2.b, colour2.alpha
+    text.colors[:,1] = color0.r, color0.g, color0.b, color0.alpha
+    text.colors[:,2] = color1.r, color1.g, color1.b, color1.alpha
+    text.colors[:,3] = color2.r, color2.g, color2.b, color2.alpha
 
     return
 end
 
 function createText!(game::GameState,name::Symbol,font::Int,x::Int,y::Int,layer::Int,
-        str::String,colour1::Vector{UInt8},colour2::Vector{UInt8};
+        str::AbstractString,color1::Vector{UInt8},color2::Vector{UInt8};
         maxchar::Int=0,active::Bool=true,nchar::Int=-1,wpad::Int=0,hpad::Int=0,
-        colour0::Vector{UInt8}=UInt8[0,0,0,0],align::Int=-1)
+        color0::Vector{UInt8}=UInt8[0,0,0,0],align::Int=-1)
 
     if maxchar == 0
         maxchar = length(str)
@@ -160,7 +160,7 @@ function createText!(game::GameState,name::Symbol,font::Int,x::Int,y::Int,layer:
 
     t = Text(active,x,y,layer,font,maxchar,nchar,wpad,hpad)
 
-    setTextColours!(t,colour0,colour1,colour2)
+    setTextColors!(t,color0,color1,color2)
 
     # buffer = MMatrix{24,maxchar}(zeros(Float32,24,maxchar))
     buffer = zeros(Float32,24,maxchar)

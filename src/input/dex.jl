@@ -11,42 +11,70 @@ end
 
 function inputDexScroll!(game::GameState,inputs::Inputs)
     if inputs.A.press
-        createCC!(game,:scenet,sceneTransition!,(16,8,
-            F(stateDexInfo!),F()); active=true,n=1)
+        lockInput!(game)
+        deactivateCallback!(game,:scroll)
+        deactivateCallback!(game,:arrows)
+        # createCC!(game,:scenet,sceneTransition!,(16,8,
+        #     F(stateDexInfo!),F()); active=true,n=1)
+        createCC!(game,:infot,animDexInfo!,(); active=true)
     elseif inputs.B.press
         lockInput!(game)
         game.ctrl.input.menu.dex = false
 
         createCC!(game,:scenet,sceneTransition!,(16,8,
-            F(stateDexClose!),F()); active=true,n=1)
+            F(stateMenuDexClose!),F()); active=true,n=1)
     elseif inputs.down.press && game.ctrl.input.menu.menudex.speed == 0
-        if game.ctrl.input.menu.menudex.select == 151
+        if game.ctrl.input.menu.menudex.select == 649
             game.ctrl.input.menu.menudex.select = 1
+            s = game.ctrl.input.menu.menudex.select
+
+            moveSpritesH!(game,:dexball,16*(649-1))
+            moveSpriteH!(game,:slider,-60,true)
+            rotateSprite!(game,:wheel,0.,true)
+            moveTextH!(game,:numbers,-7,true)
+            moveTextH!(game,  :names,-7,true)
+
+            for i in 1:5
+                setSpriteIdx!(game,mdlabels[i],
+                        game.p.dex[clamp(s+i-3,1,649),1]*clamp(s+i-3,1,151)+1)
+                activateSprite!(game,mdlabels[i],649+1>s+i-3>0)
+            end
         else
-            game.callbacks[:scroll].active = true
+            lockInput!(game); activateCallback!(game,:scroll)
             game.ctrl.input.menu.menudex.speed = 1
-            lockInput!(game)
         end
     elseif inputs.up.press && game.ctrl.input.menu.menudex.speed == 0
-        if game.ctrl.input.menu.menudex.select == 1 && !inputs..press
-            game.ctrl.input.menu.menudex.select = 1
+        if game.ctrl.input.menu.menudex.select == 1
+            game.ctrl.input.menu.menudex.select = 649
+            s = game.ctrl.input.menu.menudex.select
+            
+            moveSpritesH!(game,:dexball,-16*(649-1))
+            moveSpriteH!(game,:slider,-60+120,true)
+            rotateSprite!(game,:wheel,22.5*(649-1),true)
+            moveTextH!(game,:numbers,-7-648*16,true)
+            moveTextH!(game,  :names,-7-648*16,true)
+
+            for i in 1:5
+                setSpriteIdx!(game,mdlabels[i],
+                        game.p.dex[clamp(s+i-3,1,649),1]*clamp(s+i-3,1,151)+1)
+                activateSprite!(game,mdlabels[i],649+1>s+i-3>0)
+            end
         else
-            game.callbacks[:scroll].active = true
+            lockInput!(game); activateCallback!(game,:scroll)
             game.ctrl.input.menu.menudex.speed = -1
-            lockInput!(game)
         end
-    elseif inputs.down.hold
-        if game.ctrl.input.menu.menudex.select == 151
-            game.callbacks[:scroll].active = false
+    elseif inputs.down.hold && game.ctrl.input.menu.menudex.speed > 0
+        if game.ctrl.input.menu.menudex.select == 649
+            game.ctrl.input.menu.menudex.speed = 0
         else
-            game.callbacks[:scroll].active = true
+            lockInput!(game); activateCallback!(game,:scroll)
             game.ctrl.input.menu.menudex.speed = min(8,2*game.ctrl.input.menu.menudex.speed)
         end
-    elseif inputs.up.hold
+    elseif inputs.up.hold && game.ctrl.input.menu.menudex.speed < 0
         if game.ctrl.input.menu.menudex.select == 1
-            game.callbacks[:scroll].active = false
+            game.ctrl.input.menu.menudex.speed = 0
         else
-            game.callbacks[:scroll].active = true
+            lockInput!(game); activateCallback!(game,:scroll)
             game.ctrl.input.menu.menudex.speed = max(-8,2*game.ctrl.input.menu.menudex.speed)
         end
     else
@@ -58,7 +86,7 @@ end
 
 function inputDexPage!(game::GameState,inputs::Inputs)
     if inputs.A.press
-
+        return
     elseif inputs.B.press
         lockInput!(game)
         game.ctrl.input.menu.menudex.info = false
@@ -66,7 +94,7 @@ function inputDexPage!(game::GameState,inputs::Inputs)
         createCC!(game,:scenet,sceneTransition!,(16,8,
             F(stateDexInfoClose!),F()); active=true,n=1)
     elseif inputs.down.press
-        if game.ctrl.input.menu.menudex.select == 151
+        if game.ctrl.input.menu.menudex.select == 649
             game.ctrl.input.menu.menudex.select = 1
         else
             game.ctrl.input.menu.menudex.select += 1

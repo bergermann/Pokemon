@@ -204,6 +204,16 @@ end
 
 
 
+function activateCallback!(game::GameState,id::Symbol)
+    game.callbacks[id].active = true
+end
+
+function deactivateCallback!(game::GameState,id::Symbol)
+    game.callbacks[id].active = false
+end
+
+
+
 function setChoice!(game::GameState,exit::Bool,sel::Int; active=true)
     game.ctrl.input.choice.active = active
     game.ctrl.input.choice.exit = exit

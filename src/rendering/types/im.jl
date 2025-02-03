@@ -50,7 +50,7 @@ mutable struct Im
         checkError("program creation text")
         programs[4] = getProgram("sprites.vert","sprites.geom","basic array.frag")
         checkError("program creation sprites")
-        programs[5] = getProgram("background.vert","basic.frag")
+        programs[5] = getProgram("background.vert","background.frag")
         checkError("program creation background")
         programs[15] = getProgram("basic.vert","postprocess.frag")
         checkError("program creation postprocess")

@@ -28,8 +28,9 @@ function loadStringsMap!(game::GameState; reset::Bool=true)
 
         push!(game.str,[])
         
-        str = split(readlines("str/ger/system_main.txt")[],' ')
-        push!(game.str,[str[1]*game.p.name*str[2]])
+        str = readlines("str/ger/system_main.txt")
+        str_ = split(str[1],' '); str[1] = str_[1]*game.p.name*str_[2]
+        push!(game.str,str)
     else
         game.str[1] = []
     end
@@ -51,6 +52,7 @@ function loadStringsDex!(game::GameState)
 
     push!(game.str,readlines("str/ger/system_dex.txt"))
     push!(game.str,readlines("str/ger/pkmn_names.txt"))
+    push!(game.str,readlines("str/ger/dex.txt"))
     
     return
 end

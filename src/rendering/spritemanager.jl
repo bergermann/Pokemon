@@ -94,11 +94,11 @@ end
 
 function createSprite!(game::GameState,
         id::Symbol,sheetname::Symbol,
-        idx::Int,frame::Int,
-        x::Int,y::Int,z::Int,layer::Int;
-        wscale::Float64=1.0,hscale::Float64=1.0,
+        idx::Integer,frame::Integer,
+        x::Integer,y::Integer,z::Integer,layer::Integer;
+        wscale::AbstractFloat=1.0,hscale::AbstractFloat=1.0,
         wreverse::Bool=false,hreverse::Bool=false,
-        rot::Float64=0.0,alpha::Float64=1.0,
+        rot::AbstractFloat=0.0,alpha::AbstractFloat=1.0,
         active::Bool=false)
 
     sheet = game.im.s.sheets[sheetname]
@@ -130,10 +130,15 @@ function createSprite!(game::GameState,
     return
 end
 
-function setSpriteAttrib!(game::GameState,id::Symbol,attrib::Symbol,args...)
-    s = game.im.s.sprites[id]
-    
-    f = getfield(game.im.s.sheets[s.sheet],attrib); f[:,s.slot] .= args
+function copySprite!(game::GameState,idold::Symbol,idnew::Symbol)
+    s = game.im.s.sprites[idold]; s_ = s.slot
+    sh = game.im.s.sheets[s.sheet]
+
+    createSprite!(game,idnew,s.sheet,sh.idx[1,s_]-1,sh.idx[2,s_],
+        sh.pos[1,s_],sh.pos[2,s_],sh.pos[3,s_],sh.pos[4,s_];
+        wscale=sh.scale[1,s_],hscale=sh.scale[2,s_],
+        wreverse=sh.rev[1,s_],hreverse=sh.rev[2,s_],
+        rot=sh.rot[1,s_],alpha=sh.alpha[1,s_])
 
     return
 end
@@ -176,6 +181,14 @@ function moveSpriteH!(game::GameState,id::Symbol,h::Int,absolute::Bool=false)
     return
 end
 
+function moveSpriteZ!(game::GameState,id::Symbol,z::Int)
+    s = game.im.s.sprites[id]; game.im.s.sheets[s.sheet].pos[3,s.slot] = z; return
+end
+
+function moveSpriteL!(game::GameState,id::Symbol,l::Int)
+    s = game.im.s.sprites[id]; game.im.s.sheets[s.sheet].pos[4,s.slot] = l; return
+end
+
 function moveSprites!(game::GameState,sheet::Symbol,d::Pos)
     @views game.im.s.sheets[sheet].pos[1:2,:] .+= d
 
@@ -189,6 +202,18 @@ function moveSprites!(game::GameState,sheet::Symbol,d::Pos,n::Int)
         game.im.s.sheets[sheet].pos[1,i] += dx
         game.im.s.sheets[sheet].pos[2,i] += dy
     end
+
+    return
+end
+
+function moveSpritesW!(game::GameState,sheet::Symbol,w::Int)
+    @views game.im.s.sheets[sheet].pos[1,:] .+= w
+
+    return
+end
+
+function moveSpritesH!(game::GameState,sheet::Symbol,h::Int)
+    @views game.im.s.sheets[sheet].pos[2,:] .+= h
 
     return
 end
@@ -209,6 +234,14 @@ function rotateSprite!(game::GameState,id::Symbol,rotation::Float64,absolute::Bo
     else
         game.im.s.sheets[s.sheet].rot[s.slot] += rotation
     end
+
+    return
+end
+
+function activateSprite!(game::GameState,id::Symbol,value::Bool)
+    s = game.im.s.sprites[id]
+    
+    game.im.s.sheets[s.sheet].active[s.slot] = value
 
     return
 end
@@ -274,6 +307,30 @@ function scaleSprite!(game::GameState,id::Symbol,w::Float64,h::Float64,absolute:
         game.im.s.sheets[s.sheet].scale[2,s.slot] = h
     else
         game.im.s.sheets[s.sheet].scale[1,s.slot] += w
+        game.im.s.sheets[s.sheet].scale[2,s.slot] += h
+    end
+
+    return
+end
+
+function scaleSpriteW!(game::GameState,id::Symbol,w::Float64,absolute::Bool=false)
+    s = game.im.s.sprites[id]
+
+    if absolute
+        game.im.s.sheets[s.sheet].scale[1,s.slot] = w
+    else
+        game.im.s.sheets[s.sheet].scale[1,s.slot] += w
+    end
+
+    return
+end
+
+function scaleSpriteH!(game::GameState,id::Symbol,h::Float64,absolute::Bool=false)
+    s = game.im.s.sprites[id]
+
+    if absolute
+        game.im.s.sheets[s.sheet].scale[2,s.slot] = h
+    else
         game.im.s.sheets[s.sheet].scale[2,s.slot] += h
     end
 

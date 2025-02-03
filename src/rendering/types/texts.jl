@@ -19,7 +19,7 @@ mutable struct Text
     wpad::Int
     hpad::Int
 
-    colours::MMatrix{4,3,Float32}
+    colors::MMatrix{4,3,Float32}
 
     function Text(active,x,y,layer,font,maxchar,nchar,wpad,hpad)
         vao = UInt32[0]; glGenVertexArrays(1,pointer(vao))
@@ -38,7 +38,7 @@ mutable struct Texts
     texts::Dict{Symbol,Text}
 
     ulocpos::Int32
-    uloccolours::Int32
+    uloccolors::Int32
 
     function Texts()
         texs = zeros(UInt32,4); glGenTextures(4,pointer(texs))

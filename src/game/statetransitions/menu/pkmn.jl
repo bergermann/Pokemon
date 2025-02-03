@@ -74,19 +74,19 @@ function loadIcons!(game::GameState)
     return
 end
 
-function stateMenuPkmnOpen!(game::GameState)
+function stateMenuPkmnOpen!(game::GameState,args::Tuple{})
     stateCloseMap!(game)
 
     loadStringsTeam!(game)
 
     loadSpriteSheets!(game,
-        :smain
+        :smain,
         :sside,
         :exit,
         :ballsm,
         :status,
         :item,
-        :gender,
+        # :gender,
         :health1,
     )
     

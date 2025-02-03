@@ -368,8 +368,6 @@ function loadTeleports!(game::GameState,cx::Integer,cy::Integer)
                 push!(game.m.teleportids,id)
             end
 
-            display(tp)
-
             push!(game.m.teleports,
                 Teleport(id,tp[1:4]...,cy,cx,tp[5:8]...,l==2,tp[9]))
             i += 1

@@ -5,7 +5,7 @@ uniform vec4 color;
 uniform vec2 slider;
 
 in vec2 texCoord;
-out vec4 FragColour;
+out vec4 FragColor;
 
 void main() {
     float alpha;
@@ -35,6 +35,6 @@ void main() {
     c1.rgb = (c2.rgb*c2.a+c1.rgb*c1.a*(1.0-c2.a))/alpha; c1.a = alpha;
 
     
-    FragColour = vec4(color.a*(color.rgb*c1.rgb),c1.a);
-    // FragColour = texture(layers,vec3(texCoord,0.0));
+    FragColor = vec4(color.a*(color.rgb*c1.rgb),c1.a);
+    // FragColor = texture(layers,vec3(texCoord,0.0));
 }

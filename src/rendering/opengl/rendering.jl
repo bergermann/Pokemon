@@ -16,6 +16,8 @@ function drawBackgrounds(game::GameState)
 
         glUniform2f(game.im.b.ulocpos,b.pos[1],b.pos[2]); checkError("B.1")
         glUniform2f(game.im.b.ulocscale,b.scale[1],b.scale[2]); checkError("B.2")
+        glUniform4f(game.im.b.uloccolor,b.color[1],b.color[2],b.color[3],b.color[4])
+        checkError("B.2.1")
 
         glBindTexture(GL_TEXTURE_2D,b.tex); checkError("B.3")
         glBindVertexArray(b.vao); checkError("B.4")
@@ -165,7 +167,7 @@ function drawTexts(game::GameState)
             game.im.l.tex,0,Int(text.pos[3])-1); checkError("T.01")
 
         glUniform2f(game.im.text.ulocpos,text.pos[1],text.pos[2]); checkError("T.0.1")
-        glUniformMatrix3x4fv(game.im.text.uloccolours,1,false,pointer(text.colours)); checkError("T.1")
+        glUniformMatrix3x4fv(game.im.text.uloccolors,1,false,pointer(text.colors)); checkError("T.1")
 
         glBindTexture(GL_TEXTURE_2D,game.im.text.texs[text.font]); checkError("T.2")
         glBindVertexArray(text.vao); checkError("T.3")

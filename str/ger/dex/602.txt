@@ -1,0 +1,1 @@
+Stromfisch|0.2|0.3|Allein erzeugt es nur wenig Strom, doch tritt es\geschlossen im Schwarm auf, gleicht seine Kraft\der eines Blitzes.

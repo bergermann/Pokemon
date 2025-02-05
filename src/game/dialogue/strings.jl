@@ -52,7 +52,6 @@ function loadStringsDex!(game::GameState)
 
     push!(game.str,readlines("str/ger/system_dex.txt"))
     push!(game.str,readlines("str/ger/pkmn_names.txt"))
-    push!(game.str,readlines("str/ger/dex.txt"))
     
     return
 end

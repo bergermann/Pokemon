@@ -1,0 +1,1 @@
+Wolle|0.8|13.3|Die Qualität von Waatys Wolle verändert sich,\so dass es mit nur wenig Wolle eine große\statische Aufladung erzeugen kann. Die kahlen\Stellen in seinem Fell sind gegen Elektrizität\abgeschirmt.

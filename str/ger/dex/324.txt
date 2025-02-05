@@ -1,0 +1,1 @@
+Kohle|0.5|80.4|Qurtel schaufelt sich auf der Suche nach Kohle\durch die Berge. Wenn es welche findet, füllt\es die Hohlräume seines Panzers mit Kohle und\verbrennt diese. Wenn es angegriffen wird,\stößt es dicken schwarzen Rauch aus.

@@ -1,0 +1,1 @@
+Sprinter|0.5|32.5|Geradaks rennt immer mit vollem Tempo und nie im\Zickzack, sondern nur gerade. Wenn ihm ein\Hindernis im Weg ist, läuft es rechtwinklig\daran vorbei. Für dieses Pokémon stellen\leichte Kurven eine große Herausforderung dar.

@@ -1,0 +1,1 @@
+Schlecker|1.2|65.5|Wenn Schlurp etwas Neues entdeckt, leckt es\daran. Es merkt sich Gegenstände anhand der\Struktur und des Geschmacks. Saure Sachen\schrecken es eher ab.

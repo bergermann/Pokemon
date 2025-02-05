@@ -1,0 +1,1 @@
+Jahreszeiten|1.9|92.5|An seinem Geweih kann man ablesen, wann eine\neue Jahreszeit beginnt. Sein Revier wechselt\mit jeder neuen Jahreszeit.

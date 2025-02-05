@@ -1,0 +1,1 @@
+Seeschnecken|0.9|29.9|Es hat einen biegsamen Körper ohne einen\Knochen. Wird ein Körperteil abgetrennt,\wächst er nach.

@@ -1,0 +1,1 @@
+Kerzen|0.3|3.1|Es entfacht eine Flamme, die von der\Lebensenergie eines Menschen oder eines Pokémon\zehrt.

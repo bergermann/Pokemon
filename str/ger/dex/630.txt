@@ -1,0 +1,1 @@
+Knochenadler|1.2|39.5|Es baut sein Nest aus Knochen. Ist seine Beute\geschwächt, packt es sie mit den Beinen und\trägt sie zu seinem Nest.

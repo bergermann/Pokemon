@@ -2,5 +2,8 @@ GESEHEN\
 \\GEFANGEN\
 Nr 
 Größe\Gewicht
- m\
+ m \
  kg
+unbekannt\
+?????
+-----

@@ -1,0 +1,1 @@
+Nimmersatt|0.6|105.0|Einmal am Tag verschlingt es eine Nahrungsmenge,\die seinem Gewicht entspricht. Und das ohne zu\kauen.

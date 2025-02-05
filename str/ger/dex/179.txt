@@ -1,0 +1,1 @@
+Wolle|0.6|7.8|Voltilamms flauschiges, wollenes Fell erzeugt\Reibung und statische Aufladung. Je höher die\elektrische Ladung wird, desto heller leuchtet\die Glühbirne an seinem Schweif.

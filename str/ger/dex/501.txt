@@ -1,0 +1,1 @@
+Otter|0.5|5.9|Kämpft mit der Muschel auf seinem Bauch.\Pariert es einen Angriff, schlägt es sofort mit\einer Schnitt-Attacke zurück.

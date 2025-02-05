@@ -1,0 +1,1 @@
+Biss|0.5|13.6|Sobald Fiffyen eine Bewegung wahrnimmt, schnappt\es zu. Es jagt seine Beute so lange, bis sie\vollkommen erschöpft ist. Wenn sich die Beute\allerdings wehrt, kann es passieren, dass\Fiffyen klein beigibt und flieht.

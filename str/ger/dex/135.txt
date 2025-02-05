@@ -1,0 +1,1 @@
+Blitz|0.8|24.5|Blitzas Zellen erzeugen schwache Elektrizität.\Diese wird aber durch die statische Aufladung\seines Fells verstärkt, so dass es\Blitzschläge erzeugen kann. Sein Fell besteht\aus elektrisch geladenen Nadeln.

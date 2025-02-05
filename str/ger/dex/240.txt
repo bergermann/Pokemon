@@ -1,0 +1,1 @@
+Glutherd|0.7|21.4|Magbys Gesundheitszustand kann man am Feuer\erkennen, das es ausatmet. Wenn es gelbe Flammen\ausstößt, ist es in guter Verfassung. Ist es\erschöpft, vermischen sich die Flammen mit\schwarzem Rauch.

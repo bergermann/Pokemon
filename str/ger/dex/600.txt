@@ -1,0 +1,1 @@
+Getriebe|0.6|51.0|Teilt Artgenossen seine Gefühlslage mit, indem\es die Umlaufrichtung ändert. Wenn es wütend\ist, dreht es sich schneller.

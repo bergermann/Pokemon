@@ -1,0 +1,1 @@
+Neuschnee|0.4|5.7|Die Temperatur seines Odems liegt bei minus\50°C. Es erzeugt Eiskristalle und lässt es in\seiner Umgebung schneien.

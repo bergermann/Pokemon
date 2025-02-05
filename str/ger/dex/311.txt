@@ -1,0 +1,1 @@
+Jubel|0.4|4.2|Plusle dient seinen Artgenossen als Cheerleader.\Wenn ein Teamkamerad im Kampf erfolgreich ist,\erzeugt es das prasselnde Geräusch von Funken,\um so seine Freude zu zeigen.

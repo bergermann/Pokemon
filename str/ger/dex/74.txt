@@ -1,0 +1,1 @@
+Gesteins|0.4|20.0|Je länger ein Kleinstein lebt, desto mehr wird\seine raue Oberfläche abgeschliffen, so dass es\runder wird. Das Herz dieses Pokémon bleibt\aber für immer versteinert, hart und rau.

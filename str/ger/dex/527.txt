@@ -1,0 +1,1 @@
+Fledermaus|0.4|2.1|Wohnt in dunklen Wäldern und Höhlen. Es sendet\Ultraschallwellen mit seiner Nase aus, um die\Gegend abzutasten.

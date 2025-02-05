@@ -1,0 +1,1 @@
+Kompass|1.0|97.0|Nasgnet besitzt eine magnetische Nase, die immer\nach Norden zeigt. Wenn sich zwei Nasgnet\treffen, können sie sich einander nicht\zuwenden, da ihre magnetischen Nasen sich\gegenseitig abstoßen.

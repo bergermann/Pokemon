@@ -1,0 +1,1 @@
+Farbenspiel|1.0|22.0|Kecleon kann die Farbe seines Körpers bei\Bedarf verändern, um sich seiner Umgebung\anzupassen. Es gibt allerdings eine Ausnahme:\Das Zickzackmuster auf seinem Bauch kann es\nicht verändern.

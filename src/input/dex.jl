@@ -11,7 +11,7 @@ end
 
 function inputDexScroll!(game::GameState,inputs::Inputs)
     if inputs.A.press
-        lockInput!(game)
+        lockInput!(game); game.ctrl.input.menu.menudex.info=true
         deactivateCallback!(game,:scroll)
         deactivateCallback!(game,:arrows)
         # createCC!(game,:scenet,sceneTransition!,(16,8,
@@ -92,41 +92,45 @@ function inputDexPage!(game::GameState,inputs::Inputs)
         game.ctrl.input.menu.menudex.info = false
 
         createCC!(game,:scenet,sceneTransition!,(16,8,
-            F(stateDexInfoClose!),F()); active=true,n=1)
+            F(stateDexInfoClose!),F((game,())->unlockInput!(game))); active=true,n=1)
     elseif inputs.down.press
+        lockInput!(game)
+
         if game.ctrl.input.menu.menudex.select == 649
             game.ctrl.input.menu.menudex.select = 1
         else
             game.ctrl.input.menu.menudex.select += 1
         end
 
-        createCC!(game,:scenet,sceneTransition!,(16,8,
-            F(stateDexInfoSwitch!),F()); active=true,n=1)
+        createCC!(game,:scenet,sceneTransition!,(8,0,
+            F(stateDexInfoSwitch!),F((game,())->unlockInput!(game))); active=true,n=1)
     elseif inputs.up.press
+        lockInput!(game)
+
         if game.ctrl.input.menu.menudex.select == 1
-            game.ctrl.input.menu.menudex.select = 1
+            game.ctrl.input.menu.menudex.select = 649
         else
             game.ctrl.input.menu.menudex.select -= 1
         end
 
-        createCC!(game,:scenet,sceneTransition!,(16,8,
-            F(stateDexInfoSwitch!),F()); active=true,n=1)
+        createCC!(game,:scenet,sceneTransition!,(8,0,
+            F(stateDexInfoSwitch!),F((game,())->unlockInput!(game))); active=true,n=1)
     elseif inputs.left.press
-        if game.ctrl.input.menu.menudex.page > 1
-            game.ctrl.input.menu.menudex.page -= 1
+        # if game.ctrl.input.menu.menudex.page > 1
+        #     game.ctrl.input.menu.menudex.page -= 1
 
-            lockInput!(game)
-            game.callbacks[:pageswitch].active = true
-            game.callbacks[:pageswitch].args = (-1,)
-        end
+        #     lockInput!(game)
+        #     game.callbacks[:pageswitch].active = true
+        #     game.callbacks[:pageswitch].args = (-1,)
+        # end
     elseif inputs.right.press
-        if game.ctrl.input.menu.menudex.page < 3
-            game.ctrl.input.menu.menudex.page += 1
+        # if game.ctrl.input.menu.menudex.page < 3
+        #     game.ctrl.input.menu.menudex.page += 1
 
-            lockInput!(game)
-            game.callbacks[:pageswitch].active = true
-            game.callbacks[:pageswitch].args = (1,)
-        end
+        #     lockInput!(game)
+        #     game.callbacks[:pageswitch].active = true
+        #     game.callbacks[:pageswitch].args = (1,)
+        # end
     end
 
     return

@@ -134,7 +134,7 @@ function copySprite!(game::GameState,idold::Symbol,idnew::Symbol)
     s = game.im.s.sprites[idold]; s_ = s.slot
     sh = game.im.s.sheets[s.sheet]
 
-    createSprite!(game,idnew,s.sheet,sh.idx[1,s_]-1,sh.idx[2,s_],
+    createSprite!(game,idnew,s.sheet,div(sh.idx[1,s_]-1,sh.nframes)+1,sh.idx[2,s_],
         sh.pos[1,s_],sh.pos[2,s_],sh.pos[3,s_],sh.pos[4,s_];
         wscale=sh.scale[1,s_],hscale=sh.scale[2,s_],
         wreverse=sh.rev[1,s_],hreverse=sh.rev[2,s_],

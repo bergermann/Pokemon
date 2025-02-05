@@ -1,0 +1,1 @@
+Ranken|1.0|35.0|Wenn man Tangelas Ranken berührt, fallen diese\sofort ab. Das tut ihm aber nicht weh und es\kann sich schnell in Sicherheit bringen.\Verliert es Ranken, werden diese am nächsten\Tag durch neue ersetzt.

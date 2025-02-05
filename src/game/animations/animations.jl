@@ -58,10 +58,10 @@ end
 function sceneTransition!(game::GameState, # pause >= 1!
         (len,pause,state1,state2)::Tuple{Int,Int,Callback,Callback})
     
-    if game.n[:scenet].c <= len
+    if 1 <= game.n[:scenet].c <= len
         game.im.l.color[4] = 1.0 - game.n[:scenet].c/len
     elseif game.n[:scenet].c == len+1
-        # Base.GC.gc()
+        GC.gc()
 
         evalCallback(game,state1)
         # state1.func(game,state1.args)
@@ -91,7 +91,7 @@ end
 #     elseif game.n[:scenet].c <= len
 #         game.im.postprocess.args = (UInt8(len),UInt8(game.n[:scenet].c),)
 #     elseif game.n[:scenet].c == len+1
-#         Base.GC.gc()
+#         GC.gc()
 
 #         state1(game,state1args...)
 #     elseif len+pause+1 <= game.n[:scenet].c <= 2*len+pause

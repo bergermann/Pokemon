@@ -1,0 +1,1 @@
+Manipulator|0.7|18.0|Es manipuliert Pokémon und Menschen mit\Hypnosetricks. In Märchen tritt es oft als\Entführer auf.

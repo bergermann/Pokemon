@@ -1,0 +1,1 @@
+Getriebe|0.6|81.0|Der rote Zentralbestandteil dient als\Energiespeicher. Darin geladene Energie feuert\es über seine Stacheln ab.

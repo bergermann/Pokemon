@@ -1,0 +1,1 @@
+Drainage|1.0|29.0|Speichert Wasser im Büschel auf seinem Kopf.\Sinkt der Wasserstand, tankt es über seinen\Schweif neue Flüssigkeit.

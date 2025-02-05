@@ -1,0 +1,1 @@
+Stromfisch|1.2|22.0|Die rund gemaserten Flächen erzeugen Strom. Es\schlingt sich um den Gegner, presst sie gegen\ihn und aktiviert sie.

@@ -37,8 +37,8 @@ function main()
     
     @time game = setupGame(4)
     
-    Base.GC.enable(false)
-    Base.GC.@preserve game sceneTransition!
+    GC.enable(false)
+    GC.@preserve game sceneTransition!
     
     setInventoryTest!(game.p.inventory)
     

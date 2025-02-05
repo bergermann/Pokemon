@@ -1,0 +1,1 @@
+Getriebe|0.3|21.0|Seine zwei Teile greifen ineinander wie ein\Uhrwerk. Jedes andere Objekt, das man mit ihm\kombinieren will, wird abgestoßen.

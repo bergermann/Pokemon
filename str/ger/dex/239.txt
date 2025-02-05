@@ -1,0 +1,1 @@
+Elektro|0.6|23.5|Elekid speichert Elektrizität in seinem\Körper. Wenn es Metall berührt und\versehentlich die aufgestaute Energie entlädt,\rotiert es mit den Armen, um sich wieder\aufzuladen.

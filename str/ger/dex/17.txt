@@ -1,0 +1,1 @@
+Vogel|1.1|30.0|Tauboga nennt ein großes Gebiet sein Eigen. Es\fliegt umher und kontrolliert seinen Lebensraum.\Wenn jemand sein Gebiet betritt, zeigt es keine\Gnade und greift seine Gegner mit seinen\scharfen Krallen an.

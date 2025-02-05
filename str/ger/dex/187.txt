@@ -1,0 +1,1 @@
+Löwenzahn|0.4|0.5|Hoppspross lässt sich vom Wind treiben. Wenn es\bemerkt, dass ein Sturm aufkommt, verbindet es\seine Blätter mit anderen Hoppspross, damit es\nicht davongeweht wird.

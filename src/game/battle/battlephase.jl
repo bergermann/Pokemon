@@ -55,6 +55,7 @@ end
 
 function getAccuracyFactor(state::BattleState,attacker::PkmnBattle,
         defender::PkmnBattle)::Rational{UInt8}
+        
     return 0x01//0x01
 end
 

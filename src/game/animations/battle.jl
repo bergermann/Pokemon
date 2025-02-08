@@ -40,6 +40,7 @@ function animBattleIntro1!(game::GameState,args::Tuple{})
         moveSpriteW!(game,:pkmn2, 2)
     elseif game.n[:introb].c < 260+16
         moveSpriteW!(game,:tag2, 8)
+        moveSpriteW!(game, :hp2, 8)
         moveText!(game,:name2, 8, 0)
         moveText!(game,:lvl2, 8, 0)
     elseif game.n[:introb].c < 260+16+8
@@ -116,6 +117,7 @@ function animThrowBall!(game::GameState,args::Tuple{})
         moveSpriteH!(game,:ball,3)
     elseif 120 < game.n[:introb].c <= 120+16
         moveSpriteW!(game,:tag1,-8)
+        moveSpriteW!(game, :hp1,-8)
         moveText!(game,:name1,-8,0)
         moveText!(game, :lvl1,-8,0)
     elseif game.n[:introb].c == 120+32
@@ -144,12 +146,14 @@ function animWiggleBattle!(game::GameState,args::Tuple{})
         moveSpriteH!(game,:pkmn1,23,true)
     elseif game.frame%0x20 == 0x10
         moveSpriteH!(game,:tag1,11,true)
+        moveSpriteH!(game, :hp1,11,true)
         moveTextH!(game,:name1,-5,true)
         moveTextH!(game,:lvl1,-5,true)
     elseif game.frame%0x20 == 0x18
         moveSpriteH!(game,:pkmn1,24,true)
     elseif game.frame%0x20 == 0x00
         moveSpriteH!(game,:tag1,12,true)
+        moveSpriteH!(game, :hp1,12,true)
         moveTextH!(game,:name1,-4,true)
         moveTextH!(game,:lvl1,-4,true)
     end

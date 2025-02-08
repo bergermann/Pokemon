@@ -43,6 +43,9 @@ function bhpAnim!(game::GameState,(target,)::Tuple{Int})
     b1 = getHealthBar(p.pkmn,p.pkmn.stats.hp)
     b2 = getHealthBar(p.pkmn,p.pkmn.stats.hp-p.dmgt)
 
+    setHPBar!(game,mplabels[target].h,round(Int,b1+(b2-b1)*game.n[:hp].c/48),
+        +69*(1-target)+56*(2-target))
+
     # if target == 1
     #     setText!(game,:health1,
     #         string(p.pkmn.stats.hp-

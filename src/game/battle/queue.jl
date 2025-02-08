@@ -83,7 +83,8 @@ function queueAttack!(game::GameState,state::BattleState,
     attacker.dmgd = calcDamage(attacker.factors)
     defender.dmgt = min(defender.pkmn.stats.hp,attacker.dmgd)
 
-    # println("$id D: ",attacker.dmgd)
+    println("$id D: ",attacker.dmgd)
+    println("target hp: ",defender.pkmn.stats.hp)
     
     push!(state.animqueue,BattleAnimation(
         id,120,getPkmnName(game,attacker.pkmn)*game.str[1][31]*
@@ -104,6 +105,7 @@ function queueAttack!(game::GameState,state::BattleState,
         return
     end
 
+
     push!(state.animqueue,BattleAnimation(
         id,60,"",bnoAnim!,target
     ))
@@ -111,6 +113,11 @@ function queueAttack!(game::GameState,state::BattleState,
     push!(state.animqueue,BattleAnimation(
         id,48,"",bhpAnim!,target
     ))
+
+    for i in 1:state.animqueue.idx
+        println(state.animqueue[i])
+    end
+    println()
 
     if attacker.crit
         push!(state.animqueue,BattleAnimation(
@@ -340,7 +347,7 @@ function queueCheckStatus!(game::GameState,state::BattleStateWild)::Bool
         state[2].pkmn.stats.hp = -1
 
         if state[1].pkmn.stats.level < 0x64
-            queueCheckXp!(state)
+            queueCheckXp!(game,state)
         end
 
         state.stage = 251
@@ -363,7 +370,7 @@ function queueCheckStatus!(game::GameState,state::BattleStateWild)::Bool
         ))
 
         if state[1].pkmn.stats.level < 0x64
-            queueCheckXp!(state)
+            queueCheckXp!(game,state)
         end
 
         if game.p.pokemon.idx < 6
@@ -398,7 +405,7 @@ function checkFlee(state::BattleStateWild)::Bool
     return true
 end
 
-function queueCheckXp!(state::BattleState)
+function queueCheckXp!(game::GameState,state::BattleState)
     levelups = 0
 
     xpdrop = Int(calcXpDrop1(state,state[1],state[2]))
@@ -425,7 +432,7 @@ function queueCheckXp!(state::BattleState)
         ))
 
         push!(state.animqueue,BattleAnimation(
-            :p1,60,"",  # "$(state[1].name) erreicht Lv. $(state[1].pkmn.stats.level+levelups)!",
+            :p1,60,"",
             bxpAnim!,
             Int(xpFormulas(state[1].pkmn.stats.level+levelups,state[1].pkmn.xptype))-
                 state[1].pkmn.stats.xp

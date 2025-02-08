@@ -39,6 +39,7 @@ function stateOpenBattleIntro!(game::GameState)
         :tagown,
         :tagopp,
         :particles,
+        :health1
     )
 
     p1 = game.battle.state.pkmn1.pkmn
@@ -67,8 +68,13 @@ function stateOpenBattleIntro!(game::GameState)
     createSprite!(game,:cursor1,:cursors,1,4,  12,49,10,5; active=false)
     createSprite!(game,:cursor2,:cursors,1,4,-107,49,10,6; active=false)
     
-    createSprite!(game,:tag1,:tagown,1,1, 60+128, 12,10,3; active=true)
-    createSprite!(game,:tag2,:tagopp,1,1,-58-128,-50,10,3; active=true)
+    createSprite!(game,:tag1, :tagown,1,1, 60+128, 12,10,3; active=true)
+    createSprite!(game,:tag2, :tagopp,1,1,-58-128,-50,10,3; active=true)
+
+    b1 = getHealthBar(p1); b2 = getHealthBar(p2)
+    createSprite!(game, :hp1,:health1,3,1, 56+128, 12,10,4; wscale=0.,active=true)
+    createSprite!(game, :hp2,:health1,3,1,-69-128,-46,10,4; wscale=0.,active=true)
+    setHPBar!(game,:hp1,b1,56+128); setHPBar!(game,:hp2,b2,-69-128)
     
     createFrame!(game, :choice,13,4,   0,32,5; active=false)
     createFrame!(game,   :info, 8,4,  40,32,6; active=false)

@@ -261,14 +261,14 @@ function pushat!(a::ArrayList,x,idx::Int)
 end
 
 function Base.pop!(a::ArrayList)
-    a.idx = min(1,a.idx-1); return
+    a.idx = max(1,a.idx-1); return
 end
 
 function Base.popat!(a::ArrayList,id::Symbol)
     if a.idx == 0; return; end
 
     i = findfirst(x -> x.id==id, a.data[1:a.idx])
-    if isnothing(i); return; end
+    if isnothing(i); @warn "ID not found, can't pop element."; return; end
 
     a.data[i:a.idx-1] = a.data[i+1:a.idx]
     a.idx -= 1
@@ -281,10 +281,7 @@ function Base.popat!(a::ArrayList,ids::Symbol...)
 end
 
 function Base.popat!(a::ArrayList,i::Int)
-    if a.idx == 0; return
-    elseif i < 1 || i > a.idx
-        error("Invalid index, can't pop element."); return
-    end
+    if !(0 < i <= a.idx); @warn "Invalid index, can't pop element."; return; end
 
     a.data[i:a.idx-1] = a.data[i+1:a.idx]
     a.idx -= 1
@@ -298,10 +295,10 @@ function empty!(a::ArrayList)
 end
 
 function Base.popfirst!(a::ArrayList)
-    if a.idx == 0; error("ArrayList is empty, can't pop element."); end
+    if a.idx == 0; @warn "ArrayList is empty, can't pop element."; return; end
 
     a.data[1:a.idx-1] .= a.data[2:a.idx]
-    a.idx = min(1,a.idx-1)
+    a.idx -= 1
 
     return
 end

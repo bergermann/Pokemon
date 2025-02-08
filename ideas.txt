@@ -4,5 +4,7 @@ lapras counter
 optimize teleports?
 rework scene transition
 
-fix color/color
+
 add genders to menupkmn
+fix accuracy factor
+fix item and status icons in menupkmn

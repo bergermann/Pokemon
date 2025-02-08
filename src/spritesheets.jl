@@ -13,7 +13,7 @@ const SSD = SpriteSheetData
 const spritesheets = Base.ImmutableDict(
     # general
     :health1    => SSD(  1,  3, 3,  6,"health1.png"),
-    :health2    => SSD(  1,  3, 3,  6,"health2.png"),
+    :health2    => SSD(  1,  2, 3,  6,"health2.png"),
 
     # map
     :mc1        => SSD( 32, 32, 9,  1,"main1.png"),

@@ -104,7 +104,7 @@ function stateMenuDexClose!(game::GameState,args::Tuple{})
     killCC!(game,:scroll)
     killSpritesAll!(game)
     
-    deleteBackgrounds!(game,:dex0,:dex1)
+    deleteBackgrounds!(game,:dex0,:dex1,:dex2,:dex3,:blck)
     deleteSpriteSheets!(game,:dexwheel,:dexslider,:dexarrow,:dexball,:pkmn,:footprints)
 
     deleteTextsAll!(game)

@@ -9,16 +9,16 @@ function inputBattle!(game::GameState,inputs::Inputs)
 
         if inputs.B.press
             game.ctrl.input.battle.s1 = 3
-        elseif inputs.up.press || inputs.down.press
-            game.ctrl.input.battle.s1 += 1+2*isodd(game.ctrl.input.battle.s1)
         elseif inputs.left.press || inputs.right.press
+            game.ctrl.input.battle.s1 += 1+2*isodd(game.ctrl.input.battle.s1)
+        elseif inputs.up.press || inputs.down.press
             game.ctrl.input.battle.s1 += 2
         end
 
         game.ctrl.input.battle.s1 %= 4
 
-        moveSprite!(game,:cursor1,12+56*div(game.ctrl.input.battle.s1,2),
-            49+15*(game.ctrl.input.battle.s1%2),true)
+        moveSprite!(game,:cursor1,12+56*(game.ctrl.input.battle.s1%2),
+            49+15*div(game.ctrl.input.battle.s1,2),true)
     elseif game.ctrl.input.battle.m2
         if inputs.A.press
             inputBattleAttackSelector!(game::GameState); return
@@ -38,16 +38,16 @@ function inputBattle!(game::GameState,inputs::Inputs)
             return
         end
 
-        if inputs.up.press || inputs.down.press
+        if inputs.left.press || inputs.right.press
             game.ctrl.input.battle.s2 += 1+2*isodd(game.ctrl.input.battle.s2)
-        elseif inputs.left.press || inputs.right.press
+        elseif inputs.up.press || inputs.down.press
             game.ctrl.input.battle.s2 += 2
         end
 
         game.ctrl.input.battle.s2 %= 4
 
-        moveSprite!(game,:cursor2,-107+64*div(game.ctrl.input.battle.s2,2),
-            49+15*(game.ctrl.input.battle.s2%2),true)
+        moveSprite!(game,:cursor2,-107+64*(game.ctrl.input.battle.s2%2),
+            49+15*div(game.ctrl.input.battle.s2,2),true)
     elseif game.ctrl.input.battle.bag
         inputBattleInventory!(game,input)
     elseif game.ctrl.input.battle.pkmn
@@ -76,16 +76,14 @@ function inputBattleMenuSelector!(game::GameState)
         game.ctrl.input.battle.bag = true
 
         createCC!(game,:scenet,sceneTransition!,
-            (16,8,stateBattleBagsOpen!,(),stateBattleBagsCtrls!,());
-            active=true,n=1)
+            (16,8,F(stateBattleBagsOpen!),F(stateBattleBagsCtrls!)); active=true,n=1)
     elseif game.ctrl.input.battle.s1 == 2
         lockInput!(game)
         game.ctrl.input.battle.m1 = false
         game.ctrl.input.battle.pkmn = true
 
         createCC!(game,:scenet,sceneTransition!,
-            (16,8,stateBattlePkmnOpen!,(),stateMenuPkmnCtrls!,());
-            active=true,n=1)
+            (16,8,F(stateBattlePkmnOpen!),F(stateMenuPkmnCtrls!)); active=true,n=1)
     else
         stateBattleFlee!(game)
     end

@@ -89,7 +89,7 @@ mutable struct Battle
 
     function Battle()
         # new(false,Dialogue(),BattleStateNone(),MenuBattle(),[])
-        new(false,BattleStateNone(),MenuBattle(),[])
+        new(false,BattleStateNone(),MenuBattle(),collect(1:6))
     end
 end
 

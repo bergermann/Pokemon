@@ -134,9 +134,6 @@ function getHealthBar(pokemon::Pkmn,hp::Int)
 end
 
 function setHPBar!(game::GameState,spriteid::Symbol,value::Int,w0::Int)
-    # w = getSpritePosW(game,spriteid); s = getSpriteScaleW(game,spriteid)
-    # w0 = w-Int(div(s,2))
-
     moveSpriteW!(game,spriteid,w0+div(value,2)+isodd(value),true)
     scaleSpriteW!(game,spriteid,Float64(value),true)
 
@@ -187,12 +184,21 @@ function xpFormulas(level,xptype)
     return Int(xpFormulas(UInt8(level),UInt8(xptype)))
 end
 
-function getXpBar(pkmn::Pkmn,xpgain::Int)
+function getXPBar(pkmn::Pkmn,xpgain::Int)
     x0 = xpFormulas(pkmn.stats.level,pkmn.xptype)
 
-    return trunc(Int,min(64,64*(pkmn.stats.xp+xpgain-x0)/
+    return floor(Int,min(64,64*(pkmn.stats.xp+xpgain-x0)/
         (xpFormulas(pkmn.stats.level+1,pkmn.xptype)-x0)))
 end
+
+function setXPBar!(game::GameState,spriteid::Symbol,value::Int,w0::Int)
+    moveSpriteW!(game,spriteid,w0+div(value,2)+isodd(value),true)
+    scaleSpriteW!(game,spriteid,Float64(value),true)
+
+    return
+end
+
+
 
 function calcXpDrop1(state::BattleState,attacker::PkmnBattle,defender::PkmnBattle)
     return floor(UInt32,
@@ -240,10 +246,6 @@ end
 function addPokemon!(game::GameState,pkmn::Pkmn)
     if game.p.pokemon.idx < 6
         push!(game.p.pokemon,pkmn)
-
-        if game.battle.active
-            push!(game.battle.teamperm,length(game.battle.teamperm)+1)
-        end
     else
         b = findfirst(x->x.idx<30,game.p.boxes)
 

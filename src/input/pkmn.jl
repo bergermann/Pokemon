@@ -93,7 +93,7 @@ function inputTeam!(game::GameState,inputs::Inputs)
                 F(stateMenuPkmnClose!),F()); active=true,n=1)
         else
             createCC!(game,:scenet,sceneTransition!,(16,8,
-                F(stateBattlePkmnClose!),F(stateBattleCtrls!)); active=true,n=1)
+                F(stateBattlePkmnClose!),F(stateInitBattleChoice!)); active=true,n=1)
         end
 
         return
@@ -169,27 +169,36 @@ function inputTeamActionBattle!(game::GameState)
         game.ctrl.input.menu.menupkmn.select = 1
 
         createCC!(game,:scenet,sceneTransition!,(16,8,
-            F(stateBattlePkmnClose!),F(stateBattleCtrls!)); active=true,n=1)
+            F(stateBattlePkmnClose!),F(stateInitBattleChoice!)); active=true,n=1)
 
         return
     end
 
-    drawFrame!(game,2,4,20,Position(24+128,16))
-    drawText!(game,2,game.str[1][3]*getPkmnName(game,
-        game.p.pokemon[game.ctrl.input.menu.menupkmn.select])*"?",
-        UInt(2),Position(24+138,24))
+    switchText!(game,:choose)
+    switchFrame!(game,:choose)
 
-    setChoice!(game,true,1,F(pkmnActionBattle!,
-        (game.p.pokemon[game.ctrl.input.menu.menupkmn.select].stats.hp,)))
+    switchText!(game,:info)
+    switchFrame!(game,:info)
+
+    setText!(game,:info,game.str[1][3]*
+        pkmnName(game,game.p.pokemon[game.ctrl.input.menu.menupkmn.select])*"?")
+
+    setChoice!(game,true,1,F(pkmnActionBattle!))
 
     if game.p.pokemon[game.ctrl.input.menu.menupkmn.select].stats.hp > 0
-        drawChoiceMenu!(game,4,game.str[1][[7,6,9]],10,192-16-120,104+16-60)
+        drawChoiceMenu!(game,4,game.str[1][[7,6,9]],8,24,0)
     else
-        drawChoiceMenu!(game,4,game.str[1][[6,9]],10,192-16-120,104+16-60)
+        drawChoiceMenu!(game,4,game.str[1][6,9],8,24,0)
     end
 end
 
 function inputPkmnSub!(game::GameState,inputs::Inputs)
+    switchText!(game,:choose)
+    switchFrame!(game,:choose)
+
+    switchText!(game,:info)
+    switchFrame!(game,:info)
+
     return
 end
 

@@ -30,8 +30,8 @@ function flee!(game::GameState,state::BattleStateWild)
     )
     state.pkmn2.command = battleChoiceWild(game)
 
-    game.callbacks[:wiggle].active = false; resetWiggle!(game)
-    game.callbacks[:animbattle].active = true
+    deactivateCallback!(game,:wiggle); resetWiggle!(game)
+    activateCallback!(game,:animbattle)
     game.n[:animbattle].c = -1
 
     queueSetupActions!(game,game.battle.state)
@@ -46,7 +46,7 @@ function flee!(game::GameState,state::BattleStateTrainerSolo)
 end
 
 function stateBattleFleeBlocked!(game::GameState,args::Tuple)
-    game.battle.state.stage = 1
+    stateBattleStage!(game,1)
 
     game.ctrl.input.battle.m1 = true
 
@@ -59,7 +59,7 @@ function stateBattleFleeBlocked!(game::GameState,args::Tuple)
     setText!(game,:dialogue,game.str[1][14]*pkmnName(game,game.battle.state.pkmn1.pkmn)*
         game.str[1][15])
 
-    game.callbacks[:wiggle].active = true
+    activateCallback!(game,:wiggle)
 
     return
 end

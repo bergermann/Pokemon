@@ -97,26 +97,23 @@ function bfaint!(game::GameState,(target,)::Tuple{Int})
     return
 end
 
-function bxpAnim!(game::GameState,xp::Int)
+function bxpAnim!(game::GameState,dx::Int)
     p = game.battle.state.pkmn1.pkmn
+    xl = xpFormulas(p.stats.level,p.xptype)
 
     createCC!(game,:xp,bxpAnimXp!,(
-            xp,
-            xpFormulas(p.stats.level+1,p.xptype)-
-            (p.stats.xp-calcXpDrop1(game.battle.state,
-                game.battle.state.pkmn1,game.battle.state.pkmn2)),
-            xpFormulas(p.stats.level+1,p.xptype)-
-            xpFormulas(p.stats.level,p.xptype)
-        ); active=true)
+            dx,
+            p.stats.xp,
+            Int(xl),
+            xpFormulas(p.stats.level+1,p.xptype)-xl
+        ); active=true,n=1)
 
     return
 end
 
-function bxpAnimXp!(game::GameState,(xp,xpnext,xplevel)::Tuple{Int,Int,Int})
-    val = trunc(Int,64*(1-(xpnext+xp)/xplevel))+
-        trunc(Int,64*xp/xplevel*(1-game.n[:xp].c/30))
-
-    # drawXpBar!(game.im.sprites[3][:tag1],val,P(34,32))
+function bxpAnimXp!(game::GameState,(dx,x1,xl,xn)::Tuple{Int,Int,Int,Int})
+    val = floor(Int,64*(x1-xl-dx*(1-game.n[:xp].c/30))/xn)
+    setXPBar!(game,:xp,val,40)
 
     if game.n[:xp].c == 30
         killCC!(game,:xp)
@@ -146,17 +143,11 @@ function bxpAnimLvUp!(game::GameState,levelups::Int)
 end
 
 function bxpAnimLevelUp!(game::GameState,(levelups,xpnext,xplevel)::Tuple{Int,Int,Int})
-    if 1 <= game.n[:xp].c <= 30
+    if game.n[:xp].c <= 30
         val = trunc(Int,64-64*xpnext/xplevel*(1-game.n[:xp].c/30))
-
-        # drawXpBar!(game.im.sprites[3][:tag1],val,P(34,32))
-    elseif game.n[:xp].c == 31
-        # game.im.sprites[3][:tag1].colortransform.active = true
-        # game.im.sprites[3][:tag1].colortransform.func = scaleColor
-        # game.im.sprites[3][:tag1].colortransform.args = (0xfff9e8,0x12,0x01)
-    elseif 31 < game.n[:xp].c <= 46
-        # game.im.sprites[3][:tag1].colortransform.args = (0xfff9e8,0x12,
-        #     UInt8(game.n[:xp].c-30))
+        setXPBar!(game,:xp,val,40)
+    elseif game.n[:xp].c <= 46
+        setSpriteFrame!(game,:xp,game.n[:xp].c-30)
     end
     
     if game.n[:xp].c == 46
@@ -170,10 +161,10 @@ function bxpAnimLevelUp!(game::GameState,(levelups,xpnext,xplevel)::Tuple{Int,In
 
         updateStats!(game.battle.state.pkmn1.pkmn)
 
-        # game.im.sprites[3][:tag1].colortransform.active = false
-        # updateSprite!(game.im.sprites[3][:tag1])
+        setXPBar!(game,:xp,0,40)
+        setSpriteFrame!(game,:xp,1)
 
-        # drawBattleTagOwn!(game,game.battle.state.pkmn1.pkmn,game.im.sprites[3][:tag1])
+        setText!(game,:lvl1,string(game.battle.state.pkmn1.pkmn.stats.level))
 
         killCC!(game,:xp)
 

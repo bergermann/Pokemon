@@ -17,7 +17,7 @@ const mplabels = Base.ImmutableDict(
 function drawSlotMain!(game::GameState)
     createSprite!(game,mplabels[1].s,:smain,1,2,-73,-30,0,1; active=true)
     createSprite!(game,mplabels[1].b,:ballsm,1,2,-108,-50,0,2; active=true)
-    createSprite!(game,mplabels[1].st,:status,1,1,-88,-11,1,2; active=true)
+    createSprite!(game,mplabels[1].st,:status,1,1,-88,-11,1,2; active=false)
     createSprite!(game,mplabels[1].i,:item,1,1,-99,-29,2,4; active=true)
     createSprite!(game,mplabels[1].h,:health1,1,1,-88,-20,3,2; active=true)
     createSprite!(game,mplabels[1].ic,:icons,1,1,-104,-44,3,3; active=true)
@@ -27,10 +27,10 @@ function drawSlotMain!(game::GameState)
         pkmnName(game,game.p.pokemon[1])*"\\   Lv.$(game.p.pokemon[1].stats.level)",
         [0xff,0xff,0xff,0xff],[0x73,0x73,0x73,0xff]; hpad=-3)
 
-    createText!(game,mplabels[1].h,1,-68,-18,2,
+    createText!(game,mplabels[1].h,1,-42,-18,2,
         string(game.p.pokemon[1].stats.hp)*"/"*
         string(game.p.pokemon[1].stats.rv[1]),
-        [0xff,0xff,0xff,0xff],[0x73,0x73,0x73,0xff])
+        [0xff,0xff,0xff,0xff],[0x73,0x73,0x73,0xff]; align=1)
 
     createSprite!(game,:exit,:exit,1,1,92,64,0,1; active=true)
     createSprite!(game,:ballexit,:ballsm,1,1,74,64,0,2; active=true)
@@ -45,7 +45,7 @@ function drawSlotSide!(game::GameState)
     for i in 2:length(game.p.pokemon)
         createSprite!(game,mplabels[i].s,:sside,1,1,47,-59+24*(i-2),0,1; active=true)
         createSprite!(game,mplabels[i].b,:ballsm,1,1,-22,-59+24*(i-2),0,2; active=true)
-        createSprite!(game,mplabels[i].st,:status,1,1,59,-53+24*(i-2),1,2; active=true)
+        createSprite!(game,mplabels[i].st,:status,1,1,59,-53+24*(i-2),1,2; active=false)
         createSprite!(game,mplabels[i].i,:item,1,1,-11,-51+24*(i-2),2,4; active=true)
         createSprite!(game,mplabels[i].h,:health1,1,1,64,-61+24*(i-2),3,2; active=true)
         createSprite!(game,mplabels[i].ic,:icons,i,1,-18,-63+24*(i-2),3,3; active=true)
@@ -55,10 +55,10 @@ function drawSlotSide!(game::GameState)
             pkmnName(game,game.p.pokemon[i])*"\\   Lv.$(game.p.pokemon[i].stats.level)",
             [0xff,0xff,0xff,0xff],[0x73,0x73,0x73,0xff]; hpad=-3)
 
-        createText!(game,mplabels[i].h,1,78,-59+24*(i-2),2,
+        createText!(game,mplabels[i].h,1,110,-59+24*(i-2),2,
             string(game.p.pokemon[i].stats.hp)*"/"*
             string(game.p.pokemon[i].stats.rv[1]),
-            [0xff,0xff,0xff,0xff],[0x73,0x73,0x73,0xff])
+            [0xff,0xff,0xff,0xff],[0x73,0x73,0x73,0xff]; align=1)
     end
 
     for i in length(game.p.pokemon)+1:6
@@ -77,7 +77,9 @@ function loadIcons!(game::GameState)
 end
 
 function stateMenuPkmnOpen!(game::GameState,args::Tuple{})
-    stateCloseMap!(game)
+    if !game.battle.active
+        stateCloseMap!(game)
+    end
 
     loadStringsTeam!(game)
 
@@ -100,14 +102,14 @@ function stateMenuPkmnOpen!(game::GameState,args::Tuple{})
     createFrame!(game,:info,16,2,-120,48,1; active=false)
 
     createText!(game,:choose,4,-112,57,5,game.str[1][2],
-        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0)
+        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=true,hpad=0,maxchar=32)
     createText!(game,:info,4,-112,57,5,game.str[1][3],
-        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=false,hpad=0)
-    
-    createCallback!(game,:wiggle,animMenuPkmnWiggle!,(); active=true)
+        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=false,hpad=0,maxchar=32)
 
     drawSlotMain!(game)
     drawSlotSide!(game)
+    
+    createCallback!(game,:wiggle,animMenuPkmnWiggle!,(); active=true)
 
     return
 end

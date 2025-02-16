@@ -15,8 +15,8 @@ function stateBattleAttackSelected!(game::GameState)
     switchText!(game,:info1); switchText!(game,:info2)
     for l in alabels; switchText!(game,l); end
 
-    game.callbacks[:wiggle].active = false; resetWiggle!(game)
-    game.callbacks[:animbattle].active = true
+    deactivateCallback!(game,:wiggle); resetWiggle!(game)
+    activateCallback!(game,:animbattle)
     game.n[:animbattle].c = -1
 
     queueSetupActions!(game,game.battle.state)
@@ -34,17 +34,15 @@ function stateBattleItemSelected!(game::GameState,target::UInt,item::ItemType)
     game.ctrl.input.battle2 = false
     # game.ctrl.input.battle1menu.select = 0
 
-    game.draw.battle1 = false
-    game.draw.battle2 = false
-
-    game.im.sprites[4][:cursor1].active = false
-    game.im.sprites[5][:cursor2].active = false 
+    # deactivateBackground!(game,:t1); deactivateBackground!(game,:t2)
+    # switchFrame!(game,:attacks); switchFrame!(game,:info)
+    # deactivateSprite!(game,:cursor1)
+    # deactivateSprite!(game,:cursor2)
+    # switchText!(game,:info1); switchText!(game,:info2)
+    # for l in alabels; switchText!(game,l); end
             
-    flushLayer!(game,4,Position(24+1+112,16+1),Position(48,240))
-    flushLayer!(game,5,Position(24+1+112,16+1),Position(48,240))
-
-    game.callbacks[:wiggle].active = false; resetWiggle!(game)
-    game.callbacks[:animbattle].active = true
+    deactivateCallback!(game,:wiggle); resetWiggle!(game)
+    activateCallback!(game,:animbattle)
     game.n[:animbattle].c = -1
 
     queueSetupActions!(game,game.battle.state)
@@ -64,17 +62,15 @@ function stateBattlePkmnSelected!(game::GameState)
     game.ctrl.input.battle2 = false
     game.ctrl.input.battle1menu.select = 0
 
-    game.draw.battle1 = false
-    game.draw.battle2 = false
-
-    game.im.sprites[4][:cursor1].active = false
-    game.im.sprites[5][:cursor2].active = false 
-            
-    flushLayer!(game,4,Position(24+1+112,16+1),Position(48,240))
-    flushLayer!(game,5,Position(24+1+112,16+1),Position(48,240))
-
-    game.callbacks[:wiggle].active = false; resetWiggle!(game)
-    game.callbacks[:animbattle].active = true
+    # deactivateBackground!(game,:t1); deactivateBackground!(game,:t2)
+    # switchFrame!(game,:attacks); switchFrame!(game,:info)
+    # deactivateSprite!(game,:cursor1)
+    # deactivateSprite!(game,:cursor2)
+    # switchText!(game,:info1); switchText!(game,:info2)
+    # for l in alabels; switchText!(game,l); end
+    
+    deactivateCallback!(game,:wiggle); resetWiggle!(game)
+    activateCallback!(game,:animbattle)
     game.n[:animbattle].c = -1
 
     queueSetupActions!(game,game.battle.state)
@@ -84,19 +80,8 @@ end
 
 
 function stateBattleBagsOpen!(game::GameState)
-    game.draw.battle1 = false
-
-    killCC!(game,:animbattle)
-    killCallback!(game,:wiggle)
-    
-    killSpriteAll!(game)
-    flushLayer!(game,4)
-
-    createCC!(game,:bagswitch,animBattleBagSwitch!,(); n=1)
-    createCallback!(game,:arrows,true,animArrowsMenu!,())
-
-    loadStringsInventory!(game)
-    drawInventory!(game,game.ctrl.input.battlebags)
+    stateCloseBattle!(game)
+    stateMenuBagsOpen!(game,(game.battle.menu.bags))
 
     return
 end
@@ -110,12 +95,9 @@ end
 
 function stateBattleBagsClose!(game::GameState)
     killSpriteAll!(game)
-    flushLayer!(game,4)
 
     killCC!(game,:bagswitch)
     killCallback!(game,:arrows)
-
-    drawBattleBase!(game)
 
     return
 end
@@ -124,20 +106,9 @@ end
 
 
 
-function stateBattlePkmnOpen!(game::GameState)
-    game.draw.battle1 = false
-    # game.ctrl.input.menupkmn = MenuPkmn()
-
-    killCC!(game,:animbattle)
-    killCallback!(game,:wiggle)
-    
-    killSpriteAll!(game)
-    flushLayer!(game,4)
-
-    createCallback!(game,:wiggle,animMenuPkmnWiggle!,(); active=true)
-
-    loadStringsTeam!(game)
-    drawMenuPkmn!(game)
+function stateBattlePkmnOpen!(game::GameState,args::Tuple{})
+    stateCloseBattle!(game)
+    stateMenuPkmnOpen!(game,())
 
     return
 end
@@ -147,12 +118,9 @@ end
 #     game.ctrl.input.menu.pkmn = true
 # end
 
-function stateBattlePkmnClose!(game::GameState)
-    killSpriteAll!(game)
-
-    killCallback!(game,:wiggle)
-
-    drawBattleBase!(game)
+function stateBattlePkmnClose!(game::GameState,args::Tuple{})
+    stateCloseBattle!(game)
+    stateMenuPkmnOpen!(game,())
 
     return
 end

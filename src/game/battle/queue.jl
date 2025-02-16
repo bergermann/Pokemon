@@ -82,9 +82,6 @@ function queueAttack!(game::GameState,state::BattleState,
     setDmgFactors!(state,attacker,defender)
     attacker.dmgd = calcDamage(attacker.factors)
     defender.dmgt = min(defender.pkmn.stats.hp,attacker.dmgd)
-
-    println("$id D: ",attacker.dmgd)
-    println("target hp: ",defender.pkmn.stats.hp)
     
     push!(state.animqueue,BattleAnimation(
         id,120,getPkmnName(game,attacker.pkmn)*game.str[1][31]*
@@ -113,11 +110,6 @@ function queueAttack!(game::GameState,state::BattleState,
     push!(state.animqueue,BattleAnimation(
         id,48,"",bhpAnim!,target
     ))
-
-    for i in 1:state.animqueue.idx
-        println(state.animqueue[i])
-    end
-    println()
 
     if attacker.crit
         push!(state.animqueue,BattleAnimation(
@@ -419,7 +411,7 @@ function queueCheckXp!(game::GameState,state::BattleState)
     
     if levelups == 0
         push!(state.animqueue,BattleAnimation(
-            :p1,60,"",bxpAnim!,-Int(xpdrop)
+            :p1,60,"",bxpAnim!,Int(xpdrop)
         ))
     else
         push!(state.animqueue,BattleAnimation(
@@ -427,15 +419,17 @@ function queueCheckXp!(game::GameState,state::BattleState)
         ))
         
         push!(state.animqueue,BattleAnimation(
-            :p1,120,state[1].name*game.str[1][26]*state[1].pkmn.stats.level+levelups*"!",
+            :p1,120,
+            state[1].name*game.str[1][26]*string(state[1].pkmn.stats.level+levelups)*"!",
             banimEmpty!,1
         ))
 
         push!(state.animqueue,BattleAnimation(
             :p1,60,"",
             bxpAnim!,
-            Int(xpFormulas(state[1].pkmn.stats.level+levelups,state[1].pkmn.xptype))-
-                state[1].pkmn.stats.xp
+            state[1].pkmn.stats.xp-
+                Int(xpFormulas(state[1].pkmn.stats.level+levelups,state[1].pkmn.xptype))
+                
         ))
     end
 

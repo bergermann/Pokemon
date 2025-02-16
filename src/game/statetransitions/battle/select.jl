@@ -94,10 +94,8 @@ function stateBattleBagsCtrls!(game::GameState)
 end
 
 function stateBattleBagsClose!(game::GameState)
-    killSpriteAll!(game)
-
-    killCC!(game,:bagswitch)
-    killCallback!(game,:arrows)
+    stateMenuBagsClose!(game,())
+    stateOpenBattle!(game)
 
     return
 end
@@ -119,8 +117,8 @@ end
 # end
 
 function stateBattlePkmnClose!(game::GameState,args::Tuple{})
-    stateCloseBattle!(game)
-    stateMenuPkmnOpen!(game,())
+    stateMenuPkmnClose!(game,())
+    stateOpenBattle!(game)
 
     return
 end

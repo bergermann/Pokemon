@@ -102,19 +102,12 @@ end
 
 
 
-
-
 function stateBattlePkmnOpen!(game::GameState,args::Tuple{})
     stateCloseBattle!(game)
     stateMenuPkmnOpen!(game,())
 
     return
 end
-
-# function stateBattlePkmnCtrls!(game::GameState)
-#     unlockInput!(game)
-#     game.ctrl.input.menu.pkmn = true
-# end
 
 function stateBattlePkmnClose!(game::GameState,args::Tuple{})
     stateMenuPkmnClose!(game,())

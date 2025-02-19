@@ -25,6 +25,7 @@ function stateOpenBattle!(game::GameState)
     createCallback!(game,:wiggle,animWiggleBattle!,())
     createCC!(game,:animbattle,animBattlePhaseWild!,(); n=-1)
 
+    createBackground!(game,:battle,"backgrounds/battle/grass1.png",-120,-80,1;)
     createBackground!(game,:text,"textboxes/battle.png",-120,32,5;)
     createBackground!(game,:t1,"backgrounds/grey1.png",   0, 32,5; sx=120,sy=48,active=false)
     createBackground!(game,:t2,"backgrounds/grey1.png",-120, 32,6; sx=240,sy=48,active=false)
@@ -32,7 +33,6 @@ function stateOpenBattle!(game::GameState)
     loadSpriteSheets!(game,
         :battlermc,
         :pads,
-        :fol,
         :ballsb,
         :ballicons,
         :tagown,
@@ -50,11 +50,11 @@ function stateOpenBattle!(game::GameState)
     loadSpriteSheet!(game,path1,:pkmn1,64,64,2; maxsprites=1)
     loadSpriteSheet!(game,path2,:pkmn2,64,64,2; maxsprites=1)
 
-    createSprite!(game,:pad1,:pads,2,1, 120+64, 16,10,1; active=true)
-    createSprite!(game,:pad2,:pads,1,1,-120-64,-16,10,1; active=true)
+    createSprite!(game,:pad1,:pads,2,1,-56, 16,10,1; active=true)
+    createSprite!(game,:pad2,:pads,1,1, 56,-16,10,1; active=true)
 
-    createSprite!(game,:pkmn1,    :pkmn1,1,1,     -48, 24,10,3; wscale=0.,hscale=0.)
-    createSprite!(game,:pkmn2,    :pkmn2,1,1, -120-64,-28,10,3; active=true)
+    createSprite!(game,:pkmn1,    :pkmn1,1,1,-48, 24,10,3; active=true)
+    createSprite!(game,:pkmn2,    :pkmn2,1,1, 56,-28,10,3; active=true)
     
     createSprite!(game,:cursor1,:cursors,1,4,  12,49,10,5; active=false)
     createSprite!(game,:cursor2,:cursors,1,4,-107,49,10,6; active=false)
@@ -119,7 +119,8 @@ end
 function stateOpenBattleIntro!(game::GameState)
     stateOpenBattle!(game)
 
-    createBackground!(game,:battle,"backgrounds/battle/grass1.png",-120,-80,1;)
+    loadSpriteSheets!(game,:fol)
+
     createBackground!(game,:s1,"backgrounds/black.png",-120,-80,6; sx=240,sy=80)
     createBackground!(game,:s2,"backgrounds/black.png",-120,  0,6; sx=240,sy=80)
 
@@ -132,6 +133,13 @@ function stateOpenBattleIntro!(game::GameState)
     for i in 1:10
         createSprite!(game,Symbol(:spark,i),:particles,1,1,-48,24,10,4; active=false)
     end
+
+    scaleSprite!(game,:pkmn1,0.,0.,true)
+
+    moveSpriteW!(game,:pad1, 240)
+    moveSpriteW!(game,:pad2,-240)
+
+    moveSpriteW!(game,:pkmn2,-240)
 
     moveSpriteW!(game,:tag1, 128); moveSpriteW!(game,:tag2,-128)
 
@@ -184,7 +192,8 @@ function stateCloseBattle!(game::GameState)
     deleteBackgrounds!(game,:battle,:text,:t1,:t2)
     deleteSpriteSheets!(game,
         :battlermc,:pads,:ballsb,:ballicons,:tagown,:tagopp,:particles,:pkmn1,:pkmn2,
-        :health1,:xp)
+        :health1,:xp,)
+
     killSprites!(game,:cursors)
 
     deleteFramesAll!(game)

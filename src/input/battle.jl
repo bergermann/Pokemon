@@ -50,8 +50,6 @@ function inputBattle!(game::GameState,inputs::Inputs)
             49+15*div(game.ctrl.input.battle.s2,2),true)
     elseif game.ctrl.input.battle.bag
         inputBattleInventory!(game,input)
-    elseif game.ctrl.input.battle.pkmn
-        inputBattlePkmn!(game,input)
     end
 
     return
@@ -72,14 +70,14 @@ function inputBattleMenuSelector!(game::GameState)
         for l in alabels; switchText!(game,l); end
     elseif game.ctrl.input.battle.s1 == 1
         lockInput!(game)
-        game.ctrl.input.battle.m1 = false
+        # game.ctrl.input.battle.m1 = false
         game.ctrl.input.battle.bag = true
 
         createCC!(game,:scenet,sceneTransition!,
             (16,8,F(stateBattleBagsOpen!),F(stateBattleBagsCtrls!)); active=true,n=1)
     elseif game.ctrl.input.battle.s1 == 2
         lockInput!(game)
-        game.ctrl.input.battle.m1 = false
+        # game.ctrl.input.battle.m1 = false
         game.ctrl.input.battle.pkmn = true
 
         createCC!(game,:scenet,sceneTransition!,

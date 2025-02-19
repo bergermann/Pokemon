@@ -133,9 +133,17 @@ function stateMenuPkmnClose!(game::GameState,args::Tuple{})
     deleteTextsAll!(game)
     deleteFramesAll!(game)
 
+    return
+end
+
+function stateMapPkmnClose!(game::GameState,args::Tuple{})
+    stateMenuPkmnClose!(game,())
+
     stateOpenMap!(game)
     stateMenuMainOpen!(game)
 
     return
 end
+
+
 

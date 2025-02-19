@@ -90,7 +90,7 @@ function inputTeam!(game::GameState,inputs::Inputs)
 
         if !game.battle.active
             createCC!(game,:scenet,sceneTransition!,(16,8,
-                F(stateMenuPkmnClose!),F()); active=true,n=1)
+                F(stateMapPkmnClose!),F()); active=true,n=1)
         else
             createCC!(game,:scenet,sceneTransition!,(16,8,
                 F(stateBattlePkmnClose!),F(stateInitBattleChoice!)); active=true,n=1)

@@ -88,7 +88,7 @@ function inputMap!(game::GameState,inputs::Inputs)
         end
 
         if inputs.start.press
-            stateMenuMainOpen!(game)
+            stateMenuMainOpen!(game,())
         elseif inputs.A.press
             mapAction!(game)
         end

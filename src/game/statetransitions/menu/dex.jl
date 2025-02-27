@@ -111,7 +111,7 @@ function stateMenuDexClose!(game::GameState,args::Tuple{})
     deleteFramesAll!(game)
 
     stateOpenMap!(game)
-    stateMenuMainOpen!(game)
+    stateMenuMainOpen!(game,())
 
     return
 end

@@ -102,22 +102,17 @@ function stateMenuBagsClose!(game::GameState,args::Tuple{})
 
     killCallback!(game,:arrows)
     killCC!(game,:bagswitch)
-    killSpritesAll!(game)
     
-    deleteSpriteSheet!(game,:arrows)
-    deleteSpriteSheet!(game,:bags)
-    deleteSpriteSheet!(game,:items)
-    deleteSpriteSheet!(game,:markers)
-
-    deleteBackground!(game,:bag1)
-    deleteBackground!(game,:bag2)
-    deleteBackground!(game,:bag3)
+    deleteSpriteSheets!(game,:arrows,:bags,:items,:markers)
+    deleteBackgrounds!(game,:bag1,:bag2,:bag3)
 
     deleteTextsAll!(game)
     deleteFramesAll!(game)
+    
+    killSpritesAll!(game)
 
     stateOpenMap!(game)
-    stateMenuMainOpen!(game)
+    stateMenuMainOpen!(game,())
 
     return
 end

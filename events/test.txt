@@ -1,0 +1,44 @@
+hasdex 019 seen
+haspkmn 001
+flag 0xc9 general false
+
+---
+
+choice "Willst du dieses Event abspielen?" 2 "Ja" "Nein"
+
+#BRANCH 2
+endevent
+
+#BRANCH 1
+setbranch 0
+
+#BRANCH 0
+dialogue "Test1\\Test2\\Test3\\Test4"
+
+npcadd eventtest1 1 0 0 1 1 down
+npcwalk eventtest1 down 2
+npcwalk eventtest1 right 1
+npcwalk eventtest1 up 2
+npcwalk eventtest1 left 1
+npcturn eventtest1 down
+
+delay 30
+npcemote eventtest1 !
+delay 30
+npcemote eventtest1 jump
+
+mcemote !
+delay 30
+mcturn right
+delay 30
+mcturn left
+delay 30
+mcturn up
+delay 30
+mcturn up
+mc emote jump
+
+dialogue "Hier, 5 Hyperbälle."
+gainitem 3 5
+
+npcdel eventtest1

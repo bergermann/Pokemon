@@ -1,0 +1,50 @@
+setbranch branch (default: 0, all events get executed)
+dialogue text
+choice text default choices...
+
+mcwalk dir length
+mcturn dir
+mcemote emote
+
+
+npcadd id idx dpx dpy dir
+npcadd id idx dcx dcy px py dir
+npcdel id
+npcwalk id dir length
+npcturn id dir
+npcemote id emote(!/?/jump)
+
+
+
+
+spriteadd sheet id idx frame px py
+spritedel id
+spritemove id dx dy
+spriteidx id idx
+spriteframe id frame
+
+cameramove dx dy dframes
+camerazoom?
+teleport cx cy px py dir
+delay dframes
+setflag flagnumber type value
+setcounter counternumber value
+
+gainitem id amount
+gainpkmn id level
+
+startbattle id
+
+
+
+
+
+
+
+
+
+
+
+
+
+0 endevent

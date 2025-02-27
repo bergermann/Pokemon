@@ -1,6 +1,6 @@
 
 
-function stateMenuMainOpen!(game::GameState)
+function stateMenuMainOpen!(game::GameState,args::Tuple{})
     game.ctrl.input.move = false
     game.ctrl.input.map = false
     game.ctrl.input.menu.main = true

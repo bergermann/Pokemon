@@ -1,0 +1,48 @@
+flag flagnumber type(general/progress/items/trainers) value
+counter counternumber type(-1/0/1) value
+hasdex id seen/caught
+haspkmn id 
+
+---
+
+setbranch branch (default: 0, all events get executed)
+
+mcwalk dir length
+mcturn dir
+mcemote emote
+
+
+npcadd id idx dpx dpy dir
+npcadd id idx dcx dcy px py dir
+npcdel id
+npcwalk id dir length
+npcturn id dir
+npcemote id emote(!/?/jump)
+
+
+spriteadd sheet id idx frame px py
+spritedel id
+spritemove id dx dy
+spriteidx id idx
+spriteframe id frame
+
+
+dialogue text
+choice text default choices...
+
+
+camerazoom?
+cameramove dx dy dframes
+teleport cx cy px py dir
+delay dframes
+
+
+setflag flagnumber type value
+setcounter counternumber value
+
+gainitem id amount
+gainpkmn id level
+
+startbattle id
+
+endevent

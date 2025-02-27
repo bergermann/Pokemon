@@ -140,7 +140,7 @@ function stateMapPkmnClose!(game::GameState,args::Tuple{})
     stateMenuPkmnClose!(game,())
 
     stateOpenMap!(game)
-    stateMenuMainOpen!(game)
+    stateMenuMainOpen!(game,())
 
     return
 end

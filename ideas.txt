@@ -1,10 +1,43 @@
+
 old guy with dog pokemons trying to find the bestest of bois
 lapras counter
+
+
+
+
+
+to do:
+fix animated tiles
+
+trainer pass
+map/pokenav
+options
+saving
+computer system
+
+market/vendor system
+
+item effects
+attack effects
+attack learning
+evolution, item/stat requirements, animation
+pokemon swap
+losecondition -> safe latest pokecenter spot
+
+trainer battles, trainer linecheck
+
+event scripting
+
+biking
+ledge jumping
+fishing
+VMs
+reflections
+weather
 
 optimize teleports?
 rework scene transition
 
-
 add genders to menupkmn
-fix accuracy factor
 fix item and status icons in menupkmn
+fix accuracy factor

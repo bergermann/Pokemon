@@ -26,12 +26,12 @@ end
 
 function inputBags!(game::GameState,inputs::Inputs,m::MenuBags)
     if inputs.A.press
-        if getSelect(game) == getAmountItems(game)+1
+        if getSelectedItem(game,m) == 500
             lockInput!(game)
             game.ctrl.input.menu.bags = false
     
             createCC!(game,:scenet,sceneTransition!,(16,8,
-                F(stateMenuBagsClose!),F(stateMenuMainOpen!)); active=true,n=1)
+                F(stateMenuBagsClose!),F0); active=true,n=1)
     
             return
         end
@@ -42,7 +42,7 @@ function inputBags!(game::GameState,inputs::Inputs,m::MenuBags)
         game.ctrl.input.menu.bags = false
 
         createCC!(game,:scenet,sceneTransition!,(16,8,
-            F(stateMenuBagsClose!),F()); active=true,n=1)
+            F(stateMenuBagsClose!),F0); active=true,n=1)
         return
     elseif inputs.down.press
         if m.select[m.bag] == game.p.inventory[-m.bag]+1

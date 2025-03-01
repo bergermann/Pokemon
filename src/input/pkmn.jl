@@ -185,10 +185,12 @@ function inputTeamActionBattle!(game::GameState)
 
     setChoice!(game,true,1,F(pkmnActionBattle!))
 
+    display(game.str[1][[7,6,9]])
+    display(game.str[1][[6,9]])
     if game.p.pokemon[game.ctrl.input.menu.menupkmn.select].stats.hp > 0
         drawChoiceMenu!(game,4,game.str[1][[7,6,9]],8,24,0)
     else
-        drawChoiceMenu!(game,4,game.str[1][6,9],8,24,0)
+        drawChoiceMenu!(game,4,game.str[1][[6,9]],8,24,0)
     end
 end
 
@@ -275,6 +277,16 @@ function pkmnActionBattle!(game::GameState,hp::Int)
         
         resetChoice!(game)
     end
+
+    switchText!(game,:choose)
+    switchFrame!(game,:choose)
+
+    switchText!(game,:info)
+    switchFrame!(game,:info)
+    
+    resetChoice!(game)
+
+    return
 end
 
 

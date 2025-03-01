@@ -49,6 +49,7 @@ function drawChoiceMenu!(game::GameState,layer::Int,strs::Vector{String},
     game.ctrl.input.choice.max = length(strs)
     game.ctrl.input.choice.layer = layer
 
+    println("choice frame height: ",2+length(strs)*2)
     createFrame!(game,:choice,2+length(strs)*2,width,px,py,layer)
     createSprite!(game,:ccursor,:cursors,1,3,px+12,py+16*game.ctrl.input.choice.sel,
         100,layer; active=true)

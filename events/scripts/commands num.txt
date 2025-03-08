@@ -24,8 +24,8 @@ spriteidx id idx
 spriteframe id frame
 
 cameramove dx dy dframes
-camerazoom?
-teleport cx cy px py dir
+camerazoom? level
+teleport cx cy px py dir trans
 delay dframes
 setflag flagnumber type value
 setcounter counternumber value

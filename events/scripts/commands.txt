@@ -33,7 +33,7 @@ choice text default choices...
 
 camerazoom?
 cameramove dx dy dframes
-teleport cx cy px py dir
+teleport cx cy px py dir trans
 delay dframes
 
 

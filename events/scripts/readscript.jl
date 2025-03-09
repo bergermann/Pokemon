@@ -69,7 +69,7 @@ flagtypes = Dict{String,Int}(
 # command: [branch, command, data...]
 
 function readEvent(file::String)
-    if occursin("commands",file); return; end
+    if occursin("commands",file) || occursin(".jl",file); return; end
 
     f = open(joinpath("events","scripts",file)); lines = readlines(f); close(f)
     name = file[1:end-4]
@@ -238,6 +238,14 @@ function getStrings(str::String)
     end
 
     return s
+end
+
+function readEvents()
+    for file in readdir("events/scripts")
+        readEvent(file)
+    end
+
+    return
 end
 
 readEvent("test.txt")

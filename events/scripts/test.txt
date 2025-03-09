@@ -4,7 +4,7 @@ flag 0xc9 general false
 
 ---
 
-choice "Willst du dieses Event abspielen?" 2 "Ja" "Nein"
+choice 2 "Willst du dieses Event abspielen?" "Ja" "Nein"
 
 #BRANCH 2
 endevent
@@ -36,7 +36,7 @@ delay 30
 mcturn up
 delay 30
 mcturn up
-mc emote jump
+mcemote jump
 
 dialogue "Hier, 5 Hyperbälle."
 gainitem 3 5

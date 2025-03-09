@@ -22,13 +22,13 @@ npcemote id emote(!/?/jump)
 
 spriteadd sheet id idx frame px py
 spritedel id
-spritemove id dx dy
+spritemove id dx dy dframes
 spriteidx id idx
 spriteframe id frame
 
 
 dialogue text
-choice text default choices...
+choice default text choices...
 
 
 camerazoom?

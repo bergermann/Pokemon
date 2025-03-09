@@ -1,6 +1,6 @@
 setbranch branch (default: 0, all events get executed)
 dialogue text
-choice text default choices...
+choice default text choices...
 
 mcwalk dir length
 mcturn dir

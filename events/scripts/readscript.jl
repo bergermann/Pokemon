@@ -5,7 +5,7 @@ struct EventQueue
     npcs::Vector{Symbol}
     sprites::Vector{Symbol}
 
-    flags::FlagSet
+    flags::Pokemon.FlagSet
 
     queue::Matrix{Int}
 end
@@ -46,7 +46,7 @@ commands = Dict{String,Int}(
     "startbattle"   => 36,
 )
 
-dirs = Dict{String,Int}(
+dirnames = Dict{String,Int}(
     "up"    => 1,
     "right" => 2,
     "down"  => 3,
@@ -57,6 +57,13 @@ emotes = Dict{String,Int}(
     "!"     => 1,
     "?"     => 2,
     "jump"  => 3,
+)
+
+flagtypes = Dict{String,Int}(
+    "general"   => 1,
+    "progress"  => 2,
+    "items"     => 3,
+    "trainers"  => 4,
 )
 
 # command: [branch, command, data...]
@@ -78,12 +85,13 @@ function readEvent(file::String)
 
     for line in lines
         l = split(line," ")
-        if length(line) == 0 || line[1] == "-" || line[1] == " "; continue; end
+        if length(line) == 0 || line[1] == '-' || line[1] == ' '; continue; end
         
         c = l[1]
 
         if c == "flag"
-            push!(flags,parse.(Int,(l[2],l[3],l[4]))); continue
+            flag = (parse(Int,l[2]),flagtypes[l[3]],Int(parse(Bool,l[4])))
+            push!(flags,flag); continue
         elseif c == "counter"
             push!(counters,parse.(Int,(l[2],l[3],l[4]))); continue
         elseif c == "hasdex"
@@ -109,68 +117,100 @@ function readEvent(file::String)
             write(strf,str[1])
         elseif c == "choice"
             str = getStrings(line)
-            command[3] = parse(Int,l[3])
+            command[3] = parse(Int,l[2])
             command[4] = cline; cline += length(str) 
             command[5] = length(str)-1;
             write.(strf,str) 
         elseif c == "mcwalk"
-            command[3] = dirs[l[2]]
+            command[3] = dirnames[l[2]]
             command[4] = parse(Int,l[3])
         elseif c == "mcturn"
-            command[3] = dirs[l[2]]
+            command[3] = dirnames[l[2]]
         elseif c == "mcemote"
             command[3] = emotes[l[2]]
         elseif c == "npcadd"
             id = Symbol(l[2])
-            @assert !occursin(id,npcs) "NPC already exists."
+            @assert !(id in npcs) "NPC already exists."
             push!(npcs,id); command[3] = cnpc; cnpc += 1
             if length(l) == 6
-                command[4:7] .= parse.(Int,l[3:end])
+                command[4:6] .= parse.(Int,l[3:end-1])
+                command[7] = dirnames[l[end]]
             else
-                command[4:9] .= parse.(Int,l[3:end]); command[10] = 1
+                command[4:8] .= parse.(Int,l[3:end-1]); command[10] = 1
+                command[9] = dirnames[l[end]]
             end
         elseif c == "npcdel"
             id = Symbol(l[2])
-            id_ = findfirst(isequal(id,npcs))
+            id_ = findfirst(isequal(id),npcs)
             @assert !isnothing(id_) "NPC not found."
             command[3] = id_
         elseif c == "npcwalk"
             id = Symbol(l[2])
-            id_ = findfirst(isequal(id,npcs))
+            id_ = findfirst(isequal(id),npcs)
             @assert !isnothing(id_) "NPC not found."
             command[3] = id_
-            command[4:5] .= parse.(Int,l[3:4])
+            command[4] = dirnames[l[3]]
+            command[5] = parse(Int,l[4])
         elseif c == "npcturn"
             id = Symbol(l[2])
-            id_ = findfirst(isequal(id,npcs))
+            id_ = findfirst(isequal(id),npcs)
             @assert !isnothing(id_) "NPC not found."
             command[3] = id_
-            command[4] .= parse.(Int,l[3])
+            command[4] = dirnames[l[3]]
         elseif c == "npcemote"
             id = Symbol(l[2])
-            id_ = findfirst(isequal(id,npcs))
+            id_ = findfirst(isequal(id),npcs)
             @assert !isnothing(id_) "NPC not found."
             command[3] = id_
             command[4] = emotes[l[3]]
         elseif c == "spriteadd"
+            sheet = Symbol(l[2])
+            sheet_ = findfirst(isequal(sheet),sheets)
+            if isnothing(sheet_); push!(sheets,sheet); sheet_ = csheet; csheet += 1; end
+            command[3] = sheet_
+            id = Symbol(l[3])
+            id_ = findfirst(isequal(id),sprites)
+            @assert isnothing(id_) "Sprite already exists."
+            push!(sprites,id); command[4] = csprite; csprite += 1
         elseif c == "spritedel"
+            id = Symbol(l[2])
+            id_ = findfirst(isequal(id),sprites)
+            @assert !isnothing(id_) "Sprite not found."
+            command[3] = id_
         elseif c == "spritemove"
+            id = Symbol(l[2])
+            id_ = findfirst(isequal(id),sprites)
+            @assert !isnothing(id_) "Sprite not found."
+            command[3] = id_
+            command[4:6] .= parse.(Int,l[3:5])
         elseif c == "spriteidx"
+            id = Symbol(l[2])
+            id_ = findfirst(isequal(id),sprites)
+            @assert !isnothing(id_) "Sprite not found."
+            command[3] = id_
+            command[4] = parse(Int,l[3])
         elseif c == "spriteframe"
+            id = Symbol(l[2])
+            id_ = findfirst(isequal(id),sprites)
+            @assert !isnothing(id_) "Sprite not found."
+            command[3] = id_
+            command[4] = parse(Int,l[3])
         elseif c == "cameramove"
+            command[3:5] .= parse(Int,l[2:end])
         elseif c == "camerazoom"
+            command[3] = parse(Int,l[2])
         elseif c == "teleport"
-            command[3:8] = parse.(Int,l[2:end])
+            command[3:8] .= parse.(Int,l[2:end])
         elseif c == "delay"
             command[3] = parse(Int,l[2])
         elseif c == "setflag"
-            command[3:5] = parse.(Int,l[2:4])
+            command[3:5] .= parse.(Int,l[2:4])
         elseif c == "setcounter"
-            command[3:4] = parse.(Int,l[2:3])
+            command[3:4] .= parse.(Int,l[2:3])
         elseif c == "gainitem"
-            command[3:4] = parse.(Int,l[2:3])
+            command[3:4] .= parse.(Int,l[2:3])
         elseif c == "gainpkmn"
-            command[3:4] = parse.(Int,l[2:3])
+            command[3:4] .= parse.(Int,l[2:3])
         elseif c == "startbattle"
             command[3] = parse(Int,l[2])
         end
@@ -178,7 +218,7 @@ function readEvent(file::String)
         queue = hcat(queue,command)
     end
 
-    F = FlagSet(flags,counters,seen,caught,has)
+    F = Pokemon.FlagSet(; flags=flags,counters=counters,hasseen=seen,hascaught=caught,inteam=has)
     event = EventQueue(sheets,npcs,sprites,F,queue)
 
     serialize(joinpath("events",name*".eq"),event)
@@ -199,3 +239,10 @@ function getStrings(str::String)
 
     return s
 end
+
+readEvent("test.txt")
+
+ev = deserialize("events/test.eq")
+
+
+

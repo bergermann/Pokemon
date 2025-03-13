@@ -22,6 +22,10 @@ spritedel id
 spritemove id dx dy
 spriteidx id idx
 spriteframe id frame
+spritereverse id x y absolute
+spriterotate id deg absolute
+
+
 
 cameramove dx dy dframes
 camerazoom? level

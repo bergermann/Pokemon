@@ -13,7 +13,7 @@ endevent
 setbranch 0
 
 #BRANCH 0
-dialogue "Test1\\Test2\\Test3\\Test4"
+dialogue "Test1\Test2\Test3\Test4"
 
 npcadd eventtest1 1 0 0 1 1 down
 npcwalk eventtest1 down 2

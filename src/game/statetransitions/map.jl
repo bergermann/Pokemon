@@ -31,17 +31,11 @@ function stateInitMap!(game::GameState)
     createText!(game,:dialogue,2,-106,40,6,"",
         [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; maxchar=128,active=false)
 
-    createCounter!(game,:movemain,1)
-    createCallback!(game,:movemain,false,moveMain!,(game.ctrl.dir,-1))
-
     return
 end
 
 function stateOpenMap!(game::GameState)
     game.overworld = true
-
-    createCounter!(game,:movemain,1)
-    createCallback!(game,:movemain,false,moveMain!,(game.ctrl.dir,-1))
 
     loadStringsMap!(game; reset=true)
     
@@ -103,8 +97,6 @@ function stateCloseMap!(game::GameState)
     deleteText!(game,:menu)
 
     killSprites!(game,:cursors)
-
-    killCC!(game,:movemain)
     
     game.overworld = false
 

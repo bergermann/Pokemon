@@ -1,15 +1,5 @@
 using Serialization
 
-struct EventQueue
-    sheets::Vector{Symbol}
-    npcs::Vector{Symbol}
-    sprites::Vector{Symbol}
-
-    flags::Pokemon.FlagSet
-
-    queue::Matrix{Int}
-end
-
 commands = Dict{String,Int}(
     "endevent"      => 0,
     "setbranch"     => 1,
@@ -32,18 +22,20 @@ commands = Dict{String,Int}(
     "spritemove"    => 22,
     "spriteidx"     => 23,
     "spriteframe"   => 24,
+    "spritereverse" => 25,
+    "spriterotate"  => 26,
 
-    "cameramove"    => 26,
-    "camerazoom"    => 27,
-    "teleport"      => 28,
-    "delay"         => 29,
-    "setflag"       => 30,
-    "setcounter"    => 31,
+    "cameramove"    => 30,
+    "camerazoom"    => 31,
+    "teleport"      => 32,
+    "delay"         => 33,
+    "setflag"       => 34,
+    "setcounter"    => 35,
 
-    "gainitem"      => 33,
-    "gainpkmn"      => 34,
+    "gainitem"      => 37,
+    "gainpkmn"      => 38,
 
-    "startbattle"   => 36,
+    "startbattle"   => 40,
 )
 
 dirnames = Dict{String,Int}(
@@ -114,13 +106,13 @@ function readEvent(file::String)
         elseif c == "dialogue"
             command[3] = cline; cline += 1
             str = getStrings(line)
-            write(strf,str[1])
+            write(strf,str[1],"\n")
         elseif c == "choice"
             str = getStrings(line)
             command[3] = parse(Int,l[2])
             command[4] = cline; cline += length(str) 
             command[5] = length(str)-1;
-            write.(strf,str) 
+            for str_ in str; write(strf,str_,"\n"); end
         elseif c == "mcwalk"
             command[3] = dirnames[l[2]]
             command[4] = parse(Int,l[3])
@@ -218,8 +210,10 @@ function readEvent(file::String)
         queue = hcat(queue,command)
     end
 
+    close(strf)
+
     F = Pokemon.FlagSet(; flags=flags,counters=counters,hasseen=seen,hascaught=caught,inteam=has)
-    event = EventQueue(sheets,npcs,sprites,F,queue)
+    event = Pokemon.EventQueue(sheets,npcs,sprites,F,queue)
 
     serialize(joinpath("events",name*".eq"),event)
 
@@ -248,9 +242,10 @@ function readEvents()
     return
 end
 
-readEvent("test.txt")
+# readEvent("test.txt")
+readEvents()
 
-ev = deserialize("events/test.eq")
+# ev = deserialize("events/test.eq")
 
 
 

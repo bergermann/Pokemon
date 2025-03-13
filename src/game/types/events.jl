@@ -19,3 +19,36 @@ struct Event
     function Event(id,px,py,dx,dy,cx,cy,fg,onpress,dir,flags,callback);
         new(id,px,py,dx,dy,cx,cy,fg,onpress,dir,flags,callback); end
 end
+
+struct EventQueue
+    sheets::Vector{Symbol}
+    npcs::Vector{Symbol}
+    sprites::Vector{Symbol}
+
+    flags::Pokemon.FlagSet
+
+    queue::Matrix{Int}
+
+    function EventQueue()
+        new([],[],[],FlagSet(),zeros(Int,10,0))
+    end
+
+    function EventQueue(sheets,npcs,sprites,flags,queue)
+        new(sheets,npcs,sprites,flags,queue)
+    end
+end
+
+mutable struct Events
+    active::Bool
+    c::Int
+    idx::Int
+    queue::EventQueue
+
+    function Events()
+        new(false,0,1,EventQueue())
+    end
+
+    function Events(active,c,idx,queue)
+        new(active,c,idx,queue)
+    end
+end

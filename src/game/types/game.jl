@@ -214,6 +214,7 @@ mutable struct GameState
     battle::Battle
 
     flags::Flags
+    events::Events
 
     options::Options
 end

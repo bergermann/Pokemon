@@ -305,11 +305,17 @@ mutable struct Controls
     fg::Bool
     dir::Int            # 1,2,3,4 = N,E,S,W
 
+    movea::Bool
+    movec::Int
+    movet::Int
+    movel::Int
+
     dialogue::Dialogue
-    
+
     input::InputState
 
     function Controls(x::Int,y::Int,h::Int,cx::Int,cy::Int,fg::Bool,dir::Int)
-        new(P(x,y),P(x,y),P(x,y),h,P(cx,cy),P(cx,cy),fg,dir,Dialogue(),InputState())
+        new(P(x,y),P(x,y),P(x,y),h,P(cx,cy),P(cx,cy),fg,dir,
+            false,1,-1,1,Dialogue(),InputState())
     end
 end

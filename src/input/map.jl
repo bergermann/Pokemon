@@ -46,40 +46,53 @@ function checkEncounter!(game::GameState)
         return
     end
 
-    game.callbacks[:movemain].active = true
-    game.callbacks[:movemain].args = (game.ctrl.dir,-1)
+    game.ctrl.movea = true; game.ctrl.movet = -1
 
     initBattleWild!(game)
 
     return
 end
 
-function moveMain!(game::GameState,(dir,type)::Tuple{Int,Int})
+function moveMain!(game::GameState)
+    type = game.ctrl.movet
+
     if type == -1
-        moveStop!(game,dir)
+        moveStop!(game)
     elseif type == 0
-        moveTurn!(game,dir)
+        moveTurn!(game)
     elseif type == 1
-        moveWalk!(game,dir)
+        moveWalk!(game)
     elseif type == 2
-        moveRun!(game,dir)
+        moveRun!(game)
     elseif type == 3
-        moveWalkWall!(game,dir)
+        moveWalkWall!(game)
     end
 
     return
 end
 
+function setMovement!(game::GameState,type::Int,length::Int,active::Bool)
+    game.ctrl.movea = active
+    game.ctrl.movet = type
+    game.ctrl.movel = length
 
+    return
+end
+
+function setMovement!(game::GameState,type::Int,length::Int)
+    game.ctrl.movet = type
+    game.ctrl.movel = length
+
+    return
+end
 
 
 function inputMap!(game::GameState,inputs::Inputs)
     if game.ctrl.input.move
         if !(inputs.up.hold || inputs.down.hold || inputs.left.hold || inputs.right.hold)
-            if game.n[:movemain].c != 1
+            if game.ctrl.movec != 1
                 setSpriteIdx!(game,:mc,1)
-                game.callbacks[:movemain].active = true
-                game.callbacks[:movemain].args = (game.ctrl.dir,-1)
+                game.ctrl.movea = true; game.ctrl.movet = -1
             end
         else
             inputMove!(game,inputs)
@@ -115,13 +128,12 @@ function inputMove!(game::GameState,inputs::Inputs)
 
             setSpriteFrame!(game,:mc,1+3*(dir-1-2*(dir==4))+1)
 
-            game.callbacks[:movemain].args = (dir,3)
+            game.ctrl.movet = 3
         end
 
-        if game.n[:movemain].c <= 1
-            game.n[:movemain].c = 1
-            game.callbacks[:movemain].active = true
-            game.callbacks[:movemain].args = (dir,3)
+        if game.ctrl.movec <= 1
+            game.ctrl.movec = 1
+            game.ctrl.movea = true; game.ctrl.movet = 3
         end
 
         return
@@ -133,22 +145,22 @@ function inputMove!(game::GameState,inputs::Inputs)
     
     reverseSpriteW!(game,:mc,dir==4)
 
-    game.n[:movemain].c = 1
+    game.ctrl.movec = 1
 
-    game.callbacks[:movemain].active = true
+    game.ctrl.movea = true
     game.ctrl.input.move = false
 
     if !inputs.B.hold
         if game.ctrl.dir == dir
-            game.callbacks[:movemain].args = (game.ctrl.dir,1)
+            game.ctrl.movet = 1
         else
             game.ctrl.dir = dir
-            game.callbacks[:movemain].args = (game.ctrl.dir,0)
+            game.ctrl.movet = 0
         end
     else
         setSpriteIdx!(game,:mc,2)
         game.ctrl.dir = dir
-        game.callbacks[:movemain].args = (game.ctrl.dir,2)
+        game.ctrl.movet = 2
     end
 
     return

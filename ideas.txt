@@ -27,6 +27,7 @@ losecondition -> safe latest pokecenter spot
 trainer battles, trainer linecheck
 
 event scripting
+- give npcs optional event tags, display normal dialogue if event flag is not met
 
 biking
 ledge jumping

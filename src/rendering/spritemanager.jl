@@ -283,6 +283,27 @@ function reverseSprite!(game::GameState,id::Symbol,dir::Int,absolute::Bool=false
     return
 end
 
+function reverseSprite!(game::GameState,id::Symbol,w::Bool,h::Bool,absolute::Bool=false)
+    s = game.im.s.sprites[id]
+    
+    if absolute
+        game.im.s.sheets[s.sheet].rev[1,s.slot] = w
+        game.im.s.sheets[s.sheet].rev[2,s.slot] = h
+    else
+        if w
+            game.im.s.sheets[s.sheet].rev[1,s.slot] =
+                !game.im.s.sheets[s.sheet].rev[1,s.slot]
+        end
+
+        if h
+            game.im.s.sheets[s.sheet].rev[2,s.slot] =
+                !game.im.s.sheets[s.sheet].rev[2,s.slot]
+        end
+    end
+
+    return
+end
+
 function reverseSpriteW!(game::GameState,id::Symbol,value::Bool)
     s = game.im.s.sprites[id]
     

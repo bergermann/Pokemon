@@ -68,3 +68,13 @@ function getSelectedItem(game::GameState,m::MenuBags)
         return Int(game.p.inventory[m.bag][m.select[m.bag],1])
     end
 end
+
+function addItem!(game,)
+    
+    return
+end
+
+function removeItem!(game,)
+    
+    return
+end

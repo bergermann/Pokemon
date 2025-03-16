@@ -3,7 +3,8 @@ old guy with dog pokemons trying to find the bestest of bois
 lapras counter
 
 
-
+pop from lists without strict ordering:
+    set 0 in forward order, then reverse sort up to max index 
 
 
 to do:

@@ -27,14 +27,15 @@ struct EventQueue
 
     flags::Pokemon.FlagSet
 
+    l::Int
     queue::Matrix{Int}
 
     function EventQueue()
-        new([],[],[],FlagSet(),zeros(Int,10,0))
+        new([],[],[],FlagSet(),0,zeros(Int,10,0))
     end
 
     function EventQueue(sheets,npcs,sprites,flags,queue)
-        new(sheets,npcs,sprites,flags,queue)
+        new(sheets,npcs,sprites,flags,size(queue,2),queue)
     end
 end
 

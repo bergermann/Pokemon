@@ -19,13 +19,13 @@ npcemote id emote(!/?/jump)
 
 spriteadd sheet id idx frame px py
 spritedel id
-spritemove id dx dy
+spritemove id dx dy absolute
+spritemove id dx dy dframes
 spriteidx id idx
 spriteframe id frame
 spritereverse id x y absolute
 spriterotate id deg absolute
-
-
+spritescale id sx sy absolute
 
 cameramove dx dy dframes
 camerazoom? level

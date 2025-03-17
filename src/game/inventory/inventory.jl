@@ -43,6 +43,20 @@ function getInvChoiceStr(game::GameState)
     end
 end
 
+function getBag(id::Int)
+    if 1 <= id <= 30            # 30
+        return 2
+    elseif 31 <= id <= 200      # 170
+        return 1
+    elseif 201 <= id <= 320     # 120
+        return 3
+    elseif 321 <= id <= 400     # 80
+        return 4
+    else                        # 100
+        return 5 
+    end
+end
+
 function getItem(id::Int)
     if 1 <= id <= 30            # 30
         return pokeballs[id]
@@ -69,12 +83,16 @@ function getSelectedItem(game::GameState,m::MenuBags)
     end
 end
 
-function addItem!(game,)
+function addItem!(game::GameState,id::Int,amount::Int)
+    b = getBag(id)
+    idx = findfirst(isequal(id),game.p.inventory[b][:,1])
+    if isnothing(idx); idx = game.p.inventory[-b]+1; game.p.inventory[-b][idx,1] = id; end
+    game.p.inventory[b][idx,2] += amount
     
     return
 end
 
-function removeItem!(game,)
+function removeItem!(game::GameState,)
     
     return
 end

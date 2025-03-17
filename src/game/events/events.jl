@@ -218,9 +218,8 @@ function playEvent!(game::GameState)
     elseif c == 38
         pkmn = generatePkmn(game,UInt16(e[3]),UInt8(e[4]))
         addPokemon!(game,pkmn)
-    elseif c == 40
-        startBattle!(game)
-        # startbattle
+    elseif c == 40  # startbattle
+        startBattle!(game,command[3])
     end
 
     return

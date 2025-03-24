@@ -33,9 +33,11 @@ commands = Dict{String,Int}(
     "setcounter"    => 35,
 
     "gainitem"      => 37,
-    "gainpkmn"      => 38,
+    "removeitem"    => 38,
+    "gainpkmn"      => 39,
+    "removepkmn"    => 40,
 
-    "startbattle"   => 40,
+    "startbattle"   => 50,
 )
 
 dirnames = Dict{String,Int}(
@@ -201,8 +203,12 @@ function readEvent(file::String)
             command[3:4] .= parse.(Int,l[2:3])
         elseif c == "gainitem"
             command[3:4] .= parse.(Int,l[2:3])
+        elseif c == "removeitem"
+            command[3:4] .= parse.(Int,l[2:3])
         elseif c == "gainpkmn"
             command[3:4] .= parse.(Int,l[2:3])
+        elseif c == "removepkmn"
+            command[3] = parse(Int,l[2])
         elseif c == "startbattle"
             command[3] = parse(Int,l[2])
         end

@@ -201,7 +201,7 @@ function loadNPCs!(game::GameState,target::Integer,cx::Integer,cy::Integer)
 
             sid = Symbol(:npc,id)
             x = npc[1]; y = npc[2]
-            spriteid = npc[8]; dir = npc[9]
+            spriteid = npc[8]; dir = npc[9]; event = npc[10]
 
             npc_ = NPC(
                 id,
@@ -226,10 +226,13 @@ function loadNPCs!(game::GameState,target::Integer,cx::Integer,cy::Integer)
                 0,
 
                 npc[7],
+                event
             )
 
             push!(game.m.npcs,npc_)
             push!(game.m.chunkdata[target].npcs,Ref(npc_))
+
+            if event != Symbol() && !haskey(events,event); loadEvent!(game,event); end
 
             createSprite!(game,sid,:npcs_all,spriteid,1+3*(dir-1-2*(dir==4)),
                 16*(16*(cx-game.ctrl.chunk.y)+(y-game.ctrl.pos1.y)),
@@ -439,6 +442,7 @@ function unloadNPCs!(game::GameState,target::Integer)
             killSprite!(game,npc.sprite)
             popat!(game.m.npcids,i)
             popat!(game.m.npcs,i)
+            if npc.event != Symbol(); unloadEvent!(game,npc.event); end
         end
     end
 

@@ -28,17 +28,18 @@ mutable struct NPC
     range::Int
 
     str::Vector{String}
+    event::Symbol
 
     function NPC()
         new(0,P(0,0),P(0,0),P(0,0),P(0,0),0,P(0,0),P(0,0),P(0,0),false,0,Symbol(),0,false,
-            0,0,0,0,0,0,0,[])
+            0,0,0,0,0,0,0,[],Symbol())
     end
 
     function NPC(id,pos1,pos2,mpos,hpos,height,chunk,mchunk,hchunk,fg,dir,sprite,spriteid,
-                        dynamic,pattern,parg1,parg2,c1,c2,trainerid,range,str)
+                        dynamic,pattern,parg1,parg2,c1,c2,trainerid,range,str,event)
         
         new(id,pos1,pos2,mpos,hpos,height,chunk,mchunk,hchunk,fg,dir,sprite,spriteid,
-            dynamic,pattern,parg1,parg2,c1,c2,trainerid,range,str)
+            dynamic,pattern,parg1,parg2,c1,c2,trainerid,range,str,event)
     end
 end
 

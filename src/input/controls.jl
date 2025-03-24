@@ -49,7 +49,11 @@ function mapAction!(game::GameState)
     b, npcstr = findNPC(game,game.ctrl.mchunk,game.ctrl.mpos,game.ctrl.fg)
 
     if b
-        stateSetDialogue!(game,npcstr)
+        if npc.event != Symbol() && evalFlagSet(game,events[npc.event])
+            setupEvent!(game,npc.event)
+        else
+            stateSetDialogue!(game,npcstr)
+        end
 
         return
     end

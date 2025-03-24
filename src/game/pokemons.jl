@@ -251,6 +251,14 @@ function addPokemon!(game::GameState,pkmn::Pkmn)
 
         push!(game.p.boxes[b],pkmn)
     end
+
+    return
+end
+
+function removePokemon!(game::GameState,)
+    
+
+    return
 end
 
 

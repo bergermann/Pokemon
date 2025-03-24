@@ -35,7 +35,17 @@ setflag flagnumber type value
 setcounter counternumber value
 
 gainitem id amount
+removeitem id amount
 gainpkmn id level
+removepkmn id
+
+
+
+
+
+
+
+
 
 startbattle id
 
@@ -43,12 +53,8 @@ startbattle id
 
 
 
-
-
-
-
-
-
-
-
 0 endevent
+# addcounter
+# flipflag
+# startevent
+# mcturn relative

@@ -14,16 +14,30 @@ end
 
 
 const E0 = Event()
-const events = Base.ImmutableDict(
+events = Base.Dict{Symbol,Tuple{FlagSet,Union{Callback,EventQueue}}}(
     :healcenter => (FlagSet(; flags=[(0xc8,false,1)]),
         F(eventHealCenter!)),
 )
 
-function setupEvent!(game::GameState,name::String)
+function loadEvent!(game::GameState,name::Symbol)
+    eq = deserialize(joinpath("events","$name.eq"))
+    events[name] = (eq.flags,eq)
+
+    return
+end
+
+function unloadEvent!(game::GameState,name::Symbol)
+    if events[name][2] isa EventQueue; pop!(events,name); end
+
+    return
+end
+
+function setupEvent!(game::GameState,name::Symbol)#name::String)
     game.events.active = true
     game.events.c = 0
     game.events.idx = 1
-    game.events.queue = deserialize(joinpath("events","$name.eq"))
+    # game.events.queue = deserialize(joinpath("events","$name.eq"))
+    game.events.queue = events[name]
 
     return
 end
@@ -167,11 +181,23 @@ function playEvent!(game::GameState)
         id = game.events.queue.npcs[e[3]]
         idx = findfirst(x->x.id==id,game.m.npcs)
         npc = game.m.npcs[idx]
-        npc.dir = e[4]
-        createCC!(game,Symbol("move",id),walkNPC!,(Ref(NPC),e[5]))
+        npc.dir = e[4]; npc.c2 = 1; reverseSpriteW!(game,npc.sprite,npc.dir==4)
+        @. npc.mpos = npc.pos1+dirs[npc.dir]
+        @. npc.mchunk = modc(npc.mpos)+(game.im.c.renderdistance+1)+game.ctrl.chunk-npc.chunk
+        @. npc.mpos = (npc.mpos+15)%16+1 
+        cid = Symbol("move",id)
+        createCC!(game,cid,walkNPC!,(Ref(npc),e[5],cid))
     elseif c == 14  # npc turn
+        id = game.events.queue.npcs[e[3]]
+        idx = findfirst(x->x.id==id,game.m.npcs)
+        npc = game.m.npcs[idx]
+        npc.dir = e[4]
+        npc.dir = e[4]; reverseSpriteW!(game,npc.sprite,npc.dir==4)
+        setSpriteFrame!(game,npc.sprite,1+3*(npc.dir-1-2*(npc.dir==4)))
     elseif c == 15  # npc emote
-        npc = game.im.c
+        id = game.events.queue.npcs[e[3]]
+        idx = findfirst(x->x.id==id,game.m.npcs)
+        npc = game.m.npcs[idx]
     elseif c == 20  # sprite add
         sheet = game.events.queue.sheets[e[3]]
         id = game.events.queue.sprites[e[4]]
@@ -213,12 +239,16 @@ function playEvent!(game::GameState)
         getfield(game.flags,e[4])[e[3]] = Bool(e[5])
     elseif c == 35  # setcounter
         game.flags.counters[e[3]] = UInt32(e[4])
-    elseif c == 37
+    elseif c == 37  # gainitem
         addItem!(game,e[3],e[4])
-    elseif c == 38
+    elseif c == 38  # removeitem
+        removeItem!(game,e[3],e[4])
+    elseif c == 39  # addpokemon
         pkmn = generatePkmn(game,UInt16(e[3]),UInt8(e[4]))
         addPokemon!(game,pkmn)
-    elseif c == 40  # startbattle
+    elseif c == 40  # removepkmn
+        removePokemon!(game,)
+    elseif c == 50  # startbattle
         startBattle!(game,command[3])
     end
 
@@ -229,6 +259,32 @@ function resetEvent!(game::GameState)
     game.events.active = false
     game.events.c = 0
     game.events.idx = 0
+
+    return
+end
+
+
+function walkNPC!(game::GameState,(npc,len,cid)::Tuple{Ref{NPC},Int,Symbol})
+    npc = npc[]
+    dir = npc.dir
+
+    if game.ctrl.movec%16 == 1
+        setSpriteFrame!(game,npc.sprite,1+3*(npc.dir-1-2*(npc.dir==4))+1+sum(npc.pos1)%2)
+        @. npc.pos2 = npc.mpos
+    elseif game.ctrl.movec%16 == 9
+        game.ctrl.pos1 += dirs[dir]
+        @. npc.pos1 = npc.mpos; 
+        setSpriteFrame!(game,npc.sprite,1+3*(npc.dir-1-2*(npc.dir==4)))
+    elseif game.ctrl.movec >> 4 == game.ctrl.movel
+        npc.c2 = -1
+        killCC!(game,cid)
+
+        # checkChunks!(game,npc)
+
+        return
+    end
+
+    moveSprite!(game,npc.sprite,dirs[npc.dir][2],dirs[npc.dir][1])
 
     return
 end

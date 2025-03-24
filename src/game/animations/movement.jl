@@ -41,7 +41,7 @@ function moveWalk!(game::GameState)
 
     if game.ctrl.movec%16 == 1
         setSpriteFrame!(game,:mc,1+3*(dir-1-2*(dir == 4))+1+sum(game.ctrl.pos1)%2)
-        game.ctrl.pos2 .= game.ctrl.pos1+dirs[dir]
+        @. game.ctrl.pos2 = game.ctrl.pos1+dirs[dir]
     elseif game.ctrl.movec%16 == 9
         game.ctrl.pos1 += dirs[dir]
         setSpriteFrame!(game,:mc,1+3*(dir-1-2*(dir == 4)))
@@ -82,7 +82,7 @@ function moveRun!(game::GameState)
 
     if game.ctrl.movec%8 == 1
         setSpriteFrame!(game,:mc,1+3*(dir-1-2*(dir == 4))+1+sum(game.ctrl.pos1)%2)
-        game.ctrl.pos2 = game.ctrl.pos1+dirs[dir]
+        @. game.ctrl.pos2 = game.ctrl.pos1+dirs[dir]
     elseif game.ctrl.movec%8 == 5
         game.ctrl.pos1 += dirs[dir]
         setSpriteFrame!(game,:mc,1+3*(dir-1-2*(dir == 4)))

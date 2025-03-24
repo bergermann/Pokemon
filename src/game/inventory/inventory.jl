@@ -92,7 +92,7 @@ function addItem!(game::GameState,id::Int,amount::Int)
     return
 end
 
-function removeItem!(game::GameState,)
+function removeItem!(game::GameState,id::Int,amount::Int)
     
     return
 end

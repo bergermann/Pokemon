@@ -15,7 +15,7 @@ setbranch 0
 #BRANCH 0
 dialogue "Test1\Test2\Test3\Test4"
 
-npcadd eventtest1 1 0 0 1 1 down
+npcadd eventtest1 1 0 0 1 5 down
 npcwalk eventtest1 down 2
 npcwalk eventtest1 right 1
 npcwalk eventtest1 up 2
@@ -35,8 +35,10 @@ mcturn left
 delay 30
 mcturn up
 delay 30
-mcturn up
+mcturn down
 mcemote jump
+delay 30
+mcturn right
 
 dialogue "Hier, 5 Hyperbälle."
 gainitem 3 5

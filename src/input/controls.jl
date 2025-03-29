@@ -2,11 +2,11 @@
 function findNPC(game::GameState,chunk::Pos,pos::Position,fg::Bool)
     for npc in game.m.chunkdata[game.m.idxs[chunk]].npcs
         if npc[].fg==fg && isequal(npc[].pos1,pos)
-            return true,npc[].str
+            return true,npc[]
         end
     end
 
-    return false,[""]
+    return false,Ref{NPC}()
 end
 
 function findSign(game::GameState,chunk::Pos,pos::Position,fg::Bool)
@@ -46,13 +46,13 @@ function mapAction!(game::GameState)
     @. game.ctrl.mchunk = modc(game.ctrl.mpos)+(game.im.c.renderdistance+1)
     @. game.ctrl.mpos = (game.ctrl.mpos+15)%16+1
 
-    b, npcstr = findNPC(game,game.ctrl.mchunk,game.ctrl.mpos,game.ctrl.fg)
+    b, npc = findNPC(game,game.ctrl.mchunk,game.ctrl.mpos,game.ctrl.fg)
 
     if b
-        if npc.event != Symbol() && evalFlagSet(game,events[npc.event])
-            setupEvent!(game,npc.event)
+        if npc[].event != Symbol() && evalFlagSet(game,events[npc[].event])
+            setupEvent!(game,npc[].event)
         else
-            stateSetDialogue!(game,npcstr)
+            stateSetDialogue!(game,npc[].str)
         end
 
         return

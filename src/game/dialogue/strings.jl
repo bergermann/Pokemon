@@ -1,11 +1,17 @@
 
 
 
+# function loadStrings!(game::GameState,path::String; reset::Bool=false)
+#     reset && empty!(game.str)
 
+#     push!(game.str,readlines(joinpath("str/ger",path)))
+
+#     return
+# end
 
 
 function loadStringsTeam!(game::GameState; reset::Bool=true)
-    reset && (game.str = [])
+    reset && empty!(game.str)
     
     push!(game.str,readlines("str/ger/system_pkmn.txt"))
 
@@ -13,7 +19,7 @@ function loadStringsTeam!(game::GameState; reset::Bool=true)
 end
 
 function loadStringsInventory!(game::GameState; reset::Bool=true)
-    reset && (game.str = [])
+    reset && empty!(game.str)
     
     push!(game.str,readlines("str/ger/system_bag.txt"))
     push!(game.str,readlines("str/ger/item_names.txt"))

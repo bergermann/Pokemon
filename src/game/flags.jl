@@ -2,11 +2,11 @@
 function evalFlagSet(game::GameState,flags::FlagSet)::Bool
     if isempty(flags); return true; end
 
-    N1, N2, N3, N4, N5 = size(f)
+    N1, N2, N3, N4, N5 = size(flags)
 
     f = true
     for i in 1:N1
-        f &= getfield(game.flags,flags.flagtypes)[flags.flags[i]] == flags.flagvals[i]
+        f &= getfield(game.flags,flags.flagtypes[i])[flags.flags[i]] == flags.flagvals[i]
     end
 
     c = true
@@ -24,16 +24,17 @@ function evalFlagSet(game::GameState,flags::FlagSet)::Bool
 
     caught = true
     for i in 1:N4
-        seen &= game.p.dex[flags.hascaught[i],2]
+        caught &= game.p.dex[flags.hascaught[i],2]
     end
 
     t = true
     for i in 1:N5
+        t_ = false
         for j in eachindex(game.p.pokemon)
-            if game.p.pokemon[j].id == inteam[i]; continue; end
+            if game.p.pokemon[j].id == flags.inteam[i]; t_ = true; break; end
         end
 
-        t = false
+        t &= t_
     end
 
     return *(f,c,seen,caught,t)

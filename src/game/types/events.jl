@@ -43,13 +43,14 @@ mutable struct Events
     active::Bool
     c::Int
     idx::Int
+    branch::Int
     queue::EventQueue
 
     function Events()
-        new(false,0,1,EventQueue())
+        new(false,0,1,0,EventQueue())
     end
 
-    function Events(active,c,idx,queue)
-        new(active,c,idx,queue)
+    function Events(active,c,idx,branch,queue)
+        new(active,c,idx,branch,queue)
     end
 end

@@ -11,7 +11,7 @@ commands = Dict{String,Int}(
     "mcemote"       => 7,
 
     "npcadd"        => 10,
-    "npcadd"        => 11,
+    # "npcadd"        => 11,
     "npcdel"        => 12,
     "npcwalk"       => 13,
     "npcturn"       => 14,
@@ -67,6 +67,7 @@ function readEvent(file::String)
 
     f = open(joinpath("events","scripts",file)); lines = readlines(f); close(f)
     name = file[1:end-4]
+    print("reading event $name... ")
 
     strf = open(joinpath("str","ger","events",file),"w+")
 
@@ -84,12 +85,12 @@ function readEvent(file::String)
         c = l[1]
 
         if c == "flag"
-            flag = (parse(Int,l[2]),flagtypes[l[3]],Int(parse(Bool,l[4])))
+            flag = (parse(Int,l[2]),Int(parse(Bool,l[4])),flagtypes[l[3]])
             push!(flags,flag); continue
         elseif c == "counter"
             push!(counters,parse.(Int,(l[2],l[3],l[4]))); continue
         elseif c == "hasdex"
-            if l == "seen"
+            if l[3] == "seen"
                 push!(seen,parse(Int,l[2])); continue
             else
                 push!(caught,parse(Int,l[2])); continue
@@ -130,7 +131,7 @@ function readEvent(file::String)
                 command[4:6] .= parse.(Int,l[3:end-1])
                 command[7] = dirnames[l[end]]
             else
-                command[4:8] .= parse.(Int,l[3:end-1]); command[10] = 1
+                command[4:8] .= parse.(Int,l[3:end-1]); command[2] += 1
                 command[9] = dirnames[l[end]]
             end
         elseif c == "npcdel"
@@ -222,6 +223,8 @@ function readEvent(file::String)
     event = Pokemon.EventQueue(sheets,npcs,sprites,F,queue)
 
     serialize(joinpath("events",name*".eq"),event)
+
+    println("done")
 
     return
 end

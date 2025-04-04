@@ -22,7 +22,7 @@ function setupGame(windowscale::Int=4,renderdistance::Int=2,maxtextures::Int=64;
         0,
         PlayerData("Void",2),
         Im(windowscale,renderdistance,maxtextures),
-        Controls(11,13,1,2,2,false,4),
+        Controls(10,8,1,1,4,false,1),
         MapData(renderdistance),
         [],
         PkmnData(),

@@ -2,7 +2,7 @@
 
 function stateSetDialogue!(game::GameState,str::AbstractString,callback::Callback)
     if !game.battle.active
-        game.im.b.backgrounds[:textbox].active = true
+        activateBackground!(game,:textbox)
         game.ctrl.input.npclock = true
         game.ctrl.input.map = false
         game.ctrl.input.move = false
@@ -15,14 +15,14 @@ function stateSetDialogue!(game::GameState,str::AbstractString,callback::Callbac
     game.ctrl.dialogue.callback = callback
 
     setText!(game,:dialogue,game.ctrl.dialogue.str[1])
-    game.im.text.texts[:dialogue].active = true
+    activateText!(game,:dialogue)
 
     return
 end
 
 function stateSetDialogue!(game::GameState,str::Vector{<:AbstractString},callback::Callback)
     if !game.battle.active
-        game.im.b.backgrounds[:textbox].active = true
+        activateBackground!(game,:textbox)
         game.ctrl.input.npclock = true
         game.ctrl.input.map = false
         game.ctrl.input.move = false
@@ -35,7 +35,7 @@ function stateSetDialogue!(game::GameState,str::Vector{<:AbstractString},callbac
     game.ctrl.dialogue.callback = callback
 
     setText!(game,:dialogue,game.ctrl.dialogue.str[1])
-    game.im.text.texts[:dialogue].active = true
+    activateText!(game,:dialogue)
 
     return
 end
@@ -48,14 +48,14 @@ stateSetDialogue!(game::GameState,str) = stateSetDialogue!(game,str,F0)
 function stateAdvanceDialogue!(game::GameState)
     if game.ctrl.dialogue.n == game.ctrl.dialogue.l
         if !game.battle.active
-            game.im.b.backgrounds[:textbox].active = false
+            deactivateBackground!(game,:textbox)
             game.ctrl.input.npclock = false
             game.ctrl.input.map = true
             game.ctrl.input.move = true
         end
 
         game.ctrl.input.dialogue = false
-        game.im.text.texts[:dialogue].active = false
+        deactivateText!(game,:dialogue)
 
         evalCallback(game,game.ctrl.dialogue.callback)
     else

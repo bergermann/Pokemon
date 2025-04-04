@@ -2,7 +2,7 @@
 function findNPC(game::GameState,chunk::Pos,pos::Position,fg::Bool)
     for npc in game.m.chunkdata[game.m.idxs[chunk]].npcs
         if npc[].fg==fg && isequal(npc[].pos1,pos)
-            return true,npc[]
+            return true,npc
         end
     end
 
@@ -49,7 +49,7 @@ function mapAction!(game::GameState)
     b, npc = findNPC(game,game.ctrl.mchunk,game.ctrl.mpos,game.ctrl.fg)
 
     if b
-        if npc[].event != Symbol() && evalFlagSet(game,events[npc[].event])
+        if npc[].event != Symbol() && evalFlagSet(game,events[npc[].event][1])
             setupEvent!(game,npc[].event)
         else
             stateSetDialogue!(game,npc[].str)

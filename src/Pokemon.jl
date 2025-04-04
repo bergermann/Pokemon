@@ -50,6 +50,7 @@ function main()
 
     game.p.dex[1:5,2] .= true
     game.p.dex[1:15,1] .= true
+    game.p.dex[19,1] = true
 
     render(game)
     

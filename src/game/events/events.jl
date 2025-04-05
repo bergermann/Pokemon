@@ -189,6 +189,7 @@ function playEvent!(game::GameState)
         rd = Int(game.im.c.renderdistance)+1
 
         id = game.events.queue.npcs[e[3]]
+        println("deleting npc ",id)
 
         idx = findfirst(x->x.sprite==id,game.m.npcs.data[1:game.m.npcs.idx])
         npc = game.m.npcs[idx]
@@ -199,8 +200,8 @@ function playEvent!(game::GameState)
         dx = npc.chunk.x-game.ctrl.chunk.x; dy = npc.chunk.y-game.ctrl.chunk.y
         target = game.m.idxs[dy+rd,dx+rd]
         println(id)
-        display([npc[].spriteid for npc in game.m.chunkdata[target].npcs])
-        idx = findfirst(x->x[].spriteid==id,game.m.chunkdata[target].npcs)
+        display([npc[].sprite for npc in game.m.chunkdata[target].npcs])
+        idx = findfirst(x->x[].sprite==id,game.m.chunkdata[target].npcs)
         popat!(game.m.chunkdata[target].npcs,idx)
     elseif c == 13  # npc walk
         id = game.events.queue.npcs[e[3]]

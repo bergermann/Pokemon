@@ -15,7 +15,7 @@ function stateInitMap!(game::GameState)
     loadStringsMap!(game; reset=true)
 
     loadArrayTexture!(game,"tilesets",tilesets,:tiles,16,16)
-    loadSpriteSheets!(game,:mc1,:npcs_all,:objects,:healballs)
+    loadSpriteSheets!(game,:mc1,:npcs_all,:objects)
 
     loadChunksAll!(game)
     

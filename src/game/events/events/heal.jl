@@ -15,7 +15,7 @@ function eventHealCenter!(game::GameState,args::Tuple{})
     createCC!(game,:heal,animHealCenter!,(l,))
     
     for i in 0:l-1
-        createSprite!(game,mplabels[i+1].b,:healballs,1,1,-27+6*(i%2),-44+4*(div(i,2)),10,5)
+        createSprite!(game,mplabels[i+1].b,:objects,28,1,-22+6*(i%2),-40+4*(div(i,2)),10,5)
     end
 
     stateSetDialogue!(game,game.str[2][2:3],
@@ -35,12 +35,12 @@ function animHealCenter!(game::GameState,(l,)::Tuple{Int})
     elseif 90+l*30 <= game.n[:heal].c < 90+l*30+96
         if (game.n[:heal].c-(90+l*30))%8 == 0
             f = div(game.n[:heal].c-(90+l*30),8)%4
-            for i in 1:l; setSpriteFrame!(game,mplabels[i].b,f+2); end
+            for i in 1:l; setSpriteFrame!(game,mplabels[i].b,f+1); end
         end
     elseif game.n[:heal].c == 90+l*30+96
         for i in 1:l; setSpriteFrame!(game,mplabels[i].b,1); end
     elseif game.n[:heal].c == 90+l*30+96+30
-        killSprites!(game,:healballs)
+        for i in 1:l; killSprite!(game,mplabels[i].b); end
     elseif game.n[:heal].c == 90+l*30+96+60
         setSpriteFrame!(game,:npc420581889,7)
         reverseSpriteW!(game,:npc420581889,false)

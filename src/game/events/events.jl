@@ -14,9 +14,8 @@ end
 
 
 const E0 = Event()
-events = Base.Dict{Symbol,Tuple{FlagSet,Union{Callback,EventQueue}}}(
-    :healcenter => (FlagSet(; flags=[(0xc8,false,1)]),
-        F(eventHealCenter!)),
+    events = Base.Dict{Symbol,Tuple{FlagSet,Union{Callback,EventQueue}}}(
+        :healcenter => (FlagSet(; flags=[(0xc8,false,1)]),F(eventHealCenter!)),
 )
 
 function loadEvent!(game::GameState,name::Symbol)
@@ -41,6 +40,24 @@ function setupEvent!(game::GameState,name::Symbol)
     game.events.queue = events[name][2]
     loadStrings!(game,"events/$name")
 
+    lockInput!(game)
+
+    return
+end
+
+function resetEvent!(game::GameState)
+    println("ending event")
+    game.events.active = false
+    # game.events.c = 0
+    # game.events.idx = 1
+    # game.events.branch = 0
+
+    game.ctrl.input.npclock = false
+    game.ctrl.input.map = true
+    game.ctrl.input.move = true
+
+    unlockInput!(game)
+
     return
 end
 
@@ -50,10 +67,7 @@ function playEventQueue!(game::GameState)
         game.events.idx += 1
     end
 
-    if game.events.c > 0
-        # println("event delay: ",game.events.c)
-        game.events.c -= 1
-    end
+    if game.events.c > 0; game.events.c -= 1; end
 
     return
 end
@@ -69,23 +83,23 @@ function playEvent!(game::GameState)
 
     if game.events.branch != e[1]; return; end
 
-    if c == 0
+    if c == 0       # end event
         resetEvent!(game)
-    elseif c == 1
+    elseif c == 1   # set branch
         println("setting branch to ",e[3])
         game.events.branch = e[3]
-    elseif c == 2
+    elseif c == 2   # dialogue
         str = game.str[end][e[3]]
-        stateSetDialogue!(game,str,F((game,args)->game.events.active=true))
-        game.events.active = false
-    elseif c == 3
+        stateSetDialogue!(game,str,F((game,args)->(game.events.active=true; lockInput!(game))))
+        game.events.active = false; unlockInput!(game)
+    elseif c == 3   # choice
         str = game.str[end][e[4]]
         stateSetDialogue!(game,str); game.ctrl.input.dialogue = false
         setChoice!(game,false,e[3],F(eventChoice!))
         strc = game.str[end][e[4]+1:e[4]+e[5]]
         w = maximum(length.(strc)); h = length(strc)
         drawChoiceMenu!(game,6,strc,w,120-8*(w+2),32-16*(h+1))
-        game.events.active = false
+        game.events.active = false; unlockInput!(game)
     elseif c == 5   # mcwalk
         game.ctrl.dir = e[3]
         setMovement!(game,1,e[4])
@@ -94,7 +108,13 @@ function playEvent!(game::GameState)
         game.ctrl.dir = e[3]
         setSpriteFrame!(game,:mc,1+3*(e[3]-1-2*(e[3] == 4)))
     elseif c == 7   # mcemote
-        game.events.c = 32
+        println("emoting mc")
+        if e[3] < 3
+            createSprite!(game,:mcemote,:objects,26,e[3],0,0,0,6; active=true)
+            createCC!(game,:mcemote,emote!,(:mc,:mcemote,16); active=true)
+        else
+
+        end
     elseif c == 10  # npcadd 1
         id = game.events.queue.npcs[e[3]]
         push!(game.m.npcids,id)
@@ -177,7 +197,7 @@ function playEvent!(game::GameState)
             0,
             0,
 
-            String[],
+            String["Ich bin ein Event NPC. (fix this)"],
             Symbol(),
         )
 
@@ -189,7 +209,6 @@ function playEvent!(game::GameState)
         rd = Int(game.im.c.renderdistance)+1
 
         id = game.events.queue.npcs[e[3]]
-        println("deleting npc ",id)
 
         idx = findfirst(x->x.sprite==id,game.m.npcs.data[1:game.m.npcs.idx])
         npc = game.m.npcs[idx]
@@ -199,8 +218,6 @@ function playEvent!(game::GameState)
 
         dx = npc.chunk.x-game.ctrl.chunk.x; dy = npc.chunk.y-game.ctrl.chunk.y
         target = game.m.idxs[dy+rd,dx+rd]
-        println(id)
-        display([npc[].sprite for npc in game.m.chunkdata[target].npcs])
         idx = findfirst(x->x[].sprite==id,game.m.chunkdata[target].npcs)
         popat!(game.m.chunkdata[target].npcs,idx)
     elseif c == 13  # npc walk
@@ -213,7 +230,7 @@ function playEvent!(game::GameState)
         @. npc.mchunk = modc(npc.mpos)+(game.im.c.renderdistance+1)+game.ctrl.chunk-npc.chunk
         @. npc.mpos = (npc.mpos+15)%16+1 
         cid = Symbol("move",id)
-        createCC!(game,cid,walkNPC!,(Ref(npc),e[5],cid); active=true,n=1)
+        createCallback!(game,cid,walkNPC!,(Ref(npc),e[5],cid); active=true)
         
         game.events.c = 16*e[5]
     elseif c == 14  # npc turn
@@ -227,6 +244,14 @@ function playEvent!(game::GameState)
         id = game.events.queue.npcs[e[3]]
         idx = findfirst(x->x.sprite==id,game.m.npcs.data[1:game.m.npcs.idx])
         npc = game.m.npcs[idx]
+        println("emoting npc ",npc.sprite)
+        if e[4] < 3
+            sid = Symbol(npc.id,:emote)
+            createSprite!(game,sid,:objects,26,e[4],0,0,0,6; active=true)
+            createCC!(game,sid,emote!,(npc.sprite,sid,16); active=true)
+        else
+
+        end
     elseif c == 20  # sprite add
         sheet = game.events.queue.sheets[e[3]]
         id = game.events.queue.sprites[e[4]]
@@ -284,19 +309,20 @@ function playEvent!(game::GameState)
     return
 end
 
-function resetEvent!(game::GameState)
-    game.events.active = false
-    # game.events.c = 0
-    # game.events.idx = 1
-    # game.events.branch = 0
+function eventChoice!(game::GameState,args::Tuple{})
+    println("setting branch to ",game.ctrl.input.choice.sel)
+    game.events.branch = game.ctrl.input.choice.sel
+    game.events.active = true
+    
+    deactivateBackground!(game,:textbox)
+    deactivateText!(game,:dialogue)
+    
+    resetChoice!(game)
 
-    game.ctrl.input.npclock = false
-    game.ctrl.input.map = true
-    game.ctrl.input.move = true
+    lockInput!(game)
 
     return
 end
-
 
 function walkNPC!(game::GameState,(npc,len,cid)::Tuple{Ref{NPC},Int,Symbol})
     npc = npc[]
@@ -311,7 +337,7 @@ function walkNPC!(game::GameState,(npc,len,cid)::Tuple{Ref{NPC},Int,Symbol})
         setSpriteFrame!(game,npc.sprite,1+3*(npc.dir-1-2*(npc.dir==4)))
     elseif npc.c2 >> 4 == len
         npc.c2 = -1
-        killCC!(game,cid)
+        killCallback!(game,cid)
 
         # checkChunks!(game,npc)
 
@@ -324,15 +350,20 @@ function walkNPC!(game::GameState,(npc,len,cid)::Tuple{Ref{NPC},Int,Symbol})
     return
 end
 
-function eventChoice!(game::GameState,args::Tuple{})
-    println("setting branch to ",game.ctrl.input.choice.sel)
-    game.events.branch = game.ctrl.input.choice.sel
-    game.events.active = true
-    
-    deactivateBackground!(game,:textbox)
-    deactivateText!(game,:dialogue)
-    
-    resetChoice!(game)
+function emote!(game::GameState,(sprite,sid,offset)::Tuple{Symbol,Symbol,Int})
+    w, h = getSpritePos(game,sprite)
+    moveSprite!(game,sid,Int(w),h-offset,true)
+
+    if game.n[sid].c <= 32
+        moveSpriteH!(game,sid,-30+((game.n[sid].c-16)^2)>>3)
+    elseif game.n[sid].c == 48
+        killSprite!(game,sid)
+        killCC!(game,sid)
+
+        return
+    end
+
+    game.n[sid].c += 1
 
     return
 end

@@ -71,6 +71,9 @@ function stateOpenMap!(game::GameState)
             10,3; active=true)
     end
 
+    createText!(game,:dialogue,2,-106,40,6,"",
+        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; maxchar=128,active=false)
+
     return
 end
 

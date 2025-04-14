@@ -106,24 +106,46 @@ function playEvent!(game::GameState)
         game.events.c = 16*e[4]
     elseif c == 6   # mcturn
         game.ctrl.dir = e[3]
-        setSpriteFrame!(game,:mc,1+3*(e[3]-1-2*(e[3] == 4)))
+        setSpriteFrame!(game,:mc,1+3*(e[3]-1-2*(e[3]==4)))
+        reverseSpriteW!(game,:mc,e[3]==4)
     elseif c == 7   # mcemote
-        println("emoting mc")
         if e[3] < 3
-            createSprite!(game,:mcemote,:objects,26,e[3],0,0,0,6; active=true)
-            createCC!(game,:mcemote,emote!,(:mc,:mcemote,16); active=true)
+            sid = :mcemote1
+            createSprite!(game,sid,:objects,26,e[3],0,0,0,6; active=true)
+            createCC!(game,sid,emote!,(:mc,sid,14); active=true)
         else
-
+            sid = :mcemote3
+            h = getSpritePosH(game,:mc)
+            createSprite!(game,sid,:objects,25,1,0,h+9,0,2; active=true)
+            createCC!(game,sid,jump!,(:mc,sid); active=true)
         end
     elseif c == 10  # npcadd 1
-        id = game.events.queue.npcs[e[3]]
+        rd = Int(game.im.c.renderdistance)+1
+
+        px = game.ctrl.pos1.x - e[5]
+        py = game.ctrl.pos1.y - e[6]
+
+        dcx = div(px-1,16)
+        dcy = div(py-1,16)
+
+        px = (px-1+16*rd)%16+1
+        py = (py-1+16*rd)%16+1
+        
+        cy = game.ctrl.chunk.x+dcy
+        cx = game.ctrl.chunk.y+dcx
+        
+        target = game.m.idxs[dcy+rd,dcx+rd]
+        # target = game.m.idxs[3,3]
+        id = ID(cx,cy,length(game.m.chunkdata[target].npcs)+1)
         push!(game.m.npcids,id)
 
-        sid = Symbol(:npc,id)
-        spriteid = e[4]; dir = e[7]
-        x = e[5]-game.ctrl.pos1.x; y = e[6]-game.ctrl.pos1.y
-        cx = 0  # FIX
-        cy = 0  # FIX
+        sid = game.events.queue.npcs[e[3]]
+        spriteid = e[4]; dir = e[9]
+        # x = e[7]; y = e[8]
+        x = 9; y = 9
+        l = 1
+        println("adding npc $id at cx=",cx,", cy=",cy,", x=",x,", y=",y)
+        println("spriteid: ",sid)
 
         npc_ = NPC(
             id,
@@ -244,13 +266,16 @@ function playEvent!(game::GameState)
         id = game.events.queue.npcs[e[3]]
         idx = findfirst(x->x.sprite==id,game.m.npcs.data[1:game.m.npcs.idx])
         npc = game.m.npcs[idx]
-        println("emoting npc ",npc.sprite)
+        
         if e[4] < 3
-            sid = Symbol(npc.id,:emote)
+            sid = Symbol(npc.id,:emote,1)
             createSprite!(game,sid,:objects,26,e[4],0,0,0,6; active=true)
-            createCC!(game,sid,emote!,(npc.sprite,sid,16); active=true)
+            createCC!(game,sid,emote!,(npc.sprite,sid,14); active=true)
         else
-
+            h = getSpritePosH(game,npc.sprite)
+            sid = Symbol(npc.id,:emote,3)
+            createSprite!(game,sid,:objects,25,1,0,h+9,0,2; active=true)
+            createCC!(game,sid,jump!,(npc.sprite,sid); active=true)
         end
     elseif c == 20  # sprite add
         sheet = game.events.queue.sheets[e[3]]
@@ -354,9 +379,28 @@ function emote!(game::GameState,(sprite,sid,offset)::Tuple{Symbol,Symbol,Int})
     w, h = getSpritePos(game,sprite)
     moveSprite!(game,sid,Int(w),h-offset,true)
 
-    if game.n[sid].c <= 32
-        moveSpriteH!(game,sid,-30+((game.n[sid].c-16)^2)>>3)
-    elseif game.n[sid].c == 48
+    if game.n[sid].c <= 24
+        moveSpriteH!(game,sid,-18+((game.n[sid].c-12)^2)>>3)
+    elseif game.n[sid].c == 47
+        killSprite!(game,sid)
+        killCC!(game,sid)
+
+        return
+    end
+
+    game.n[sid].c += 1
+
+    return
+end
+
+function jump!(game::GameState,(sprite,sid)::Tuple{Symbol,Symbol})
+    w, h = getSpritePos(game,sprite)
+    moveSpriteW!(game,sid,Int(w),true)
+
+    if game.n[sid].c <= 19
+        println("i: ",game.n[sid].c,", moving $sprite by ",(game.n[sid].c-11)>>2)
+        moveSpriteH!(game,sprite,(game.n[sid].c-8)>>2)
+    else
         killSprite!(game,sid)
         killCC!(game,sid)
 

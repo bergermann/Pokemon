@@ -191,8 +191,8 @@ function playEvent!(game::GameState)
 
         sid = game.events.queue.npcs[e[3]]
         spriteid = e[4]; dir = e[9]
-        # x = e[7]; y = e[8]
-        x = 9; y = 9
+        x = e[7]; y = e[8]
+        
         l = 1
         println("adding npc $id at cx=",cx,", cy=",cy,", x=",x,", y=",y)
         println("spriteid: ",sid)

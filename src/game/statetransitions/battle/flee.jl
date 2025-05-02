@@ -2,8 +2,6 @@
 
 
 function stateBattleFlee!(game::GameState)
-    game.ctrl.input.battle.m1 = false
-
     switchFrame!(game,:choice)
     switchSprite!(game,:cursor1)
     switchText!(game,:choice1)

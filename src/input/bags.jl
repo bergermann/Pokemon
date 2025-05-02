@@ -1,12 +1,6 @@
 
 
 function inputInventory!(game::GameState,inputs::Inputs)
-    # if game.ctrl.input.menu.menubags.sub
-    #     inputBagsSub!(game,inputs)
-
-    #     return
-    # end
-
     if game.ctrl.input.choice.sel == -1
         game.ctrl.input.choice.sel = 0
 
@@ -16,7 +10,7 @@ function inputInventory!(game::GameState,inputs::Inputs)
     end
 
     if game.battle.active
-        inputBags!(game,inputs,game.ctrl.input.battle.bags)
+        inputBags!(game,inputs,game.ctrl.input.menu.battlebags)
     else
         inputBags!(game,inputs,game.ctrl.input.menu.menubags)
     end
@@ -31,18 +25,19 @@ function inputBags!(game::GameState,inputs::Inputs,m::MenuBags)
             game.ctrl.input.menu.bags = false
     
             createCC!(game,:scenet,sceneTransition!,(16,8,
-                F(stateMenuBagsClose!),F0); active=true,n=1)
+                F(stateBagsClose!),F0); active=true,n=1)
     
             return
         end
 
-        setChoice!(game,true,1,F(itemAction!))
+        setChoice!(game,true,1,F(itemAction!))    
+        drawChoiceMenu!(game,6,getInvChoiceStr(game,m),7,0,0)
     elseif inputs.B.press
         lockInput!(game)
         game.ctrl.input.menu.bags = false
 
         createCC!(game,:scenet,sceneTransition!,(16,8,
-            F(stateMenuBagsClose!),F0); active=true,n=1)
+            F(stateBagsClose!),F0); active=true,n=1)
         return
     elseif inputs.down.press
         if m.select[m.bag] == game.p.inventory[-m.bag]+1
@@ -90,7 +85,7 @@ function inputBags!(game::GameState,inputs::Inputs,m::MenuBags)
         end
         
         lockInput!(game)
-        game.callbacks[:bagswitch].active = true
+        activateCallback!(game,:bagswitch)
         game.callbacks[:bagswitch].args = (m,-1,)
     elseif inputs.right.press
         if m.bag == 5
@@ -100,7 +95,7 @@ function inputBags!(game::GameState,inputs::Inputs,m::MenuBags)
         end
 
         lockInput!(game)
-        game.callbacks[:bagswitch].active = true
+        activateCallback!(game,:bagswitch)
         game.callbacks[:bagswitch].args = (m,1,)
     end
 
@@ -120,47 +115,79 @@ function inputBags!(game::GameState,inputs::Inputs,m::MenuBags)
 end
 
 function itemAction!(game::GameState,m::MenuBags)
-    if game.ctrl.input.menu.menubags.bag == 1
+    if m.bag == 1
         itemActionItems!(game)
-    elseif game.ctrl.input.menu.menubags.bag == 2
+    elseif m.bag == 2
         itemActionBalls!(game)
-    elseif game.ctrl.input.menu.menubags.bag == 3
+    elseif m.bag == 3
         itemActionsMachines!(game)
-    elseif game.ctrl.input.menu.menubags.bag == 4
+    elseif m.bag == 4
         itemActionBerries!(game)
     else
         itemActionKeys!(game)
     end
+
+    return
 end
 
 function itemActionItems!(game::GameState)
-    if game.ctrl.input.choice.sel == 1
-        createCC!(game,:scenet,sceneTransition!,
-            (16,8,stateMenuPkmnSubOpen!,(),stateMenuPkmnSubCtrls!,()); active=true,n=1)
+    if game.battle.active   # battle bags
+        if game.ctrl.input.choice.sel == 1
+            createCC!(game,:scenet,sceneTransition!,
+                (16,8,stateMenuPkmnSubOpen!,(),stateMenuPkmnSubCtrls!,());
+                active=true,n=1)
 
-        lockInput!(game)
-        game.ctrl.input.menu.menubags.submode = 1
-    elseif game.ctrl.input.choice.sel == 2
-        createCC!(game,:scenet,sceneTransition!,
-            (16,8,stateMenuPkmnSubOpen!,(),stateMenuPkmnSubCtrls!,()); active=true,n=1)
+            lockInput!(game)
+            game.ctrl.input.battlebags.submode = 1
+        end
+    elseif game.ctrl.input.menu.menupkmn.sub
+        
+    else    # standard bags
+        if game.ctrl.input.choice.sel == 1
+            createCC!(game,:scenet,sceneTransition!,
+                (16,8,stateMenuPkmnSubOpen!,(),stateMenuPkmnSubCtrls!,()); active=true,n=1)
 
-        lockInput!(game)
-        game.ctrl.input.menu.menubags.submode = 2
+            lockInput!(game)
+            game.ctrl.input.menu.menubags.submode = 1
+        elseif game.ctrl.input.choice.sel == 2
+            createCC!(game,:scenet,sceneTransition!,
+                (16,8,stateMenuPkmnSubOpen!,(),stateMenuPkmnSubCtrls!,()); active=true,n=1)
 
-        return
+            lockInput!(game)
+            game.ctrl.input.menu.menubags.submode = 2
+
+            return
+        end
     end
     
     resetChoice!(game)
+
+    return
 end
 
 function itemActionBalls!(game::GameState)
-    if game.ctrl.input.choice.sel == 1
-        return
-    elseif game.ctrl.input.choice.sel == 2
-        return
+    if game.battle.active   # battle bags
+        lockInput!(game)
+
+        if game.ctrl.input.choice.sel == 1
+            createCC!(game,:scenet,sceneTransition!,
+                (16,8,stateBattleBagsClose!,(),stateBattleItemSelected!,
+                (UInt(2),getItem(game,game.ctrl.input.battlebags)));
+                active=true,n=1)
+        end
+    elseif game.ctrl.input.menu.menupkmn.sub
+
+    else    # standard bags
+        if game.ctrl.input.choice.sel == 1
+            return
+        elseif game.ctrl.input.choice.sel == 2
+            return
+        end
     end
     
     resetChoice!(game)
+
+    return
 end
 
 function itemActionMachines!(game::GameState)

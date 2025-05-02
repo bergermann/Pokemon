@@ -214,7 +214,7 @@ function stateEndBattle!(game::GameState,args::Tuple)   #,state::BattleStateWild
     game.ctrl.input.battle.m2 = false
     game.ctrl.input.battle.s1 = 0
     game.ctrl.input.battle.s2 = 0
-    game.ctrl.input.battle.bag = false
+    game.ctrl.input.menu.bags = false
     game.ctrl.input.battle.pkmn = false
 
     empty!(game.battle.state.actionqueue)

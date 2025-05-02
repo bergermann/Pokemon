@@ -6,27 +6,11 @@ include("machines.jl")
 include("berries.jl")
 include("keys.jl")
 
-function getInvChoiceStr(game::GameState)
-    if !game.battle.active
-        if game.ctrl.input.menu.menubags.bag == 1
-            return game.str[1][[9,10,12]]
-        elseif game.ctrl.input.menu.menubags.bag == 2
-            return game.str[1][[10,13,12]]
-        elseif game.ctrl.input.menu.menubags.bag == 3
-            return game.str[1][[9,10,12]]
-        elseif game.ctrl.input.menu.menubags.bag == 4
-            return game.str[1][[9,10,12]]
-        else
-            return game.str[1][[9,11,12]]
-        end
-    else
-        m = game.ctrl.input.battlebags
-
+function getInvChoiceStr(game::GameState,m::MenuBags)
+    if game.battle.active
         if m.bag == 1
             t = getItem(game,m)
-            if isa(t,MedicineHealth) ||
-                    isa(t,MedicineAP)
-                
+            if isa(t,MedicineHealth) || isa(t,MedicineAP)
                 return game.str[1][[9,12]]
             else
                 return game.str[1][12]
@@ -40,7 +24,23 @@ function getInvChoiceStr(game::GameState)
         else
             return game.str[1][12]
         end
+    elseif game.ctrl.input.menu.menupkmn.sub
+
+    else
+        if m.bag == 1
+            return game.str[1][[9,10,12]]
+        elseif m.bag == 2
+            return game.str[1][[10,13,12]]
+        elseif m.bag == 3
+            return game.str[1][[9,10,12]]
+        elseif m.bag == 4
+            return game.str[1][[9,10,12]]
+        else
+            return game.str[1][[9,11,12]]
+        end
     end
+
+    return String[]
 end
 
 function getBag(id::Int)

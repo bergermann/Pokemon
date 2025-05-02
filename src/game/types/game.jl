@@ -83,13 +83,14 @@ mutable struct Battle
 
     state::BattleState
 
-    menu::MenuBattle
+    # menu::MenuBattle
 
     teamperm::Vector{Int}
 
     function Battle()
         # new(false,Dialogue(),BattleStateNone(),MenuBattle(),[])
-        new(false,BattleStateNone(),MenuBattle(),collect(1:6))
+        # new(false,BattleStateNone(),MenuBattle(),collect(1:6))
+        new(false,BattleStateNone(),collect(1:6))
     end
 end
 

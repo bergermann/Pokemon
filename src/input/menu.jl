@@ -45,8 +45,8 @@ function inputMenuSelector!(game::GameState)
             (16,8,F(stateMenuPkmnOpen!),F(stateMenuPkmnCtrls!)); active=true,n=1)
     elseif game.ctrl.input.menu.select == 0x02
         createCC!(game,:scenet,sceneTransition!,
-            (16,8,F(stateMenuBagsOpen!,(game.ctrl.input.menu.menubags,)),
-                F(stateMenuBagsCtrls!)); active=true,n=1)
+            (16,8,F(stateBagsOpen!,(game.ctrl.input.menu.menubags,)),
+                F(stateBagsCtrls!)); active=true,n=1)
     elseif game.ctrl.input.menu.select == 0x03
         game.ctrl.input.menu.pnav = true
     elseif game.ctrl.input.menu.select == 0x04

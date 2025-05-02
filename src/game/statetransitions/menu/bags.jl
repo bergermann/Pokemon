@@ -39,8 +39,11 @@ function getAmountsStr(game::GameState,m::MenuBags)
     end
 end
 
-function stateMenuBagsOpen!(game::GameState,(m,)::Tuple{MenuBags})
-    stateCloseMap!(game)
+function stateBagsOpen!(game::GameState,(m,)::Tuple{MenuBags})
+    if game.overworld; stateCloseMap!(game); end
+    if game.battle.active; stateCloseBattle!(game); end
+
+    game.ctrl.input.menu.bags = true
 
     correctBags!(game,m)
 
@@ -90,15 +93,16 @@ function stateMenuBagsOpen!(game::GameState,(m,)::Tuple{MenuBags})
     return
 end
 
-function stateMenuBagsCtrls!(game::GameState,args::Tuple{})
+function stateBagsCtrls!(game::GameState,args::Tuple{})
     unlockInput!(game)
     game.ctrl.input.menu.bags = true
 
     return
 end
 
-function stateMenuBagsClose!(game::GameState,args::Tuple{})
+function stateBagsClose!(game::GameState,args::Tuple{})
     lockInput!(game)
+    game.ctrl.input.menu.bags = false
 
     killCallback!(game,:arrows)
     killCC!(game,:bagswitch)
@@ -111,8 +115,12 @@ function stateMenuBagsClose!(game::GameState,args::Tuple{})
     
     killSpritesAll!(game)
 
-    stateOpenMap!(game)
-    stateMenuMainOpen!(game,())
+    if game.battle.active
+        stateOpenBattle!(game)
+    else
+        stateOpenMap!(game)
+        stateMenuMainOpen!(game,())
+    end
 
     return
 end

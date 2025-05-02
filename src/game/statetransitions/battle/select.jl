@@ -79,26 +79,6 @@ function stateBattlePkmnSelected!(game::GameState)
 end
 
 
-function stateBattleBagsOpen!(game::GameState,args::Tuple{})
-    stateCloseBattle!(game)
-    stateMenuBagsOpen!(game,(game.battle.menu.bags))
-
-    return
-end
-
-function stateBattleBagsCtrls!(game::GameState,args::Tuple{})
-    unlockInput!(game)
-    game.ctrl.input.battlebag = true
-
-    return
-end
-
-function stateBattleBagsClose!(game::GameState)
-    stateMenuBagsClose!(game,())
-    stateOpenBattle!(game)
-
-    return
-end
 
 
 

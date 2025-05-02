@@ -48,8 +48,6 @@ function inputBattle!(game::GameState,inputs::Inputs)
 
         moveSprite!(game,:cursor2,-107+64*(game.ctrl.input.battle.s2%2),
             49+15*div(game.ctrl.input.battle.s2,2),true)
-    elseif game.ctrl.input.battle.bag
-        inputBattleInventory!(game,input)
     end
 
     return
@@ -58,8 +56,9 @@ end
 
 
 function inputBattleMenuSelector!(game::GameState)
+    game.ctrl.input.battle.m1 = false
+
     if game.ctrl.input.battle.s1 == 0
-        game.ctrl.input.battle.m1 = false
         game.ctrl.input.battle.m2 = true
 
         switchBackground!(game,:t2)
@@ -70,14 +69,11 @@ function inputBattleMenuSelector!(game::GameState)
         for l in alabels; switchText!(game,l); end
     elseif game.ctrl.input.battle.s1 == 1
         lockInput!(game)
-        # game.ctrl.input.battle.m1 = false
-        game.ctrl.input.battle.bag = true
 
         createCC!(game,:scenet,sceneTransition!,
-            (16,8,F(stateBattleBagsOpen!),F(stateBattleBagsCtrls!)); active=true,n=1)
+            (16,8,F(stateBagsOpen!),F(stateBagsCtrls!)); active=true,n=1)
     elseif game.ctrl.input.battle.s1 == 2
         lockInput!(game)
-        # game.ctrl.input.battle.m1 = false
         game.ctrl.input.battle.pkmn = true
 
         createCC!(game,:scenet,sceneTransition!,

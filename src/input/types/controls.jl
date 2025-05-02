@@ -179,6 +179,7 @@ mutable struct Menu
     menupkmn::MenuPkmn
     bags::Bool
     menubags::MenuBags
+    battlebags::MenuBags
     pnav::Bool
     menupnav::MenuNav
     self::Bool
@@ -198,6 +199,7 @@ mutable struct Menu
             false,
             MenuPkmn(),
             false,
+            MenuBags(),
             MenuBags(),
             false,
             MenuNav(),
@@ -241,8 +243,6 @@ mutable struct InputState
     dialogue::Bool
 
     battle::MenuBattle
-
-    worldmap::Bool
 
     pause::Bool
 

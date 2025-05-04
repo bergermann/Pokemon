@@ -30,7 +30,7 @@ function inputBags!(game::GameState,inputs::Inputs,m::MenuBags)
             return
         end
 
-        setChoice!(game,true,1,F(itemAction!))    
+        setChoice!(game,true,1,F(itemAction!,(m,)))    
         drawChoiceMenu!(game,6,getInvChoiceStr(game,m),7,0,0)
     elseif inputs.B.press
         lockInput!(game)
@@ -114,7 +114,7 @@ function inputBags!(game::GameState,inputs::Inputs,m::MenuBags)
     return
 end
 
-function itemAction!(game::GameState,m::MenuBags)
+function itemAction!(game::GameState,(m,)::Tuple{MenuBags})
     if m.bag == 1
         itemActionItems!(game)
     elseif m.bag == 2
@@ -170,10 +170,10 @@ function itemActionBalls!(game::GameState)
         lockInput!(game)
 
         if game.ctrl.input.choice.sel == 1
+            stateBattleItemSelected!(game,UInt(2),getItem(game,game.ctrl.input.menu.battlebags))
+
             createCC!(game,:scenet,sceneTransition!,
-                (16,8,stateBattleBagsClose!,(),stateBattleItemSelected!,
-                (UInt(2),getItem(game,game.ctrl.input.battlebags)));
-                active=true,n=1)
+                (16,8,F(stateBattleBagsClose!),F(stateStartBattleAnim!)); active=true,n=1)
         end
     elseif game.ctrl.input.menu.menupkmn.sub
 

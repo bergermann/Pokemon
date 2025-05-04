@@ -117,6 +117,10 @@ function stateBagsClose!(game::GameState,args::Tuple{})
 
     if game.battle.active
         stateOpenBattle!(game)
+
+        if game.battle.state.pkmn1.command isa CommandChoose
+            stateInitBattleChoice!(game,())
+        end
     else
         stateOpenMap!(game)
         stateMenuMainOpen!(game,())

@@ -33,6 +33,7 @@ mutable struct CommandFlee <: BattleCommand
 end
 
 mutable struct CommandChoose <: BattleCommand end
+const CC0 = CommandChoose()
 
 
 
@@ -234,7 +235,7 @@ mutable struct PkmnBattle
             false,
             0,
             DoubleMoves(),  #dmoves
-            CommandChoose(),           #attackchoice
+            CC0,           #attackchoice
             Attack(),
             0
         )
@@ -261,7 +262,7 @@ mutable struct PkmnBattle
             false,
             0,
             DoubleMoves(),  #dmoves
-            CommandChoose(),           #attackchoice
+            CC0,           #attackchoice
             Attack(),
             0
         )

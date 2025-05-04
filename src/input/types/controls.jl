@@ -264,8 +264,6 @@ mutable struct InputState
             MenuBattle(),
 
             false,
-
-            false,
         )
     end
 end

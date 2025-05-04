@@ -10,17 +10,22 @@ end
 function stateEndBattlePhase!(game::GameState)
     stateBattleStage!(game,1)
 
-    unlockInput!(game)
-    game.ctrl.input.battle.m1 = true
+    game.battle.state.pkmn1.command = CC0
+    game.battle.state.pkmn2.command = CC0
+
+    # unlockInput!(game)
+    # game.ctrl.input.battle.m1 = true
     
-    activateSprite!(game,:cursor1)
-    activateFrame!(game,:choice)
+    # activateSprite!(game,:cursor1)
+    # activateFrame!(game,:choice)
 
-    activateText!(game,:choice1)
-    activateText!(game,:choice2)
+    # activateText!(game,:choice1)
+    # activateText!(game,:choice2)
 
-    activateCallback!(game,:wiggle)
-    deactivateCallback!(game,:animbattle)
+    # activateCallback!(game,:wiggle)
+    # deactivateCallback!(game,:animbattle)
+
+    stateInitBattleChoice!(game,())
 
     return
 end

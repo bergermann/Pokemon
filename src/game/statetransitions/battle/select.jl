@@ -1,5 +1,16 @@
 
 
+function stateStartBattleAnim!(game::GameState,args::Tuple{})
+    deactivateCallback!(game,:wiggle); resetWiggle!(game)
+
+    activateCallback!(game,:animbattle)
+    game.n[:animbattle].c = -1
+
+    queueSetupActions!(game,game.battle.state)
+
+    return
+end
+
 function stateBattleAttackSelected!(game::GameState)
     stateBattleStage!(game,10)
 
@@ -15,11 +26,7 @@ function stateBattleAttackSelected!(game::GameState)
     switchText!(game,:info1); switchText!(game,:info2)
     for l in alabels; switchText!(game,l); end
 
-    deactivateCallback!(game,:wiggle); resetWiggle!(game)
-    activateCallback!(game,:animbattle)
-    game.n[:animbattle].c = -1
-
-    queueSetupActions!(game,game.battle.state)
+    stateStartBattleAnim!(game,())
 
     return
 end
@@ -32,20 +39,6 @@ function stateBattleItemSelected!(game::GameState,target::UInt,item::ItemType)
     
     game.ctrl.input.battle1 = false
     game.ctrl.input.battle2 = false
-    # game.ctrl.input.battle1menu.select = 0
-
-    # deactivateBackground!(game,:t1); deactivateBackground!(game,:t2)
-    # switchFrame!(game,:attacks); switchFrame!(game,:info)
-    # deactivateSprite!(game,:cursor1)
-    # deactivateSprite!(game,:cursor2)
-    # switchText!(game,:info1); switchText!(game,:info2)
-    # for l in alabels; switchText!(game,l); end
-            
-    deactivateCallback!(game,:wiggle); resetWiggle!(game)
-    activateCallback!(game,:animbattle)
-    game.n[:animbattle].c = -1
-
-    queueSetupActions!(game,game.battle.state)
 
     return
 end
@@ -61,13 +54,6 @@ function stateBattlePkmnSelected!(game::GameState)
     game.ctrl.input.battle1 = false
     game.ctrl.input.battle2 = false
     game.ctrl.input.battle1menu.select = 0
-
-    # deactivateBackground!(game,:t1); deactivateBackground!(game,:t2)
-    # switchFrame!(game,:attacks); switchFrame!(game,:info)
-    # deactivateSprite!(game,:cursor1)
-    # deactivateSprite!(game,:cursor2)
-    # switchText!(game,:info1); switchText!(game,:info2)
-    # for l in alabels; switchText!(game,l); end
     
     deactivateCallback!(game,:wiggle); resetWiggle!(game)
     activateCallback!(game,:animbattle)

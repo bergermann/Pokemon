@@ -37,8 +37,8 @@ function stateBattleItemSelected!(game::GameState,target::UInt,item::ItemType)
     game.battle.state.pkmn1.command = CommandItem(target,item)
     game.battle.state.pkmn2.command = battleChoiceWild(game)
     
-    game.ctrl.input.battle1 = false
-    game.ctrl.input.battle2 = false
+    game.ctrl.input.battle.m1 = false
+    game.ctrl.input.battle.m2 = false
 
     return
 end
@@ -46,14 +46,13 @@ end
 function stateBattlePkmnSelected!(game::GameState)
     stateBattleStage!(game,10)
     
-    game.battle.state.pkmn1.command = 
-        CommandSwitch(Int(game.ctrl.input.menu.menupkmn.select))
+    game.battle.state.pkmn1.command = CommandSwitch(Int(game.ctrl.input.menu.menupkmn.select))
 
     game.battle.state.pkmn2.command = battleChoiceWild(game)
     
-    game.ctrl.input.battle1 = false
-    game.ctrl.input.battle2 = false
-    game.ctrl.input.battle1menu.select = 0
+    game.ctrl.input.battle.m1 = false
+    game.ctrl.input.battle.m2 = false
+    game.ctrl.input.battle.s1 = 0
     
     deactivateCallback!(game,:wiggle); resetWiggle!(game)
     activateCallback!(game,:animbattle)

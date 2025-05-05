@@ -173,7 +173,7 @@ function itemActionBalls!(game::GameState)
             stateBattleItemSelected!(game,UInt(2),getItem(game,game.ctrl.input.menu.battlebags))
 
             createCC!(game,:scenet,sceneTransition!,
-                (16,8,F(stateBattleBagsClose!),F(stateStartBattleAnim!)); active=true,n=1)
+                (16,8,F(stateBagsClose!),F(stateStartBattleAnim!)); active=true,n=1)
         end
     elseif game.ctrl.input.menu.menupkmn.sub
 
@@ -223,7 +223,7 @@ end
 
 
 function applyItem!(game::GameState)
-    item = getItem(getInvSlotID(game))
+    item = getItem(getSelectedItem(game,game.ctrl.input.menu.menubags))
     target = game.p.pokemon[game.ctrl.input.menu.menubags.subslot]
 
     applyItem!(target,item)

@@ -178,7 +178,7 @@ end
 
 function bthrowBall!(game::GameState,w::Int)
     createSprite!(game,:ball,:ballsb,game.battle.state[1].command.item.id,1,-106,-16,0,5;
-        active=false)
+        active=true)
 
     createCC!(game,:throwball,bthrowBall!,();
         active=true,n=1)
@@ -187,10 +187,12 @@ function bthrowBall!(game::GameState,w::Int)
 end
 
 function bthrowBall!(game::GameState,args::Tuple{})
+    println(getSpritePos(game,:ball))
+
     if game.n[:throwball].c <= 37+5
         moveSpriteW!(game,:ball,4)
         moveSpriteH!(game,:ball,
-            trunc(Int,(game.im.sprites[4][:ball].pos.w-(135+16))^2/300+(21+24)),true)
+            trunc(Int,(getSpritePosW(game,:ball)-(135+16))^2/300+(21+24)),true)
     elseif game.n[:throwball].c == 60
         setSpriteFrame!(game,:ball,2)
     elseif game.n[:throwball].c == 70
@@ -225,7 +227,7 @@ function bwiggleBall!(game::GameState,w::Int)
     return
 end
 
-function bwiggleBall!(game::GameState,dir::Int8)
+function bwiggleBall!(game::GameState,(dir,)::Tuple{Int8})
     if game.n[:wiggleball].c <= 15
         if game.n[:wiggleball].c%5 == 0
             moveSpriteW!(game,:ball,+dir)

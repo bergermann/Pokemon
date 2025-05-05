@@ -72,7 +72,7 @@ function getItem(id::Int)
 end
 
 function getItem(game::GameState,m::MenuBags)
-    return getItem(Int(getInvSlotID(game,m)))
+    return getItem(getSelectedItem(game,m))
 end
 
 function getSelectedItem(game::GameState,m::MenuBags)

@@ -163,7 +163,7 @@ function queueItem!(game::GameState,state::BattleState,
     
     push!(state.animqueue,BattleAnimation(
         id,30,game.p.name*game.str[1][31]*
-            game.str[2][getInvSlotID(game,game.ctrl.input.battlebags)]*game.str[1][33],
+            game.str[3][getSelectedItem(game,game.ctrl.input.battle.bags)]*game.str[1][33],
         banimEmpty!,0
     ))
 
@@ -181,7 +181,8 @@ function queueBall!(game::GameState,state::BattleState,target::PkmnBattle,
 
     push!(state.animqueue,BattleAnimation(
         id,160,game.p.name*game.str[1][31]*
-            game.str[2][getInvSlotID(game,game.ctrl.input.battlebags)]*game.p.name*game.str[1][33],
+            game.str[3][getSelectedItem(game,game.ctrl.input.battle.bags)]*
+                game.p.name*game.str[1][33],
         bthrowBall!,2
     ))
 

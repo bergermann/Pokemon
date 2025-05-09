@@ -177,7 +177,7 @@ function bxpAnimLevelUp!(game::GameState,(levelups,xpnext,xplevel)::Tuple{Int,In
 end
 
 function bthrowBall!(game::GameState,w::Int)
-    createSprite!(game,:ball,:ballsb,game.battle.state[1].command.item.id,1,-106,-16,0,5;
+    createSprite!(game,:ball,:ballsb,game.battle.state[1].command.item.id,1,-128,0,0,5;
         active=true)
 
     createCC!(game,:throwball,bthrowBall!,();
@@ -189,10 +189,9 @@ end
 function bthrowBall!(game::GameState,args::Tuple{})
     println(getSpritePos(game,:ball))
 
-    if game.n[:throwball].c <= 37+5
+    if game.n[:throwball].c <= 46
         moveSpriteW!(game,:ball,4)
-        moveSpriteH!(game,:ball,
-            trunc(Int,(getSpritePosW(game,:ball)-(135+16))^2/300+(21+24)),true)
+        moveSpriteH!(game,:ball,trunc(Int,(getSpritePosW(game,:ball)-32)^2/300-54),true)
     elseif game.n[:throwball].c == 60
         setSpriteFrame!(game,:ball,2)
     elseif game.n[:throwball].c == 70
@@ -230,11 +229,11 @@ end
 function bwiggleBall!(game::GameState,(dir,)::Tuple{Int8})
     if game.n[:wiggleball].c <= 15
         if game.n[:wiggleball].c%5 == 0
-            moveSpriteW!(game,:ball,+dir)
+            moveSpriteW!(game,:ball,Int(+dir))
         end
     elseif game.n[:wiggleball].c <= 30
         if game.n[:wiggleball].c%5 == 0
-            moveSpriteW!(game,:ball,-dir)
+            moveSpriteW!(game,:ball,Int(-dir))
         end
     elseif game.n[:wiggleball].c == 60
         killCC!(game,:wiggleball)

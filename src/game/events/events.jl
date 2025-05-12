@@ -95,7 +95,7 @@ function playEvent!(game::GameState)
     elseif c == 3   # choice
         str = game.str[end][e[4]]
         stateSetDialogue!(game,str); game.ctrl.input.dialogue = false
-        setChoice!(game,false,e[3],F(eventChoice!))
+        setChoice!(game,e[3],F(eventChoice!))
         strc = game.str[end][e[4]+1:e[4]+e[5]]
         w = maximum(length.(strc)); h = length(strc)
         drawChoiceMenu!(game,6,strc,w,120-8*(w+2),32-16*(h+1))
@@ -341,8 +341,6 @@ function eventChoice!(game::GameState,args::Tuple{})
     
     deactivateBackground!(game,:textbox)
     deactivateText!(game,:dialogue)
-    
-    resetChoice!(game)
 
     lockInput!(game)
 

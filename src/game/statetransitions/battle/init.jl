@@ -171,10 +171,14 @@ function stateInitBattleChoice!(game::GameState,args::Tuple{})
     unlockInput!(game)
     game.ctrl.input.battle.m1 = true
 
+    activateCallback!(game,:wiggle)
+
     activateFrame!(game,:choice)
     activateBackground!(game,:t1)
+    
     activateSprite!(game,:cursor1)
-    activateCallback!(game,:wiggle)
+    moveSprite!(game,:cursor1,12+56*(game.ctrl.input.battle.s1%2),
+        49+15*div(game.ctrl.input.battle.s1,2),true)
 
     activateText!(game,:choice1)
     activateText!(game,:choice2)

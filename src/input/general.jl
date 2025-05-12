@@ -62,20 +62,18 @@ end
 
 function inputChoice!(game::GameState,inputs::Inputs)
     if inputs.A.press
-        game.ctrl.input.choice.active = false
-
-        killSprite!(game,:ccursor)
-        deleteFrame!(game,:choice)
-        deleteText!(game,:choice)
-
         evalCallback(game,game.ctrl.input.choice.func)
+        resetChoice!(game)
     elseif inputs.B.press
-        if game.ctrl.input.choice.exit
+        if game.ctrl.input.choice.exit != 0
+            if game.ctrl.input.choice.exit > 0
+                game.ctrl.input.choice.sel = game.ctrl.input.choice.exit
+            else
+                game.ctrl.input.choice.sel = game.ctrl.input.choice.max
+            end
+            
+            evalCallback(game,game.ctrl.input.choice.func)
             resetChoice!(game)
-
-            killSprite!(game,:ccursor)
-            deleteFrame!(game,:choice)
-            deleteText!(game,:choice)
 
             return
         end

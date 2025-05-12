@@ -53,12 +53,6 @@ function stateBattlePkmnSelected!(game::GameState)
     game.ctrl.input.battle.m1 = false
     game.ctrl.input.battle.m2 = false
     game.ctrl.input.battle.s1 = 0
-    
-    deactivateCallback!(game,:wiggle); resetWiggle!(game)
-    activateCallback!(game,:animbattle)
-    game.n[:animbattle].c = -1
-
-    queueSetupActions!(game,game.battle.state)
 
     return
 end
@@ -69,7 +63,7 @@ end
 
 function stateBattlePkmnOpen!(game::GameState,args::Tuple{})
     stateCloseBattle!(game)
-    stateMenuPkmnOpen!(game,())
+    statePkmnOpen!(game,())
 
     return
 end

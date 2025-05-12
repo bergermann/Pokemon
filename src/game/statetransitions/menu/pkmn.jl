@@ -76,7 +76,7 @@ function loadIcons!(game::GameState)
     return
 end
 
-function stateMenuPkmnOpen!(game::GameState,args::Tuple{})
+function statePkmnOpen!(game::GameState,args::Tuple{})
     if !game.battle.active
         stateCloseMap!(game)
     end
@@ -114,14 +114,14 @@ function stateMenuPkmnOpen!(game::GameState,args::Tuple{})
     return
 end
 
-function stateMenuPkmnCtrls!(game::GameState,args::Tuple{})
+function statePkmnCtrls!(game::GameState,args::Tuple{})
     unlockInput!(game)
     game.ctrl.input.menu.pkmn = true
 
     return
 end
 
-function stateMenuPkmnClose!(game::GameState,args::Tuple{})
+function statePkmnClose!(game::GameState,args::Tuple{})
     lockInput!(game)
 
     killCallback!(game,:wiggle)
@@ -133,14 +133,16 @@ function stateMenuPkmnClose!(game::GameState,args::Tuple{})
     deleteTextsAll!(game)
     deleteFramesAll!(game)
 
-    return
-end
+    if game.battle.active
+        stateOpenBattle!(game)
 
-function stateMapPkmnClose!(game::GameState,args::Tuple{})
-    stateMenuPkmnClose!(game,())
-
-    stateOpenMap!(game)
-    stateMenuMainOpen!(game,())
+        if game.battle.state.pkmn1.command isa CommandChoose
+            stateInitBattleChoice!(game,())
+        end
+    else
+        stateOpenMap!(game)
+        stateMenuMainOpen!(game,())
+    end
 
     return
 end

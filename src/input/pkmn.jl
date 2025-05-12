@@ -1,11 +1,5 @@
 
 function inputMenuPkmn!(game::GameState,inputs::Inputs)
-    if game.ctrl.input.menu.menupkmn.sub
-        inputPkmnSub!(game,inputs)
-
-        return
-    end
-
     if game.ctrl.input.menu.menupkmn.swap != 0
         if inputs.A.press
             if game.ctrl.input.menu.menupkmn.select == game.p.pokemon.idx+1
@@ -78,23 +72,14 @@ end
 
 function inputTeam!(game::GameState,inputs::Inputs)
     if inputs.A.press
-        if game.battle.active
-            inputTeamActionBattle!(game)
-        else
-            inputTeamAction!(game)
-        end
+        inputTeamAction!(game)
     elseif inputs.B.press
         lockInput!(game)
         game.ctrl.input.menu.pkmn = false
         game.ctrl.input.menu.menupkmn.select = 1
 
-        if !game.battle.active
-            createCC!(game,:scenet,sceneTransition!,(16,8,
-                F(stateMapPkmnClose!),F()); active=true,n=1)
-        else
-            createCC!(game,:scenet,sceneTransition!,(16,8,
-                F(stateBattlePkmnClose!),F(stateInitBattleChoice!)); active=true,n=1)
-        end
+        createCC!(game,:scenet,sceneTransition!,(16,8,
+            F(statePkmnClose!),F()); active=true,n=1)
 
         return
     elseif inputs.down.press
@@ -140,8 +125,7 @@ function inputTeamAction!(game::GameState)
         game.ctrl.input.menu.pkmn = false
         game.ctrl.input.menu.menupkmn.select = 1
 
-        createCC!(game,:scenet,sceneTransition!,(16,8,
-            F(stateMenuPkmnClose!),F()); active=true,n=1)
+        createCC!(game,:scenet,sceneTransition!,(16,8,F(statePkmnClose!),F0); active=true,n=1)
 
         return
     end
@@ -155,139 +139,90 @@ function inputTeamAction!(game::GameState)
     setText!(game,:info,game.str[1][3]*
         pkmnName(game,game.p.pokemon[game.ctrl.input.menu.menupkmn.select])*"?")
 
-    setChoice!(game,true,1,F(pkmnAction!))
+    setChoice!(game,1,F(pkmnAction!); exit=-1)
 
-    drawChoiceMenu!(game,4,game.str[1][6:9],8,24,0)
-
-    return
-end
-
-function inputTeamActionBattle!(game::GameState)
-    if game.ctrl.input.menu.menupkmn.select == game.p.pokemon.idx+1
-        lockInput!(game)
-        game.ctrl.input.menu.pkmn = false
-        game.ctrl.input.menu.menupkmn.select = 1
-
-        createCC!(game,:scenet,sceneTransition!,(16,8,
-            F(stateBattlePkmnClose!),F(stateInitBattleChoice!)); active=true,n=1)
-
-        return
-    end
-
-    switchText!(game,:choose)
-    switchFrame!(game,:choose)
-
-    switchText!(game,:info)
-    switchFrame!(game,:info)
-
-    setText!(game,:info,game.str[1][3]*
-        pkmnName(game,game.p.pokemon[game.ctrl.input.menu.menupkmn.select])*"?")
-
-    setChoice!(game,true,1,F(pkmnActionBattle!))
-
-    display(game.str[1][[7,6,9]])
-    display(game.str[1][[6,9]])
-    if game.p.pokemon[game.ctrl.input.menu.menupkmn.select].stats.hp > 0
-        drawChoiceMenu!(game,4,game.str[1][[7,6,9]],8,24,0)
+    if game.battle.active
+        if game.p.pokemon[game.ctrl.input.menu.menupkmn.select].stats.hp > 0
+            drawChoiceMenu!(game,4,game.str[1][[7,6,9]],7,40,-8)
+        else
+            drawChoiceMenu!(game,4,game.str[1][[6,9]],7,40,0)
+        end
     else
-        drawChoiceMenu!(game,4,game.str[1][[6,9]],8,24,0)
+        drawChoiceMenu!(game,4,game.str[1][6:9],7,24,-16)
     end
-end
-
-function inputPkmnSub!(game::GameState,inputs::Inputs)
-    switchText!(game,:choose)
-    switchFrame!(game,:choose)
-
-    switchText!(game,:info)
-    switchFrame!(game,:info)
 
     return
 end
 
 function pkmnAction!(game::GameState,args::Tuple{})
-    if game.ctrl.input.choice.sel == 1
-        resetChoice!(game)
-        # createCC!(game,:scenet,sceneTransition!,
-        #     (16,8,stateMenuPkmnSubOpen!,(),stateMenuPkmnSubCtrls!,()); active=true,n=1)
+    if game.battle.active
+        if game.p.pokemon[game.ctrl.input.menu.menupkmn.select].stats.hp > 0
+            if game.ctrl.input.choice.sel == 1
+                lockInput!(game)
+                game.ctrl.input.menu.pkmn = false
+                stateBattlePkmnSelected!(game)
 
-        # lockInput!(game)
-        # game.ctrl.input.menu.menupkmn.submode = 1
-    elseif game.ctrl.input.choice.sel == 2
-        game.ctrl.input.menu.menupkmn.swapping = true
-        game.ctrl.input.menu.menupkmn.swap = game.ctrl.input.menu.menupkmn.select
+                createCC!(game,:scenet,sceneTransition!,
+                    (16,8,F(statePkmnClose!),F(stateStartBattleAnim!)); active=true,n=1)
+                
+                return
+            elseif game.ctrl.input.choice.sel == 2
+                switchText!(game,:choose); switchFrame!(game,:choose)
+                switchText!(game,:info); switchFrame!(game,:info)
 
-        setSprite!(game,Symbol(:slot,game.ctrl.input.menu.menupkmn.select),2,2)
+                return
+            end
+        else
+            if game.ctrl.input.choice.sel == 1
+                switchText!(game,:choose); switchFrame!(game,:choose)
+                switchText!(game,:info); switchFrame!(game,:info)
 
-        switchText!(game,:choose)
-        switchFrame!(game,:choose)
-    
-        switchText!(game,:info)
-        switchFrame!(game,:info)
-    
-        setText!(game,:choose,game.str[1][4])
-
-        return
-    elseif game.ctrl.input.choice.sel == 3
-        resetChoice!(game)
-        # createCC!(game,:scenet,sceneTransition!,
-        #     (16,8,stateMenuPkmnSubOpen!,(),stateMenuPkmnSubCtrls!,()); active=true,n=1)
-
-        # lockInput!(game)
-        # game.ctrl.input.menu.menubags.submode = 3
-
-        return
-    end
-
-    switchText!(game,:choose)
-    switchFrame!(game,:choose)
-
-    switchText!(game,:info)
-    switchFrame!(game,:info)
-    
-    resetChoice!(game)
-
-    return
-end
-
-function pkmnActionBattle!(game::GameState,hp::Int)
-    if hp > 0
-        if game.ctrl.input.choice.sel == 1
-            lockInput!(game)
-            game.ctrl.input.menu.pkmn = false
-
-            createCC!(game,:scenet,sceneTransition!,
-                (16,8,stateBattlePkmnClose!,(),stateBattlePkmnSelected!,
-                ());
-                active=true,n=1)
+                return
+            end
             
-            return
-        elseif game.ctrl.input.choice.sel == 2
-            resetChoice!(game)
-
-            return
+            switchText!(game,:choose); switchFrame!(game,:choose)
+            switchText!(game,:info); switchFrame!(game,:info)
         end
-        
-        resetChoice!(game)
     else
         if game.ctrl.input.choice.sel == 1
-            resetChoice!(game)
+            switchText!(game,:choose); switchFrame!(game,:choose)
+            switchText!(game,:info); switchFrame!(game,:info)
+            # createCC!(game,:scenet,sceneTransition!,
+            #     (16,8,stateMenuPkmnSubOpen!,(),stateMenuPkmnSubCtrls!,()); active=true,n=1)
+
+            # lockInput!(game)
+            # game.ctrl.input.menu.menupkmn.submode = 1
+
+            return
+        elseif game.ctrl.input.choice.sel == 2
+            game.ctrl.input.menu.menupkmn.swapping = true
+            game.ctrl.input.menu.menupkmn.swap = game.ctrl.input.menu.menupkmn.select
+
+            setSprite!(game,Symbol(:slot,game.ctrl.input.menu.menupkmn.select),2,2)
+
+            switchText!(game,:choose); switchFrame!(game,:choose)
+            switchText!(game,:info); switchFrame!(game,:info)
+        
+            setText!(game,:choose,game.str[1][4])
+
+            return
+        elseif game.ctrl.input.choice.sel == 3
+            switchText!(game,:choose); switchFrame!(game,:choose)
+            switchText!(game,:info); switchFrame!(game,:info)
+            # createCC!(game,:scenet,sceneTransition!,
+            #     (16,8,stateMenuPkmnSubOpen!,(),stateMenuPkmnSubCtrls!,()); active=true,n=1)
+
+            # lockInput!(game)
+            # game.ctrl.input.menu.menubags.submode = 3
 
             return
         end
-        
-        resetChoice!(game)
     end
 
-    switchText!(game,:choose)
-    switchFrame!(game,:choose)
-
-    switchText!(game,:info)
-    switchFrame!(game,:info)
-    
-    resetChoice!(game)
+    switchText!(game,:choose); switchFrame!(game,:choose)
+    switchText!(game,:info); switchFrame!(game,:info)
 
     return
 end
-
 
 

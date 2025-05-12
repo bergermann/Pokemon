@@ -214,16 +214,16 @@ end
 
 
 
-function setChoice!(game::GameState,exit::Bool,sel::Int; active=true)
+function setChoice!(game::GameState,sel::Int; exit::Int=0,active=true)
     game.ctrl.input.choice.active = active
     game.ctrl.input.choice.exit = exit
     game.ctrl.input.choice.sel = sel
-    game.ctrl.input.choice.func = Callback()
+    game.ctrl.input.choice.func = F0
 
     return
 end
 
-function setChoice!(game::GameState,exit::Bool,sel::Int,func::Callback; active=true)
+function setChoice!(game::GameState,sel::Int,func::Callback; exit::Int=0,active::Bool=true)
     game.ctrl.input.choice.active = active
     game.ctrl.input.choice.exit = exit
     game.ctrl.input.choice.sel = sel
@@ -237,7 +237,11 @@ function resetChoice!(game::GameState)
     game.ctrl.input.choice.exit = false
     game.ctrl.input.choice.sel = -1
     game.ctrl.input.choice.max = 0
-    game.ctrl.input.choice.func = Callback()
+    game.ctrl.input.choice.func = F0
+
+    killSprite!(game,:ccursor)
+    deleteFrame!(game,:choice)
+    deleteText!(game,:choice)
 
     return
 end

@@ -78,7 +78,7 @@ function inputBattleMenuSelector!(game::GameState)
         game.ctrl.input.battle.pkmn = true
 
         createCC!(game,:scenet,sceneTransition!,
-            (16,8,F(stateBattlePkmnOpen!),F(stateMenuPkmnCtrls!)); active=true,n=1)
+            (16,8,F(stateBattlePkmnOpen!),F(statePkmnCtrls!)); active=true,n=1)
     else
         stateBattleFlee!(game)
     end

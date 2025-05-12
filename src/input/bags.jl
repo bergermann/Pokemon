@@ -19,7 +19,6 @@ function inputInventory!(game::GameState,inputs::Inputs)
 end
 
 function inputBags!(game::GameState,inputs::Inputs,m::MenuBags)
-    display(m)
     if inputs.A.press
         if getSelectedItem(game,m) == 500
             lockInput!(game)
@@ -31,8 +30,8 @@ function inputBags!(game::GameState,inputs::Inputs,m::MenuBags)
             return
         end
 
-        setChoice!(game,true,1,F(itemAction!,(m,)))    
-        drawChoiceMenu!(game,6,getInvChoiceStr(game,m),7,0,0)
+        setChoice!(game,1,F(itemAction!,(m,)); exit=-1)    
+        drawChoiceMenu!(game,6,getInvChoiceStr(game,m),7,48,8)
     elseif inputs.B.press
         lockInput!(game)
         game.ctrl.input.menu.bags = false
@@ -160,8 +159,6 @@ function itemActionItems!(game::GameState)
             return
         end
     end
-    
-    resetChoice!(game)
 
     return
 end
@@ -185,8 +182,6 @@ function itemActionBalls!(game::GameState)
             return
         end
     end
-    
-    resetChoice!(game)
 
     return
 end
@@ -198,7 +193,7 @@ function itemActionMachines!(game::GameState)
         return
     end
     
-    resetChoice!(game)
+    return
 end
 
 function itemActionBerries!(game::GameState)
@@ -208,7 +203,7 @@ function itemActionBerries!(game::GameState)
         return
     end
     
-    resetChoice!(game)
+    return
 end
 
 function itemActionKeys!(game::GameState)
@@ -218,7 +213,7 @@ function itemActionKeys!(game::GameState)
         return
     end
     
-    resetChoice!(game)
+    return
 end
 
 

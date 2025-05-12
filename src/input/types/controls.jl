@@ -214,7 +214,7 @@ end
 
 mutable struct Choice
     active::Bool
-    exit::Bool
+    exit::Int
     sel::Int
     max::Int
 
@@ -223,7 +223,7 @@ mutable struct Choice
     func::Callback
 
     function Choice()
-        new(false,false,0,0,6,Callback())
+        new(false,0,0,0,6,Callback())
     end
 end
 

@@ -176,10 +176,10 @@ function stateInitBattleChoice!(game::GameState,args::Tuple{})
     activateSprite!(game,:cursor1)
     activateCallback!(game,:wiggle)
 
-    switchText!(game,:choice1)
-    switchText!(game,:choice2)
+    activateText!(game,:choice1)
+    activateText!(game,:choice2)
 
-    switchText!(game,:dialogue)
+    activateText!(game,:dialogue)
     setText!(game,:dialogue,game.str[1][14]*pkmnName(game,game.battle.state.pkmn1.pkmn)*
         game.str[1][15])
 

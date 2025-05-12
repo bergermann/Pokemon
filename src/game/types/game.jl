@@ -78,18 +78,10 @@ abstract type BattleState end
 
 mutable struct Battle
     active::Bool
-    
-    # dialogue::Dialogue
-
     state::BattleState
-
-    # menu::MenuBattle
-
     teamperm::Vector{Int}
 
     function Battle()
-        # new(false,Dialogue(),BattleStateNone(),MenuBattle(),[])
-        # new(false,BattleStateNone(),MenuBattle(),collect(1:6))
         new(false,BattleStateNone(),collect(1:6))
     end
 end

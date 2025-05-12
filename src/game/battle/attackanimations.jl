@@ -187,8 +187,6 @@ function bthrowBall!(game::GameState,w::Int)
 end
 
 function bthrowBall!(game::GameState,args::Tuple{})
-    println(getSpritePos(game,:ball))
-
     if game.n[:throwball].c <= 46
         moveSpriteW!(game,:ball,4)
         moveSpriteH!(game,:ball,trunc(Int,(getSpritePosW(game,:ball)-32)^2/300-54),true)
@@ -228,10 +226,12 @@ end
 
 function bwiggleBall!(game::GameState,(dir,)::Tuple{Int8})
     if game.n[:wiggleball].c <= 15
+        rotateSprite!(game,:ball,2*Float64(dir))
         if game.n[:wiggleball].c%5 == 0
             moveSpriteW!(game,:ball,Int(+dir))
         end
     elseif game.n[:wiggleball].c <= 30
+        rotateSprite!(game,:ball,-2*Float64(dir))
         if game.n[:wiggleball].c%5 == 0
             moveSpriteW!(game,:ball,Int(-dir))
         end
@@ -247,15 +247,15 @@ function bwiggleBall!(game::GameState,(dir,)::Tuple{Int8})
 end
 
 function bbreakBall!(game::GameState,w::Int)
-    createCC!(game,:breakball,bbreakBall!,();
-        active=true,n=1)
+    createCC!(game,:breakball,bbreakBall!,(); active=true,n=1)
 
     return
 end
 
-function bbreakBall!(game::GameState)
+function bbreakBall!(game::GameState,args::Tuple{})
     if game.n[:breakball].c == 1
         setSpriteFrame!(game,:ball,2)
+        moveSpriteL!(game,:ball,1)
     elseif game.n[:breakball].c == 20
         activateSprite!(game,:pkmn2)
     elseif game.n[:breakball].c == 30
@@ -277,7 +277,7 @@ function bcaughtBall!(game::GameState,w::Int)
     return
 end
 
-function bcaughtBall!(game::GameState)
+function bcaughtBall!(game::GameState,args::Tuple{})
     if game.n[:caughtball].c == 1
         # game.im.sprites[4][:ball].colortransform.active = true
         # game.im.sprites[4][:ball].colortransform.func = scaleColor

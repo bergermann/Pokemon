@@ -19,6 +19,7 @@ function inputInventory!(game::GameState,inputs::Inputs)
 end
 
 function inputBags!(game::GameState,inputs::Inputs,m::MenuBags)
+    display(m)
     if inputs.A.press
         if getSelectedItem(game,m) == 500
             lockInput!(game)

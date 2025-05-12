@@ -163,7 +163,7 @@ function queueItem!(game::GameState,state::BattleState,
     
     push!(state.animqueue,BattleAnimation(
         id,30,game.p.name*game.str[1][31]*
-            game.str[3][getSelectedItem(game,game.ctrl.input.battle.bags)]*game.str[1][33],
+            game.str[3][getSelectedItem(game,game.ctrl.input.menu.battlebags)]*game.str[1][33],
         banimEmpty!,0
     ))
 
@@ -181,8 +181,7 @@ function queueBall!(game::GameState,state::BattleState,target::PkmnBattle,
 
     push!(state.animqueue,BattleAnimation(
         id,160,game.p.name*game.str[1][31]*
-            game.str[3][getSelectedItem(game,game.ctrl.input.battle.bags)]*
-                game.p.name*game.str[1][33],
+            game.str[3][getSelectedItem(game,game.ctrl.input.menu.battlebags)]*game.str[1][33],
         bthrowBall!,2
     ))
 
@@ -195,12 +194,12 @@ function queueBall!(game::GameState,state::BattleState,target::PkmnBattle,
         1/(3*target.pkmn.stats.rv[1])
     )
 
-    println("x: ",x)
+    # println("x: ",x)
 
     x = min(x,255)
 
     y = trunc(UInt16,65535/sqrt(sqrt(255/x)))
-    println("y:  ",y)
+    # println("y:  ",y)
 
     w = 0
 
@@ -227,7 +226,7 @@ function queueBall!(game::GameState,state::BattleState,target::PkmnBattle,
         ))
     else
         push!(state.animqueue,BattleAnimation(
-            id,60,game.str[1][42],
+            id,60,game.str[1][40],
             bbreakBall!,w
         ))
     end

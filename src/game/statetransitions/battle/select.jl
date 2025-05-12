@@ -2,9 +2,9 @@
 
 function stateStartBattleAnim!(game::GameState,args::Tuple{})
     deactivateCallback!(game,:wiggle); resetWiggle!(game)
+    activateCallback!(game,:animbattle); game.n[:animbattle].c = -1
 
-    activateCallback!(game,:animbattle)
-    game.n[:animbattle].c = -1
+    activateText!(game,:dialogue); setText!(game,:dialogue,"")
 
     queueSetupActions!(game,game.battle.state)
 

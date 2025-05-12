@@ -159,13 +159,12 @@ mutable struct MenuBattle
     s1::Integer
     m2::Bool
     s2::Integer
-    bag::Bool
-    bags::MenuBags
+    # bag::Bool
     pkmn::Bool
     pkmns::MenuPkmn
 
     function MenuBattle()
-        new(false,0,false,0,false,MenuBags(),false,MenuPkmn())
+        new(false,0,false,0,false,MenuPkmn())
     end
 end
 

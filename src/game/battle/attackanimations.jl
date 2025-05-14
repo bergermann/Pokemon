@@ -271,8 +271,7 @@ function bbreakBall!(game::GameState,args::Tuple{})
 end
 
 function bcaughtBall!(game::GameState,w::Int)
-    createCC!(game,:caughtball,bcaughtBall!,();
-        active=true,n=1)
+    createCC!(game,:caughtball,bcaughtBall!,(); active=true,n=1)
 
     return
 end
@@ -306,17 +305,32 @@ end
 
 
 function bswitchOut!(game::GameState,user::Int)
-    createCC!(game,:switchout,bswitchOut!,();
-        active=true,n=1)
+    createCC!(game,:switchout,bswitchOut!,(); active=true,n=1)
+
+    bid = Int(game.battle.state.pkmn1.pkmn.ball)
+    createSprite!(game,:ball,:ballsb,bid,2,-48,24,10,2; active=true,rot=0.)
 
     return
 end
 
-function bswitchOut!(game::GameState)
-    if game.n[:switchout].c == 30
+function bswitchOut!(game::GameState,args::Tuple{})
+    if game.n[:switchout].c <= 32
+        scaleSprite!(game,:pkmn1,1.0-t/32,1.0-t/32,true)
+    elseif game.n[:switchout].c == 32+1
         deleteSpriteSheet!(game,:pkmn1)
+    elseif game.n[:switchout].c == 40
+        setSpriteFrame!(game,:ball,1)
+    elseif game.n[:switchout].c < 60
+        moveSpriteW!(game,:ball,3)
     elseif game.n[:switchout].c == 60
-        deactivateSprite!(game,:tag1)
+        moveSpriteH!(game,:tag1,128)
+        moveSpriteW!(game, :hp1,128)
+        moveSpriteW!(game,  :xp,128)
+        moveText!(game,:name1,128,0)
+        moveText!(game, :lvl1,128,0)
+
+        killSprite!(game,:ball)
+
         killCC!(game,:switchout)
 
         return
@@ -328,34 +342,36 @@ function bswitchOut!(game::GameState)
 end
 
 function bswitchIn!(game::GameState,user::Int)
-    createCC!(game,:switchin,bswitchIn!,();
-        active=true,n=1)
+    createCC!(game,:switchin,bswitchIn!,(); active=true,n=1)
+
+    n = game.battle.state.pkmn1.command.n
+
+    swap!(game.p.pokemon,1,n)
+    game.battle.teamperm[1], game.battle.teamperm[n] = 
+        game.battle.teamperm[n], game.battle.teamperm[1]
+
+    game.battle.state.pkmn1 = PkmnBattle(game.p.pokemon[1],
+        getPkmnName(game,activePkmn(game)))
+
+    # game.battle.state.pkmn1.command = CommandSwitch(n)
+
+    p1 = game.battle.state.pkmn1.pkmn
+    path1 = "battle/battlers/back/$(p1.shiny ? "shiny" : "normal")/$(p1.id).png"
+
+    loadSpriteSheet!(game,path1,:pkmn1,64,64,2; maxsprites=1)
+    createSprite!(game,:pkmn1,:pkmn1,1,1,-48,24,10,3; wscale=0.,hscale=0.)
+
+    setText!(game,:name1,game.battle.state.pkmn1.name)
+    setText!(game,:pkmn1,string(p1.level))
 
     return
 end
 
 function bswitchIn!(game::GameState,args::Tuple{})
     if game.n[:switchin].c == 1
-        n = game.battle.state.pkmn1.command.n
-
-        swap!(game.p.pokemon,1,n)
-        game.battle.teamperm[1], game.battle.teamperm[n] = 
-            game.battle.teamperm[n], game.battle.teamperm[1]
-
-        game.battle.state.pkmn1 = PkmnBattle(game.p.pokemon[1],
-            getPkmnName(game,activePkmn(game)))
-
-        game.battle.state.pkmn1.command = CommandSwitch(n)
     elseif game.n[:switchin].c == 30
-        p1 = game.battle.state.pkmn1.pkmn
-        path1 = "battle/battlers/back/$(p1.shiny ? "shiny" : "normal")/$(p1.id).png"
+    elseif game.n[:switchin].c == 30
 
-        loadSpriteSheet!(game,path1,:pkmn1,64,64,2; maxsprites=1)
-        createSprite!(game,:pkmn1,:pkmn1,1,1,-48,24,10,3; wscale=1.,hscale=1.)
-
-        setText!(game,:name1,game.battle.state.pkmn1.name)
-        setText!(game,:pkmn1,string(p1.level))
-        activateSprite!(game,:tag1)
     elseif game.n[:switchin].c == 60
         killCC!(game,:switchin)
 

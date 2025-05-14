@@ -127,8 +127,9 @@ function stateOpenBattleIntro!(game::GameState)
     createSprite!(game,:grass1,:fol,1,1,  0,-8,10,3; active=true)
     createSprite!(game,:grass2,:fol,1,1,256,-8,10,3; active=true)
 
-    createSprite!(game,   :mc,:battlermc,1,1,120+80+3,  0,10,3; active=true)
-    createSprite!(game, :ball,   :ballsb,1,1,     -62, 11,10,2; active=false,rot=18.)
+    createSprite!(game,:mc,:battlermc,1,1,120+80+3,0,10,3; active=true)
+    bid = Int(game.battle.state.pkmn1.pkmn.ball)
+    createSprite!(game,:ball,:ballsb,bid,1,-62, 11,10,2; active=false,rot=18.)
 
     for i in 1:10
         createSprite!(game,Symbol(:spark,i),:particles,1,1,-48,24,10,4; active=false)

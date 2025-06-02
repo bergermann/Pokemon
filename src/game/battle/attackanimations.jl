@@ -361,6 +361,8 @@ function bswitchIn!(game::GameState,user::Int)
     loadSpriteSheet!(game,path1,:pkmn1,64,64,2; maxsprites=1)
     createSprite!(game,:pkmn1,:pkmn1,1,1,-48,24,10,3; wscale=0.,hscale=0.)
 
+    moveSprite!(game,:ball,-62,11,true)
+
     setText!(game,:name1,game.battle.state.pkmn1.name)
     setText!(game,:pkmn1,string(p1.level))
 
@@ -368,11 +370,39 @@ function bswitchIn!(game::GameState,user::Int)
 end
 
 function bswitchIn!(game::GameState,args::Tuple{})
-    if game.n[:switchin].c == 1
-    elseif game.n[:switchin].c == 30
-    elseif game.n[:switchin].c == 30
+    if game.n[:switchin].c < 40
+        moveSpriteW!(game,:ball,1)
+        t = game.n[:switchin].c-24
+        moveSpriteH!(game,:ball,round(Int,-2-3*t+0.5*0.1875*t^2),true)
+        rotateSprite!(game,:ball,18.)
+    elseif game.n[:switchin].c == 40
+        setSpriteFrame!(game,:ball,2)
+    elseif game.n[:switchin].c == 48
+        activateSprite!(game,:pkmn1)
+        for i in 1:10; activateSprite!(game,Symbol(:spark,i)); end
+    elseif 48+1 <= game.n[:switchin].c <= 48+32
+        t = game.n[:introb].c-48
+        scaleSprite!(game,:pkmn1,t/32,t/32,true)
+        for i in 1:10
+            moveSprite!(game,Symbol(:spark,i),
+                round(Int,1.5t*cospi(t/32+i/5))-48,round(Int,-1.5t*sinpi(t/32+i/5))+24,true)
+        end
+    elseif game.n[:switchin].c == 48+32+1
+        killSprites!(game,:particles)
+        moveSpriteH!(game,:ball,3)
+    elseif 48+32+1 < game.n[:switchin].c <= 48+32+8
+        moveSpriteH!(game,:ball,3)
+    elseif 96 < game.n[:switchin].c <= 96+16
+        moveSpriteW!(game,:tag1,-8)
+        moveSpriteW!(game, :hp1,-8)
+        moveSpriteW!(game,  :xp,-8)
+        moveText!(game,:name1,-8,0)
+        moveText!(game, :lvl1,-8,0)
+    elseif game.n[:switchin].c == 96+32
+        killSprite!(game,:mc); killSprite!(game,:ball)
+        
+        stateAdvanceDialogue!(game)
 
-    elseif game.n[:switchin].c == 60
         killCC!(game,:switchin)
 
         return

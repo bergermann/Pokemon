@@ -93,13 +93,13 @@ function stateOpenBattle!(game::GameState)
         [0x4a,0x4a,0x4a,0xff],[0xd6,0xd6,0xce,0xff]; active=false,hpad=2,maxchar=32)
 
     for i in eachindex(p1.attacks)
-        createText!(game,Symbol(:attack,i),4,-103+64*((i-1)%2),41+16*div(i-1,2),6,
+        createText!(game,blabels[i].attack,4,-103+64*((i-1)%2),41+16*div(i-1,2),6,
             p1.attacks[i].name,[0x4a,0x4a,0x4a,0xff],[0xd6,0xd6,0xce,0xff];
             active=false,maxchar=16)
     end
     
     for i in length(p1.attacks)+1:4
-        createText!(game,Symbol(:attack,i),4,-103+64*((i-1)%2),41+16*div(i-1,2),6,
+        createText!(game,blabels[i].attack,4,-103+64*((i-1)%2),41+16*div(i-1,2),6,
             "---", [0x4a,0x4a,0x4a,0xff],[0xd6,0xd6,0xce,0xff];
             active=false,hpad=0,maxchar=16)
     end

@@ -78,7 +78,7 @@ function generatePkmn(game::GameState,id::UInt16,level::UInt8)
         game.p.name,              #OTrainer
         game.p.id,                #OTrainer id
         "",                             #location
-        0x00,                           #ball id
+        0x01,                           #ball id
         falses(5),                      #markers
         Tuple{UInt8,UInt8}(data[2:3]),  #types
         Stats(data[4:9],level),         #stats

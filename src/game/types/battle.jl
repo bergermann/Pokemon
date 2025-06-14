@@ -8,6 +8,7 @@ const blabels = Base.ImmutableDict(
             name   = Symbol(:name,i),
             health = Symbol(:health,i),
             level  = Symbol(:lvl,i),
+            attack = Symbol(:attack,i),
         )
     for i in 1:4]...
 )

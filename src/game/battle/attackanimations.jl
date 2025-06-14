@@ -315,7 +315,8 @@ end
 
 function bswitchOut!(game::GameState,args::Tuple{})
     if game.n[:switchout].c <= 32
-        scaleSprite!(game,:pkmn1,1.0-t/32,1.0-t/32,true)
+        s = 1-game.n[:switchout].c/32
+        scaleSprite!(game,:pkmn1,s,s,true)
     elseif game.n[:switchout].c == 32+1
         deleteSpriteSheet!(game,:pkmn1)
     elseif game.n[:switchout].c == 40
@@ -329,7 +330,8 @@ function bswitchOut!(game::GameState,args::Tuple{})
         moveText!(game,:name1,128,0)
         moveText!(game, :lvl1,128,0)
 
-        killSprite!(game,:ball)
+        # killSprite!(game,:ball)
+        deactivateSprite!(game,:ball)
 
         killCC!(game,:switchout)
 
@@ -361,10 +363,27 @@ function bswitchIn!(game::GameState,user::Int)
     loadSpriteSheet!(game,path1,:pkmn1,64,64,2; maxsprites=1)
     createSprite!(game,:pkmn1,:pkmn1,1,1,-48,24,10,3; wscale=0.,hscale=0.)
 
+    bid = Int(game.battle.state.pkmn1.pkmn.ball)
+    activateSprite!(game,:ball); setSpriteIdx!(game,:ball,bid)
     moveSprite!(game,:ball,-62,11,true)
 
-    setText!(game,:name1,game.battle.state.pkmn1.name)
-    setText!(game,:pkmn1,string(p1.level))
+    setText!(game,:name1,pkmnName(game,p1)); moveText!(game,:name1,24,-4)
+    setText!(game,:lvl1,string(p1.stats.level)); moveText!(game,:lvl1,93,-4)
+
+    for i in eachindex(p1.attacks)
+        setText!(game,blabels[i].attack,p1.attacks[i].name)
+    end
+    
+    for i in length(p1.attacks)+1:4
+        setText!(game,blabels[i].attack,"---")
+    end
+
+    a = p1.attacks[1]
+    setText!(game,:info2,string(a.ap)*"/"*string(a.apmax)*"\\"*game.str[2][a.type+1])
+
+    for i in 1:10
+        createSprite!(game,Symbol(:spark,i),:particles,1,1,-48,24,10,4; active=false)
+    end
 
     return
 end
@@ -381,7 +400,7 @@ function bswitchIn!(game::GameState,args::Tuple{})
         activateSprite!(game,:pkmn1)
         for i in 1:10; activateSprite!(game,Symbol(:spark,i)); end
     elseif 48+1 <= game.n[:switchin].c <= 48+32
-        t = game.n[:introb].c-48
+        t = game.n[:switchin].c-48
         scaleSprite!(game,:pkmn1,t/32,t/32,true)
         for i in 1:10
             moveSprite!(game,Symbol(:spark,i),

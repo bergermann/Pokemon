@@ -100,6 +100,7 @@ function animThrowBall!(game::GameState,args::Tuple{})
         rotateSprite!(game,:ball,18.)
     elseif game.n[:introb].c == 64
         setSpriteFrame!(game,:ball,2)
+        # println(getSpritePos(game,:ball))
     elseif game.n[:introb].c == 72
         activateSprite!(game,:pkmn1)
         for i in 1:10; activateSprite!(game,Symbol(:spark,i)); end

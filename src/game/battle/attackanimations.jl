@@ -192,9 +192,11 @@ function bthrowBall!(game::GameState,args::Tuple{})
         moveSpriteH!(game,:ball,trunc(Int,(getSpritePosW(game,:ball)-32)^2/300-54),true)
     elseif game.n[:throwball].c == 60
         setSpriteFrame!(game,:ball,2)
-    elseif game.n[:throwball].c == 70
-        deactivateSprite!(game,:pkmn2)
+    elseif 64 < game.n[:throwball].c <= 84
+        s = 1-(game.n[:switchout].c-64)/20
+        scaleSprite!(game,:pkmn2,s,s,true)
     elseif game.n[:throwball].c == 90
+        deactivateSprite!(game,:pkmn2)
         setSpriteFrame!(game,:ball,1)
     elseif 100 < game.n[:throwball].c <= 110
         moveSpriteH!(game,:ball,+3)
@@ -314,24 +316,23 @@ function bswitchOut!(game::GameState,user::Int)
 end
 
 function bswitchOut!(game::GameState,args::Tuple{})
-    if game.n[:switchout].c <= 32
-        s = 1-game.n[:switchout].c/32
+    if game.n[:switchout].c <= 20
+        s = 1-game.n[:switchout].c/20
         scaleSprite!(game,:pkmn1,s,s,true)
-    elseif game.n[:switchout].c == 32+1
+    elseif game.n[:switchout].c == 20+1
         deleteSpriteSheet!(game,:pkmn1)
-    elseif game.n[:switchout].c == 40
+    elseif game.n[:switchout].c == 28
         setSpriteFrame!(game,:ball,1)
-    elseif game.n[:switchout].c < 60
-        moveSpriteW!(game,:ball,3)
-    elseif game.n[:switchout].c == 60
-        moveSpriteH!(game,:tag1,128)
+    elseif game.n[:switchout].c < 48
+        moveSpriteH!(game,:ball,3)
+    elseif game.n[:switchout].c == 48
+        moveSpriteW!(game,:tag1,128)
         moveSpriteW!(game, :hp1,128)
         moveSpriteW!(game,  :xp,128)
         moveText!(game,:name1,128,0)
         moveText!(game, :lvl1,128,0)
 
-        # killSprite!(game,:ball)
-        deactivateSprite!(game,:ball)
+        killSprite!(game,:ball)
 
         killCC!(game,:switchout)
 
@@ -361,14 +362,20 @@ function bswitchIn!(game::GameState,user::Int)
     path1 = "battle/battlers/back/$(p1.shiny ? "shiny" : "normal")/$(p1.id).png"
 
     loadSpriteSheet!(game,path1,:pkmn1,64,64,2; maxsprites=1)
-    createSprite!(game,:pkmn1,:pkmn1,1,1,-48,24,10,3; wscale=0.,hscale=0.)
+    createSprite!(game,:pkmn1,:pkmn1,1,1,-48,24,10,3; wscale=0.,hscale=0.,active=false)
 
     bid = Int(game.battle.state.pkmn1.pkmn.ball)
-    activateSprite!(game,:ball); setSpriteIdx!(game,:ball,bid)
-    moveSprite!(game,:ball,-62,11,true)
+    createSprite!(game,:ball,:ballsb,bid,1,-48-80,24,10,2; active=true)
 
-    setText!(game,:name1,pkmnName(game,p1)); moveText!(game,:name1,24,-4)
-    setText!(game,:lvl1,string(p1.stats.level)); moveText!(game,:lvl1,93,-4)
+    moveSprite!(game,:tag1,60+128,12,true)
+    moveSprite!(game, :hp1,56+128,12,true); setHPBar!(game,:hp1,getHealthBar(p1),56+128)
+    moveSprite!(game,  :xp,40+128,12,true); setXPBar!(game,:xp,getXPBar(p1,0),40+128)
+
+    moveText!(game,:name1,24+128,-4,true)
+    moveText!(game, :lvl1,93+128,-4,true)
+
+    setText!(game,:name1,pkmnName(game,p1)); # moveText!(game,:name1,24,-4)
+    setText!(game,:lvl1,string(p1.stats.level)); # moveText!(game,:lvl1,93,-4)
 
     for i in eachindex(p1.attacks)
         setText!(game,blabels[i].attack,p1.attacks[i].name)
@@ -390,11 +397,12 @@ end
 
 function bswitchIn!(game::GameState,args::Tuple{})
     if game.n[:switchin].c < 40
-        moveSpriteW!(game,:ball,1)
-        t = game.n[:switchin].c-24
-        moveSpriteH!(game,:ball,round(Int,-2-3*t+0.5*0.1875*t^2),true)
+        moveSpriteW!(game,:ball,2)
+        t = game.n[:switchin].c
+        moveSpriteH!(game,:ball,round(Int,24-2.4*t+0.06*t^2),true)
         rotateSprite!(game,:ball,18.)
     elseif game.n[:switchin].c == 40
+        moveSprite!(game,:ball,-48,24,true)
         setSpriteFrame!(game,:ball,2)
     elseif game.n[:switchin].c == 48
         activateSprite!(game,:pkmn1)
@@ -418,7 +426,7 @@ function bswitchIn!(game::GameState,args::Tuple{})
         moveText!(game,:name1,-8,0)
         moveText!(game, :lvl1,-8,0)
     elseif game.n[:switchin].c == 96+32
-        killSprite!(game,:mc); killSprite!(game,:ball)
+        killSprite!(game,:ball)
         
         stateAdvanceDialogue!(game)
 

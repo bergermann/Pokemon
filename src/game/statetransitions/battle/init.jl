@@ -67,7 +67,7 @@ function stateOpenBattle!(game::GameState)
     createSprite!(game, :hp2,:health1,3,1,-69,-46,10,4; wscale=0.,active=true)
     setHPBar!(game,:hp1,b1,56); setHPBar!(game,:hp2,b2,-69)
 
-    createSprite!(game,  :xp,     :xp,1,1, 40+128, 28,10,4; wscale=0.,hscale=2.,active=true)
+    createSprite!(game,  :xp,     :xp,1,1, 40, 28,10,4; wscale=0.,hscale=2.,active=true)
     setXPBar!(game,:xp,getXPBar(p1,0),40)
     
     createFrame!(game, :choice,13,4,   0,32,5; active=false)

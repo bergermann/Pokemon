@@ -182,7 +182,7 @@ function animBattlePhaseWild!(game::GameState,args::Tuple{})
     # -2: advance queue
     # -3: exit queue
 
-    if game.n[:animbattle].c == -1
+    if game.n[:animbattle].c == -1 # set up
         f = queueCheckStatus!(game,game.battle.state)
 
         if f
@@ -213,7 +213,7 @@ function animBattlePhaseWild!(game::GameState,args::Tuple{})
         queueSetupAnimation!(game,game.battle.state)
 
         game.n[:animbattle].c = 1
-    elseif game.n[:animbattle].c == -2
+    elseif game.n[:animbattle].c == -2  # advance queue
         popfirst!(game.battle.state.animqueue)
 
         if game.battle.state.animqueue.idx == 0
@@ -227,7 +227,7 @@ function animBattlePhaseWild!(game::GameState,args::Tuple{})
         end
 
         game.n[:animbattle].c = 1
-    elseif game.n[:animbattle].c == -3
+    elseif game.n[:animbattle].c == -3 # exit queue, end battle
         stateEndBattlePhase!(game)
 
         return

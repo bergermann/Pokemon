@@ -252,12 +252,12 @@ function queueSwitch!(game::GameState,state::BattleStateWild,user::Int,
         target::Int,id::Symbol)
     
     push!(state.animqueue,BattleAnimation(
-        id,60,game.str[1][22]*getPkmnName(game,state[1].pkmn)*game.str[1][23],
+        id,48,game.str[1][22]*getPkmnName(game,state[1].pkmn)*game.str[1][23],
         bswitchOut!,user
     ))
     
     push!(state.animqueue,BattleAnimation(
-        id,60,game.str[1][24]*getPkmnName(game,game.p.pokemon[target])*".",
+        id,128,game.str[1][24]*getPkmnName(game,game.p.pokemon[target])*".",
         bswitchIn!,user
     ))
 
@@ -314,6 +314,12 @@ function queueCheckStatus!(game::GameState,state::BattleStateWild)::Bool
         ))
 
         state[1].pkmn.stats.hp = -1
+        state[1].pkmn.status = 0x06
+
+        # push!(state.animqueue,BattleAnimation(
+        #     id,128,game.str[1][24]*getPkmnName(game,game.p.pokemon[target])*".",
+        #     bswitchIn!,user
+        # ))
 
         F = true
     end
@@ -337,6 +343,7 @@ function queueCheckStatus!(game::GameState,state::BattleStateWild)::Bool
         ))
 
         state[2].pkmn.stats.hp = -1
+        state[2].pkmn.status = 0x06
 
         if state[1].pkmn.stats.level < 0x64
             queueCheckXp!(game,state)

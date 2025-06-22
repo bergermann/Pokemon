@@ -1,6 +1,5 @@
 #battle manager stuff
 
-include("attackanimations.jl")
 include("battlenpc.jl")
 include("damagefactors.jl")
 include("battlephase.jl")

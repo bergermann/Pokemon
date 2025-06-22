@@ -69,34 +69,6 @@ function bhpAnim!(game::GameState,(target,)::Tuple{Int})
     return
 end
 
-function bfaint!(game::GameState,target::Int)
-    createCC!(game,:faint,bfaint!,(target,); active=true)
-
-    return
-end
-
-function bfaint!(game::GameState,(target,)::Tuple{Int})
-    if 60 <= game.n[:faint].c <= 75
-        moveSpriteH!(game,blabels[target].pkmn,4)
-    end
-
-    if game.n[:faint].c == 75
-        deactivateSprite!(game,blabels[target].pkmn)
-    elseif game.n[:faint].c == 119
-        deactivateSprite!(game,blabels[target].tag)
-        deactivateText!(game,blabels[target].name)
-        deactivateText!(game,blabels[target].level)
-
-        killCC!(game,:faint)
-
-        return
-    end
-
-    game.n[:faint].c += 1
-
-    return
-end
-
 function bxpAnim!(game::GameState,dx::Int)
     p = game.battle.state.pkmn1.pkmn
     xl = xpFormulas(p.stats.level,p.xptype)
@@ -306,11 +278,69 @@ end
 
 
 
+function bfaint!(game::GameState,target::Int)
+    createCC!(game,:faint,bfaint!,(target,); active=true)
+
+    game.battle.state[target].forceswitch = true
+
+    return
+end
+
+function bfaint!(game::GameState,(target,)::Tuple{Int})
+    if 60 <= game.n[:faint].c <= 75
+        moveSpriteH!(game,blabels[target].pkmn,4)
+    end
+
+    if game.n[:faint].c == 75
+        deactivateSprite!(game,blabels[target].pkmn)
+    elseif game.n[:faint].c == 119
+        deactivateSprite!(game,blabels[target].tag)
+        deactivateText!(game,blabels[target].name)
+        deactivateText!(game,blabels[target].level)
+
+        killCC!(game,:faint)
+
+        # if checkContinueFight!(game)
+        #     stateForceSwitch!(game)
+        # else
+
+        # end
+
+        return
+    end
+
+    game.n[:faint].c += 1
+
+    return
+end
+
+function stateForceSwitch!(game::GameState)
+    deactivateCallback!(game,:animqueue)
+    deactivateCallback!(game,:actionqueue)
+
+    lockInput!(game)
+
+    createCC!(game,:scenet,sceneTransition!,
+        (16,8,F(stateBagsOpen!,(game.ctrl.input.menu.battlebags,)),
+            F(stateBagsCtrls!)); active=true,n=1)
+    
+    return
+end
+
 function bswitchOut!(game::GameState,user::Int)
     createCC!(game,:switchout,bswitchOut!,(); active=true,n=1)
 
     bid = Int(game.battle.state.pkmn1.pkmn.ball)
     createSprite!(game,:ball,:ballsb,bid,2,-48,24,10,2; active=true,rot=0.)
+    
+    n = game.battle.state.pkmn1.command.n
+
+    swap!(game.p.pokemon,1,n)
+    game.battle.teamperm[1], game.battle.teamperm[n] = 
+        game.battle.teamperm[n], game.battle.teamperm[1]
+
+    game.battle.state.pkmn1 = PkmnBattle(game.p.pokemon[1],
+        getPkmnName(game,activePkmn(game)))
 
     return
 end
@@ -346,17 +376,6 @@ end
 
 function bswitchIn!(game::GameState,user::Int)
     createCC!(game,:switchin,bswitchIn!,(); active=true,n=1)
-
-    n = game.battle.state.pkmn1.command.n
-
-    swap!(game.p.pokemon,1,n)
-    game.battle.teamperm[1], game.battle.teamperm[n] = 
-        game.battle.teamperm[n], game.battle.teamperm[1]
-
-    game.battle.state.pkmn1 = PkmnBattle(game.p.pokemon[1],
-        getPkmnName(game,activePkmn(game)))
-
-    # game.battle.state.pkmn1.command = CommandSwitch(n)
 
     p1 = game.battle.state.pkmn1.pkmn
     path1 = "battle/battlers/back/$(p1.shiny ? "shiny" : "normal")/$(p1.id).png"
@@ -427,8 +446,6 @@ function bswitchIn!(game::GameState,args::Tuple{})
         moveText!(game, :lvl1,-8,0)
     elseif game.n[:switchin].c == 96+32
         killSprite!(game,:ball)
-        
-        stateAdvanceDialogue!(game)
 
         killCC!(game,:switchin)
 

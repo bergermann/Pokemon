@@ -133,6 +133,9 @@ function statePkmnClose!(game::GameState,args::Tuple{})
     deleteTextsAll!(game)
     deleteFramesAll!(game)
 
+    game.ctrl.input.menu.pkmn = false
+    game.ctrl.input.menu.menupkmn.select = 1
+
     if game.battle.active
         stateOpenBattle!(game)
 

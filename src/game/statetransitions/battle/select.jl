@@ -47,7 +47,6 @@ function stateBattlePkmnSelected!(game::GameState)
     stateBattleStage!(game,10)
     
     game.battle.state.pkmn1.command = CommandSwitch(Int(game.ctrl.input.menu.menupkmn.select))
-
     game.battle.state.pkmn2.command = battleChoiceWild(game)
     
     game.ctrl.input.battle.m1 = false

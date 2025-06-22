@@ -215,6 +215,8 @@ mutable struct PkmnBattle
     attack::Attack
     lastattack::Int
 
+    forceswitch::Bool
+
     function PkmnBattle(pkmn::Pkmn)
         new(
             pkmn,           #pkmn
@@ -238,7 +240,8 @@ mutable struct PkmnBattle
             DoubleMoves(),  #dmoves
             CC0,           #attackchoice
             Attack(),
-            0
+            0,
+            false
         )
     end
 

@@ -169,6 +169,8 @@ end
 
 
 function stateInitBattleChoice!(game::GameState,args::Tuple{})
+    println("initialising battle choice")
+
     unlockInput!(game)
     game.ctrl.input.battle.m1 = true
 

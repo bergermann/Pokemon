@@ -75,8 +75,6 @@ function inputTeam!(game::GameState,inputs::Inputs)
         inputTeamAction!(game)
     elseif inputs.B.press
         lockInput!(game)
-        game.ctrl.input.menu.pkmn = false
-        game.ctrl.input.menu.menupkmn.select = 1
 
         createCC!(game,:scenet,sceneTransition!,(16,8,
             F(statePkmnClose!),F()); active=true,n=1)
@@ -122,8 +120,6 @@ end
 function inputTeamAction!(game::GameState)
     if game.ctrl.input.menu.menupkmn.select == game.p.pokemon.idx+1
         lockInput!(game)
-        game.ctrl.input.menu.pkmn = false
-        game.ctrl.input.menu.menupkmn.select = 1
 
         createCC!(game,:scenet,sceneTransition!,(16,8,F(statePkmnClose!),F0); active=true,n=1)
 
@@ -156,7 +152,9 @@ end
 
 function pkmnAction!(game::GameState,args::Tuple{})
     if game.battle.active
-        if game.p.pokemon[game.ctrl.input.menu.menupkmn.select].stats.hp > 0
+        if game.p.pokemon[game.ctrl.input.menu.menupkmn.select].stats.hp > 0 &&
+                game.ctrl.input.menu.menupkmn.select > 1 && !game.battle.state[1].forceswitch
+
             if game.ctrl.input.choice.sel == 1
                 lockInput!(game)
                 game.ctrl.input.menu.pkmn = false

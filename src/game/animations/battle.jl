@@ -177,37 +177,18 @@ function resetWiggle!(game)
 end
 
 function animBattlePhaseWild!(game::GameState,args::Tuple{})
-    # println("stage: ",game.battle.state.stage)
     # -1: set up
     # -2: advance queue
     # -3: exit queue
 
-    if game.n[:animbattle].c == -1 # set up
+    if game.n[:animbattle].c < 0 
         f = queueCheckStatus!(game,game.battle.state)
+        if f; game.n[:animbattle].c = 1; end
+    end
 
-        if f
-            game.n[:animbattle].c = 0
-
-            return
-        end
-
-        if game.battle.state.stage == 250 || game.battle.state.stage == 251 ||
-                game.battle.state.stage == 252
-
-            lockInput!(game)
-
-            createCC!(game,:scenet,sceneTransition!,
-                (32,8,F(stateEndBattle!),F(stateInitMapCtrls!)); active=true,n=1)
-
-            game.callbacks[:animbattle].active = false
-
-            return
-        end
-
+    if game.n[:animbattle].c == -1 # set up
         if game.battle.state.actionqueue.idx == 0
-            stateEndBattlePhase!(game)
-
-            return
+            stateEndBattlePhase!(game); return
         end
 
         queueSetupAnimation!(game,game.battle.state)
@@ -228,12 +209,17 @@ function animBattlePhaseWild!(game::GameState,args::Tuple{})
 
         game.n[:animbattle].c = 1
     elseif game.n[:animbattle].c == -3 # exit queue, end battle
-        stateEndBattlePhase!(game)
+        deactivateCallback!(game,:animbattle)
+
+        lockInput!(game)
+
+        createCC!(game,:scenet,sceneTransition!,
+            (32,8,F(stateEndBattle!),F(stateInitMapCtrls!)); active=true,n=1)
 
         return
     end
 
-    queueCheckStatus!(game,game.battle.state)
+    # queueCheckStatus!(game,game.battle.state)
 
     if game.n[:animbattle].c == 1
         setText!(game,:dialogue,game.battle.state.animqueue[1].str)

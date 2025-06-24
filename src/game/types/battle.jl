@@ -345,7 +345,6 @@ mutable struct BattleStateNone <: BattleState end
 mutable struct BattleStateWild <: BattleState
     counters::BattleCounters
     turn::UInt
-    stage::Int
 
     env::BattleEnvironment
 
@@ -358,7 +357,7 @@ mutable struct BattleStateWild <: BattleState
     caught::Bool
 
     function BattleStateWild(counters,turn,env,pkmn1,pkmn2)
-        new(counters,turn,0,env,pkmn1,pkmn2,
+        new(counters,turn,env,pkmn1,pkmn2,
             ArrayList(BattleAnimation,32),ArrayList(BattleAction,8),false)
     end
 end

@@ -169,10 +169,9 @@ end
 
 
 function stateInitBattleChoice!(game::GameState,args::Tuple{})
-    println("initialising battle choice")
-
     unlockInput!(game)
     game.ctrl.input.battle.m1 = true
+    game.ctrl.input.battle.m2 = false
 
     activateCallback!(game,:wiggle)
 
@@ -216,7 +215,6 @@ function stateEndBattle!(game::GameState,args::Tuple)   #,state::BattleStateWild
     stateCloseBattle!(game)
 
     game.battle.active = false
-    stateBattleStage!(game,0)
     game.ctrl.input.battle.m1 = false
     game.ctrl.input.battle.m2 = false
     game.ctrl.input.battle.s1 = 0

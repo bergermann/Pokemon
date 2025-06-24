@@ -20,8 +20,6 @@ function flee!(game::GameState,state::BattleStateWild)
         return
     end
     
-    stateBattleStage!(game,10)
-
     state.pkmn1.command = CommandFlee(
         (state.pkmn1.pkmn.stats.rv[6]*128/max(state.pkmn2.pkmn.stats.rv[6],1)+
             30*state.counters.flee)%256 > 0*rand(UInt8)
@@ -44,8 +42,6 @@ function flee!(game::GameState,state::BattleStateTrainerSolo)
 end
 
 function stateBattleFleeBlocked!(game::GameState,args::Tuple)
-    stateBattleStage!(game,1)
-
     game.ctrl.input.battle.m1 = true
 
     switchSprite!(game,:cursor1)

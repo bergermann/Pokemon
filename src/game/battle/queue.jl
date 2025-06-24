@@ -1,5 +1,89 @@
 
 
+
+function queueCheckStatus!(game::GameState,state::BattleStateWild)::Bool
+    F = false
+
+    if state[1].pkmn.stats.hp == 0
+        for i in Iterators.reverse(eachindex(state.actionqueue))
+            if state.actionqueue[i].id == :p1; popat!(state.actionqueue,i); end
+        end
+
+        push!(state.animqueue,BattleAnimation(
+            :p1,30,state[1].name*game.str[1][16],bfaint!,1
+        ))
+
+        state[1].pkmn.stats.hp = -1
+        state[1].pkmn.status = 0x06
+        # state[1].forceswitch = true
+
+        F = true
+    end
+
+    if state[2].pkmn.stats.hp == 0
+        for i in Iterators.reverse(eachindex(state.actionqueue))
+            if state.actionqueue[i].id == :p2; popat!(state.actionqueue,i); end
+        end
+
+        push!(state.animqueue,BattleAnimation(
+            :p2,120,state[2].name*game.str[1][16],bfaint!,2
+        ))
+
+        push!(state.animqueue,BattleAnimation(
+            :p1,60,state[1].name*game.str[1][17]*
+            string(calcXpDrop1(state,state[1],state[2]))*game.str[1][18],
+            banimEmpty!,1
+        ))
+
+        state[2].pkmn.stats.hp = -1
+        state[2].pkmn.status = 0x06
+
+        if state[1].pkmn.stats.level < 0x64
+            queueCheckXp!(game,state)
+        end
+
+        game.n[:animbattle].c = -3
+
+        F = true
+    end
+
+    if state.caught
+        for i in Iterators.reverse(eachindex(state.actionqueue))
+            if state.actionqueue[i].id == :p2; popat!(state.actionqueue,i); end
+        end
+
+        push!(state.animqueue,BattleAnimation(
+            :p1,60,state[1].name*game.str[1][17]*
+                string(calcXpDrop1(state,state[1],state[2]))*game.str[1][18],
+            banimEmpty!,1
+        ))
+
+        if state[1].pkmn.stats.level < 0x64
+            queueCheckXp!(game,state)
+        end
+
+        if game.p.pokemon.idx < 6
+            push!(state.animqueue,BattleAnimation(
+                :p1,60,state[2].name*game.str[1][43],
+                banimEmpty!,1
+            ))
+        else
+            push!(state.animqueue,BattleAnimation(
+                :p1,60,state[2].name*game.str[1][44],
+                banimEmpty!,1
+            ))
+        end
+
+        state.caught = false
+
+        addPokemon!(game,state[2].pkmn)
+
+        F = true
+    end
+
+    return F
+end
+
 function queueSetupActions!(game::GameState,state::BattleStateWild)
     for i in 1:state.actionqueue.idx
         pop!(state.actionqueue)
@@ -271,7 +355,7 @@ end
 function queueFlee!(game::GameState,state::BattleState,user::PkmnBattle)
     if state.actionqueue[1].user == 1
         if user.command.success
-            state.stage = 250
+            game.n[:animbattle].c = -3
 
             push!(state.animqueue,BattleAnimation(
                 :p1,120,game.str[1][19],banimEmpty!,0
@@ -284,7 +368,7 @@ function queueFlee!(game::GameState,state::BattleState,user::PkmnBattle)
             ))
         end
     else
-        state.stage = 250
+        game.n[:animbattle].c = -3
 
         push!(state.animqueue,BattleAnimation(
             :p2,120,game.str[1][25],banimEmpty!,0
@@ -297,104 +381,6 @@ end
 
 
 
-
-function queueCheckStatus!(game::GameState,state::BattleStateWild)::Bool
-    F = false
-
-    if state[1].pkmn.stats.hp == 0
-        F = false
-
-        for i in eachindex(findall(x->x.id==:p1,
-                state.actionqueue[1:state.actionqueue.idx]))
-            popat!(state.actionqueue,:p1)
-        end
-
-        push!(state.animqueue,BattleAnimation(
-            :p1,30,state[1].name*game.str[1][16],bfaint!,1
-        ))
-
-        state[1].pkmn.stats.hp = -1
-        state[1].pkmn.status = 0x06
-
-        # push!(state.animqueue,BattleAnimation(
-        #     id,128,game.str[1][24]*getPkmnName(game,game.p.pokemon[target])*".",
-        #     bswitchIn!,user
-        # ))
-
-        F = true
-    end
-
-    if state[2].pkmn.stats.hp == 0
-        F = false
-
-        for i in eachindex(findall(x->x.id==:p2,
-                state.actionqueue[1:state.actionqueue.idx]))
-            popat!(state.actionqueue,:p2)
-        end
-
-        push!(state.animqueue,BattleAnimation(
-            :p2,120,state[2].name*game.str[1][16],bfaint!,2
-        ))
-
-        push!(state.animqueue,BattleAnimation(
-            :p1,60,state[1].name*game.str[1][17]*
-            string(calcXpDrop1(state,state[1],state[2]))*game.str[1][18],
-            banimEmpty!,1
-        ))
-
-        state[2].pkmn.stats.hp = -1
-        state[2].pkmn.status = 0x06
-
-        if state[1].pkmn.stats.level < 0x64
-            queueCheckXp!(game,state)
-        end
-
-        state.stage = 251
-
-        F = true
-    end
-
-    if state.caught
-        F = false
-
-        for i in eachindex(findall(x->x.id==:p2,
-                state.actionqueue[1:state.actionqueue.idx]))
-            popat!(state.actionqueue,:p2)
-        end
-
-        push!(state.animqueue,BattleAnimation(
-            :p1,60,state[1].name*game.str[1][17]*
-                string(calcXpDrop1(state,state[1],state[2]))*game.str[1][18],
-            banimEmpty!,1
-        ))
-
-        if state[1].pkmn.stats.level < 0x64
-            queueCheckXp!(game,state)
-        end
-
-        if game.p.pokemon.idx < 6
-            push!(state.animqueue,BattleAnimation(
-                :p1,60,state[2].name*game.str[1][43],
-                banimEmpty!,1
-            ))
-        else
-            push!(state.animqueue,BattleAnimation(
-                :p1,60,state[2].name*game.str[1][44],
-                banimEmpty!,1
-            ))
-        end
-
-        state.caught = false
-
-        addPokemon!(game,state[2].pkmn)
-
-        state.stage = 252
-
-        F = true
-    end
-
-    return F
-end
 
 function checkFlee(state::BattleStateWild)::Bool
     if state.pkmn1.secstatus.escapeblock

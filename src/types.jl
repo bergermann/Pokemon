@@ -222,7 +222,8 @@ function Base.setindex!(a::ArrayList, x, id::Symbol)
 end
 
 function Base.eachindex(a::ArrayList)
-    return eachindex(a.data[1:a.idx])
+    # return eachindex(a.data[1:a.idx])
+    return Base.OneTo(a.idx)
 end
 
 function Base.push!(a::ArrayList, x)

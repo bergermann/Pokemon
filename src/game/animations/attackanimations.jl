@@ -300,30 +300,11 @@ function bfaint!(game::GameState,(target,)::Tuple{Int})
 
         killCC!(game,:faint)
 
-        # if checkContinueFight!(game)
-        #     stateForceSwitch!(game)
-        # else
-
-        # end
-
         return
     end
 
     game.n[:faint].c += 1
 
-    return
-end
-
-function stateForceSwitch!(game::GameState)
-    deactivateCallback!(game,:animqueue)
-    deactivateCallback!(game,:actionqueue)
-
-    lockInput!(game)
-
-    createCC!(game,:scenet,sceneTransition!,
-        (16,8,F(stateBagsOpen!,(game.ctrl.input.menu.battlebags,)),
-            F(stateBagsCtrls!)); active=true,n=1)
-    
     return
 end
 

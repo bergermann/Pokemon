@@ -63,8 +63,8 @@ function stateOpenBattle!(game::GameState)
     createSprite!(game,:tag2, :tagopp,1,1,-58,-50,10,3; active=true)
 
     b1 = getHealthBar(p1); b2 = getHealthBar(p2)
-    createSprite!(game, :hp1,:health1,3,1, 56, 12,10,4; wscale=0.,active=true)
-    createSprite!(game, :hp2,:health1,3,1,-69,-46,10,4; wscale=0.,active=true)
+    createSprite!(game, :hp1,:health1,1,3, 56, 12,10,4; wscale=0.,active=true)
+    createSprite!(game, :hp2,:health1,1,3,-69,-46,10,4; wscale=0.,active=true)
     setHPBar!(game,:hp1,b1,56); setHPBar!(game,:hp2,b2,-69)
 
     createSprite!(game,  :xp,     :xp,1,1, 40, 28,10,4; wscale=0.,hscale=2.,active=true)

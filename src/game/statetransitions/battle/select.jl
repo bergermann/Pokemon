@@ -11,6 +11,15 @@ function stateStartBattleAnim!(game::GameState,args::Tuple{})
     return
 end
 
+function stateResumeBattleAnim!(game::GameState,args::Tuple{})
+    deactivateCallback!(game,:wiggle); resetWiggle!(game)
+    activateCallback!(game,:animbattle); game.n[:animbattle].c = -1
+
+    activateText!(game,:dialogue); setText!(game,:dialogue,"")
+
+    return
+end
+
 function stateBattleAttackSelected!(game::GameState)
     game.battle.state.pkmn1.command = CommandAttack(game.ctrl.input.battle.s2+1)
     game.battle.state.pkmn2.command = battleChoiceWild(game)

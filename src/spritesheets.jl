@@ -20,7 +20,6 @@ const spritesheets = Base.ImmutableDict(
     :mc1        => SSD( 32, 32, 9,  1,"main1.png"),
     :npcs_all   => SSD( 16, 32, 9,128,"npcs_all.png"),
     :objects    => SSD( 16, 16, 1, 64,"objects.png"),
-    # :healballs  => SSD(  8,  8, 5,  6,"healballs.png"),
 
     # menudex
     :dexwheel   => SSD(110,110, 1,  1,"menudex/wheel.png"),

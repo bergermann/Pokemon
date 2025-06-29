@@ -181,27 +181,16 @@ function animBattlePhaseWild!(game::GameState,args::Tuple{})
     # -2: advance queue
     # -3: exit queue
 
-    if game.n[:animbattle].c < 0 
-        f = queueCheckStatus!(game,game.battle.state)
-        if f; game.n[:animbattle].c = 1; end
-    end
-
-    if game.n[:animbattle].c == -1 # set up
-        if game.battle.state.actionqueue.idx == 0
-            stateEndBattlePhase!(game); return
-        end
-
-        queueSetupAnimation!(game,game.battle.state)
-
-        game.n[:animbattle].c = 1
+    if game.n[:animbattle].c == -1 # set up animation queue
+        queueSetupAnimation!(game,game.battle.state); game.n[:animbattle].c = 1
     elseif game.n[:animbattle].c == -2  # advance queue
         popfirst!(game.battle.state.animqueue)
 
-        if game.battle.state.animqueue.idx == 0
-            game.n[:animbattle].c = -1
-
-            if game.battle.state.actionqueue.idx != 0
-                popfirst!(game.battle.state.actionqueue)
+        if game.battle.state.animqueue.idx == 0 && !queueCheckStatus!(game,game.battle.state)
+            if game.battle.state.actionqueue.idx == 0
+                stateEndBattlePhase!(game,game.battle.state)
+            else
+                game.n[:animbattle].c = -1
             end
 
             return
@@ -218,8 +207,6 @@ function animBattlePhaseWild!(game::GameState,args::Tuple{})
 
         return
     end
-
-    # queueCheckStatus!(game,game.battle.state)
 
     if game.n[:animbattle].c == 1
         setText!(game,:dialogue,game.battle.state.animqueue[1].str)

@@ -45,26 +45,30 @@ function inputMenuPkmn!(game::GameState,inputs::Inputs)
 end
 
 function switchSlot!(game::GameState,from::Int,to::Int)
+    s = game.ctrl.input.menu.menupkmn.swap
+
     if from == game.p.pokemon.idx+1
         setSpriteFrame!(game,:exit,1)
         setSpriteFrame!(game,:ballexit,1)
     else
-        setSprite!(game,mplabels[from].s,1+(game.ctrl.input.menu.menupkmn.swap==from),1)
+        idx = 1+(s==from)+2*isfainted(game,from)*(s!=from)
+
+        setSprite!(game,mplabels[from].s,idx,1)
         setSpriteFrame!(game,mplabels[from].b,1)
-        if from != 1
-            moveSpriteW!(game,mplabels[from].ic,-4)
-        end
+
+        if from != 1; moveSpriteW!(game,mplabels[from].ic,-4); end
     end
 
     if to == game.p.pokemon.idx+1
         setSpriteFrame!(game,:exit,2)
         setSpriteFrame!(game,:ballexit,2)
     else
-        setSprite!(game,mplabels[to].s,1+(game.ctrl.input.menu.menupkmn.swap!=0),2)
+        idx = 1+(s!=0)+2*isfainted(game,to)*(s==0)
+        
+        setSprite!(game,mplabels[to].s,idx,2)
         setSpriteFrame!(game,mplabels[to].b,2)
-        if to != 1
-            moveSpriteW!(game,mplabels[to].ic,4)
-        end
+
+        if to != 1; moveSpriteW!(game,mplabels[to].ic,4); end
     end
 
     return
@@ -74,12 +78,12 @@ function inputTeam!(game::GameState,inputs::Inputs)
     if inputs.A.press
         inputTeamAction!(game)
     elseif inputs.B.press
+        if game.battle.active && game.battle.state.forceswitch1; return; end
+
         lockInput!(game)
 
         createCC!(game,:scenet,sceneTransition!,(16,8,
-            F(statePkmnClose!),F()); active=true,n=1)
-
-        return
+            F(statePkmnClose!),F0); active=true,n=1)
     elseif inputs.down.press
         if game.ctrl.input.menu.menupkmn.select == game.p.pokemon.idx+1
             switchSlot!(game,game.ctrl.input.menu.menupkmn.select,1)
@@ -119,6 +123,8 @@ end
 
 function inputTeamAction!(game::GameState)
     if game.ctrl.input.menu.menupkmn.select == game.p.pokemon.idx+1
+        if game.battle.active && game.battle.state.forceswitch1; return; end
+        
         lockInput!(game)
 
         createCC!(game,:scenet,sceneTransition!,(16,8,F(statePkmnClose!),F0); active=true,n=1)
@@ -151,17 +157,26 @@ function inputTeamAction!(game::GameState)
 end
 
 function pkmnAction!(game::GameState,args::Tuple{})
+    n = game.ctrl.input.menu.menupkmn.select
+    
     if game.battle.active
-        if game.p.pokemon[game.ctrl.input.menu.menupkmn.select].stats.hp > 0 &&
-                game.ctrl.input.menu.menupkmn.select > 1 && !game.battle.state[1].forceswitch
-
+        if n > 1 && game.p.pokemon[n].stats.hp > 0
             if game.ctrl.input.choice.sel == 1
                 lockInput!(game)
-                game.ctrl.input.menu.pkmn = false
-                stateBattlePkmnSelected!(game)
+                
+                if game.battle.state.forceswitch1
+                    swap!(game.p.pokemon,1,n)
+                    game.battle.teamperm[1], game.battle.teamperm[n] = 
+                        game.battle.teamperm[n], game.battle.teamperm[1]
 
-                createCC!(game,:scenet,sceneTransition!,
-                    (16,8,F(statePkmnClose!),F(stateStartBattleAnim!)); active=true,n=1)
+                    createCC!(game,:scenet,sceneTransition!,
+                        (16,8,F(statePkmnClose!),F(stateResumeBattleAnim!)); active=true,n=1)
+                else
+                    stateBattlePkmnSelected!(game)
+
+                    createCC!(game,:scenet,sceneTransition!,
+                        (16,8,F(statePkmnClose!),F(stateStartBattleAnim!)); active=true,n=1)
+                end
                 
                 return
             elseif game.ctrl.input.choice.sel == 2
@@ -194,9 +209,9 @@ function pkmnAction!(game::GameState,args::Tuple{})
             return
         elseif game.ctrl.input.choice.sel == 2
             game.ctrl.input.menu.menupkmn.swapping = true
-            game.ctrl.input.menu.menupkmn.swap = game.ctrl.input.menu.menupkmn.select
+            game.ctrl.input.menu.menupkmn.swap = n
 
-            setSprite!(game,Symbol(:slot,game.ctrl.input.menu.menupkmn.select),2,2)
+            setSprite!(game,Symbol(:slot,n),2,2)
 
             switchText!(game,:choose); switchFrame!(game,:choose)
             switchText!(game,:info); switchFrame!(game,:info)

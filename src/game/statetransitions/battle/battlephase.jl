@@ -1,19 +1,25 @@
 
 
 
-function stateEndBattlePhase!(game::GameState)
-    deactivateCallback!(game,:animbattle)
+function stateEndBattlePhase!(game::GameState,state::BattleStateWild)
+    # if state[1].pkmn.stats.hp < 0
+    if state.forceswitch1
+        if checkContinueFight(game)
+            deactivateCallback!(game,:animbattle)
 
-    if game.battle.state[1].forceswitch
-        if !checkContinueFight(game)
             lockInput!(game)
 
             createCC!(game,:scenet,sceneTransition!,
                 (16,8,F(stateBattlePkmnOpen!),F(statePkmnCtrls!)); active=true,n=1)
         else
-            stateBattleLost!(game)
+            # stateBattleLost!(game)
+            game.n[:animbattle].c = -3
         end
+    elseif state[2].pkmn.stats.hp < 0 || state.caught2
+        game.n[:animbattle].c = -3
     else
+        deactivateCallback!(game,:animbattle)
+
         game.battle.state.pkmn1.command = CC0
         game.battle.state.pkmn2.command = CC0
 
@@ -38,17 +44,14 @@ function stateForceSwitch!(game::GameState)
     return
 end
 
-# function checkSwitch(game::GameState)
-    
-#     return 
-# end
-
 function checkContinueFight(game::GameState)
     c = false
 
     for i in eachindex(game.p.pokemon)
         if game.p.pokemon[i].status != 0x06; c = true; end
     end
+
+    println("can continue fight: ",c)
 
     return c
 end

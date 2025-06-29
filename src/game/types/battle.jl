@@ -215,8 +215,6 @@ mutable struct PkmnBattle
     attack::Attack
     lastattack::Int
 
-    forceswitch::Bool
-
     function PkmnBattle(pkmn::Pkmn)
         new(
             pkmn,           #pkmn
@@ -241,7 +239,6 @@ mutable struct PkmnBattle
             CC0,           #attackchoice
             Attack(),
             0,
-            false
         )
     end
 
@@ -354,11 +351,15 @@ mutable struct BattleStateWild <: BattleState
     animqueue::ArrayList{BattleAnimation}
     actionqueue::ArrayList{BattleAction}
 
-    caught::Bool
+    caught1::Bool
+    caught2::Bool
+
+    forceswitch1::Bool
+    forceswitch2::Bool
 
     function BattleStateWild(counters,turn,env,pkmn1,pkmn2)
         new(counters,turn,env,pkmn1,pkmn2,
-            ArrayList(BattleAnimation,32),ArrayList(BattleAction,8),false)
+            ArrayList(BattleAnimation,32),ArrayList(BattleAction,8),false,false)
     end
 end
 

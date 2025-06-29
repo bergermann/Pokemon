@@ -50,12 +50,14 @@ function animMenuPkmnSwap!(game::GameState,(p1,p2)::Tuple{Int,Int})
         setText!(game,mplabels[p1].n,
             pkmnName(game,game.p.pokemon[p1])*"\\   Lv.$(game.p.pokemon[p1].stats.level)")
         setText!(game,mplabels[p1].h,
-            string(game.p.pokemon[p1].stats.hp)*"/"*string(game.p.pokemon[p1].stats.rv[1]))
+            string(game.p.pokemon[p1].stats.hp)*"/"*string(game.p.pokemon[p1].stats.rv[1]);
+            align=1)
         
         setText!(game,mplabels[p2].n,
             pkmnName(game,game.p.pokemon[p2])*"\\   Lv.$(game.p.pokemon[p2].stats.level)")
         setText!(game,mplabels[p2].h,
-            string(game.p.pokemon[p2].stats.hp)*"/"*string(game.p.pokemon[p2].stats.rv[1]))
+            string(game.p.pokemon[p2].stats.hp)*"/"*string(game.p.pokemon[p2].stats.rv[1]);
+            align=1)
 
         swapSprites!(game,mplabels[p1].ic,mplabels[p2].ic)
         swapSprites!(game,mplabels[p1].i,mplabels[p2].i)

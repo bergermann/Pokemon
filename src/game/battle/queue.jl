@@ -4,22 +4,32 @@
 function queueCheckStatus!(game::GameState,state::BattleStateWild)::Bool
     F = false
 
-    if state[1].pkmn.stats.hp == 0
+    if state[1].pkmn.stats.hp == 0 && !state.forceswitch1
         for i in Iterators.reverse(eachindex(state.actionqueue))
             if state.actionqueue[i].id == :p1; popat!(state.actionqueue,i); end
         end
 
         push!(state.animqueue,BattleAnimation(
-            :p1,30,state[1].name*game.str[1][16],bfaint!,1
+            :p1,120,state[1].name*game.str[1][16],bfaint!,1
         ))
 
-        state[1].pkmn.stats.hp = -1
+        # state[1].pkmn.stats.hp = -1
         state[1].pkmn.status = 0x06
-        # state[1].forceswitch = true
+        state.forceswitch1 = true
+
+        if !checkContinueFight(game)
+            push!(state.animqueue,BattleAnimation(
+                :p1,120,game.p.name*game.str[1][27],banimEmpty!,1,
+            ))
+
+            push!(state.animqueue,BattleAnimation(
+                :p1,120,game.p.name*game.str[1][28],banimEmpty!,1,
+            ))
+        end
 
         F = true
     end
-
+    
     if state[2].pkmn.stats.hp == 0
         for i in Iterators.reverse(eachindex(state.actionqueue))
             if state.actionqueue[i].id == :p2; popat!(state.actionqueue,i); end
@@ -42,15 +52,11 @@ function queueCheckStatus!(game::GameState,state::BattleStateWild)::Bool
             queueCheckXp!(game,state)
         end
 
-        game.n[:animbattle].c = -3
-
         F = true
     end
 
-    if state.caught
-        for i in Iterators.reverse(eachindex(state.actionqueue))
-            if state.actionqueue[i].id == :p2; popat!(state.actionqueue,i); end
-        end
+    if state.caught1
+        empty!(state.actionqueue)
 
         push!(state.animqueue,BattleAnimation(
             :p1,60,state[1].name*game.str[1][17]*
@@ -74,7 +80,8 @@ function queueCheckStatus!(game::GameState,state::BattleStateWild)::Bool
             ))
         end
 
-        state.caught = false
+        state.caught1 = false
+        state.caught2 = true
 
         addPokemon!(game,state[2].pkmn)
 
@@ -85,9 +92,7 @@ function queueCheckStatus!(game::GameState,state::BattleStateWild)::Bool
 end
 
 function queueSetupActions!(game::GameState,state::BattleStateWild)
-    for i in 1:state.actionqueue.idx
-        pop!(state.actionqueue)
-    end
+    empty!(state.actionqueue)
 
     push!(state.actionqueue,BattleAction(
         :p1,getCommandPriority(state,1),
@@ -146,8 +151,10 @@ function queueSetupAnimation!(game::GameState,state::BattleStateWild)
         queueFlee!(game,state,state[state.actionqueue[1].user])
     end
 
-    queueStatusCond!(state)
-    queueWeather!(state)
+    popfirst!(game.battle.state.actionqueue)
+
+    # queueStatusCond!(state)
+    # queueWeather!(state)
 
     return
 end
@@ -185,7 +192,6 @@ function queueAttack!(game::GameState,state::BattleState,
 
         return
     end
-
 
     push!(state.animqueue,BattleAnimation(
         id,60,"",bnoAnim!,target

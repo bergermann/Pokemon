@@ -56,7 +56,7 @@ function loadSpriteSheet!(game::GameState,name::Symbol,
     glBindBuffer(GL_ARRAY_BUFFER,0)
     glBindVertexArray(0)
 
-    checkError("loading sprite sheet $name 2")
+    # checkError("loading sprite sheet $name 2")
 
     return
 end

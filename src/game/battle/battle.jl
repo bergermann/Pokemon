@@ -11,7 +11,7 @@ function initBattleWild!(game::GameState)
     stateInitBattle!(game)
 
     data = findArea(game); idx = sample(fweights(data[:,4]))
-    lvl = UInt8(clamp(randN(data[idx,2],data[idx,3]),2,100))
+    lvl = UInt8(clamp(randN(data[idx,2],data[idx,3])+5,2,100))
 
     pb1 = PkmnBattle(game.p.pokemon[1],getPkmnName(game,activePkmn(game)))
     pb2 = PkmnBattle(generatePkmn(game,data[idx,1],lvl))

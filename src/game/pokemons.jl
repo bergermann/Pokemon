@@ -126,25 +126,32 @@ function generatePkmn(game::GameState,id::UInt16,level::UInt8)
 end
 
 function getHealthBar(pokemon::Pkmn)
-    return ceil(Int,48*pokemon.stats.hp/pokemon.stats.rv[1])
+    return clamp(ceil(Int,48*pokemon.stats.hp/pokemon.stats.rv[1]),0,48)
 end
 
 function getHealthBar(pokemon::Pkmn,hp::Int)
-    return ceil(Int,48*hp/pokemon.stats.rv[1])
+    return clamp(ceil(Int,48*hp/pokemon.stats.rv[1]),0,48)
 end
 
 function setHPBar!(game::GameState,spriteid::Symbol,value::Int,w0::Int)
     moveSpriteW!(game,spriteid,w0+div(value,2)+isodd(value),true)
     scaleSpriteW!(game,spriteid,Float64(value),true)
-
     setSpriteFrame!(game,spriteid,1+(value>12)+(value>24))
 
     return
 end
 
-# function getHealthBar(pokemon::Pkmn,hp::UInt16)
-#     return ceil(Int,48*hp/pokemon.stats.rv[1])
-# end
+
+
+function isfainted(pokemon::Pkmn)
+    return pokemon.status == 0x06
+end
+
+function isfainted(game::GameState,i::Int)
+    return game.p.pokemon[i].status == 0x06
+end
+
+
 
 function xpFormulas(level::UInt8,xptype::UInt8)
     n = UInt(level)

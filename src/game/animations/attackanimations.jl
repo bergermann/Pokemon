@@ -4,23 +4,23 @@ function banimEmpty!(game::GameState,target::Int)
 end
 
 function bnoAnim!(game::GameState,target::Int)
-    createCC!(game,:dmg,btakeDamage!,(target,); active=true)
+    createCC!(game,:dmg,btakeDamage!,(target,); active=true,n=1)
 
     return
 end
 
 function btakeDamage!(game::GameState,(target,)::Tuple{Int})    #length: 30
-    if game.n[:dmg].c == 0
+    if game.n[:dmg].c == 1
         switchSprite!(game,blabels[target].pkmn)
         moveSpriteH!(game,blabels[target].tag,-1)
-    elseif game.n[:dmg].c == 22
+    elseif game.n[:dmg].c == 23
         moveSpriteH!(game,blabels[target].tag,1)
-    elseif game.n[:dmg].c%4 == 0
+    elseif game.n[:dmg].c%4 == 1
         switchSprite!(game,blabels[target].pkmn)
         moveSpriteH!(game,blabels[target].tag,-2)
-    elseif game.n[:dmg].c%4 == 2
+    elseif game.n[:dmg].c%4 == 3
         moveSpriteH!(game,blabels[target].tag,2)
-    elseif game.n[:dmg].c == 23
+    elseif game.n[:dmg].c == 24
         killCC!(game,:dmg)
 
         return
@@ -32,19 +32,21 @@ function btakeDamage!(game::GameState,(target,)::Tuple{Int})    #length: 30
 end
 
 function bhpAnim!(game::GameState,target::Int)
-    createCC!(game,:hp,bhpAnim!,(target,); active=true,n=1)
-
-    return
-end
-
-function bhpAnim!(game::GameState,(target,)::Tuple{Int})
     p = game.battle.state[target]
 
     b1 = getHealthBar(p.pkmn,p.pkmn.stats.hp)
     b2 = getHealthBar(p.pkmn,p.pkmn.stats.hp-p.dmgt)
 
+    p.pkmn.stats.hp -= p.dmgt; @assert p.pkmn.stats.hp >= 0 "HP got below 0? it fucked up."
+
+    createCC!(game,:hp,bhpAnim!,(target,b1,b2); active=true,n=1)
+
+    return
+end
+
+function bhpAnim!(game::GameState,(target,b1,b2)::Tuple{Int,Int,Int})
     setHPBar!(game,mplabels[target].h,round(Int,b1+(b2-b1)*game.n[:hp].c/48),
-        +69*(1-target)+56*(2-target))
+        69*(1-target)+56*(2-target))
 
     # if target == 1
     #     setText!(game,:health1,
@@ -52,17 +54,7 @@ function bhpAnim!(game::GameState,(target,)::Tuple{Int})
     #         trunc(Int,dmg*(game.n[:hp].c)/48)))
     # end
     
-    if game.n[:hp].c == 48
-        p.pkmn.stats.hp -= p.dmgt
-
-        if p.pkmn.stats.hp < 0x0000   # fix
-            error("HP got below 0? it fucked up.")
-        end
-
-        killCC!(game,:hp)
-
-        return
-    end
+    if game.n[:hp].c == 48; killCC!(game,:hp); return; end
 
     game.n[:hp].c += 1
 
@@ -148,6 +140,8 @@ function bxpAnimLevelUp!(game::GameState,(levelups,xpnext,xplevel)::Tuple{Int,In
     return
 end
 
+
+
 function bthrowBall!(game::GameState,w::Int)
     createSprite!(game,:ball,:ballsb,game.battle.state[1].command.item.id,1,-128,0,0,5;
         active=true)
@@ -165,7 +159,7 @@ function bthrowBall!(game::GameState,args::Tuple{})
     elseif game.n[:throwball].c == 60
         setSpriteFrame!(game,:ball,2)
     elseif 64 < game.n[:throwball].c <= 84
-        s = 1-(game.n[:switchout].c-64)/20
+        s = 1-(game.n[:throwball].c-64)/20
         scaleSprite!(game,:pkmn2,s,s,true)
     elseif game.n[:throwball].c == 90
         deactivateSprite!(game,:pkmn2)
@@ -245,6 +239,8 @@ function bbreakBall!(game::GameState,args::Tuple{})
 end
 
 function bcaughtBall!(game::GameState,w::Int)
+    game.battle.state.caught1 = true
+
     createCC!(game,:caughtball,bcaughtBall!,(); active=true,n=1)
 
     return
@@ -264,8 +260,6 @@ function bcaughtBall!(game::GameState,args::Tuple{})
         killSprite!(game,:ball)
         killCC!(game,:caughtball)
 
-        game.battle.state.caught = true
-
         return
     end
 
@@ -279,21 +273,21 @@ end
 
 
 function bfaint!(game::GameState,target::Int)
-    createCC!(game,:faint,bfaint!,(target,); active=true)
+    createCC!(game,:faint,bfaint!,(target,); active=true,n=1)
 
-    game.battle.state[target].forceswitch = true
+    # game.battle.state[target].forceswitch = true
 
     return
 end
 
 function bfaint!(game::GameState,(target,)::Tuple{Int})
-    if 60 <= game.n[:faint].c <= 75
+    if 60 < game.n[:faint].c <= 75
         moveSpriteH!(game,blabels[target].pkmn,4)
     end
 
     if game.n[:faint].c == 75
         deactivateSprite!(game,blabels[target].pkmn)
-    elseif game.n[:faint].c == 119
+    elseif game.n[:faint].c == 120
         deactivateSprite!(game,blabels[target].tag)
         deactivateText!(game,blabels[target].name)
         deactivateText!(game,blabels[target].level)
@@ -307,6 +301,8 @@ function bfaint!(game::GameState,(target,)::Tuple{Int})
 
     return
 end
+
+
 
 function bswitchOut!(game::GameState,user::Int)
     createCC!(game,:switchout,bswitchOut!,(); active=true,n=1)
@@ -354,6 +350,8 @@ function bswitchOut!(game::GameState,args::Tuple{})
 
     return
 end
+
+
 
 function bswitchIn!(game::GameState,user::Int)
     createCC!(game,:switchin,bswitchIn!,(); active=true,n=1)

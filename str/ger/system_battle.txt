@@ -24,8 +24,8 @@ Genug,
 Los, 
 Der Gegner ist geflohen.
  erreicht Lv. 
-
-
+ hat kein kampffähiges Pokémon mehr.
+ wird ohnmächtig...
 
 
  setzt 

@@ -287,6 +287,7 @@ function bfaint!(game::GameState,(target,)::Tuple{Int})
 
     if game.n[:faint].c == 75
         deactivateSprite!(game,blabels[target].pkmn)
+        # deleteSpriteSheet!(game,blabels[target].pkmn)
     elseif game.n[:faint].c == 120
         deactivateSprite!(game,blabels[target].tag)
         deactivateText!(game,blabels[target].name)
@@ -401,6 +402,7 @@ function bswitchIn!(game::GameState,args::Tuple{})
         rotateSprite!(game,:ball,18.)
     elseif game.n[:switchin].c == 40
         moveSprite!(game,:ball,-48,24,true)
+        rotateSprite!(game,:ball,0.,true)
         setSpriteFrame!(game,:ball,2)
     elseif game.n[:switchin].c == 48
         activateSprite!(game,:pkmn1)

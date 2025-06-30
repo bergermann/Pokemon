@@ -13,7 +13,7 @@ end
 
 function stateResumeBattleAnim!(game::GameState,args::Tuple{})
     deactivateCallback!(game,:wiggle); resetWiggle!(game)
-    activateCallback!(game,:animbattle); game.n[:animbattle].c = -1
+    activateCallback!(game,:animbattle); game.n[:animbattle].c = 1
 
     activateText!(game,:dialogue); setText!(game,:dialogue,"")
 

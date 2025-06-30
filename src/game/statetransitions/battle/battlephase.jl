@@ -51,7 +51,5 @@ function checkContinueFight(game::GameState)
         if game.p.pokemon[i].status != 0x06; c = true; end
     end
 
-    println("can continue fight: ",c)
-
     return c
 end

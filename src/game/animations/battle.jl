@@ -181,7 +181,7 @@ function animBattlePhaseWild!(game::GameState,args::Tuple{})
     # -2: advance queue
     # -3: exit queue
 
-    if game.n[:animbattle].c == -1 # set up animation queue
+    if game.n[:animbattle].c == -1      # set up animation queue
         queueSetupAnimation!(game,game.battle.state); game.n[:animbattle].c = 1
     elseif game.n[:animbattle].c == -2  # advance queue
         popfirst!(game.battle.state.animqueue)
@@ -197,7 +197,7 @@ function animBattlePhaseWild!(game::GameState,args::Tuple{})
         end
 
         game.n[:animbattle].c = 1
-    elseif game.n[:animbattle].c == -3 # exit queue, end battle
+    elseif game.n[:animbattle].c == -3  # exit queue, end battle
         deactivateCallback!(game,:animbattle)
 
         lockInput!(game)
@@ -208,7 +208,7 @@ function animBattlePhaseWild!(game::GameState,args::Tuple{})
         return
     end
 
-    if game.n[:animbattle].c == 1
+    if game.n[:animbattle].c == 1       # play animqueue
         setText!(game,:dialogue,game.battle.state.animqueue[1].str)
         
         game.battle.state.animqueue[1].anim(game,game.battle.state.animqueue[1].target)

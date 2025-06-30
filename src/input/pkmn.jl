@@ -165,9 +165,19 @@ function pkmnAction!(game::GameState,args::Tuple{})
                 lockInput!(game)
                 
                 if game.battle.state.forceswitch1
+                    game.battle.state.forceswitch1 = false
+
                     swap!(game.p.pokemon,1,n)
                     game.battle.teamperm[1], game.battle.teamperm[n] = 
                         game.battle.teamperm[n], game.battle.teamperm[1]
+
+                    game.battle.state.pkmn1 = PkmnBattle(game.p.pokemon[1],
+                        getPkmnName(game,activePkmn(game)))
+
+                    push!(game.battle.state.animqueue,BattleAnimation(
+                        :p1,128,"Los! "*getPkmnName(game,game.p.pokemon[1])*"!",
+                        bswitchIn!,1
+                    ))
 
                     createCC!(game,:scenet,sceneTransition!,
                         (16,8,F(statePkmnClose!),F(stateResumeBattleAnim!)); active=true,n=1)

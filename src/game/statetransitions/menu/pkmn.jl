@@ -19,7 +19,7 @@ function drawSlotMain!(game::GameState)
 
     createSprite!(game,l.s,  :smain,1+2*isfainted(p),2,-73,-30,0,1; active=true)
     createSprite!(game,l.st,:status,   Int(p.status),1,-88,-11,1,2; active=true)
-    createSprite!(game,l.g, :gender,   Int(p.gender),1,-70,-30,3,3; active=true)
+    createSprite!(game,l.g, :gender,   Int(p.gender),1,-48,-28,3,3; active=true)
     createSprite!(game,l.b, :ballsm,1,2,-108,-50,0,2; active=true)
     createSprite!(game,l.i,   :item,1,1, -99,-29,2,4; active=true)
     createSprite!(game,l.h,:health1,1,1, -88,-20,3,2; active=true)

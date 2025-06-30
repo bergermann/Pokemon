@@ -42,9 +42,11 @@ function stateOpenBattle!(game::GameState)
         :xp
     )
 
-    p1 = game.battle.state.pkmn1.pkmn
+    state = game.battle.state; fs1 = state.forceswitch1; fs2 = state.forceswitch2
+
+    p1 = state.pkmn1.pkmn
     path1 = "battle/battlers/back/$(p1.shiny ? "shiny" : "normal")/$(p1.id).png"
-    p2 = game.battle.state.pkmn2.pkmn
+    p2 = state.pkmn2.pkmn
     path2 = "battle/battlers/front/$(p2.shiny ? "shiny" : "normal")/$(p2.id).png"
 
     loadSpriteSheet!(game,path1,:pkmn1,64,64,2; maxsprites=1)
@@ -53,8 +55,8 @@ function stateOpenBattle!(game::GameState)
     createSprite!(game,:pad1,:pads,2,1,-56, 16,10,1; active=true)
     createSprite!(game,:pad2,:pads,1,1, 56,-16,10,1; active=true)
 
-    createSprite!(game,:pkmn1,    :pkmn1,1,1,-48, 24,10,3; active=true)
-    createSprite!(game,:pkmn2,    :pkmn2,1,1, 56,-28,10,3; active=true)
+    createSprite!(game,:pkmn1,    :pkmn1,1,1,-48, 24,10,3; active=!fs1)
+    createSprite!(game,:pkmn2,    :pkmn2,1,1, 56,-28,10,3; active=!fs2)
     
     createSprite!(game,:cursor1,:cursors,1,4,  12,49,10,5; active=false)
     createSprite!(game,:cursor2,:cursors,1,4,-107,49,10,6; active=false)

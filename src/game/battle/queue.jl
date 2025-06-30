@@ -13,7 +13,6 @@ function queueCheckStatus!(game::GameState,state::BattleStateWild)::Bool
             :p1,120,state[1].name*game.str[1][16],bfaint!,1
         ))
 
-        # state[1].pkmn.stats.hp = -1
         state[1].pkmn.status = 0x06
         state.forceswitch1 = true
 

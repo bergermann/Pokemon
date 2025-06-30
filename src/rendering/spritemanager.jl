@@ -475,6 +475,7 @@ function getSpritePosH(game::GameState,id::Symbol)
 end
 
 
+
 function getSpriteScale(game::GameState,id::Symbol)
     s = game.im.s.sprites[id]
 
@@ -491,4 +492,12 @@ function getSpriteScaleH(game::GameState,id::Symbol)
     s = game.im.s.sprites[id]
 
     return game.im.s.sheets[s.sheet].scale[2,s.slot]
+end
+
+
+
+function getSpriteRot(game::GameState,id::Symbol)
+    s = game.im.s.sprites[id]
+
+    return game.im.s.sheets[s.sheet].rot[s.slot]
 end

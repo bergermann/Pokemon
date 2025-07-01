@@ -36,6 +36,8 @@ end
 mutable struct CommandChoose <: BattleCommand end
 const CC0 = CommandChoose()
 
+mutable struct CommandNone <: BattleCommand end
+const CN0 = CommandNone()
 
 
 

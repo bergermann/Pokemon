@@ -61,15 +61,15 @@ function stateOpenBattle!(game::GameState)
     createSprite!(game,:cursor1,:cursors,1,4,  12,49,10,5; active=false)
     createSprite!(game,:cursor2,:cursors,1,4,-107,49,10,6; active=false)
     
-    createSprite!(game,:tag1, :tagown,1,1, 60, 12,10,3; active=true)
-    createSprite!(game,:tag2, :tagopp,1,1,-58,-50,10,3; active=true)
+    createSprite!(game,:tag1, :tagown,1,1, 60, 12,10,3; active=!fs1)
+    createSprite!(game,:tag2, :tagopp,1,1,-58,-50,10,3; active=!fs2)
 
     b1 = getHealthBar(p1); b2 = getHealthBar(p2)
-    createSprite!(game, :hp1,:health1,1,3, 56, 12,10,4; wscale=0.,active=true)
-    createSprite!(game, :hp2,:health1,1,3,-69,-46,10,4; wscale=0.,active=true)
+    createSprite!(game, :hp1,:health1,1,3, 56, 12,10,4; wscale=0.,active=!fs1)
+    createSprite!(game, :hp2,:health1,1,3,-69,-46,10,4; wscale=0.,active=!fs2)
     setHPBar!(game,:hp1,b1,56); setHPBar!(game,:hp2,b2,-69)
 
-    createSprite!(game,  :xp,     :xp,1,1, 40, 28,10,4; wscale=0.,hscale=2.,active=true)
+    createSprite!(game,  :xp,     :xp,1,1, 40, 28,10,4; wscale=0.,hscale=2.,active=!fs1)
     setXPBar!(game,:xp,getXPBar(p1,0),40)
     
     createFrame!(game, :choice,13,4,   0,32,5; active=false)
@@ -80,14 +80,14 @@ function stateOpenBattle!(game::GameState)
         [0xff,0xff,0xff,0xff],[0x6b,0x5a,0x73,0xff]; active=false,maxchar=128)
 
     createText!(game,:name1,1,24,-4,4,pkmnName(game,p1),
-        [0x42,0x42,0x42,0xff],[0xde,0xd6,0xb5,0xff]; maxchar=16)
+        [0x42,0x42,0x42,0xff],[0xde,0xd6,0xb5,0xff]; maxchar=16,active=!fs1)
     createText!(game, :lvl1,1,93,-4,4,string(p1.stats.level),
-        [0x42,0x42,0x42,0xff],[0xde,0xd6,0xb5,0xff]; maxchar=3)
+        [0x42,0x42,0x42,0xff],[0xde,0xd6,0xb5,0xff]; maxchar=3,active=!fs1)
 
     createText!(game,:name2,1,-101,-62,4,pkmnName(game,p2),
-        [0x42,0x42,0x42,0xff],[0xde,0xd6,0xb5,0xff]; maxchar=16)
+        [0x42,0x42,0x42,0xff],[0xde,0xd6,0xb5,0xff]; maxchar=16,active=!fs2)
     createText!(game,:lvl2, 1, -33,-62,4,string(p2.stats.level),
-        [0x42,0x42,0x42,0xff],[0xde,0xd6,0xb5,0xff]; maxchar=3)
+        [0x42,0x42,0x42,0xff],[0xde,0xd6,0xb5,0xff]; maxchar=3,active=!fs2)
 
     createText!(game,:choice1,4,16,41,5,game.str[1][1]*"\\"*game.str[1][3],
         [0x4a,0x4a,0x4a,0xff],[0xd6,0xd6,0xce,0xff]; active=false,hpad=2,maxchar=32)

@@ -366,6 +366,9 @@ function bswitchIn!(game::GameState,user::Int)
     bid = Int(game.battle.state.pkmn1.pkmn.ball)
     createSprite!(game,:ball,:ballsb,bid,1,-48-80,24,10,2; active=true)
 
+    activateSprite!(game,:tag1); activateSprite!(game,:hp1); activateSprite!(game,:xp);
+    activateText!(game,:name1); activateText!(game,:lvl1)
+
     moveSprite!(game,:tag1,60+128,12,true)
     moveSprite!(game, :hp1,56+128,12,true); setHPBar!(game,:hp1,getHealthBar(p1),56+128)
     moveSprite!(game,  :xp,40+128,12,true); setXPBar!(game,:xp,getXPBar(p1,0),40+128)

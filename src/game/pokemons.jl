@@ -153,6 +153,16 @@ end
 
 
 
+function hasitem(pokemon::Pkmn)
+    return pokemon.item > 0
+end
+
+function hasitem(game::GameState,i::Int)
+    return game.p.pokemon[i].item > 0
+end
+
+
+
 function xpFormulas(level::UInt8,xptype::UInt8)
     n = UInt(level)
 

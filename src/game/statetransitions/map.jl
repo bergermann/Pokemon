@@ -4,8 +4,9 @@
 function stateInitMapCtrls!(game::GameState,args::Tuple)
     unlockInput!(game)
 
-    game.ctrl.input.map = true
-    game.ctrl.input.move = true
+    game.ctrl.input.map = true; game.ctrl.input.move = true
+
+    return
 end
 
 function stateInitMap!(game::GameState)

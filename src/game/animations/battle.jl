@@ -202,8 +202,15 @@ function animBattlePhaseWild!(game::GameState,args::Tuple{})
 
         lockInput!(game)
 
-        createCC!(game,:scenet,sceneTransition!,
-            (32,8,F(stateEndBattle!),F(stateInitMapCtrls!)); active=true,n=1)
+        if checkContinueFight(game)
+            createCC!(game,:scenet,sceneTransition!,
+                (32,8,F(stateEndBattle!),F(stateInitMapCtrls!)); active=true,n=1)
+        else
+            game.ctrl.input.map = true; game.ctrl.input.move = true
+
+            createCC!(game,:scenet,sceneTransition!,
+                (32,8,F(stateEndBattle!),F0); active=true,n=1)
+        end
 
         return
     end

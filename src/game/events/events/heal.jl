@@ -1,6 +1,6 @@
 
-function eventHealCenter!(game::GameState,args::Tuple{})
-    if game.flags.general[0xc8]
+function eventHealCenter!(game::GameState,(ignore,)::Tuple{Bool})
+    if game.flags.general[0xc8]*!ignore
         stateSetDialogue!(game,game.str[2][5:5])
 
         return
@@ -23,6 +23,10 @@ function eventHealCenter!(game::GameState,args::Tuple{})
 
     return
 end
+
+eventHealCenter!(game::GameState,args::Tuple{}) = eventHealCenter!(game,(false,))
+    
+
 
 function animHealCenter!(game::GameState,(l,)::Tuple{Int})
     if game.n[:heal].c == 0

@@ -12,7 +12,6 @@ function stateEndBattlePhase!(game::GameState,state::BattleStateWild)
             createCC!(game,:scenet,sceneTransition!,
                 (16,8,F(stateBattlePkmnOpen!),F(statePkmnCtrls!)); active=true,n=1)
         else
-            # stateBattleLost!(game)
             game.n[:animbattle].c = -3
         end
     elseif state[2].pkmn.stats.hp < 0 || state.caught2
@@ -45,11 +44,13 @@ function stateForceSwitch!(game::GameState)
 end
 
 function checkContinueFight(game::GameState)
-    c = false
+    return any(p->p.status!=0x06,game.p.pokemon)
 
-    for i in eachindex(game.p.pokemon)
-        if game.p.pokemon[i].status != 0x06; c = true; end
-    end
+    # c = false
 
-    return c
+    # for i in eachindex(game.p.pokemon)
+    #     if game.p.pokemon[i].status != 0x06; c = true; end
+    # end
+
+    # return c
 end

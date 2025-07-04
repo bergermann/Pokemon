@@ -35,18 +35,19 @@ function checkTeleport!(game::GameState)
     return
 end
 
-function teleport!(game::GameState,tx::Int,ty::Int,tcx::Int,tcy::Int)
+function teleport!(game::GameState,tx::Int,ty::Int,tcx::Int,tcy::Int,load::Bool=true)
     game.ctrl.pos1 .= tx, ty
     game.ctrl.pos2 .= game.ctrl.pos1
     
     game.ctrl.chunk .= tcx, tcy
     
     setProjection!(game)
-    loadChunksAll!(game)
+    if load; loadChunksAll!(game); end
 
     game.flags.general[0xc8] = false
     
     return
 end
 
-teleport!(game::GameState,(tp,)::Tuple{Teleport}) = teleport!(game,tp.tx,tp.ty,tp.tcx,tp.tcy)
+teleport!(game::GameState,(tp,)::Tuple{Teleport}) =
+    teleport!(game,tp.tx,tp.ty,tp.tcx,tp.tcy,true)

@@ -209,7 +209,7 @@ function animBattlePhaseWild!(game::GameState,args::Tuple{})
             game.ctrl.input.map = true; game.ctrl.input.move = true
 
             createCC!(game,:scenet,sceneTransition!,
-                (32,8,F(stateEndBattle!),F0); active=true,n=1)
+                (32,8,F(stateEndBattle!),F(eventHealCenter!,(true,))); active=true,n=1)
         end
 
         return

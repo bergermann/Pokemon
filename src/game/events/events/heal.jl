@@ -20,6 +20,8 @@ function eventHealCenter!(game::GameState,(ignore,)::Tuple{Bool})
 
     stateSetDialogue!(game,game.str[2][2:3],
         (game,args)->(lockInput!(game); activateCallback!(game,:heal)))
+        
+    unlockInput!(game)
 
     return
 end

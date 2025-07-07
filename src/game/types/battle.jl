@@ -366,7 +366,8 @@ mutable struct BattleStateWild <: BattleState
 end
 
 function Base.getindex(state::BattleStateWild,ind)
-    return ind == 1 ? state.pkmn1 : state.pkmn2
+    # return ind == 1 ? state.pkmn1 : state.pkmn2
+    return getfield(state,ind+3)
 end
 
 mutable struct BattleStateTrainerSolo <: BattleState

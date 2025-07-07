@@ -79,15 +79,11 @@ mutable struct Stats
         new(bv,dv,zeros(UInt8),level,1,0,nature,affection)
     end
 end
+    
+abstract type AttackEffect end
 
-function effectNo()
-    return
-end
-
-mutable struct Attack
+struct Attack
     id::UInt
-    name::String
-    description::String
     ap::UInt8
     apmax::UInt8
 
@@ -98,14 +94,14 @@ mutable struct Attack
     priority::Int8
     critrate::Int8
 
-    effect::Function
+    effect::Vector{<:AttackEffect}
 
     function Attack()
-        new(0,"","",0,0,0,0,0,0,0,0,effectNo)
+        new(0,0,0,0,0,0,0,0,0,effectNo)
     end
 
-    function Attack(id,name,description,ap,apmax,class,type,power,accuracy,priority,critrate,effect)
-        new(id,name,description,ap,apmax,class,type,power,accuracy,priority,critrate,effect)
+    function Attack(id,ap,apmax,class,type,power,accuracy,priority,critrate,effect)
+        new(id,ap,apmax,class,type,power,accuracy,priority,critrate,effect)
     end
 end
 
@@ -138,7 +134,7 @@ mutable struct Pkmn
     status::UInt8
     item::Int
 
-    attacks::Vector{Attack}
+    attacks::Vector{Int}
     ability::UInt16
 end
 

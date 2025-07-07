@@ -22,8 +22,7 @@ item effects
 attack effects
 attack learning
 evolution, item/stat requirements, animation
-pokemon swap
-losecondition -> safe latest pokecenter spot
+safe latest pokecenter spot
 
 trainer battles, trainer linecheck
 
@@ -41,6 +40,4 @@ weather
 optimize teleports?
 rework scene transition
 
-add genders to menupkmn
-fix item and status icons in menupkmn
 fix accuracy factor

@@ -360,7 +360,10 @@ end
 function queueFlee!(game::GameState,state::BattleState,user::PkmnBattle)
     if state.actionqueue[1].user == 1
         if user.command.success
-            game.n[:animbattle].c = -3
+            state.counters.flee = -1
+
+            empty!(state.actionqueue)
+            empty!(state.animqueue); game.n[:animbattle].c = 1
 
             push!(state.animqueue,BattleAnimation(
                 :p1,120,game.str[1][19],banimEmpty!,0
@@ -373,7 +376,10 @@ function queueFlee!(game::GameState,state::BattleState,user::PkmnBattle)
             ))
         end
     else
-        game.n[:animbattle].c = -3
+        state.counters.flee = -1
+
+        empty!(state.actionqueue)
+        empty!(state.animqueue); game.n[:animbattle].c = 1
 
         push!(state.animqueue,BattleAnimation(
             :p2,120,game.str[1][25],banimEmpty!,0

@@ -179,3 +179,9 @@ function getDirection(inputs::Inputs)
 
     return 0
 end
+
+function turn!(game::GameState,dir::Int)
+    game.ctrl.dir = dir
+
+    return
+end

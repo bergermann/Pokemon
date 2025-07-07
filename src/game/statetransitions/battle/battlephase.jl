@@ -2,8 +2,9 @@
 
 
 function stateEndBattlePhase!(game::GameState,state::BattleStateWild)
-    # if state[1].pkmn.stats.hp < 0
-    if state.forceswitch1
+    if state.counters.flee == -1
+            game.n[:animbattle].c = -3
+    elseif state.forceswitch1
         if checkContinueFight(game)
             deactivateCallback!(game,:animbattle)
 

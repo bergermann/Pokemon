@@ -230,13 +230,11 @@ function stateEndBattle!(game::GameState,args::Tuple)   #,state::BattleStateWild
     idx = game.p.pokemon.idx
     game.p.pokemon.data[1:idx] .= @view game.p.pokemon.data[game.battle.teamperm[1:idx]]
 
-    if !checkContinueFight(game)
-        teleport!(game,4,9,402,401); game.ctrl.dir = 1
-
-        eventHealCenter!(game,(true,))
-    end
-
     stateOpenMap!(game)
+    
+    if !checkContinueFight(game);
+        teleport!(game,4,9,402,401,1)
+    end
 
     return
 end

@@ -40,37 +40,18 @@ end
 
 
 
-
 mutable struct PkmnData
     base::Matrix{UInt16}
     name::Vector{String}
-    dex::Vector{String}
+
+    attacks::Matrix{UInt8}
+    attacknames::Vector{String}
 
     function PkmnData()
-        new(getStatsBase(),getNames("ger"),[])
+        new(getStatsBase(),getNames("ger"),
+            deserialize("attackdata.ad"),readlines("str/ger/attacknames.txt"))
     end
 end
-
-mutable struct MItem
-    name::String
-    description::String
-    type::UInt8
-end
-
-mutable struct TItem
-    name::String
-    description::String
-    type::UInt8
-end
-
-mutable struct KItem
-    name::String
-    description::String
-    type::UInt8
-end
-
-
-
 
 
 
@@ -86,38 +67,6 @@ mutable struct Battle
     end
 end
 
-# battlestages:
-# 1 - selection
-# 10 - attack
-# x - send first pokemon
-# x - swap pokemon
-# x - opponent send pokemon
-# x - faint own
-# x - faint opp
-# x - weather
-# x - damage own
-# x - damage opp
-# x - throw ball
-# x - catch pending
-# x - caught
-# x - naming
-# x - item own
-# x - item opp
-# 250 - flee
-
-# 100 - intro dialogue
-# 101 - victory dialogue
-# 102 - defeat dialogue
-# 103 - flee dialogue
-# 104 - flee trainer dialogue
-# 105 - flee fail dialogue 
-# 110 - mid dialogue
-# x - caught dialogue
-# x - catch trainer dialogue
-
-
-
-
 
 
 struct Options
@@ -131,7 +80,6 @@ struct Options
         new(0x01,0x01,false,0x01)
     end
 end
-
 
 
 

@@ -1,0 +1,10 @@
+evolvesto   evoltype    param       gender
+pkmnid      none        none        none
+            levelup     level       male
+            item        itemid      female
+            itemheld    itemid
+            itemtrade   itemid
+            trade       none
+            friendship  threshold
+            hasattack   attackid
+            area        ???

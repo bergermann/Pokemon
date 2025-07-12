@@ -69,51 +69,22 @@ function generatePkmn(game::GameState,id::UInt16,level::UInt8)
     data = game.pkmndata.base[id,:]
     
     p =  Pkmn(
-        id,                             #id
-        "",                             #name
-        getGender(data[14:end]),        #gender from weight
-        rand(UInt16) < 0x0010,          #shiny
-        0x00,                           #form
-        data[13],                       #xptype
-        game.p.name,              #OTrainer
-        game.p.id,                #OTrainer id
-        "",                             #location
-        0x01,                           #ball id
-        falses(5),                      #markers
-        Tuple{UInt8,UInt8}(data[2:3]),  #types
-        Stats(data[4:9],level),         #stats
-        0x00,                           #status
-        0,                         #item
-        [
-            Attack(
-                0x01,
-                "Tackle",
-                "Trifft den Gegner mit vollem Körpereinsatz.",
-                35,
-                35,
-                0,
-                1,
-                40,
-                100,
-                0,
-                1,
-                effectNo
-            ),
-            Attack(
-                0x02,
-                "Rankenhieb",
-                "Peitschenartiger Schlag mit Ranken.",
-                25,
-                25,
-                0,
-                2,
-                45,
-                100,
-                0,
-                1,
-                effectNo
-            )
-        ],                              #attacks
+        id,                             # id
+        "",                             # name
+        getGender(data[14:end]),        # gender from weight
+        rand(UInt16) < 0x0010,          # shiny
+        0x00,                           # form
+        data[13],                       # xptype
+        game.p.name,                    # OTrainer
+        game.p.id,                      # OTrainer id
+        "",                             # location
+        0x01,                           # ball id
+        falses(5),                      # markers
+        Tuple{UInt8,UInt8}(data[2:3]),  # types
+        Stats(data[4:9],level),         # stats
+        0x00,                           # status
+        0,                              # item
+        [],                             # attacks
         0x00
     )
 

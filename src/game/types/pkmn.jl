@@ -80,7 +80,13 @@ mutable struct Stats
     end
 end
     
-abstract type AttackEffect end
+# abstract type AttackEffect end
+
+mutable struct AttackEffect
+    id::Int
+    func::Function
+    args::Tuple
+end
 
 struct Attack
     id::UInt

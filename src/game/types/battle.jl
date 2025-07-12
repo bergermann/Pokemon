@@ -46,15 +46,11 @@ mutable struct SecStatus
     flinch::Bool
     charmed::Bool
     seeded::Bool
-    attackblock::Vector{Bool}
+    rooted::Bool
     trapped::Bool
-    trappedc::UInt8
-    trappeddmg::UInt8
     cursed::Bool
     nightmare::Bool
     perish::Bool
-    perishc::UInt8
-    spotted::UInt8
     escapeblock::Bool
     encore::Bool
     torment::Bool
@@ -62,32 +58,44 @@ mutable struct SecStatus
     healblock::Bool
     itemblock::Bool
     telekinesis::Bool
+    shielded::Bool
 
     righthand::Bool
     charge::Bool
 
+    attackblock::Vector{Bool}
+
+    trappedc::UInt8
+    trappeddmg::UInt8
+    
+    perishc::UInt8
+    spotted::UInt8
+
     function SecStatus()
         new(
-            false,      #confused
-            false,      #flinch
-            false,
-            false,
-            falses(4),  #attackblock
-            false,
-            0,
-            0,
-            false,      #cursed
-            false,
-            false,
-            0,
-            0,          #spotted
-            false,
-            false,
-            false,
-            false,      #taunt
-            false,
-            false,
-            false,       #telekinesis
+            false,      # confused
+            false,      # flinch
+            false,      # charmed
+            false,      # seeded
+            false,      # rooted
+            false,      # cursed
+            false,      # trapped
+            false,      # cursed
+            false,      # nightmare
+            false,      # perish
+            false,      # escapeblock
+            false,      # encore
+            false,      # torment
+            false,      # taunt
+            false,      # healblock
+            false,      # itemblock
+            false,      # telekinesis
+            false,      # shielded
+            falses(4),  # attackblock
+            0,          # trappedc
+            0,          # trappeddmg
+            0,          # perishc
+            0,          # spotted
         )
     end
 end

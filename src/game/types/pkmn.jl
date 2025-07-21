@@ -140,7 +140,7 @@ mutable struct Pkmn
     status::UInt8
     item::Int
 
-    attacks::Vector{Int}
+    attacks::Matrix{UInt16}
     ability::UInt16
 end
 

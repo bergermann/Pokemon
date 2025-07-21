@@ -49,7 +49,7 @@ mutable struct PkmnData
 
     function PkmnData()
         new(getStatsBase(),getNames("ger"),
-            deserialize("attackdata.ad"),readlines("str/ger/attacknames.txt"))
+            deserialize("data/attacks.data"),readlines("str/ger/attack_names.txt"))
     end
 end
 

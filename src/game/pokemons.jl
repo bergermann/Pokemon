@@ -4,7 +4,7 @@
 
 
 function getStatsBase()
-    return readdlm("pkmn_data.csv",',',UInt16,'\n'; skipstart=1)
+    return readdlm("data/pkmn_data.csv",',',UInt16,'\n'; skipstart=1)
 end
 
 function getNames(lang::String)
@@ -65,8 +65,27 @@ function natureMod(nature::UInt8)
     return a
 end
 
+function shuffleAttacks!(attacks::Vector{UInt16})
+    for i in 5:length(attacks)
+        if rand() <= 0.5
+            idx = rand(1:4)
+            attacks[idx], attacks[i] =  attacks[i], attacks[idx]
+        end
+    end
+
+    quicksort!(attacks,5,length(attacks))
+
+    return
+end
+
 function generatePkmn(game::GameState,id::UInt16,level::UInt8)
     data = game.pkmndata.base[id,:]
+    ad = deserialize("data/pkmn/$id/attacks.data")
+    idx0 = findfirst(!isequal(0),ad[:,1]); idx1 = findlast(<=(level),ad[:,1])
+    ab = ad[idx0:idx1,2]; shuffleAttacks!(ab)
+
+    attacks = Matrix{UInt16}(undef,3,length(ab))
+    attacks[1,:] .= ab; attacks[2,:] .= game.pkmndata.attacks[ab,5]; attacks[3,:] .= attacks[2,:]
     
     p =  Pkmn(
         id,                             # id
@@ -84,7 +103,7 @@ function generatePkmn(game::GameState,id::UInt16,level::UInt8)
         Stats(data[4:9],level),         # stats
         0x00,                           # status
         0,                              # item
-        [],                             # attacks
+        attacks,                        # attacks
         0x00
     )
 

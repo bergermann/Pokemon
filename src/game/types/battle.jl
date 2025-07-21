@@ -222,7 +222,8 @@ mutable struct PkmnBattle
     dmoves::DoubleMoves
     
     command::BattleCommand
-    attack::Attack
+    attacks::Vector{Attack}
+    attack::Int
     lastattack::Int
 
     function PkmnBattle(pkmn::Pkmn)
@@ -247,7 +248,8 @@ mutable struct PkmnBattle
             0,
             DoubleMoves(),  #dmoves
             CC0,           #attackchoice
-            Attack(),
+            loadBattleAttacks(game,pkmn),
+            0,
             0,
         )
     end
@@ -274,7 +276,8 @@ mutable struct PkmnBattle
             0,
             DoubleMoves(),  #dmoves
             CC0,           #attackchoice
-            Attack(),
+            loadBattleAttacks(game,pkmn),
+            0,
             0
         )
     end

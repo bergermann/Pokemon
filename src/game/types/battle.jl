@@ -78,7 +78,6 @@ mutable struct SecStatus
             false,      # charmed
             false,      # seeded
             false,      # rooted
-            false,      # cursed
             false,      # trapped
             false,      # cursed
             false,      # nightmare
@@ -91,9 +90,15 @@ mutable struct SecStatus
             false,      # itemblock
             false,      # telekinesis
             false,      # shielded
+
+            false,      # righthand
+            false,      # charge
+
             falses(4),  # attackblock
+
             0,          # trappedc
             0,          # trappeddmg
+
             0,          # perishc
             0,          # spotted
         )
@@ -215,8 +220,8 @@ mutable struct PkmnBattle
     stat::Int
 
     screen::Bool
-    screenc::Int
     reflect::Bool
+    screenc::Int
     reflectc::Int
 
     dmoves::DoubleMoves
@@ -226,60 +231,40 @@ mutable struct PkmnBattle
     attack::Int
     lastattack::Int
 
-    function PkmnBattle(pkmn::Pkmn)
+    function PkmnBattle(pkmn::Pkmn,name::String)
         new(
-            pkmn,           #pkmn
-            "",
-            0,
-            zeros(Int8,8),  #buffs
-            SecStatus(),    #secstatus
-            DmgFactors(),
+            pkmn,           # pkmn
+            name,           # name
+            0,              # xpdrop
 
-            true,
-            false,
-            1,
-            0,
-            0,
-            0,
-            0,
-            false,
-            0,
-            false,
-            0,
-            DoubleMoves(),  #dmoves
-            CC0,           #attackchoice
-            loadBattleAttacks(game,pkmn),
+            zeros(Int8,8),  # buffs
+
+            SecStatus(),    # secstatus
+            DmgFactors(),   # dmgfactors
+
+            true,           # hit
+            false,          # crit
+            1,              # eff
+            0,              # dmgd
+            0,              # dmgt
+            0,              # heal
+            0,              # stat
+
+            false,          # screen
+            false,          # reflect
+            0,              # screenc
+            0,              # reflectc
+            
+            DoubleMoves(),  # dmoves
+            CC0,            # attackchoice
+            loadBattleAttacks(pkmn),
             0,
             0,
         )
     end
 
-    function PkmnBattle(pkmn::Pkmn,name::String)
-        new(
-            pkmn,           #pkmn
-            name,
-            0,
-            zeros(Int8,8),  #buffs
-            SecStatus(),    #secstatus
-            DmgFactors(),
-
-            true,
-            false,
-            1,
-            0,
-            0,
-            0,
-            0,
-            false,
-            0,
-            false,
-            0,
-            DoubleMoves(),  #dmoves
-            CC0,           #attackchoice
-            loadBattleAttacks(game,pkmn),
-            0,
-            0
-        )
+    function PkmnBattle(pkmn::Pkmn)
+        PkmnBattle(pkmn,"")
     end
 end
 

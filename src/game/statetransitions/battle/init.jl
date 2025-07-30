@@ -44,9 +44,9 @@ function stateOpenBattle!(game::GameState)
 
     state = game.battle.state; fs1 = state.forceswitch1; fs2 = state.forceswitch2
 
-    p1 = state.pkmn1.pkmn
+    p1 = state.pkmn1.pkmn; pb1 = state.pkmn1
     path1 = "battle/battlers/back/$(p1.shiny ? "shiny" : "normal")/$(p1.id).png"
-    p2 = state.pkmn2.pkmn
+    p2 = state.pkmn2.pkmn; pb2 = state.pkmn2
     path2 = "battle/battlers/front/$(p2.shiny ? "shiny" : "normal")/$(p2.id).png"
 
     loadSpriteSheet!(game,path1,:pkmn1,64,64,2; maxsprites=1)
@@ -94,14 +94,14 @@ function stateOpenBattle!(game::GameState)
     createText!(game,:choice2,4,72,41,5,game.str[1][2]*"\\"*game.str[1][4],
         [0x4a,0x4a,0x4a,0xff],[0xd6,0xd6,0xce,0xff]; active=false,hpad=2,maxchar=32)
 
-    for i in eachindex(p1.attacks)
+    for i in eachindex(pb1.attacks)
         createText!(game,blabels[i].attack,4,-103+64*((i-1)%2),41+16*div(i-1,2),6,
-            game.pkmndata.attacknames[p.attacks[1,i]],
+            game.pkmndata.attacknames[pb1.attacks[i].id],
             [0x4a,0x4a,0x4a,0xff],[0xd6,0xd6,0xce,0xff];
             active=false,maxchar=16)
     end
     
-    for i in length(p1.attacks)+1:4
+    for i in length(pb1.attacks)+1:4
         createText!(game,blabels[i].attack,4,-103+64*((i-1)%2),41+16*div(i-1,2),6,
             "---", [0x4a,0x4a,0x4a,0xff],[0xd6,0xd6,0xce,0xff];
             active=false,hpad=0,maxchar=16)
@@ -110,9 +110,9 @@ function stateOpenBattle!(game::GameState)
     createText!(game,:info1,4,48,41,6,game.str[1][5]*"\\"*game.str[1][6],
         [0x4a,0x4a,0x4a,0xff],[0xd6,0xd6,0xce,0xff]; active=false,hpad=2,maxchar=16)
         
-    a = p1.attacks[1]
+    a = pb1.attacks[1]
     createText!(game,:info2,4,72,41,6,
-        string(p.attacks[3,i])*"/"*string(p.attacks[2,i])*"\\"*TypeNames[],
+        string(a.ap)*"/"*string(a.apmax)*"\\"*TypeNames[a.type],
         [0x4a,0x4a,0x4a,0xff],[0xd6,0xd6,0xce,0xff]; active=false,hpad=2,maxchar=16)
 
     return

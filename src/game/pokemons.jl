@@ -85,7 +85,8 @@ function generatePkmn(game::GameState,id::UInt16,level::UInt8)
     ab = ad[idx0:idx1,2]; shuffleAttacks!(ab)
 
     attacks = Matrix{UInt16}(undef,3,length(ab))
-    attacks[1,:] .= ab; attacks[2,:] .= game.pkmndata.attacks[ab,5]; attacks[3,:] .= attacks[2,:]
+    attacks[1,:] .= ab
+    attacks[2,:] .= attacks[3,:] .= game.pkmndata.attacks[ab,5];
     
     p =  Pkmn(
         id,                             # id
@@ -104,7 +105,7 @@ function generatePkmn(game::GameState,id::UInt16,level::UInt8)
         0x00,                           # status
         0,                              # item
         attacks,                        # attacks
-        0x00
+        0x00                            # ability
     )
 
     updateStats!(p)
@@ -274,9 +275,9 @@ function healPkmn!(pkmn::Pkmn)
     pkmn.stats.hp = pkmn.stats.rv[1]
     pkmn.status = 0x00
 
-    for atk in pkmn.attacks
-        atk.ap = atk.apmax
-    end
+    pkmn.attacks[3,:] .= pkmn.attacks[2,:]
+    
+    return
 end
 
 function healAll!(game::GameState)
@@ -289,4 +290,6 @@ function healAll!(game::GameState)
     end
 
     game.flags.general[0xc8] = true
+
+    return
 end

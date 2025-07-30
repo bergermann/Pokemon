@@ -121,33 +121,37 @@ function queueSetupActions!(game::GameState,state::BattleStateWild)
 end
 
 function queueSetupAnimation!(game::GameState,state::BattleStateWild)
-    command  = state[state.actionqueue[1].user].command
+    user = state.actionqueue[1].user
+    target = state.actionqueue[1].target
+    command  = state[user].command
     
     if command isa CommandAttack
+        state[user].attack = command.n
+
         queueAttack!(
             game,state,
-            state[state.actionqueue[1].user],
-            state[state.actionqueue[1].target],
-            state.actionqueue[1].target,
-            state.actionqueue[1].user == 1 ? :p1 : :p2
+            state[user],
+            state[target],
+            target,
+            user == 1 ? :p1 : :p2
         )
     elseif command isa CommandItem
         queueItem!(
             game,state,
-            state.actionqueue[1].user,
+            user,
             state[command.target],
             command.item,
-            state.actionqueue[1].user == 1 ? :p1 : :p2
+            user == 1 ? :p1 : :p2
         )
     elseif command isa CommandSwitch
         queueSwitch!(
             game,state,
-            state.actionqueue[1].user,
+            user,
             command.n,
-            state.actionqueue[1].user == 1 ? :p1 : :p2
+            user == 1 ? :p1 : :p2
         )
     elseif command isa CommandFlee
-        queueFlee!(game,state,state[state.actionqueue[1].user])
+        queueFlee!(game,state,state[user])
     end
 
     popfirst!(game.battle.state.actionqueue)
@@ -169,13 +173,17 @@ function queueAttack!(game::GameState,state::BattleState,
     attacker.crit = getCrit(attacker,defender)
     attacker.eff = getEff(attacker,defender)
 
+    attacker.lastattack = attacker.attack
+    attacker.attacks[attacker.attack].ap -= 1
+    attacker.pkmn.attacks[3,attacker.attack] -= 1
+
     setDmgFactors!(state,attacker,defender)
     attacker.dmgd = calcDamage(attacker.factors)
     defender.dmgt = min(defender.pkmn.stats.hp,attacker.dmgd)
     
     push!(state.animqueue,BattleAnimation(
         id,120,getPkmnName(game,attacker.pkmn)*game.str[1][31]*
-            attacker.attack.name*game.str[1][33],banimEmpty!,0
+            attacker.attacks[attacker.attack].name*game.str[1][33],banimEmpty!,0
     ))
 
     if !attacker.hit

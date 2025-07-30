@@ -3,7 +3,7 @@
 # managing battlephase
 
 function checkAttack!(game::GameState)
-    if game.battle.state.pkmn1.pkmn.attacks[game.ctrl.input.battle.s2+1].ap == 0
+    if game.battle.state.pkmn1.attacks[game.ctrl.input.battle.s2+1].ap == 0
         return false
     end
 
@@ -11,8 +11,8 @@ function checkAttack!(game::GameState)
 end
 
 function getPriority(state::BattleStateWild)
-    p1 = state.pkmn1.pkmn.attacks[state.pkmn1.command.n].priority
-    p2 = state.pkmn2.pkmn.attacks[state.pkmn2.command.n].priority
+    p1 = state.pkmn1.attacks[state.pkmn1.command.n].priority
+    p2 = state.pkmn2.attacks[state.pkmn2.command.n].priority
 
     if p1 != p2
         if !state.env.room.wonder
@@ -60,25 +60,27 @@ function getAccuracyFactor(state::BattleState,attacker::PkmnBattle,
 end
 
 function getHit(state::BattleState,attacker::PkmnBattle,defender::PkmnBattle)
-    return rand(1:100) < attacker.attack.accuracy*
+    return rand(1:100) < attacker.attacks[attacker.attack].accuracy*
         getAccuracyFactor(state,attacker,defender)*
         getAccuracyMultiplier(attacker,defender)
 end
 
 function getEff(attacker::PkmnBattle,defender::PkmnBattle)
-    return typetable[attacker.attack.type,defender.pkmn.type[1]]*
+    at = attacker.attacks[attacker.attack]
+
+    return typetable[at.type,defender.pkmn.type[1]]*
         (defender.pkmn.type[2]!=0x00 ?
-            typetable[attacker.attack.type,defender.pkmn.type[2]] : 0x01//0x01)
+            typetable[at.type,defender.pkmn.type[2]] : 0x01//0x01)
 end
 
 function getCrit(attacker::PkmnBattle,defender::PkmnBattle)
     return rand() < (1/16,1/8,1/4,1/3,1/2)[clamp(
-        attacker.attack.critrate+attacker.buffs[8],1,5)]
+        attacker.attacks[attacker.attack].critrate+attacker.buffs[8],1,5)]
 end
 
 function getCommandPriority(state::BattleState,target::Int)
     if state[target].command isa CommandAttack
-        return state[target].pkmn.attacks[state[target].command.n].priority
+        return state[target].attacks[state[target].command.n].priority
     else
         return 6
     end

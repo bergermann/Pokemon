@@ -88,19 +88,19 @@ mutable struct AttackEffect
     args::Tuple
 end
 
-struct Attack
+mutable struct Attack
     id::UInt
-    ap::UInt8
     apmax::UInt8
+    ap::UInt8
 
-    class::UInt8
     type::UInt8
+    class::UInt8
     power::UInt8
     accuracy::UInt8
     priority::Int8
     critrate::Int8
 
-    effect::Vector{<:AttackEffect}
+    effect::Vector{AttackEffect}
 
     function Attack()
         new(0,0,0,0,0,0,0,0,0,effectNo)
@@ -111,6 +111,33 @@ struct Attack
     end
 end
 
+function loadBattleAttacks(pkmn)
+    ad = deserialize("data/attacks.data")
+
+    at = pkmn.attacks
+    attacks = Attack[]
+
+    for i in 1:min(size(pkmn.attacks,2),4)
+        id = at[1,i]
+
+        push!(attacks,Attack(
+            id,
+            at[2,i],
+            at[3,i],
+
+            ad[id,2],
+            ad[id,3],
+            ad[id,4],
+            ad[id,5],
+            1,
+            1,
+
+            AttackEffect[]
+        ))
+    end
+
+    return attacks
+end
 #= status
 0x00
 0x01 -> gift

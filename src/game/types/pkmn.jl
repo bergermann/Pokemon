@@ -103,7 +103,7 @@ mutable struct Attack
     effect::Vector{AttackEffect}
 
     function Attack()
-        new(0,0,0,0,0,0,0,0,0,effectNo)
+        new(0,0,0,0,0,0,0,0,0,[])
     end
 
     function Attack(id,ap,apmax,class,type,power,accuracy,priority,critrate,effect)

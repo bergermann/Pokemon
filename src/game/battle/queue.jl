@@ -183,7 +183,8 @@ function queueAttack!(game::GameState,state::BattleState,
     
     push!(state.animqueue,BattleAnimation(
         id,120,getPkmnName(game,attacker.pkmn)*game.str[1][31]*
-            attacker.attacks[attacker.attack].name*game.str[1][33],banimEmpty!,0
+            game.pkmndata.attacknames[attacker.attacks[attacker.attack].id]*game.str[1][33],
+            banimEmpty!,0
     ))
 
     if !attacker.hit

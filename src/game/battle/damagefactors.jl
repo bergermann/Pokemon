@@ -12,30 +12,32 @@ function floorProd(t::Type,args...)
 end
 
 function setDmgFactors!(state::BattleState,attacker::PkmnBattle,defender::PkmnBattle)
+    attack = attacker.attacks[attacker.attack]
+    
     attacker.factors.LVL = attacker.pkmn.stats.level
 
-    attacker.factors.BP = attacker.attack.power
+    attacker.factors.BP = attack.power
     attacker.factors.RH = 1+0.5*attacker.secstatus.righthand
     attacker.factors.CH = 1+1*attacker.secstatus.charge
     attacker.factors.IF = itemFactorAttacker(attacker)
     attacker.factors.MW = 1
-        -0.5*state.env.wet*(attacker.attack.type==0x03)
-        -0.5*state.env.mud*(attacker.attack.type==0x0c)
+        -0.5*state.env.wet*(attack.type==0x03)
+        -0.5*state.env.mud*(attack.type==0x0c)
     attacker.factors.AA = abilityFactorAttacker(attacker)
     attacker.factors.AD = abilityFactorDefender(defender)
     attacker.factors.BD = calcBaseDamage(attacker.factors)
 
     attacker.factors.ATK = attackFactor(attacker)
     attacker.factors.DEF = defenseFactor(attacker,defender)*
-        (1+0.5*(state.env.weather==0x03)*(attacker.attack.class==2))
+        (1+0.5*(state.env.weather==0x03)*(attack.class==2))
     attacker.factors.CRIT = 1+0.5*attacker.crit
     attacker.factors.EFF = attacker.eff
-    attacker.factors.STAB = 1+0.5*(attacker.attack.type in attacker.pkmn.type)
+    attacker.factors.STAB = 1+0.5*(attack.type in attacker.pkmn.type)
 
     attacker.factors.RAND = 100-rand(0:15)
 
     attacker.factors.BRT = 1-0.5*(attacker.pkmn.status==0x01)*
-        (attacker.attack.class==0x01)
+        (attack.class==0x01)
     attacker.factors.RFSC = screenFactor(state,attacker,defender)
     attacker.factors.MULT = 1
     attacker.factors.WEATHER = factorWeather(state,attacker)
@@ -79,7 +81,7 @@ function calcBaseDamage(f::DmgFactors)
 end
 
 function attackFactor(attacker::PkmnBattle)
-    if attacker.attack.class == 1
+    if attacker.attacks[attacker.attack].class == 1
         return attacker.pkmn.stats.rv[2]*
             max(getBuffMultiplier(attacker.buffs[1]),attacker.crit)*
             abilityFactorAttack(attacker)*
@@ -101,7 +103,7 @@ function itemFactorAttack(attacker::PkmnBattle)
 end
 
 function defenseFactor(attacker::PkmnBattle,defender::PkmnBattle)
-    if attacker.attack.class == 1
+    if attacker.attacks[attacker.attack].class == 1
         return defender.pkmn.stats.rv[2]*
             getBuffMultiplier(defender.buffs[1])*
             abilityFactorDefense(defender)*
@@ -125,19 +127,21 @@ end
 function screenFactor(state::BattleState,attacker::PkmnBattle,defender::PkmnBattle)
     if typeof(state) == BattleStateWild
         return 1-0.5*!attacker.crit*
-            (attacker.attack.class==1 ? defender.reflect : defender.screen)
+            (attacker.attacks[attacker.attack].class==1 ? defender.reflect : defender.screen)
     elseif typeof(state) == BattleStateTrainerDouble
         return 1-1/3*!attacker.crit*
-            (attacker.attack.class==1 ? defender.reflect : defender.screen)
+            (attacker.attacks[attacker.attack].class==1 ? defender.reflect : defender.screen)
     end
 end
 
 function factorWeather(state::BattleState,attacker::PkmnBattle)
+    attack = attacker.attacks[attacker.attack]
+
     return 1 - 
-        0.5*(attacker.attack.type==0x03 && state.env.weather==0x02) -
-        0.5*(attacker.attack.type==0x04 && state.env.weather==0x01) +
-        0.5*(attacker.attack.type==0x03 && state.env.weather==0x01) +
-        0.5*(attacker.attack.type==0x04 && state.env.weather==0x02)
+        0.5*(attack.type==0x03 && state.env.weather==0x02) -
+        0.5*(attack.type==0x04 && state.env.weather==0x01) +
+        0.5*(attack.type==0x03 && state.env.weather==0x01) +
+        0.5*(attack.type==0x04 && state.env.weather==0x02)
 end
 
 function factorF1(f::DmgFactors)

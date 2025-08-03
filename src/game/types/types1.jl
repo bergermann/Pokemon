@@ -1,4 +1,5 @@
 
+include("enums/enums.jl")
 include("flags.jl")
 include("teleports.jl")
 include("events.jl")

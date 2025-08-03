@@ -52,8 +52,9 @@ function stateMenuDexOpen!(game::GameState,args::Tuple{})
         numbers[4+4*(i-1)] = 0x5c
         
         if game.p.dex[i,1]
-            l = length(game.str[2][i])
-            names[1:l,i] .= codeunits(game.str[2][i])
+            name = game.pkmndata.names[i]
+            l = length(name)
+            names[1:l,i] .= codeunits(name)
         else
             names[1:5,i] .= codeunits(game.str[1][9])
         end

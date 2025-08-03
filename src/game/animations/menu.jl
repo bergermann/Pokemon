@@ -65,8 +65,8 @@ function animMenuPkmnSwap!(game::GameState,(p1,p2)::Tuple{Int,Int})
         swapSprites!(game,mplabels[p1].h,mplabels[p2].h)
         # swapSprites!(game,mplabels[p1].g,mplabels[p2].g)
 
-        setHPBar!(game,mplabels[p1].h,getHealthBar(game.p.pokemon[p1]),-208*(p1==1)+304*(p1>1))
-        setHPBar!(game,mplabels[p2].h,getHealthBar(game.p.pokemon[p2]),-208*(p2==1)+304*(p2>1))
+        setHPBar!(game,mplabels[p1].h,getHPBar(game.p.pokemon[p1]),-208*(p1==1)+304*(p1>1))
+        setHPBar!(game,mplabels[p2].h,getHPBar(game.p.pokemon[p2]),-208*(p2==1)+304*(p2>1))
     elseif game.n[:pkmnswap].c <= 61
         moveSprite!(game,mplabels[p1].s,12*(p1==1)-8,0)
         moveSprite!(game,mplabels[p1].b,12*(p1==1)-8,0)

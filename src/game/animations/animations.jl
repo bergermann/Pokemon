@@ -3,6 +3,7 @@ include("battle.jl")
 include("attackanimations.jl")
 include("movement.jl")
 include("menu.jl")
+include("evolve.jl")
 
 function animEmpty!(game::GameState)
     return

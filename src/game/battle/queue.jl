@@ -421,6 +421,7 @@ function queueCheckXp!(game::GameState,state::BattleState)
     end
 
     state[1].pkmn.stats.xp += xpdrop
+    addEV!(state[1].pkmn,state[2].pkmn.id)
     
     if levelups == 0
         push!(state.animqueue,BattleAnimation(

@@ -34,8 +34,8 @@ end
 function bhpAnim!(game::GameState,target::Int)
     p = game.battle.state[target]
 
-    b1 = getHealthBar(p.pkmn,p.pkmn.stats.hp)
-    b2 = getHealthBar(p.pkmn,p.pkmn.stats.hp-p.dmgt)
+    b1 = getHPBar(p.pkmn,p.pkmn.stats.hp)
+    b2 = getHPBar(p.pkmn,p.pkmn.stats.hp-p.dmgt)
 
     p.pkmn.stats.hp -= p.dmgt; @assert p.pkmn.stats.hp >= 0 "HP got below 0? it fucked up."
 
@@ -115,13 +115,12 @@ function bxpAnimLevelUp!(game::GameState,(levelups,xpnext,xplevel)::Tuple{Int,In
     end
     
     if game.n[:xp].c == 46
-        evdrop = rand(0x00:0x03,6)   # fix this
-        diffhp = calcHp(game.battle.state.pkmn1.pkmn,UInt8(levelups),evdrop[1])-
+        diffhp = calcHP(game.battle.state.pkmn1.pkmn,UInt8(levelups),evdrop[1])-
             game.battle.state.pkmn1.pkmn.stats.rv[1]
 
-        game.battle.state.pkmn1.pkmn.stats.level += levelups
         game.battle.state.pkmn1.pkmn.stats.hp += diffhp
-        game.battle.state.pkmn1.pkmn.stats.ev += evdrop
+
+        levelup!(game.battle.state.pkmn1.pkmn,levelups)
 
         updateStats!(game.battle.state.pkmn1.pkmn)
 
@@ -370,7 +369,7 @@ function bswitchIn!(game::GameState,user::Int)
     activateText!(game,:name1); activateText!(game,:lvl1)
 
     moveSprite!(game,:tag1,60+128,12,true)
-    moveSprite!(game, :hp1,56+128,12,true); setHPBar!(game,:hp1,getHealthBar(p1),56+128)
+    moveSprite!(game, :hp1,56+128,12,true); setHPBar!(game,:hp1,getHPBar(p1),56+128)
     moveSprite!(game,  :xp,40+128,12,true); setXPBar!(game,:xp,getXPBar(p1,0),40+128)
 
     moveText!(game,:name1,24+128,-4,true)

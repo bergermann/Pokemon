@@ -169,5 +169,7 @@ mutable struct Pkmn
 
     attacks::Matrix{UInt16}
     ability::UInt16
+
+    evolve::UInt16
 end
 

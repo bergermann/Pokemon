@@ -24,7 +24,7 @@ function drawSlotMain!(game::GameState)
     createSprite!(game,l.i,   :item,1,1, -99,-29,2,4; active=hasitem(p))
     createSprite!(game,l.h,:health1,1,1, -88,-20,3,2; active=true)
     createSprite!(game,l.ic, :icons,1,1,-104,-44,3,3; active=true)
-    setHPBar!(game,l.h,getHealthBar(p),-88)
+    setHPBar!(game,l.h,getHPBar(p),-88)
     
     createText!(game,l.n,1,-86,-44,2,pkmnName(game,p)*"\\   Lv.$(p.stats.level)",
         [0xff,0xff,0xff,0xff],[0x73,0x73,0x73,0xff]; hpad=-3)
@@ -52,7 +52,7 @@ function drawSlotSide!(game::GameState)
         createSprite!(game,l.i,   :item,1,1,-11,-51+24*(i-2),2,4; active=hasitem(p))
         createSprite!(game,l.h,:health1,1,1, 64,-61+24*(i-2),3,2; active=true)
         createSprite!(game,l.ic, :icons,i,1,-18,-63+24*(i-2),3,3; active=true)
-        setHPBar!(game,l.h,getHealthBar(p),64)
+        setHPBar!(game,l.h,getHPBar(p),64)
         
         createText!(game,l.n,1,0,-70+24*(i-2),2,pkmnName(game,p)*"\\   Lv.$(p.stats.level)",
             [0xff,0xff,0xff,0xff],[0x73,0x73,0x73,0xff]; hpad=-3)

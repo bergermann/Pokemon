@@ -69,15 +69,23 @@ end
 
 
 function addEV!(pkmn::Pkmn,from::UInt16)
-    if sum(pkmn.stats.ev) >= 510; return; end
+    ev = pkmn.stats.ev; S = sum(ev); if S >= 510; return; end
 
-    data = deserialize()
+    data = deserialize("data/pkmn/$(from)/ev.data")
+
+    for i in eachindex(data)
+        ev[i] += UInt8(min(0xfc-ev[i],510-S,data[i]))
+    end
 
     return
 end
 
 
 
+
+function levelup!(pkmn::Pkmn,levelups::Int)
+    
+end
 
 function checkEvolve(game::GameState)
     for i in eachindex(game.p.pokemon)
@@ -86,7 +94,6 @@ function checkEvolve(game::GameState)
 
     return 0
 end
-
 
 function checkEvolveLevelUp(pkmn::Pkmn)
     data = deserialize("data/pkmn/$(pkmn.id)/evolve.data")

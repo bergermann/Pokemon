@@ -3,7 +3,9 @@ function healPkmn!(pkmn::Pkmn)
     pkmn.stats.hp = pkmn.stats.rv[1]
     pkmn.status = 0x00
 
-    pkmn.attacks[3,:] .= pkmn.attacks[2,:]
+    for atk in pkmn.attacks
+        atk.ap = atk.apmax
+    end
     
     return
 end
@@ -17,7 +19,7 @@ function healAll!(game::GameState)
         healPkmn!(pkmn)
     end
 
-    game.flags.general[0xc8] = true
+    game.flags.general[SFhealed] = true
 
     return
 end

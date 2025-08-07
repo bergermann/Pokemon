@@ -115,14 +115,7 @@ function bxpAnimLevelUp!(game::GameState,(levelups,xpnext,xplevel)::Tuple{Int,In
     end
     
     if game.n[:xp].c == 46
-        diffhp = calcHP(game.battle.state.pkmn1.pkmn,UInt8(levelups),evdrop[1])-
-            game.battle.state.pkmn1.pkmn.stats.rv[1]
-
-        game.battle.state.pkmn1.pkmn.stats.hp += diffhp
-
-        levelup!(game.battle.state.pkmn1.pkmn,levelups)
-
-        updateStats!(game.battle.state.pkmn1.pkmn)
+        levelup!(game.battle.state.pkmn1.pkmn,levelups,game)
 
         setXPBar!(game,:xp,0,40)
         setSpriteFrame!(game,:xp,1)
@@ -387,7 +380,7 @@ function bswitchIn!(game::GameState,user::Int)
     end
 
     a = p1.attacks[1]
-    setText!(game,:info2,string(a.ap)*"/"*string(a.apmax)*"\\"*game.str[2][a.type+1])
+    setText!(game,:info2,string(a.atk.ap)*"/"*string(a.atk.apmax)*"\\"*game.str[2][a.type+1])
 
     for i in 1:10
         createSprite!(game,Symbol(:spark,i),:particles,1,1,-48,24,10,4; active=false)

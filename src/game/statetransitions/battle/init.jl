@@ -96,7 +96,7 @@ function stateOpenBattle!(game::GameState)
 
     for i in eachindex(pb1.attacks)
         createText!(game,blabels[i].attack,4,-103+64*((i-1)%2),41+16*div(i-1,2),6,
-            game.pkmndata.attacknames[pb1.attacks[i].id],
+            game.data.attacknames[pb1.attacks[i].atk.id],
             [0x4a,0x4a,0x4a,0xff],[0xd6,0xd6,0xce,0xff];
             active=false,maxchar=16)
     end
@@ -112,7 +112,7 @@ function stateOpenBattle!(game::GameState)
         
     a = pb1.attacks[1]
     createText!(game,:info2,4,72,41,6,
-        string(a.ap)*"/"*string(a.apmax)*"\\"*TypeNames[a.type],
+        string(a.atk.ap)*"/"*string(a.atk.apmax)*"\\"*TypeNames[a.type],
         [0x4a,0x4a,0x4a,0xff],[0xd6,0xd6,0xce,0xff]; active=false,hpad=2,maxchar=16)
 
     return

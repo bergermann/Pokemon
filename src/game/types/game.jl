@@ -146,7 +146,7 @@ mutable struct GameState
     ctrl::Controls
     m::MapData
     str::Vector{Vector{String}}
-    pkmndata::PkmnData
+    data::PkmnData
 
     n::ArrayList{Counter}
     callbacks::ArrayList{Callback}

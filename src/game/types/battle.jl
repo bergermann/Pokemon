@@ -231,7 +231,7 @@ mutable struct PkmnBattle
     attack::Int
     lastattack::Int
 
-    function PkmnBattle(pkmn::Pkmn,name::String)
+    function PkmnBattle(game::GameState,pkmn::Pkmn,name::String)
         new(
             pkmn,           # pkmn
             name,           # name
@@ -257,14 +257,14 @@ mutable struct PkmnBattle
             
             DoubleMoves(),  # dmoves
             CC0,            # attackchoice
-            loadBattleAttacks(pkmn),
+            loadBattleAttacks(game,pkmn),
             0,
             0,
         )
     end
 
-    function PkmnBattle(pkmn::Pkmn)
-        PkmnBattle(pkmn,"")
+    function PkmnBattle(game::GameState,pkmn::Pkmn)
+        PkmnBattle(game,pkmn,"")
     end
 end
 

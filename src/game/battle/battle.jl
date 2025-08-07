@@ -13,13 +13,12 @@ function initBattleWild!(game::GameState)
     data = findArea(game); idx = sample(fweights(data[:,4]))
     lvl = UInt8(clamp(randN(data[idx,2],data[idx,3])+5,2,100))
 
-    pb1 = PkmnBattle(game.p.pokemon[1],getPkmnName(game,activePkmn(game)))
-    pb2 = PkmnBattle(generatePkmn(game,data[idx,1],lvl))
+    pb1 = PkmnBattle(game,game.p.pokemon[1],getPkmnName(game,activePkmn(game)))
+    pb2 = PkmnBattle(game,generatePkmn(game,data[idx,1],lvl))
     pb2.name = getPkmnName(game,pb2.pkmn)
-    pb2.xpdrop = UInt32(max(1,rand(UInt8)))   # game.pkmndata.base[pb2.pkmn.id,x]
+    pb2.xpdrop = UInt32(max(1,rand(UInt8)))   # game.data.base[pb2.pkmn.id,x]
 
-    game.battle.state = BattleStateWild(BattleCounters(),0,BattleEnvironment(),
-        pb1,pb2)
+    game.battle.state = BattleStateWild(BattleCounters(),0,BattleEnvironment(),pb1,pb2)
 
     return
 end
@@ -41,4 +40,28 @@ function findArea(game::GameState)::Matrix{UInt16}
     @warn "No area found, deploying default Rattata."
 
     return UInt16[19 3 1 1]
+end
+
+function loadBattleAttacks(game::GameState,pkmn::Pkmn)
+    ad = game.data.attacks
+    attacks = Attack[]
+
+    for i in 1:min(length(pkmn.attacks),4)
+        atk = pkmn.attacks[i]
+
+        push!(attacks,Attack(
+            atk,            # atk
+
+            ad[atk.id,1],   # type
+            ad[atk.id,2],   # class
+            ad[atk.id,3],   # power
+            ad[atk.id,4],   # accuracy
+            1,              # priority
+            1,              # critrate
+
+            AttackEffect[]
+        ))
+    end
+
+    return attacks
 end

@@ -57,6 +57,7 @@ function setupGame(windowscale::Int=4,renderdistance::Int=2,maxtextures::Int=64;
 end
 
 function updateGame!(game::GameState,inputs::Inputs)
+    # println(inputs.down)
     inputManager!(game,inputs)
 
     if game.events.active; playEventQueue!(game); end

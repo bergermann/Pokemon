@@ -57,7 +57,7 @@ function calcXpDrop1(state::BattleState,attacker::PkmnBattle,defender::PkmnBattl
     return floor(UInt32,
         *(
             1+0.5*!(typeof(state)==BattleStateWild),
-            defender.xpdrop, #game.pkmndata.base[defender.pkmn.id], #xp base value
+            defender.xpdrop, #game.data.base[defender.pkmn.id], #xp base value
             1.5,    #trainer != otrainer
             1+0.5*(attacker.pkmn.item==0x00),   #glücksei
             defender.pkmn.stats.level,
@@ -83,8 +83,15 @@ end
 
 
 
-function levelup!(pkmn::Pkmn,levelups::Int)
+function levelup!(pkmn::Pkmn,levelups::Int,game::GameState)
+    learnLevelUp!(pkmn,levelups,game)
+
+    hp = pkmn.stats.rv[1]; pkmn.stats.level += levelups
+    updateStats!(pkmn); pkmn.stats.hp += pkmn.stats.rv[1]-hp
     
+    pkmn.evolve = checkEvolveLevelUp(pkmn)
+
+    return
 end
 
 function checkEvolve(game::GameState)
@@ -99,18 +106,18 @@ function checkEvolveLevelUp(pkmn::Pkmn)
     data = deserialize("data/pkmn/$(pkmn.id)/evolve.data")
     
     for i in axes(data,1)
-        if data[2] == EVnone
+        if data[i,2] == EVnone
             return 0x0000
-        elseif data[4] != 0x0000 && data[4] != pkmn.gender
+        elseif data[i,4] != 0x0000 && data[i,4] != pkmn.gender
             continue
-        elseif data[2] == EVlevelup
-            if pkmn.stats.level >= data[3]; return data[1]; end
-        elseif data[2] == EVitemheld
-            if pkmn.item == data[3]; return data[1]; end
-        elseif data[2] == EVfriendship
-            if pkmn.stats.affection >= data[3]; return data[1]; end
-        elseif data[2] == hasattack
-            if occursin(data[3],pkmn.attacks); return data[1]; end
+        elseif data[i,2] == EVlevelup
+            if pkmn.stats.level >= data[i,3]; return data[i,1]; end
+        elseif data[i,2] == EVitemheld
+            if pkmn.item == data[i,3]; return data[i,1]; end
+        elseif data[i,2] == EVfriendship
+            if pkmn.stats.affection >= data[i,3]; return data[i,1]; end
+        elseif data[i,2] == hasattack
+            if occursin(data[i,3],pkmn.attacks); return data[i,1]; end
         end
     end
 
@@ -121,12 +128,12 @@ function checkEvolveItem(pkmn::Pkmn,item::UInt16)
     data = deserialize("data/pkmn/$(pkmn.id)/evolve.data")
     
     for i in axes(data,1)
-        if data[2] == EVnone
+        if data[i,2] == EVnone
             return 0x0000
-        elseif data[4] != 0x0000 && data[4] != pkmn.gender
+        elseif data[i,4] != 0x0000 && data[i,4] != pkmn.gender
             continue
-        elseif data[2] == EVitem || data[2] == EVitemtrade
-            if data[3] == item; return data[1]; end
+        elseif data[i,2] == EVitem || data[i,2] == EVitemtrade
+            if data[i,3] == item; return data[i,1]; end
         end
     end
 
@@ -136,24 +143,46 @@ end
 function evolvePokemon!(pkmn::Pkmn,to::UInt16)
     pkmn.id = to
 
+    # reload base stats here FIX
+
     updateStats!(pkmn)
-    learnLevelUp!(pkmn)
+    learnLevelUp!(pkmn,game)
 
     return
 end
 
-function learnLevelUp!(pkmn::Pkmn)
-    data = deserialize("data/pkmn/$(pkmn.id)/evolve.data")
+function learnLevelUp!(pkmn::Pkmn,game::GameState)
+    data = deserialize("data/pkmn/$(pkmn.id)/attacks.data")
     
     for i in axes(data,1)
-        if data[i,1] == pkmn.stats.level && !hasattack(pkmn,data[i,2])
-            push!(pkmn.attacks,data[i,2])
-        end
+        if data[i,1] == pkmn.stats.level; learnAttack!(pkmn,data[i,2],game); end
     end
 
     return
 end
 
-function learnMachine!(pkmn::Pkmn,machine::Machine)
-    if !hasattack(pkmn,machine.attack); push!(pkmn.attacks,machine.attack); end; return
+function learnLevelUp!(pkmn::Pkmn,levelups::Int,game::GameState)
+    data = deserialize("data/pkmn/$(pkmn.id)/attacks.data")
+
+    l = pkmn.stats.level
+
+    for i in axes(data,1)
+        if l < data[i,1] <= l+levelups; learnAttack!(pkmn,data[i,2],game); end
+    end
+
+    return
 end
+
+function learnAttack!(pkmn::Pkmn,attack::UInt16,game::GameState)
+    if !hasattack(pkmn,attack)
+        apmax = game.data.attacks[attack,5]
+        push!(pkmn.attacks,Atk(attack,apmax,apmax))
+
+        println("pkmn $(pkmn.id) learned attack $attack")
+    end
+
+    return
+end
+
+learnAttack!(game::GameState,pkmn::Pkmn,machine::Machine) =
+    learnAttack!(game,pkmn,machine.attack)

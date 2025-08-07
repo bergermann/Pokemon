@@ -106,15 +106,15 @@ function queueSetupActions!(game::GameState,state::BattleStateWild)
     sortPriority!(state.actionqueue,state.env.room.trick)
 
     if state[1].command isa CommandAttack
-        state[1].attack = state[1].pkmn.attacks[state[1].command.n]
+        state[1].attack = state[1].command.n
     else
-        state[1].attack = Attack()
+        state[1].attack = 0
     end
 
     if state[2].command isa CommandAttack
-        state[2].attack = state[2].pkmn.attacks[state[2].command.n]
+        state[2].attack = state[2].command.n
     else
-        state[2].attack = Attack()
+        state[2].attack = 0
     end
 
     return
@@ -174,8 +174,7 @@ function queueAttack!(game::GameState,state::BattleState,
     attacker.eff = getEff(attacker,defender)
 
     attacker.lastattack = attacker.attack
-    attacker.attacks[attacker.attack].ap -= 1
-    attacker.pkmn.attacks[3,attacker.attack] -= 1
+    attacker.attacks[attacker.attack].atk.ap -= 1
 
     setDmgFactors!(state,attacker,defender)
     attacker.dmgd = calcDamage(attacker.factors)
@@ -183,7 +182,7 @@ function queueAttack!(game::GameState,state::BattleState,
     
     push!(state.animqueue,BattleAnimation(
         id,120,getPkmnName(game,attacker.pkmn)*game.str[1][31]*
-            game.pkmndata.attacknames[attacker.attacks[attacker.attack].id]*game.str[1][33],
+            game.data.attacknames[attacker.attacks[attacker.attack].atk.id]*game.str[1][33],
             banimEmpty!,0
     ))
 

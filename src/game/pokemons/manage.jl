@@ -1,13 +1,15 @@
 
 function generatePkmn(game::GameState,id::UInt16,level::UInt8)
-    data = game.pkmndata.base[id,:]
+    data = game.data.base[id,:]
     ad = deserialize("data/pkmn/$id/attacks.data")
     idx0 = findfirst(!isequal(0),ad[:,1]); idx1 = findlast(<=(level),ad[:,1])
     ab = ad[idx0:idx1,2]; shuffleAttacks!(ab)
 
-    attacks = Matrix{UInt16}(undef,3,length(ab))
-    attacks[1,:] .= ab
-    attacks[2,:] .= attacks[3,:] .= game.pkmndata.attacks[ab,5];
+    attacks = Vector{Atk}(undef,length(ab))
+    for i in eachindex(ab)
+        apmax = game.data.attacks[ab[i],5]
+        attacks[i] = Atk(ab[i],apmax,apmax)
+    end
     
     p =  Pkmn(
         id,                             # id
@@ -84,7 +86,11 @@ end
 
 
 function hasattack(pkmn::Pkmn,attack::UInt16)
-    return occursin(attack,pkmn.attacks)
+    for atk in pkmn.attacks
+        if atk.id == attack; return true; end
+    end
+
+    return false
 end
 
 function hasitem(pkmn::Pkmn)
@@ -103,7 +109,7 @@ end
 
 function pkmnName(game::GameState,pkmn::Pkmn)
     if pkmn.name == ""
-        return game.pkmndata.name[pkmn.id]
+        return game.data.name[pkmn.id]
     end
     
     return pkmn.name

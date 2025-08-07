@@ -42,7 +42,7 @@ function main()
     
     setInventoryTest!(game.p.inventory)
     
-    push!(game.p.pokemon,generatePkmn(game,0x0001,0x02))
+    push!(game.p.pokemon,generatePkmn(game,0x0001,0x0b))
     push!(game.p.pokemon,generatePkmn(game,0x0002,0x02))
     push!(game.p.pokemon,generatePkmn(game,0x0003,0x60))
     push!(game.p.pokemon,generatePkmn(game,0x0004,0x08))

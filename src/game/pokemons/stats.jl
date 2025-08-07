@@ -27,8 +27,8 @@ function updateStats!(pkmn::Pkmn)
     
     for i in 2:6
         pkmn.stats.rv[i] = floor(UInt16,floor(UInt16,
-            (2*pkmn.stats.bv[i]+pkmn.stats.dv[i]+floor(pkmn.stats.ev[i]/4))*pkmn.stats.level/100+5)
-            *(1+0.1*N[i-1]))
+            (2*pkmn.stats.bv[i]+pkmn.stats.dv[i]+floor(pkmn.stats.ev[i]/4))
+                *pkmn.stats.level/100+5)*(1+0.1*N[i-1]))
     end
 
     return

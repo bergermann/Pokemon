@@ -29,35 +29,35 @@ mutable struct Inputs
 end
 
 const km = Base.ImmutableDict(
-    GLFW.KEY_SPACE => :A,
-    GLFW.KEY_ENTER => :A,
+    GLFW.KEY_SPACE          => :A,
+    GLFW.KEY_ENTER          => :A,
 
-    GLFW.KEY_LEFT_CONTROL => :B,
-    GLFW.KEY_LEFT_SHIFT => :B,
-    GLFW.KEY_BACKSPACE => :B,
+    GLFW.KEY_LEFT_CONTROL   => :B,
+    GLFW.KEY_LEFT_SHIFT     => :B,
+    GLFW.KEY_BACKSPACE      => :B,
 
-    GLFW.KEY_Q => :L,
+    GLFW.KEY_Q              => :L,
 
-    GLFW.KEY_E => :R,
+    GLFW.KEY_E              => :R,
 
-    GLFW.KEY_W => :up,
-    GLFW.KEY_UP => :up,
+    GLFW.KEY_W              => :up,
+    GLFW.KEY_UP             => :up,
 
-    GLFW.KEY_S => :down,
-    GLFW.KEY_DOWN => :down,
+    GLFW.KEY_S              => :down,
+    GLFW.KEY_DOWN           => :down,
 
-    GLFW.KEY_A => :left,
-    GLFW.KEY_LEFT => :left,
+    GLFW.KEY_A              => :left,
+    GLFW.KEY_LEFT           => :left,
 
-    GLFW.KEY_D => :right,
-    GLFW.KEY_RIGHT => :right,
+    GLFW.KEY_D              => :right,
+    GLFW.KEY_RIGHT          => :right,
 
-    GLFW.KEY_X => :start,
+    GLFW.KEY_X              => :start,
 
-    GLFW.KEY_Y => :select,
+    GLFW.KEY_Y              => :select,
 
-    GLFW.KEY_P => :pause,
-    GLFW.KEY_N => :next
+    GLFW.KEY_P              => :pause,
+    GLFW.KEY_N              => :next
 )
 
 function setupInputs(km)

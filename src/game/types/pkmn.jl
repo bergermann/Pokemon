@@ -82,6 +82,12 @@ end
     
 # abstract type AttackEffect end
 
+mutable struct Atk
+    id::UInt16
+    ap::UInt8
+    apmax::UInt8
+end
+
 mutable struct AttackEffect
     id::Int
     func::Function
@@ -89,9 +95,7 @@ mutable struct AttackEffect
 end
 
 mutable struct Attack
-    id::UInt
-    apmax::UInt8
-    ap::UInt8
+    atk::Atk
 
     type::UInt8
     class::UInt8
@@ -103,50 +107,14 @@ mutable struct Attack
     effect::Vector{AttackEffect}
 
     function Attack()
-        new(0,0,0,0,0,0,0,0,0,[])
+        new(Atk(0,0,0),0,0,0,0,0,0,[])
     end
 
-    function Attack(id,ap,apmax,class,type,power,accuracy,priority,critrate,effect)
-        new(id,ap,apmax,class,type,power,accuracy,priority,critrate,effect)
+    function Attack(atk,class,type,power,accuracy,priority,critrate,effect)
+        new(atk,class,type,power,accuracy,priority,critrate,effect)
     end
 end
 
-function loadBattleAttacks(pkmn)
-    ad = deserialize("data/attacks.data")
-
-    at = pkmn.attacks
-    attacks = Attack[]
-
-    for i in 1:min(size(pkmn.attacks,2),4)
-        id = at[1,i]
-
-        push!(attacks,Attack(
-            id,
-            at[2,i],
-            at[3,i],
-
-            ad[id,2],
-            ad[id,3],
-            ad[id,4],
-            ad[id,5],
-            1,
-            1,
-
-            AttackEffect[]
-        ))
-    end
-
-    return attacks
-end
-#= status
-0x00
-0x01 -> gift
-0x02 -> verbrannt
-0x03 -> paralyse
-0x04 -> schlaf
-0x05 -> gefroren
-0x06 -> kampfunfähig
-=#
 
 mutable struct Pkmn
     id::UInt16
@@ -167,7 +135,7 @@ mutable struct Pkmn
     status::UInt8
     item::Int
 
-    attacks::Matrix{UInt16}
+    attacks::Vector{Atk}
     ability::UInt16
 
     evolve::UInt16

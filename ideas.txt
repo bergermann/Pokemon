@@ -41,3 +41,10 @@ optimize teleports?
 rework scene transition
 
 fix accuracy factor
+
+find issue with pokemon not showing on first starts
+observations:
+- enemy sprite flashes when taking damage -> is present, not active?
+- attempts to switch own pokemon despite not fainted after first attack#
+- so far has only happened immediately after fresh console start
+- observed with pkmn: taubsi

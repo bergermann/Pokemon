@@ -3,6 +3,8 @@
 
 function animEvolve!(gamme::GameState,)
     # set color gradually to white
+    if game.n[:evolve].c == 1; println("starting evolve anim"); end
+
     if game.n[:evolve].c < 60
 
     elseif game.n[:evolve].c < 240

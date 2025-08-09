@@ -203,8 +203,17 @@ function animBattlePhaseWild!(game::GameState,args::Tuple{})
         lockInput!(game)
 
         if checkContinueFight(game)
-            createCC!(game,:scenet,sceneTransition!,
-                (32,8,F(stateEndBattle!),F(stateInitMapCtrls!)); active=true,n=1)
+            evolve = checkEvolve(game)
+
+            if evolve == 0
+                createCC!(game,:scenet,sceneTransition!,
+                    (32,8,F(stateEndBattle!,(evolve,)),
+                          F(stateInitMapCtrls!)); active=true,n=1)
+            else
+                createCC!(game,:scenet,sceneTransition!,
+                    (32,8,F(stateEndBattle!,(evolve,)),
+                          F(stateStartEvolve!,(game.p.pokemon[evolve],))); active=true,n=1)
+            end
         else
             game.ctrl.input.map = true; game.ctrl.input.move = true
 

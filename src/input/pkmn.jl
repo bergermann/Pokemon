@@ -172,12 +172,12 @@ function pkmnAction!(game::GameState,args::Tuple{})
                         game.battle.teamperm[n], game.battle.teamperm[1]
 
                     game.battle.state.pkmn1 = PkmnBattle(game.p.pokemon[1],
-                        getPkmnName(game,activePkmn(game)))
+                        pkmnName(game,activePkmn(game)))
 
                     game.battle.state.pkmn1.command = CN0
 
                     push!(game.battle.state.animqueue,BattleAnimation(
-                        :p1,128,"Los! "*getPkmnName(game,game.p.pokemon[1])*"!",
+                        :p1,128,"Los! "*pkmnName(game,game.p.pokemon[1])*"!",
                         bswitchIn!,1
                     ))
 

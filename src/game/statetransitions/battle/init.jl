@@ -5,7 +5,6 @@ function stateInitBattle!(game::GameState)
     lockInput!(game)
     game.ctrl.input.map = false
     game.ctrl.input.move = false
-    game.ctrl.input.battle
 
     game.battle.teamperm = collect(1:6)
 
@@ -214,7 +213,7 @@ function stateCloseBattle!(game::GameState)
     return
 end
 
-function stateEndBattle!(game::GameState,args::Tuple)   #,state::BattleStateWild)
+function stateEndBattle!(game::GameState,(evolve,)::Tuple{Int,})   #,state::BattleStateWild)
     stateCloseBattle!(game)
 
     game.battle.active = false
@@ -231,10 +230,14 @@ function stateEndBattle!(game::GameState,args::Tuple)   #,state::BattleStateWild
     idx = game.p.pokemon.idx
     game.p.pokemon.data[1:idx] .= @view game.p.pokemon.data[game.battle.teamperm[1:idx]]
 
-    stateOpenMap!(game)
+    if evolve == 0
+        stateOpenMap!(game)
     
-    if !checkContinueFight(game);
-        teleport!(game,4,9,402,401,1)
+        if !checkContinueFight(game);
+            teleport!(game,4,9,402,401,1)
+        end
+    else
+        stateOpenEvolve!(game,(game.p.pokemon[evolve],))
     end
 
     return

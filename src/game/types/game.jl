@@ -153,6 +153,7 @@ mutable struct GameState
 
     overworld::Bool
     battle::Battle
+    evolving::Bool
 
     flags::Flags
     events::Events

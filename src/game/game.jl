@@ -32,6 +32,7 @@ function setupGame(windowscale::Int=4,renderdistance::Int=2,maxtextures::Int=64;
 
         true,
         Battle(),
+        false,
 
         Flags(),
         Events(),

@@ -1,28 +1,28 @@
 # types used to characterize and manage pokemons
 
 
-const typetable = Matrix{Rational{UInt8}}(
-    [#  no  pf  fe  wa  ka  fl  gi  bo  st  kä  ge  el  ps  eis dr  un  st  fee
-        1   1   1   1   1   1   1   1   0.5 1   0   1   1   1   1   1   0.5 1   #normal
-        1   0.5 0.5 2   1   0.5 0.5 2   2   0.5 1   1   1   1   0.5 1   0.5 1   #pflanze
-        1   2   0.5 0.5 1   1   1   1   0.5 2   1   1   1   2   0.5 1   2   1   #feuer
-        1   0.5 2   0.5 1   1   1   2   2   1   1   1   1   1   0.5 1   1   1   #wasser
-        2   1   1   1   1   0.5 0.5 1   2   0.5 0   1   0.5 2   1   2   2   0.5 #kampf
-        1   2   1   1   2   1   1   1   0.5 2   1   0.5 1   1   1   1   0.5 1   #flug
-        1   2   1   1   1   1   0.5 0.5 0.5 1   0.5 1   1   1   1   1   0   2   #gift
-        1   0.5 2   1   1   0   2   1   2   0.5 1   2   1   1   1   1   2   1   #boden
-        1   1   2   1   0.5 2   1   0.5 1   2   1   1   1   2   1   1   0.5 1   #stein
-        1   2   0.5 1   0.5 0.5 0.5 1   1   1   0.5 1   2   1   1   2   0.5 0.5 #käfer
-        0   1   1   1   1   1   1   1   1   1   2   1   2   1   1   0.5 1   1   #geist
-        1   0.5 1   2   1   2   1   0   1   1   1   0.5 1   1   0.5 1   1   1   #elektro
-        1   1   1   1   2   1   2   1   1   1   1   1   0.5 1   1   0   0.5 1   #psycho
-        1   2   0.5 0.5 1   2   1   2   1   1   1   1   1   0.5 2   1   0.5 1   #eis
-        1   1   1   1   1   1   1   1   1   1   1   1   1   1   2   1   0.5 0   #drache
-        1   1   1   1   0.5 1   1   1   1   1   2   1   2   1   1   0.5 1   0.5 #unlicht
-        1   1   0.5 0.5 1   1   1   1   2   1   1   0.5 1   2   1   1   0.5 2   #stahl
-        1   1   0.5 1   2   1   0.5 1   1   1   1   1   1   1   2   2   0.5 1   #fee
-    ]
-)
+const typetable = Rational{UInt8}[
+ #  no  pf  fe  wa  ka  fl  gi  bo  st  kä  ge  el  ps  eis dr  un  st  fee
+    1   1   1   1   1   1   1   1   .5  1   0   1   1   1   1   1   .5  1   # normal
+    1   .5  .5  2   1   .5  .5  2   2   .5  1   1   1   1   .5  1   .5  1   # pflanze
+    1   2   .5  .5  1   1   1   1   .5  2   1   1   1   2   .5  1   2   1   # feuer
+    1   .5  2   .5  1   1   1   2   2   1   1   1   1   1   .5  1   1   1   # wasser
+    2   1   1   1   1   .5  .5  1   2   .5  0   1   .5  2   1   2   2   .5  # kampf
+    1   2   1   1   2   1   1   1   .5  2   1   .5  1   1   1   1   .5  1   # flug
+    1   2   1   1   1   1   .5  .5  .5  1   .5  1   1   1   1   1   0   2   # gift
+    1   .5  2   1   1   0   2   1   2   .5  1   2   1   1   1   1   2   1   # boden
+    1   1   2   1   .5  2   1   .5  1   2   1   1   1   2   1   1   .5  1   # stein
+    1   2   .5  1   .5  .5  .5  1   1   1   .5  1   2   1   1   2   .5  .5  # käfer
+    0   1   1   1   1   1   1   1   1   1   2   1   2   1   1   .5  1   1   # geist
+    1   .5  1   2   1   2   1   0   1   1   1   .5  1   1   .5  1   1   1   # elektro
+    1   1   1   1   2   1   2   1   1   1   1   1   .5  1   1   0   .5  1   # psycho
+    1   2   .5  .5  1   2   1   2   1   1   1   1   1   .5  2   1   .5  1   # eis
+    1   1   1   1   1   1   1   1   1   1   1   1   1   1   2   1   .5  0   # drache
+    1   1   1   1   .5  1   1   1   1   1   2   1   2   1   1   .5  1   .5  # unlicht
+    1   1   .5  .5  1   1   1   1   2   1   1   .5  1   2   1   1   .5  2   # stahl
+    1   1   .5  1   2   1   .5  1   1   1   1   1   1   1   2   2   .5  1   # fee
+]
+
 
 function printTypes(attacker)
     println("Angreifer:     $(TypeNames[UInt8(attacker)])")

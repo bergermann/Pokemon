@@ -115,7 +115,9 @@ function pkmnName(game::GameState,pkmn::Pkmn)
     return pkmn.name
 end
 
-getPkmnName(game::GameState,pkmn::Pkmn) = pkmnName(game,pkmn)
+function pkmnName(game::GameState,id::UInt16)
+    return game.data.name[id]
+end
 
 
 

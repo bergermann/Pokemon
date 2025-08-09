@@ -140,8 +140,8 @@ function checkEvolveItem(pkmn::Pkmn,item::UInt16)
     return 0x0000
 end
 
-function evolvePokemon!(pkmn::Pkmn,to::UInt16)
-    pkmn.id = to
+function evolvePokemon!(pkmn::Pkmn)
+    pkmn.id = pkmn.evolve; pkmn.evolve = 0x00
 
     # reload base stats here FIX
 

@@ -310,7 +310,7 @@ function bswitchOut!(game::GameState,user::Int)
         game.battle.teamperm[n], game.battle.teamperm[1]
 
     game.battle.state.pkmn1 = PkmnBattle(game.p.pokemon[1],
-        getPkmnName(game,activePkmn(game)))
+        pkmnName(game,activePkmn(game)))
 
     return
 end

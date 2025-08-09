@@ -35,14 +35,14 @@ function main()
 
     include("input/callbacks.jl")
     
-    @time game = setupGame(4)
+    @time game = setupGame(4); @time Base.GC.gc()
     
     GC.enable(false)
     GC.@preserve game sceneTransition!
     
     setInventoryTest!(game.p.inventory)
     
-    push!(game.p.pokemon,generatePkmn(game,0x0001,0x0b))
+    push!(game.p.pokemon,generatePkmn(game,0x0001,0x0f))
     push!(game.p.pokemon,generatePkmn(game,0x0002,0x02))
     push!(game.p.pokemon,generatePkmn(game,0x0003,0x60))
     push!(game.p.pokemon,generatePkmn(game,0x0004,0x08))
@@ -53,8 +53,6 @@ function main()
     game.p.dex[19,1] = true
 
     render(game)
-    
-    @time Base.GC.gc()
 
     t0 = time(); t1 = 0.
 

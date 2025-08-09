@@ -1,7 +1,7 @@
 
 
 function stateSetDialogue!(game::GameState,str::AbstractString,callback::Callback)
-    if !game.battle.active
+    if !(game.battle.active || game.evolving)
         activateBackground!(game,:textbox)
         game.ctrl.input.npclock = true
         game.ctrl.input.map = false
@@ -21,7 +21,7 @@ function stateSetDialogue!(game::GameState,str::AbstractString,callback::Callbac
 end
 
 function stateSetDialogue!(game::GameState,str::Vector{<:AbstractString},callback::Callback)
-    if !game.battle.active
+    if !(game.battle.active || game.evolving)
         activateBackground!(game,:textbox)
         game.ctrl.input.npclock = true
         game.ctrl.input.map = false
@@ -47,7 +47,7 @@ stateSetDialogue!(game::GameState,str) = stateSetDialogue!(game,str,F0)
 
 function stateAdvanceDialogue!(game::GameState)
     if game.ctrl.dialogue.n == game.ctrl.dialogue.l
-        if !game.battle.active
+        if !(game.battle.active || game.evolving)
             deactivateBackground!(game,:textbox)
             game.ctrl.input.npclock = false
             game.ctrl.input.map = true

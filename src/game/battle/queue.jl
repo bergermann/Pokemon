@@ -181,7 +181,7 @@ function queueAttack!(game::GameState,state::BattleState,
     defender.dmgt = min(defender.pkmn.stats.hp,attacker.dmgd)
     
     push!(state.animqueue,BattleAnimation(
-        id,120,getPkmnName(game,attacker.pkmn)*game.str[1][31]*
+        id,120,pkmnName(game,attacker.pkmn)*game.str[1][31]*
             game.data.attacknames[attacker.attacks[attacker.attack].atk.id]*game.str[1][33],
             banimEmpty!,0
     ))
@@ -216,11 +216,11 @@ function queueAttack!(game::GameState,state::BattleState,
 
     if attacker.eff < 1
         push!(state.animqueue,BattleAnimation(
-            id,120,game.str[1][35],banimEmpty!,0
+            id,120,game.str[1][34],banimEmpty!,0
         ))
     elseif attacker.eff > 1
         push!(state.animqueue,BattleAnimation(
-            id,120,game.str[1][34],banimEmpty!,0
+            id,120,game.str[1][35],banimEmpty!,0
         ))
     end
 
@@ -318,7 +318,7 @@ function queueBall!(game::GameState,state::BattleState,target::PkmnBattle,
 
     if w == 4
         push!(state.animqueue,BattleAnimation(
-            id,60,game.str[1][41]*getPkmnName(game,target.pkmn)*game.str[1][42],
+            id,60,game.str[1][41]*pkmnName(game,target.pkmn)*game.str[1][42],
             bcaughtBall!,w
         ))
     else
@@ -349,12 +349,12 @@ function queueSwitch!(game::GameState,state::BattleStateWild,user::Int,
         target::Int,id::Symbol)
     
     push!(state.animqueue,BattleAnimation(
-        id,48,game.str[1][22]*getPkmnName(game,state[1].pkmn)*game.str[1][23],
+        id,48,game.str[1][22]*pkmnName(game,state[1].pkmn)*game.str[1][23],
         bswitchOut!,user
     ))
     
     push!(state.animqueue,BattleAnimation(
-        id,128,game.str[1][24]*getPkmnName(game,game.p.pokemon[target])*".",
+        id,128,game.str[1][24]*pkmnName(game,game.p.pokemon[target])*".",
         bswitchIn!,user
     ))
 

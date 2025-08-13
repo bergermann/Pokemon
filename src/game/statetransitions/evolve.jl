@@ -5,11 +5,12 @@ function stateOpenEvolve!(game::GameState,(pkmn,)::Tuple{Pkmn,})
 
     loadStringsEvolve!(game)
 
-    createCC!(game,:evolve,animEvolve!,(); n=1)
+    createCC!(game,:evolve,animEvolve!,(pkmn,); n=1)
 
-    createBackground!(game,:b1,"backgrounds/black.png",-120,-80,6; sx=240,sy=112,active=false)
-    createBackground!(game,:battle,"backgrounds/battle/grass1.png",-120,-80,1;)
-    createBackground!(game,:textbox,"textboxes/battle.png",-120,32,6; active=true)
+    createBackground!(game,:b1,"backgrounds/battle/grass1.png",-120,-80,1;)
+    createBackground!(game,:b2,"backgrounds/black.png",-120,-80,2; sx=240,sy=112,
+        color=Float32[1,1,1,0])
+    createBackground!(game,:textbox,"textboxes/battle.png",-120,32,6)
 
     to = pkmn.evolve
     path1 = "battle/battlers/front/$(pkmn.shiny ? "shiny" : "normal")/$(pkmn.id).png"
@@ -28,11 +29,8 @@ function stateOpenEvolve!(game::GameState,(pkmn,)::Tuple{Pkmn,})
 end
 
 function stateReOpenEvolve!(game::GameState,(pkmn,)::Tuple{Pkmn,})
-    deactivateBackground!(game,:b1)
-    activateBackground!(game,:b2)
-
     deleteSpriteSheets!(game,:pkmn1,:pkmn2)
-    game.n[:evolve].c = 1
+    game.n[:evolve].c = 1; game.callbacks[:evolve].args = (pkmn,)
 
     to = pkmn.evolve
     path1 = "battle/battlers/back/$(pkmn.shiny ? "shiny" : "normal")/$(pkmn.id).png"
@@ -67,12 +65,12 @@ function stateEndEvolve!(game::GameState,pkmn::Pkmn)
         game.str[1][3]*pkmnName(game,pkmn)*game.str[1][4]*pkmnName(game,pkmn.evolve)*".",
         F(stateQuitEvolve!))
 
-    evolvePokemon!(pkmn)
+    evolvePokemon!(pkmn,game)
 
     return
 end
 
-function stateQuitEvolve!(game::GameState,()::Tuple{})
+function stateQuitEvolve!(game::GameState,args::Tuple{})
     lockInput!(game)
 
     evolve = checkEvolve(game)
@@ -82,14 +80,15 @@ function stateQuitEvolve!(game::GameState,()::Tuple{})
             F(stateCloseEvolve!),F(stateInitMapCtrls!)); active=true,n=1)
     else
         createCC!(game,:scenet,sceneTransition!,(16,8,
-            F(stateReopenEvolve!),F(stateStartEvolve!,)); active=true,n=1)
+            F(stateReopenEvolve!),F(stateStartEvolve!,(game.p.pokemon[evolve])));
+            active=true,n=1)
     end
 
     return
 end
 
 
-function stateCloseEvolve!(game::GameState)
+function stateCloseEvolve!(game::GameState,args::Tuple{})
     game.evolving = false
 
     deleteBackgrounds!(game,:b1,:b2)

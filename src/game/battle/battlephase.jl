@@ -56,6 +56,8 @@ end
 function getAccuracyFactor(state::BattleState,attacker::PkmnBattle,
         defender::PkmnBattle)::Rational{UInt8}
         
+    # abilites, items, weather
+
     return 0x01//0x01
 end
 

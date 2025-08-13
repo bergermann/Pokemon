@@ -1,20 +1,29 @@
 
 
 
-function animEvolve!(gamme::GameState,)
+function animEvolve!(game::GameState,(pkmn,)::Tuple{Pkmn,})
+    c = game.n[:evolve].c 
     # set color gradually to white
-    if game.n[:evolve].c == 1; println("starting evolve anim"); end
-
-    if game.n[:evolve].c < 60
-
-    elseif game.n[:evolve].c < 240
-        s1 = trianglewave(game.n[:evolve].c,60); s2 = trianglewave(game.n[:evolve].c+30,60)
+    if c == 1; println("starting evolve anim"); end
+    
+    if c <= 60
+        game.im.b.backgrounds[:b2].color[4] = Float32(c/60)
+    elseif c <= 300
+        s1 = trianglewave(c,120); s2 = trianglewave(c+60,120)
         scaleSprite!(game,:pkmn1,s1,s1,true)
         scaleSprite!(game,:pkmn2,s2,s2,true)
-    elseif game.n[:evolve].c < 420
-        
-    elseif game.n[:evolve].c == 480
-        stateEndEvolve!(game,:pkmn)
+    elseif c <= 450
+        s1 = trianglewave(c+30,60); s2 = trianglewave(c,60)
+        scaleSprite!(game,:pkmn1,s1,s1,true)
+        scaleSprite!(game,:pkmn2,s2,s2,true)
+    elseif c <= 540
+        s1 = trianglewave(c,30); s2 = trianglewave(c+15,30)
+        scaleSprite!(game,:pkmn1,s1,s1,true)
+        scaleSprite!(game,:pkmn2,s2,s2,true)
+    elseif c < 600
+        game.im.b.backgrounds[:b2].color[4] = Float32(1-(c-540+1)/60)
+    elseif c == 600
+        stateEndEvolve!(game,pkmn)
 
         killCC!(game,:evolve)
 
@@ -24,8 +33,4 @@ function animEvolve!(gamme::GameState,)
     game.n[:evolve].c += 1
 
     return
-end
-
-function trianglewave(x::Real,p::Real)
-    return 2*abs(x/p-floor(Float64,x/p+1/2))
 end

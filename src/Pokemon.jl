@@ -36,6 +36,8 @@ function main()
     include("input/callbacks.jl")
     
     @time game = setupGame(4); @time Base.GC.gc()
+
+    game.m.npcs[1].trainerid = 1; game.m.npcs[1].range = 10
     
     GC.enable(false)
     GC.@preserve game sceneTransition!
@@ -73,6 +75,7 @@ function main()
         
                 # @time updateGame!(game,inputs)
                 updateGame!(game,inputs)
+                println(game.ctrl.movec)
             end
         end
 

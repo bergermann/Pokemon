@@ -31,7 +31,46 @@ function manageNPCs!(game::GameState)
         end
     end
 
+    if game.ctrl.movec == 0x01
+        for i in eachindex(game.m.npcs)
+            npc = game.m.npcs[i]
+        
+            if npc.trainerid != 0x0000
+                game.m.npchit[i] = hitscanNPC(game,npc)
+            end
+        end
+    end
+
     return
+end
+
+function hitscanNPC(game::GameState,npc::NPC)
+    if dirscanNPC(game,npc)
+        println("hit by npc ",npc.id)
+        # return linescanNPC(game,npc)
+    end
+
+    return false
+end
+
+function dirscanNPC(game,npc)
+    c1 = game.ctrl.chunk; c2 = npc.chunk
+    p1 = game.ctrl.pos2;  p2 = npc.pos2
+    r = npc.range
+
+    if npc.dir == 1
+        return c1[2] == c2[2] && p1[2] == p2[2] && r >= (16*(c2[1]-c1[1])+p2[1]-p1[1]) > 0
+    elseif npc.dir == 2
+        return c1[1] == c2[1] && p1[1] == p2[1] && r >= (16*(c1[2]-c2[2])+p1[2]-p2[2]) > 0
+    elseif npc.dir == 3
+        return c1[2] == c2[2] && p1[2] == p2[2] && r >= (16*(c1[1]-c2[1])+p1[1]-p2[1]) > 0
+    else
+        return c1[1] == c2[1] && p1[1] == p2[1] && r >= (16*(c2[2]-c1[2])+p2[2]-p1[2]) > 0
+    end
+end
+
+function linescanNPC(game::GameState,npc::NPC)
+    return false
 end
 
 function manageStaticNPC!(game::GameState,npc::NPC)

@@ -5,6 +5,12 @@ include("movement.jl")
 include("menu.jl")
 include("evolve.jl")
 
+
+function trianglewave(x::Real,p::Real)
+    return 2*abs(x/p-floor(Float64,x/p+1/2))
+end
+
+
 function animEmpty!(game::GameState)
     return
 end

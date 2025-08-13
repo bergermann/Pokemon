@@ -140,7 +140,7 @@ function checkEvolveItem(pkmn::Pkmn,item::UInt16)
     return 0x0000
 end
 
-function evolvePokemon!(pkmn::Pkmn)
+function evolvePokemon!(pkmn::Pkmn,game::GameState)
     pkmn.id = pkmn.evolve; pkmn.evolve = 0x00
 
     # reload base stats here FIX

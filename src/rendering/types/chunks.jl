@@ -37,6 +37,7 @@ mutable struct MapData{R,R2}
     npcids::Vector{UInt32}
     npcs::ArrayList{NPC}
     npchit::BitVector
+    npchits::Vector{Int}
 
     objectids::Vector{UInt32}
     objects::ArrayList{Object}
@@ -53,7 +54,7 @@ mutable struct MapData{R,R2}
     function MapData{R,R2}(idxs,didxs,tilemap,chunkdata,
             tpids,tps,
             eventids,events,
-            npcids,npcs,npchit,
+            npcids,npcs,npchit,npchits,
             objectids,objects,
             itemids,items,
             areaids,areas,
@@ -62,7 +63,7 @@ mutable struct MapData{R,R2}
         new(idxs,didxs,tilemap,chunkdata,
             tpids,tps,
             eventids,events,
-            npcids,npcs,npchit,
+            npcids,npcs,npchit,npchits,
             objectids,objects,
             itemids,items,
             areaids,areas,
@@ -80,7 +81,7 @@ mutable struct MapData{R,R2}
 
             UInt16[],ArrayList(Teleport,32),
             UInt16[],ArrayList(Event,32),
-            UInt16[],ArrayList(NPC,64),falses(64),
+            UInt16[],ArrayList(NPC,64),falses(64),Int[],
             UInt16[],ArrayList(Object,64),
             UInt16[],ArrayList(MapItem,64),
             UInt16[],ArrayList(Area,16),

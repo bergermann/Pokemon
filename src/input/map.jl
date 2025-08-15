@@ -33,7 +33,7 @@ function checkWalkable(game::GameState,mpos::Pos,mchunk::Pos,l::Int,col::UInt8):
         end
     end
 
-    return col ∈ walkable
+    return col in walkable
 end
 
 checkWalkable(game::GameState,mpos::Pos,mchunk::Pos,l::Int) = 

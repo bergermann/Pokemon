@@ -37,7 +37,9 @@ function main()
     
     @time game = setupGame(4); @time Base.GC.gc()
 
-    game.m.npcs[1].trainerid = 1; game.m.npcs[1].range = 10
+    for i in eachindex(game.m.npcs)
+        game.m.npcs[i].trainerid = 1; game.m.npcs[i].range = 5
+    end
     
     GC.enable(false)
     GC.@preserve game sceneTransition!
@@ -75,7 +77,7 @@ function main()
         
                 # @time updateGame!(game,inputs)
                 updateGame!(game,inputs)
-                println(game.ctrl.movec)
+                # println(game.ctrl.mpos)
             end
         end
 

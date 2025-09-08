@@ -35,7 +35,7 @@ function manageNPCs!(game::GameState)
         end
     end
     
-    checkHit!(game)
+    checkHit(game)
 
     return
 end

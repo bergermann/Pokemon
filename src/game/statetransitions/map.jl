@@ -11,26 +11,9 @@ end
 
 function stateInitMap!(game::GameState)
     setProjection!(game)
-    game.overworld = true    
-
-    loadStringsMap!(game; reset=true)
-
-    loadArrayTexture!(game,"tilesets",tilesets,:tiles,16,16)
-    loadSpriteSheets!(game,:mc1,:npcs_all,:objects)
-
     loadChunksAll!(game)
-    
-    createBackground!(game,:textbox,"textboxes/green.png",-120,32,6; active=false)
-    createFrame!(game,:menu,7,18,48,-80,6; active=false)
-    createText!(game,:menu,4,63,-64,6,game.str[2][1],
-        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=false,hpad=3)
-    createSprite!(game,:cursor,:cursors,1,3,59,-56+game.ctrl.input.menu.select*16,0,6;
-        active=false)
-    createSprite!(game,:mc,:mc1,1,1+3*(game.ctrl.dir-1-2*(game.ctrl.dir==4)),0,-8,10,3;
-        wreverse=game.ctrl.dir==4,active=true)
 
-    createText!(game,:dialogue,2,-106,40,6,"",
-        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; maxchar=128,active=false)
+    stateOpenMap!(game)
 
     return
 end
@@ -38,6 +21,8 @@ end
 function stateOpenMap!(game::GameState)
     game.overworld = true
 
+    createCallback!(game,:hit,manageTrainerHit1!,())
+
     loadStringsMap!(game; reset=true)
     
     createBackground!(game,:textbox,"textboxes/green.png",-120,32,6; active=false)
@@ -46,36 +31,30 @@ function stateOpenMap!(game::GameState)
     loadSpriteSheets!(game,:mc1,:npcs_all,:objects)
 
     createFrame!(game,:menu,7,18,48,-80,6; active=false)
+
     createText!(game,:menu,4,63,-64,6,game.str[2][1],
         [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; active=false,hpad=3)
+    createText!(game,:dialogue,2,-106,40,6,"",
+        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; maxchar=128,active=false)
 
     createSprite!(game,:cursor,:cursors,1,3,59,-56+game.ctrl.input.menu.select*16,0,6;
         active=false)
     createSprite!(game,:mc,:mc1,1,1+3*(game.ctrl.dir-1-2*(game.ctrl.dir==4)),0,-8,10,3;
         wreverse=game.ctrl.dir==4,active=true)
 
+    createNPCSprites!(game)
+    createObjectSprites!(game)
+    createItemSprites!(game)
+
+    return
+end
+
+
+
+function createNPCSprites!(game::GameState)
     for npc in game.m.npcs
         createNPCSprite!(game,npc)
     end
-    
-    for object in game.m.objects
-        createSprite!(game,object.sprite,:objects,1,9+4*(object.type-1),
-            16*(16*(object.chunk[2]-game.ctrl.chunk[2])+(object.pos[2]-game.ctrl.pos1[2])),
-            16*(16*(object.chunk[1]-game.ctrl.chunk[1])+(object.pos[1]-game.ctrl.pos1[1])),
-            10,3; active=true)
-    end
-    
-    for item in game.m.items
-        createSprite!(game,item.sprite,:objects,1,1,
-            16*(16*(item.chunk[2]-game.ctrl.chunk[2])+(item.pos[2]-game.ctrl.pos1[2])),
-            16*(16*(item.chunk[1]-game.ctrl.chunk[1])+(item.pos[1]-game.ctrl.pos1[1])),
-            10,3; active=true)
-    end
-
-    createText!(game,:dialogue,2,-106,40,6,"",
-        [0x63,0x63,0x63,0xff],[0xd6,0xd6,0xce,0xff]; maxchar=128,active=false)
-
-    return
 end
 
 function createNPCSprite!(game::GameState,npc::NPC)
@@ -93,7 +72,44 @@ function createNPCSprite!(game::GameState,npc::NPC)
 end
 
 
+
+function createObjectSprites!(game::GameState)
+    for object in game.m.objects
+        createObjectSprite!(game,object)
+    end
+end
+
+function createObjectSprite!(game::GameState,object::Object)
+    createSprite!(game,object.sprite,:objects,1,9+4*(object.type-1),
+        16*(16*(object.chunk[2]-game.ctrl.chunk[2])+(object.pos[2]-game.ctrl.pos1[2])),
+        16*(16*(object.chunk[1]-game.ctrl.chunk[1])+(object.pos[1]-game.ctrl.pos1[1])),
+        10,3; active=true)
+
+    return
+end
+
+
+
+function createItemSprites!(game::GameState)
+    for item in game.m.items
+        createItemSprite!(game,item)
+    end
+end
+
+function createItemSprite!(game::GameState,item::Item)
+    createSprite!(game,item.sprite,:objects,1,1,
+        16*(16*(item.chunk[2]-game.ctrl.chunk[2])+(item.pos[2]-game.ctrl.pos1[2])),
+        16*(16*(item.chunk[1]-game.ctrl.chunk[1])+(item.pos[1]-game.ctrl.pos1[1])),
+        10,3; active=true)
+
+    return
+end
+
+
+
 function stateCloseMap!(game::GameState)
+    killCallback!(game,:hit)
+
     deleteArrayTexture!(game,:tiles)
     deleteSpriteSheets!(game,:mc1,:npcs_all,:objects)
     deleteBackground!(game,:textbox)

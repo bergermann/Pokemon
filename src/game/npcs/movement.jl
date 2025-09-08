@@ -92,7 +92,7 @@ function manageDynamicNPC!(game::GameState,npc::NPC)
         if m && !w && checkWalkable(game,npc.mpos,npc.mchunk,npc.fg+1)
             @. npc.pos2 = npc.pos1+dirs[npc.dir]
 
-            # checkChunks!(game,npc)
+            # checkChunks!(game,npc) # FIX
 
             setSpriteFrame!(game,npc.sprite,1+3*(npc.dir-1-2*(npc.dir==4))+1+sum(npc.pos1)%2)
             reverseSpriteW!(game,npc.sprite,npc.dir==4)
@@ -116,7 +116,6 @@ function manageDynamicNPC!(game::GameState,npc::NPC)
 
     npc.c2 += 1
     npc.c2 %= 16
-    # npc.c2 -= 16*(npc.c2>=16)
 
     return
 end

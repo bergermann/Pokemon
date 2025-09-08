@@ -234,11 +234,11 @@ function loadNPCs!(game::GameState,target::Integer,cx::Integer,cy::Integer)
 
             if event != Symbol() && !haskey(events,event); loadEvent!(game,event); end
 
-            createSprite!(game,sid,:npcs_all,spriteid,1+3*(dir-1-2*(dir==4)),
-                16*(16*(cx-game.ctrl.chunk.y)+(y-game.ctrl.pos1.y)),
-                16*(16*(cy-game.ctrl.chunk.x)+(x-game.ctrl.pos1.x))-8,
-                10,3;
-                wreverse=dir==4,active=true)
+            # createSprite!(game,sid,:npcs_all,spriteid,1+3*(dir-1-2*(dir==4)),
+            #     16*(16*(cx-game.ctrl.chunk.y)+(y-game.ctrl.pos1.y)),
+            #     16*(16*(cy-game.ctrl.chunk.x)+(x-game.ctrl.pos1.x))-8,
+            #     10,3;
+            #     wreverse=dir==4,active=true)
 
             i += 1
         end
@@ -277,11 +277,11 @@ function loadObjects!(game::GameState,target::Integer,cx::Integer,cy::Integer)
             push!(game.m.objects,obj_)
             push!(game.m.chunkdata[target].objects,Ref(obj_))
 
-            createSprite!(game,sid,:objects,1,9+4*(type-1),
-                16*(16*(cx-game.ctrl.chunk.y)+(y-game.ctrl.pos1.y)),
-                16*(16*(cy-game.ctrl.chunk.x)+(x-game.ctrl.pos1.x)),
-                10,3;
-                active=true)
+            # createSprite!(game,sid,:objects,1,9+4*(type-1),
+            #     16*(16*(cx-game.ctrl.chunk.y)+(y-game.ctrl.pos1.y)),
+            #     16*(16*(cy-game.ctrl.chunk.x)+(x-game.ctrl.pos1.x)),
+            #     10,3;
+            #     active=true)
 
             i += 1
         end
@@ -319,12 +319,12 @@ function loadItems!(game::GameState,target::Integer,cx::Integer,cy::Integer)
             push!(game.m.items,item_)
             push!(game.m.chunkdata[target].items,Ref(item_))
 
-            if item[4]
-                createSprite!(game,sid,:objects,1,1,
-                    16*(16*(cx-game.ctrl.chunk.y)+(y-game.ctrl.pos1.y)),
-                    16*(16*(cy-game.ctrl.chunk.x)+(x-game.ctrl.pos1.x)),
-                    10,3; active=true)
-            end
+            # if item[4]
+            #     createSprite!(game,sid,:objects,1,1,
+            #         16*(16*(cx-game.ctrl.chunk.y)+(y-game.ctrl.pos1.y)),
+            #         16*(16*(cy-game.ctrl.chunk.x)+(x-game.ctrl.pos1.x)),
+            #         10,3; active=true)
+            # end
 
             i += 1
         end

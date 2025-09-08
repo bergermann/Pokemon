@@ -38,7 +38,7 @@ function main()
     @time game = setupGame(4); @time Base.GC.gc()
 
     for i in eachindex(game.m.npcs)
-        game.m.npcs[i].trainerid = 1; game.m.npcs[i].range = 5
+        game.m.npcs[i].trainerid = 1; game.m.npcs[i].range = 8
     end
     
     GC.enable(false)

@@ -42,37 +42,3 @@ mutable struct NPC
             dynamic,pattern,parg1,parg2,c1,c2,trainerid,range,str,event)
     end
 end
-
-# mutable struct TrainerStatic <: NPCTrainer
-#     id::UInt32
-
-#     pos1::Position
-#     pos2::Position
-#     mpos::Position
-#     height::Int
-#     chunk::Position
-#     dir::Int
-
-#     sprite::Symbol
-
-#     pattern::Int
-#     parg::Int
-#     c::Int
-#     range::Int
-
-#     str::Vector{String}
-# end
-
-# mutable struct TrainerMove <: NPCTrainer
-#     id::UInt32
-
-#     pos::Position
-#     dir::Int
-#     sprite::Symbol
-#     dia::Int
-
-#     pattern::Int
-#     range::Int
-
-#     reward::Int
-# end

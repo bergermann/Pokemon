@@ -4,8 +4,8 @@ function checkHit(game::GameState)
         for i in eachindex(game.m.npcs)
             npc = game.m.npcs[i]
         
-            if npc.fg == game.ctrl.fg && npc.trainerid != 0x0000 && !game.m.npchit[i] &&
-                    length(game.m.npchits) >= 2 && hitscanNPC(game,npc)
+            if npc.trainerid != 0x0000 && npc.fg == game.ctrl.fg && !game.m.npchit[i] &&
+                    length(game.m.npchits) <= 2 && hitscanNPC(game,npc)
 
                 game.m.npchit[i] = true
                 push!(game.m.npchits,i)
@@ -23,7 +23,7 @@ end
 
 function hitscanNPC(game::GameState,npc::NPC)
     if dirscanNPC(game,npc)
-        # println("dir hit by npc ",npc.id)
+        println("dir hit by npc ",npc.id)
         return linescanNPC(game,npc)
     end
 
@@ -96,14 +96,73 @@ function linescanNPC(game::GameState,npc::NPC)
 end
 
 
-function manageTrainerHit!(game::GameState,()::Tuple{})
+function manageTrainerHit1!(game::GameState,()::Tuple{})
+    manageNPCs!(game)
+
     k = true
 
-    for npc in game.m.npchits
-        k *= npc.
+    for n in game.m.npchits
+        npc = game.m.npcs[n]
+
+        if npc.dynamic
+            # manageDynamicNPC!(game,npc); k = false
+            if npc.c2 == 0
+                npc.dynamic = false; npc.pattern = 0
+            end
+        else
+            npc.pattern = 0
+        end
     end
 
-    if k; killCallback!(game,:hit); end
+    if k
+        # killCallback!(game,:hit)
+        game.callbacks[:hit].func = manageTrainerHit2!
+    end
+
+    return
+end
+
+function manageTrainerHit2!(game::GameState,()::Tuple{})
+    if length(game.m.npchits) == 0
+        initBattleTrainer!(game)
+        deactivateCallback!(game,:hit)
+    end
+
+    npc = game.m.npcs[game.m.npchits[1]]
+
+    println(npc.c2)
+    if npc.c2 == 0
+        @. npc.mpos = npc.pos1+dirs[npc.dir]
+        @. npc.mchunk = modc(npc.mpos)+(game.im.c.renderdistance+1)+game.ctrl.chunk-npc.chunk
+        @. npc.mpos = (npc.mpos+15)%16+1
+
+        if isequal(game.ctrl.mchunk,npc.mchunk) && isequal(game.ctrl.pos2,npc.mpos)
+            popfirst!(game.m.npchits)
+            println("npc $(npc.id) finished moving")
+        else
+            @. npc.pos2 = npc.pos1+dirs[npc.dir]
+
+            # checkChunks!(game,npc) # FIX
+
+            setSpriteFrame!(game,npc.sprite,1+3*(npc.dir-1-2*(npc.dir==4))+1+sum(npc.pos1)%2)
+            reverseSpriteW!(game,npc.sprite,npc.dir==4)
+
+            moveSprite!(game,npc.sprite,dirs[npc.dir][2],dirs[npc.dir][1])
+        end
+        
+        npc.c2 += 1
+    else
+        moveSprite!(game,npc.sprite,dirs[npc.dir][2],dirs[npc.dir][1])
+
+        if npc.c2 == 8
+            @. npc.pos1 = npc.mpos
+
+            setSpriteFrame!(game,npc.sprite,1+3*(npc.dir-1-2*(npc.dir==4)))
+        end
+
+        npc.c2 += 1
+        npc.c2 %= 16
+    end
 
     return
 end

@@ -5,7 +5,16 @@ include("damagefactors.jl")
 include("battlephase.jl")
 include("queue.jl")
 
+function initBattleTrainer!(game::GameState)
+    stateInitBattle!(game)
 
+    loadTrainer!(game)
+
+
+    game.battle.state = BattleStateTrainerSolo()
+
+    return
+end
 
 function initBattleWild!(game::GameState)
     stateInitBattle!(game)

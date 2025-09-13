@@ -1,0 +1,40 @@
+
+introtext
+outrotext
+intertext
+extrotext
+
+pokemonlist
+    pokemon
+        id
+        ball
+        level
+        gender
+        ability
+        item
+        attacks
+        DV
+        EV
+
+{
+  "sprite": 1,
+  "name": "Test",
+  "ai level": 0,
+
+  "prize money": 100,
+  "prize item": [0,0],
+
+  "introtext": "Test intro.",
+  "outrotext": "Test outro.",
+  "intertext": "Test inter.",
+  "extrotext": "Test extro.",
+  {
+    "Name": "Mustermann",
+    "Vorname": "Max",
+    "Teilnahme am Bonusprogramm": true,
+    "Hobbys": ["Reiten", "Golfen", "Lesen"],
+    "Alter": 42,
+    "Kinder": [],
+    "Partner": null
+  }
+}

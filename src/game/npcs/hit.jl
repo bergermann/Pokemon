@@ -105,7 +105,6 @@ function manageTrainerHit1!(game::GameState,()::Tuple{})
         npc = game.m.npcs[n]
 
         if npc.dynamic
-            # manageDynamicNPC!(game,npc); k = false
             if npc.c2 == 0
                 npc.dynamic = false; npc.pattern = 0
             end
@@ -115,29 +114,37 @@ function manageTrainerHit1!(game::GameState,()::Tuple{})
     end
 
     if k
-        # killCallback!(game,:hit)
-        game.callbacks[:hit].func = manageTrainerHit2!
+        game.callbacks[:hit].func = manageTrainerHit2!; game.n[:hit].c = 60
     end
 
     return
 end
 
+
 function manageTrainerHit2!(game::GameState,()::Tuple{})
     if length(game.m.npchits) == 0
         initBattleTrainer!(game)
+        unlockInput!(game)
         deactivateCallback!(game,:hit)
+
+        return
     end
 
     npc = game.m.npcs[game.m.npchits[1]]
 
-    println(npc.c2)
+    if game.n[:hit].c > 0
+        if game.n[:hit].c == 60; createEmote!(game,npc,1); end
+
+        game.n[:hit].c -= 1; return
+    end
+
     if npc.c2 == 0
         @. npc.mpos = npc.pos1+dirs[npc.dir]
         @. npc.mchunk = modc(npc.mpos)+(game.im.c.renderdistance+1)+game.ctrl.chunk-npc.chunk
         @. npc.mpos = (npc.mpos+15)%16+1
 
         if isequal(game.ctrl.mchunk,npc.mchunk) && isequal(game.ctrl.pos2,npc.mpos)
-            popfirst!(game.m.npchits)
+            popfirst!(game.m.npchits); game.n[:hit].c = 60
             println("npc $(npc.id) finished moving")
         else
             @. npc.pos2 = npc.pos1+dirs[npc.dir]

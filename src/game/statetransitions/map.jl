@@ -22,6 +22,7 @@ function stateOpenMap!(game::GameState)
     game.overworld = true
 
     createCallback!(game,:hit,manageTrainerHit1!,())
+    createCC!(game,:hit,manageTrainerHit1!,())
 
     loadStringsMap!(game; reset=true)
     

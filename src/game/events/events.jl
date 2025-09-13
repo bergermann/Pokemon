@@ -268,9 +268,7 @@ function playEvent!(game::GameState)
         npc = game.m.npcs[idx]
         
         if e[4] < 3
-            sid = Symbol(npc.id,:emote,1)
-            createSprite!(game,sid,:objects,26,e[4],0,0,0,6; active=true)
-            createCC!(game,sid,emote!,(npc.sprite,sid,14); active=true)
+            createEmote!(game,npc,e[4])
         else
             h = getSpritePosH(game,npc.sprite)
             sid = Symbol(npc.id,:emote,3)
@@ -406,6 +404,16 @@ function jump!(game::GameState,(sprite,sid)::Tuple{Symbol,Symbol})
     end
 
     game.n[sid].c += 1
+
+    return
+end
+
+function createEmote!(game::GameState,npc::NPC,type::Int,offset::Int=14)
+    w, h = getSpritePos(game,npc.sprite)
+
+    sid = Symbol(npc.id,:emote,1)
+    createSprite!(game,sid,:objects,26,type,Int(w),h-offset,0,6; active=true)
+    createCC!(game,sid,emote!,(npc.sprite,sid,offset); active=true)
 
     return
 end

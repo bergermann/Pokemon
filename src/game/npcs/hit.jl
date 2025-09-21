@@ -5,7 +5,7 @@ function checkHit(game::GameState)
             npc = game.m.npcs[i]
         
             if npc.trainerid != 0x0000 && npc.fg == game.ctrl.fg && !game.m.npchit[i] &&
-                    length(game.m.npchits) <= 2 && hitscanNPC(game,npc)
+                    length(game.m.npchits) <= 1 && hitscanNPC(game,npc)
 
                 game.m.npchit[i] = true
                 push!(game.m.npchits,i)

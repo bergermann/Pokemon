@@ -1,0 +1,32 @@
+{
+  "sprite": 1,
+  "name": "Test",
+  "ai level": 0,
+
+  "prize money": 100,
+  "prize item": [0,0],
+
+  "introtext": "Test intro.",
+  "outrotext": "Test outro.",
+  "intertext": "Test inter.",
+  "extrotext": "Test extro.",
+  "pokemon": [{
+    "id": "Bisasam",
+    "ball": "Pokéball",
+    "level": 5,
+    "gender": "male",
+    "ability": 1,
+    "attacks": ["Tackle","Rankenhieb"],
+    "DV": [0,0,0,0,0,0],
+    "EV": [0,0,0,0,0,0]
+  },{
+    "id": "Rattfratz",
+    "ball": "Superball",
+    "level": 10,
+    "gender": "male",
+    "ability": 1,
+    "attacks": ["Tackle","Rankenhieb"],
+    "DV": [0,0,0,0,0,0],
+    "EV": [0,0,0,0,0,0]
+  }]
+}

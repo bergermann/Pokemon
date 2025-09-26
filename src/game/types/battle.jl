@@ -319,7 +319,7 @@ mutable struct BattleRoom
 end
 
 mutable struct BattleEnvironment
-    weather::UInt8          #CHECK THIS
+    weather::UInt8
     weatherc::UInt8
 
     mud::Bool
@@ -347,40 +347,40 @@ end
 
 
 
-#abstract type BattleState end
+# abstract type BattleState end
 
-mutable struct BattleStateNone <: BattleState end
+# mutable struct BattleStateNone <: BattleState end
 
-mutable struct BattleStateWild <: BattleState
-    counters::BattleCounters
-    turn::UInt
+# mutable struct BattleStateWild <: BattleState
+#     counters::BattleCounters
+#     turn::UInt
 
-    env::BattleEnvironment
+#     env::BattleEnvironment
 
-    pkmn1::PkmnBattle
-    pkmn2::PkmnBattle
+#     pkmn1::PkmnBattle
+#     pkmn2::PkmnBattle
 
-    animqueue::ArrayList{BattleAnimation}
-    actionqueue::ArrayList{BattleAction}
+#     animqueue::ArrayList{BattleAnimation}
+#     actionqueue::ArrayList{BattleAction}
 
-    caught1::Bool
-    caught2::Bool
+#     caught1::Bool
+#     caught2::Bool
 
-    forceswitch1::Bool
-    forceswitch2::Bool
+#     forceswitch1::Bool
+#     forceswitch2::Bool
 
-    function BattleStateWild(counters,env,pkmn1,pkmn2)
-        new(counters,0,env,pkmn1,pkmn2,
-            ArrayList(BattleAnimation,32),ArrayList(BattleAction,8),false,false)
-    end
-end
+#     function BattleStateWild(counters,env,pkmn1,pkmn2)
+#         new(counters,0,env,pkmn1,pkmn2,
+#             ArrayList(BattleAnimation,32),ArrayList(BattleAction,8),false,false)
+#     end
+# end
 
-function Base.getindex(state::BattleStateWild,ind)
-    # return ind == 1 ? state.pkmn1 : state.pkmn2
-    return getfield(state,ind+3)
-end
+# function Base.getindex(state::BattleStateWild,ind)
+#     # return ind == 1 ? state.pkmn1 : state.pkmn2
+#     return getfield(state,ind+3)
+# end
 
-mutable struct BattleState_ <: BattleState
+mutable struct BattleState
     counters::BattleCounters
 
     env::BattleEnvironment
@@ -403,7 +403,7 @@ mutable struct BattleState_ <: BattleState
     trainer1::Trainer
     trainer2::Trainer
 
-    function BattleState_()
+    function BattleState()
         new(
             BattleCounters(),BattleEnvironment(),
             PB0,PB0,PB0,PB0,

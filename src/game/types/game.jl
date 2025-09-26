@@ -55,7 +55,7 @@ end
 
 
 
-abstract type BattleState end
+# abstract type BattleState end
 
 mutable struct Battle
     active::Bool

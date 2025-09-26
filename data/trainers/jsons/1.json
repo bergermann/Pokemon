@@ -16,6 +16,10 @@
     "level": 5,
     "gender": "male",
     "ability": 1,
+    "item": "Sinelbeere",
+    "nature": 1,
+    "affection": 255,
+    "shiny": false,
     "attacks": ["Tackle","Rankenhieb"],
     "DV": [0,0,0,0,0,0],
     "EV": [0,0,0,0,0,0]
@@ -23,10 +27,7 @@
     "id": "Rattfratz",
     "ball": "Superball",
     "level": 10,
-    "gender": "male",
-    "ability": 1,
-    "attacks": ["Tackle","Rankenhieb"],
-    "DV": [0,0,0,0,0,0],
-    "EV": [0,0,0,0,0,0]
+    "shiny": false,
+    "attacks": ["Tackle","Ruckzuckhieb"]
   }]
 }

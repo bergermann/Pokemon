@@ -13,6 +13,23 @@ const blabels = Base.ImmutableDict(
     for i in 1:4]...
 )
 
+mutable struct Trainer
+    sprite::Int
+    name::String
+    ai::Int
+
+    money::Int
+    # prize::Array{Int}
+
+    intro::String
+    outro::String
+    inter::String
+    extro::String
+
+    pokemon::Array{Pkmn}
+end
+
+const T0 = Trainer(0,"",0,0,"","","","",Pkmn[])
 
 abstract type BattleCommand end
 
@@ -268,13 +285,15 @@ mutable struct PkmnBattle
     end
 end
 
+const PB0 = PkmnBattle(game,P0)
+
 mutable struct BattleCounters
-    turn::Int
-    flee::Int
-    c3::Int
+    turn::UInt8
+    flee::UInt8
+    # c3::Int
 
     function BattleCounters()
-        new(0,0,0)
+        new(0,0)
     end
 end
 
@@ -290,17 +309,12 @@ mutable struct EntryHazards
 end
 
 mutable struct BattleRoom
-    trick::Bool
-    trickc::UInt8
-
-    magic::Bool
-    magicc::UInt8
-
-    wonder::Bool
-    wonderc::UInt8
+    trick::UInt8
+    magic::UInt8
+    wonder::UInt8
 
     function BattleRoom()
-        new(false,0,false,0,false,0)
+        new(0,0,0)
     end
 end
 
@@ -355,8 +369,8 @@ mutable struct BattleStateWild <: BattleState
     forceswitch1::Bool
     forceswitch2::Bool
 
-    function BattleStateWild(counters,turn,env,pkmn1,pkmn2)
-        new(counters,turn,env,pkmn1,pkmn2,
+    function BattleStateWild(counters,env,pkmn1,pkmn2)
+        new(counters,0,env,pkmn1,pkmn2,
             ArrayList(BattleAnimation,32),ArrayList(BattleAction,8),false,false)
     end
 end
@@ -366,36 +380,163 @@ function Base.getindex(state::BattleStateWild,ind)
     return getfield(state,ind+3)
 end
 
-mutable struct BattleStateTrainerSolo <: BattleState
+mutable struct BattleState_ <: BattleState
     counters::BattleCounters
-    turn::UInt
 
     env::BattleEnvironment
 
     pkmn1::PkmnBattle
     pkmn2::PkmnBattle
+    pkmn3::PkmnBattle
+    pkmn4::PkmnBattle
 
-    attackanim::Function
+    animqueue::ArrayList{BattleAnimation}
+    actionqueue::ArrayList{BattleAction}
 
-    function BattleState(counters,turn,env,pkmn1,pkmn2,nothing)
-        new(counters,turn,env,pkmn1,pkmn2)
+    forceswitch::BitVector
+
+    iswild::Bool
+    isdouble::Bool
+    caught1::Bool
+    caught2::Bool
+
+    trainer1::Trainer
+    trainer2::Trainer
+
+    function BattleState_()
+        new(
+            BattleCounters(),BattleEnvironment(),
+            PB0,PB0,PB0,PB0,
+            ArrayList(BattleAnimation,32),ArrayList(BattleAction,8),
+            falses(4),
+            false,false,false,false,
+            T0,T0
+        )
     end
 end
 
-mutable struct BattleStateTrainerDouble <: BattleState
-    counters::BattleCounters
-    turn::UInt
+function Base.getindex(state::BattleState,ind::Integer)::PkmnBattle
+    return getfield(state,ind+2)
+end
 
-    env::BattleEnvironment
+function Base.getindex(state::BattleState,team::Integer,ind::Integer)::PkmnBattle
+    return getfield(state,2*team+ind)
+end
 
-    pkmn11::PkmnBattle
-    pkmn12::PkmnBattle
-    pkmn21::PkmnBattle
-    pkmn22::PkmnBattle
+function setBattleState!(game::GameState,weather::UInt8,pkmn::Pkmn)
+    state = game.battle.state
 
-    attackanim::Function
+    resetBattleState!(state)
 
-    function BattleState(counters,turn,env,pkmn1,pkmn2,nothing)
-        new(counters,turn,env,pkmn1,pkmn2)
-    end
+    game.battle.teamperm = collect(1:6); activePkmn!(game)
+
+    state.pkmn1 = PkmnBattle(game,game.p.pokemon[1])
+    state.pkmn2 = PB0
+    state.pkmn3 = PkmnBattle(game,pkmn)
+    state.pkmn4 = PB0
+
+    state.iswild = true
+    state.isdouble = false
+
+    state.trainer1 = T0
+    state.trainer2 = T0
+
+    state.env.weather = weather
+    state.env.weatherc = 0xff*(weather!=0x00)
+
+    return
+end
+
+function setBattleState!(game::GameState,weather::UInt8,trainer::Trainer)
+    state = game.battle.state
+
+    resetBattleState!(state)
+
+    game.battle.teamperm = collect(1:6); activePkmn!(game)
+
+    state.pkmn1 = PkmnBattle(game,game.p.pokemon[1])
+    state.pkmn2 = PB0
+    state.pkmn3 = PkmnBattle(game,trainer.pokemon[1])
+    state.pkmn4 = PB0
+
+    state.iswild = false
+    state.isdouble = false
+
+    state.trainer1 = trainer
+    state.trainer2 = T0
+
+    state.env.weather = weather
+    state.env.weatherc = 0xff*(weather!=0x00)
+
+    return
+end
+
+function setBattleState!(game::GameState,weather::UInt8,trainer1::Trainer,trainer2::Trainer)
+    state = game.battle.state
+
+    resetBattleState!(state)
+
+    game.battle.teamperm = collect(1:6); activePkmn!(game,2)
+
+    state.pkmn1 = PkmnBattle(game,game.p.pokemon[1])
+    state.pkmn2 = PkmnBattle(game,game.p.pokemon[2])
+    state.pkmn3 = PkmnBattle(game,trainer1.pokemon[1])
+    state.pkmn4 = PkmnBattle(game,trainer2.pokemon[1])
+
+    state.iswild = false
+    state.isdouble = true
+
+    state.trainer1 = trainer1
+    state.trainer2 = trainer1
+
+    state.env.weather = weather
+    state.env.weatherc = 0xff*(weather!=0x00)
+
+    return
+end
+
+function resetBattleCounters!(state::BattleState)
+    state.counters.turn = 0x00
+    state.counters.flee = 0x00
+
+    return
+end
+
+function resetBattleEnvironment!(state::BattleState)
+    state.env.weather = 0x00
+    state.env.weatherc = 0x00
+
+    state.env.mud = false
+    state.env.wet = false
+
+    state.env.enthaz1.spikes = 0x00
+    state.env.enthaz1.toxspikes = 0x00
+    state.env.enthaz1.rocks = false
+    state.env.enthaz1.sticky = false
+
+    state.env.enthaz2.spikes = 0x00
+    state.env.enthaz2.toxspikes = 0x00
+    state.env.enthaz2.rocks = false
+    state.env.enthaz2.sticky = false
+
+    state.env.room.trick = 0x00
+    state.env.room.magic = 0x00
+    state.env.room.wonder = 0x00
+
+    return
+end
+
+function resetBattleState!(state::BattleState)
+    resetBattleCounters!(state)
+    resetBattleEnvironment!(state)
+
+    empty!(state.animqueue)
+    empty!(state.actionqueue)
+
+    state.forceswitch .= false
+
+    state.caught1 = false
+    state.caught2 = false
+
+    return
 end

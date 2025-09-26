@@ -6,10 +6,6 @@ function stateInitBattle!(game::GameState)
     game.ctrl.input.map = false
     game.ctrl.input.move = false
 
-    game.battle.teamperm = collect(1:6)
-
-    activePkmn!(game)
-
     createCounter!(game,:introb)
     createCallback!(game,:introb,true,animBattleIntro1!,())
 

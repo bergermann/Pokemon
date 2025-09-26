@@ -42,9 +42,9 @@ end
 
 function shuffleAttacks!(attacks::Vector{UInt16})
     for i in 5:length(attacks)
-        if rand() <= 0.5
+        if rand(Bool)
             idx = rand(1:4)
-            attacks[idx], attacks[i] =  attacks[i], attacks[idx]
+            attacks[idx], attacks[i] = attacks[i], attacks[idx]
         end
     end
 

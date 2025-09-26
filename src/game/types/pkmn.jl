@@ -128,7 +128,6 @@ mutable struct Pkmn
     otrainerid::UInt16
     location::String
     ball::UInt8
-    markers::Vector{Bool}
 
     type::Tuple{UInt8,UInt8}
     stats::Stats
@@ -141,3 +140,26 @@ mutable struct Pkmn
     evolve::UInt16
 end
 
+const P0 = Pkmn(
+    0x0000,
+    "",
+    0x00,
+    false,
+    0x00,
+    0x00,
+
+    "",
+    0x0000,
+    "",
+    0x00,
+
+    (0x00,0x00),
+    Stats(zeros(0),zeros(6),0,0,0),
+    0x00,
+    0,
+
+    Atk[],
+    0x00,
+
+    0x00,
+)

@@ -24,7 +24,7 @@ function setupGame(windowscale::Int=4,renderdistance::Int=2,maxtextures::Int=64;
         Controls(9,8,1,2,1,false,1),
         MapData(renderdistance),
         [],
-        PkmnData(),
+        PkwmnData(),
 
         ArrayList(Counter,128),
         ArrayList(Callback,128),

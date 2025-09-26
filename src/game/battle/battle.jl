@@ -27,7 +27,7 @@ function initBattleWild!(game::GameState)
     pb2.name = pkmnName(game,pb2.pkmn)
     pb2.xpdrop = UInt32(max(1,rand(UInt8)))   # game.data.base[pb2.pkmn.id,x]
 
-    game.battle.state = BattleStateWild(BattleCounters(),0,BattleEnvironment(),pb1,pb2)
+    game.battle.state = BattleStateWild(BattleCounters(),BattleEnvironment(),pb1,pb2)
 
     return
 end

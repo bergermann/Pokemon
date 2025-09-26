@@ -17,9 +17,9 @@ struct FlagSet{N1,N2,N3,N4,N5}
     
     empty::Bool
 
-    function FlagSet()
-        new{0,0,0,0,0}([],[],[],[],[],[],[],[],[],true)
-    end
+    # function FlagSet()
+    #     new{0,0,0,0,0}([],[],[],[],[],[],[],[],[],true)
+    # end
 
     function FlagSet(flags,flagvals,flagtypes,counters,countervals,countertypes,
             hasseen,hascaught,inteam)

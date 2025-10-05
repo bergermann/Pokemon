@@ -9,6 +9,8 @@ function stateInitBattle!(game::GameState)
     createCounter!(game,:introb)
     createCallback!(game,:introb,true,animBattleIntro1!,())
 
+    resetBattleState!(game)
+
     return
 end
 

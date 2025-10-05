@@ -22,12 +22,14 @@ function initBattleWild!(game::GameState)
     data = findArea(game); idx = sample(fweights(data[:,4]))
     lvl = UInt8(clamp(randN(data[idx,2],data[idx,3])+5,2,100))
 
-    pb1 = PkmnBattle(game,game.p.pokemon[1],pkmnName(game,activePkmn(game)))
-    pb2 = PkmnBattle(game,generatePkmn(game,data[idx,1],lvl))
-    pb2.name = pkmnName(game,pb2.pkmn)
-    pb2.xpdrop = UInt32(max(1,rand(UInt8)))   # game.data.base[pb2.pkmn.id,x]
+    p = generatePkmn(game,data[idx,1],lvl)
 
-    game.battle.state = BattleStateWild(BattleCounters(),BattleEnvironment(),pb1,pb2)
+    # pb1 = PkmnBattle(game,game.p.pokemon[1],pkmnName(game,activePkmn(game)))
+    # pb2 = PkmnBattle(game,generatePkmn(game,data[idx,1],lvl))
+    # pb2.name = 
+    # pb2.xpdrop = UInt32(max(1,rand(UInt8)))   # 
+
+    setBattleState!(game,0x00,p)
 
     return
 end

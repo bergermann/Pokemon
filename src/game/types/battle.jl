@@ -248,11 +248,11 @@ mutable struct PkmnBattle
     attack::Int
     lastattack::Int
 
-    function PkmnBattle(game::GameState,pkmn::Pkmn,name::String)
+    function PkmnBattle(game::GameState,pkmn::Pkmn)
         new(
             pkmn,           # pkmn
-            name,           # name
-            0,              # xpdrop
+            pkmnName(game,pkmn),           # name
+            game.data.base[pkmn.id,x],              # xpdrop
 
             zeros(Int8,8),  # buffs
 
@@ -278,10 +278,6 @@ mutable struct PkmnBattle
             0,
             0,
         )
-    end
-
-    function PkmnBattle(game::GameState,pkmn::Pkmn)
-        PkmnBattle(game,pkmn,"")
     end
 end
 
@@ -345,41 +341,6 @@ end
 
 
 
-
-
-# abstract type BattleState end
-
-# mutable struct BattleStateNone <: BattleState end
-
-# mutable struct BattleStateWild <: BattleState
-#     counters::BattleCounters
-#     turn::UInt
-
-#     env::BattleEnvironment
-
-#     pkmn1::PkmnBattle
-#     pkmn2::PkmnBattle
-
-#     animqueue::ArrayList{BattleAnimation}
-#     actionqueue::ArrayList{BattleAction}
-
-#     caught1::Bool
-#     caught2::Bool
-
-#     forceswitch1::Bool
-#     forceswitch2::Bool
-
-#     function BattleStateWild(counters,env,pkmn1,pkmn2)
-#         new(counters,0,env,pkmn1,pkmn2,
-#             ArrayList(BattleAnimation,32),ArrayList(BattleAction,8),false,false)
-#     end
-# end
-
-# function Base.getindex(state::BattleStateWild,ind)
-#     # return ind == 1 ? state.pkmn1 : state.pkmn2
-#     return getfield(state,ind+3)
-# end
-
 mutable struct BattleState
     counters::BattleCounters
 
@@ -416,12 +377,12 @@ mutable struct BattleState
 end
 
 function Base.getindex(state::BattleState,ind::Integer)::PkmnBattle
-    return getfield(state,ind+2)
+    return getfield(state,2+(1+!state.isdouble)*(ind-1)+1)
 end
 
-function Base.getindex(state::BattleState,team::Integer,ind::Integer)::PkmnBattle
-    return getfield(state,2*team+ind)
-end
+# function Base.getindex(state::BattleState,team::Integer,ind::Integer)::PkmnBattle
+#     return getfield(state,2*team+ind)
+# end
 
 function setBattleState!(game::GameState,weather::UInt8,pkmn::Pkmn)
     state = game.battle.state
@@ -526,7 +487,9 @@ function resetBattleEnvironment!(state::BattleState)
     return
 end
 
-function resetBattleState!(state::BattleState)
+function resetBattleState!(game::GameState)
+    state = game.battle.state
+
     resetBattleCounters!(state)
     resetBattleEnvironment!(state)
 

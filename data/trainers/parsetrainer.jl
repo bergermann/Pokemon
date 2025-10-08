@@ -1,5 +1,8 @@
 using JSON, DelimitedFiles, Serialization
 
+module Pokemon
+using DelimitedFiles, Serialization
+
 mutable struct Atk
     id::UInt16
     ap::UInt8
@@ -51,7 +54,6 @@ mutable struct Pkmn
     otrainerid::UInt16
     location::String
     ball::UInt8
-    markers::Vector{Bool}
 
     type::Tuple{UInt8,UInt8}
     stats::Stats
@@ -94,8 +96,9 @@ mutable struct PkmnData
             readlines("str/ger/attack_names.txt"))
     end
 end
+end
 
-pdata = PkmnData()
+pdata = Pokemon.PkmnData()
 
 balls_ = readlines("str/ger/pokeballs.txt")
 balls = Dict(balls_[i] => i for i in eachindex(balls_))
@@ -126,7 +129,7 @@ function getGender(genderweight::Vector{UInt16})
     end
 end
 
-function updateStats!(pkmn::Pkmn)
+function updateStats!(pkmn::Pokemon.Pkmn)
     N = natureMod(pkmn.stats.nature)
 
     pkmn.stats.rv[1] = calcHP(pkmn)
@@ -149,7 +152,7 @@ function natureMod(nature::UInt8)
     return a
 end
 
-function calcHP(pkmn::Pkmn)
+function calcHP(pkmn::Pokemon.Pkmn)
     return UInt16(
         floor(UInt16,
             (2*pkmn.stats.bv[1]+pkmn.stats.dv[1]+floor(pkmn.stats.ev[1]/4))*
@@ -197,7 +200,7 @@ function xpFormulas(level,xptype)
 end
 
 function parseTrainer(i::Int,d::Dict)
-    pkmn = Pkmn[]
+    pkmn = Pokemon.Pkmn[]
 
     ailevel = get(d,"ai level",rand(1:100))
 
@@ -205,7 +208,7 @@ function parseTrainer(i::Int,d::Dict)
         push!(pkmn,parsePkmn(p,ailevel))
     end
 
-    return Trainer(
+    return Pokemon.Trainer(
         get(d,"sprite",1),
         d["name"],
         ailevel,
@@ -248,17 +251,17 @@ function parsePkmn(p::Dict,ailevel::Int)
     dv = get(p,"DV",round.(UInt8,31*rand(6)*ailevel/100))
     ev = get(p,"EV",genEV(ailevel))
 
-    stats = Stats(bv,dv,ev,p["level"],
+    stats = Pokemon.Stats(bv,dv,ev,p["level"],
         get(p,"nature",rand(1:25)),
         get(p,"affection",rand(UInt8)))
 
     a = get(p,"attacks",[])
-    attacks = Atk[]
+    attacks = Pokemon.Atk[]
 
     for atk in a
         a_ = findfirst(isequal(atk),pdata.attacknames)
         apmax = pdata.attacks[a_,5]
-        push!(attacks,Atk(a_,apmax,apmax))
+        push!(attacks,Pokemon.Atk(a_,apmax,apmax))
     end
 
     if isempty(attacks)
@@ -269,11 +272,11 @@ function parsePkmn(p::Dict,ailevel::Int)
 
         for i in 1:min(length(ab),4)
             apmax = game.data.attacks[ab[i],5]
-            push!(attacks,Atk(ab[i],apmax,apmax))
+            push!(attacks,Pokemon.Atk(ab[i],apmax,apmax))
         end
     end
 
-    pkmn = Pkmn(
+    pkmn = Pokemon.Pkmn(
         id,
         "",
         genders[get(p,"gender",getGender(data[14:end]))],
@@ -285,7 +288,6 @@ function parsePkmn(p::Dict,ailevel::Int)
         0x0000,
         "",
         balls[get(p,"ball","Pokéball")],
-        [],
 
         Tuple{UInt8,UInt8}(data[2:3]),
         stats,

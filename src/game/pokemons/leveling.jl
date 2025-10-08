@@ -56,7 +56,7 @@ end
 function calcXpDrop1(state::BattleState,attacker::PkmnBattle,defender::PkmnBattle)
     return floor(UInt32,
         *(
-            1+0.5*!(typeof(state)==BattleStateWild),
+            1+0.5*!(state.iswild),
             defender.xpdrop, #game.data.base[defender.pkmn.id], #xp base value
             1.5,    #trainer != otrainer
             1+0.5*(attacker.pkmn.item==0x00),   #glücksei

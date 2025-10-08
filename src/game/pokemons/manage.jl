@@ -18,11 +18,12 @@ function generatePkmn(game::GameState,id::UInt16,level::UInt8)
         rand(UInt16) < 0x0010,          # shiny
         0x00,                           # form
         data[13],                       # xptype
+
         game.p.name,                    # OTrainer
         game.p.id,                      # OTrainer id
         "",                             # location
         0x01,                           # ball id
-        falses(5),                      # markers
+
         Tuple{UInt8,UInt8}(data[2:3]),  # types
         Stats(data[4:9],level),         # stats
         0x00,                           # status

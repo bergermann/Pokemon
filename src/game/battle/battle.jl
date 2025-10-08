@@ -8,13 +8,31 @@ include("queue.jl")
 function initBattleTrainer!(game::GameState)
     stateInitBattle!(game)
 
-    loadTrainer!(game)
+    t = loadTrainer!(game)
 
-
-    game.battle.state = BattleStateTrainerSolo()
+    setBattleState!(game,0x00,t)
 
     return
 end
+
+function getTrainer(game::GameState)
+    for i in eachindex(game.m.npchit)
+        if game.m.npchit[i]; return i; end
+    end
+
+    throw(ErrorException("No valid trainer has been found after hit."))
+
+    return 0
+end
+
+function loadTrainer!(game::GameState)
+    id = game.m.npcs[getTrainer(game)].trainerid
+
+    return deserialize("data/trainers/$id.td")
+end
+
+
+
 
 function initBattleWild!(game::GameState)
     stateInitBattle!(game)
@@ -23,11 +41,6 @@ function initBattleWild!(game::GameState)
     lvl = UInt8(clamp(randN(data[idx,2],data[idx,3])+5,2,100))
 
     p = generatePkmn(game,data[idx,1],lvl)
-
-    # pb1 = PkmnBattle(game,game.p.pokemon[1],pkmnName(game,activePkmn(game)))
-    # pb2 = PkmnBattle(game,generatePkmn(game,data[idx,1],lvl))
-    # pb2.name = 
-    # pb2.xpdrop = UInt32(max(1,rand(UInt8)))   # 
 
     setBattleState!(game,0x00,p)
 
@@ -52,6 +65,8 @@ function findArea(game::GameState)::Matrix{UInt16}
 
     return UInt16[19 3 1 1]
 end
+
+
 
 function loadBattleAttacks(game::GameState,pkmn::Pkmn)
     ad = game.data.attacks

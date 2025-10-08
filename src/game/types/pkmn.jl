@@ -72,11 +72,11 @@ mutable struct Stats
     end
 
     function Stats(bv,dv,level)
-        new(bv,dv,zeros(UInt8),level,1,0,rand(1:25),0)
+        new(bv,dv,          zeros(UInt8,6),zeros(UInt16,6),0,level,0,rand(1:25),0)
     end
 
     function Stats(bv,dv,level,nature,affection)
-        new(bv,dv,zeros(UInt8),level,1,0,nature,affection)
+        new(bv,dv,          zeros(UInt8,6),zeros(UInt16,6),0,level,0,nature,affection)
     end
 end
     
@@ -139,27 +139,3 @@ mutable struct Pkmn
 
     evolve::UInt16
 end
-
-const P0 = Pkmn(
-    0x0000,
-    "",
-    0x00,
-    false,
-    0x00,
-    0x00,
-
-    "",
-    0x0000,
-    "",
-    0x00,
-
-    (0x00,0x00),
-    Stats(zeros(0),zeros(6),0,0,0),
-    0x00,
-    0,
-
-    Atk[],
-    0x00,
-
-    0x00,
-)

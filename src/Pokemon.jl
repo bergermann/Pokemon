@@ -9,7 +9,6 @@ using ModernGL, GLFW#, GLAbstraction
 
 # using TickTock
 using StatsBase, Images, Serialization, DelimitedFiles
-# using LinearAlgebra
 
 include("types.jl")
 include("game/types/types1.jl")
@@ -27,6 +26,8 @@ include("game/game.jl")
 # @time foreach(names(@__MODULE__, all=true)) do s
 #     @eval export $s
 # end
+
+deserialize("data/trainers/1.td")
 
 function main()
     fps = 60.
@@ -77,7 +78,6 @@ function main()
         
                 # @time updateGame!(game,inputs)
                 updateGame!(game,inputs)
-                # println(game.ctrl.mpos)
             end
         end
 

@@ -211,7 +211,7 @@ function stateCloseBattle!(game::GameState)
     return
 end
 
-function stateEndBattle!(game::GameState,(evolve,)::Tuple{Int,})   #,state::BattleStateWild)
+function stateEndBattle!(game::GameState,(evolve,)::Tuple{Int,})
     stateCloseBattle!(game)
 
     game.battle.active = false

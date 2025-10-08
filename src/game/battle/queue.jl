@@ -1,7 +1,7 @@
 
 
 
-function queueCheckStatus!(game::GameState,state::BattleStateWild)::Bool
+function queueCheckStatus!(game::GameState,state::BattleState)::Bool
     F = false
 
     if state[1].pkmn.stats.hp == 0 && !state.forceswitch1
@@ -90,7 +90,7 @@ function queueCheckStatus!(game::GameState,state::BattleStateWild)::Bool
     return F
 end
 
-function queueSetupActions!(game::GameState,state::BattleStateWild)
+function queueSetupActions!(game::GameState,state::BattleState)
     empty!(state.actionqueue)
 
     push!(state.actionqueue,BattleAction(
@@ -120,7 +120,7 @@ function queueSetupActions!(game::GameState,state::BattleStateWild)
     return
 end
 
-function queueSetupAnimation!(game::GameState,state::BattleStateWild)
+function queueSetupAnimation!(game::GameState,state::BattleState)
     user = state.actionqueue[1].user
     target = state.actionqueue[1].target
     command  = state[user].command
@@ -345,7 +345,7 @@ end
 
 
 
-function queueSwitch!(game::GameState,state::BattleStateWild,user::Int,
+function queueSwitch!(game::GameState,state::BattleState,user::Int,
         target::Int,id::Symbol)
     
     push!(state.animqueue,BattleAnimation(
@@ -401,8 +401,8 @@ end
 
 
 
-function checkFlee(state::BattleStateWild)::Bool
-    if state.pkmn1.secstatus.escapeblock
+function checkFlee(state::BattleState)::Bool
+    if !state.iswild! && state[1].secstatus.escapeblock
         return false
     end
 

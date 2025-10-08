@@ -1,45 +1,5 @@
 # core types for base functionality
 
-
-
-mutable struct BattleAnimation
-    id::Symbol
-
-    l::Int
-    str::String
-
-    anim::Function
-    target::Int
-
-    function BattleAnimation()
-        new(Symbol(),0,"",banimEmpty!,0)
-    end
-
-    function BattleAnimation(id,l,str,anim,target)
-        new(id,l,str,anim,target)
-    end
-end
-
-mutable struct BattleAction
-    id::Symbol
-
-    priority::Int
-    init::Int
-
-    user::Int
-    target::Int
-
-    function BattleAction()
-        new(Symbol(),0,0,0,0)
-    end
-
-    function BattleAction(id,priority,init,user,target)
-        new(id,priority,init,user,target)
-    end
-end
-
-
-
 mutable struct PkmnData
     base::Matrix{UInt16}
     name::Vector{String}
@@ -55,15 +15,13 @@ end
 
 
 
-# abstract type BattleState end
-
 mutable struct Battle
     active::Bool
     state::BattleState
     teamperm::Vector{Int}
 
     function Battle()
-        new(false,BattleStateNone(),collect(1:6))
+        new(false,BattleState(),collect(1:6))
     end
 end
 

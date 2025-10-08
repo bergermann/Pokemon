@@ -1,5 +1,42 @@
 #types commonly used in battle proceedings
 
+mutable struct BattleAnimation
+    id::Symbol
+
+    l::Int
+    str::String
+
+    anim::Function
+    target::Int
+
+    function BattleAnimation()
+        new(Symbol(),0,"",banimEmpty!,0)
+    end
+
+    function BattleAnimation(id,l,str,anim,target)
+        new(id,l,str,anim,target)
+    end
+end
+
+mutable struct BattleAction
+    id::Symbol
+
+    priority::Int
+    init::Int
+
+    user::Int
+    target::Int
+
+    function BattleAction()
+        new(Symbol(),0,0,0,0)
+    end
+
+    function BattleAction(id,priority,init,user,target)
+        new(id,priority,init,user,target)
+    end
+end
+
+
 
 const blabels = Base.ImmutableDict(
     [i => (
@@ -248,11 +285,11 @@ mutable struct PkmnBattle
     attack::Int
     lastattack::Int
 
-    function PkmnBattle(game::GameState,pkmn::Pkmn)
+    function PkmnBattle(game,pkmn)
         new(
-            pkmn,           # pkmn
-            pkmnName(game,pkmn),           # name
-            game.data.base[pkmn.id,x],              # xpdrop
+            pkmn,                       # pkmn
+            pkmnName(game,pkmn),        # name
+            100, # game.data.base[pkmn.id,x],  # xpdrop FIX
 
             zeros(Int8,8),  # buffs
 
@@ -273,15 +310,45 @@ mutable struct PkmnBattle
             0,              # reflectc
             
             DoubleMoves(),  # dmoves
-            CC0,            # attackchoice
+            CC0,            # command
             loadBattleAttacks(game,pkmn),
             0,
             0,
         )
     end
-end
 
-const PB0 = PkmnBattle(game,P0)
+    function PkmnBattle(pkmn)
+        new(
+            pkmn,           # pkmn
+            "",             # name
+            0,              # xpdrop
+
+            zeros(Int8,8),  # buffs
+
+            SecStatus(),    # secstatus
+            DmgFactors(),   # dmgfactors
+
+            true,           # hit
+            false,          # crit
+            1,              # eff
+            0,              # dmgd
+            0,              # dmgt
+            0,              # heal
+            0,              # stat
+
+            false,          # screen
+            false,          # reflect
+            0,              # screenc
+            0,              # reflectc
+            
+            DoubleMoves(),  # dmoves
+            CC0,            # command
+            Atk[],
+            0,
+            0,
+        )
+    end
+end
 
 mutable struct BattleCounters
     turn::UInt8
@@ -383,123 +450,3 @@ end
 # function Base.getindex(state::BattleState,team::Integer,ind::Integer)::PkmnBattle
 #     return getfield(state,2*team+ind)
 # end
-
-function setBattleState!(game::GameState,weather::UInt8,pkmn::Pkmn)
-    state = game.battle.state
-
-    resetBattleState!(state)
-
-    game.battle.teamperm = collect(1:6); activePkmn!(game)
-
-    state.pkmn1 = PkmnBattle(game,game.p.pokemon[1])
-    state.pkmn2 = PB0
-    state.pkmn3 = PkmnBattle(game,pkmn)
-    state.pkmn4 = PB0
-
-    state.iswild = true
-    state.isdouble = false
-
-    state.trainer1 = T0
-    state.trainer2 = T0
-
-    state.env.weather = weather
-    state.env.weatherc = 0xff*(weather!=0x00)
-
-    return
-end
-
-function setBattleState!(game::GameState,weather::UInt8,trainer::Trainer)
-    state = game.battle.state
-
-    resetBattleState!(state)
-
-    game.battle.teamperm = collect(1:6); activePkmn!(game)
-
-    state.pkmn1 = PkmnBattle(game,game.p.pokemon[1])
-    state.pkmn2 = PB0
-    state.pkmn3 = PkmnBattle(game,trainer.pokemon[1])
-    state.pkmn4 = PB0
-
-    state.iswild = false
-    state.isdouble = false
-
-    state.trainer1 = trainer
-    state.trainer2 = T0
-
-    state.env.weather = weather
-    state.env.weatherc = 0xff*(weather!=0x00)
-
-    return
-end
-
-function setBattleState!(game::GameState,weather::UInt8,trainer1::Trainer,trainer2::Trainer)
-    state = game.battle.state
-
-    resetBattleState!(state)
-
-    game.battle.teamperm = collect(1:6); activePkmn!(game,2)
-
-    state.pkmn1 = PkmnBattle(game,game.p.pokemon[1])
-    state.pkmn2 = PkmnBattle(game,game.p.pokemon[2])
-    state.pkmn3 = PkmnBattle(game,trainer1.pokemon[1])
-    state.pkmn4 = PkmnBattle(game,trainer2.pokemon[1])
-
-    state.iswild = false
-    state.isdouble = true
-
-    state.trainer1 = trainer1
-    state.trainer2 = trainer1
-
-    state.env.weather = weather
-    state.env.weatherc = 0xff*(weather!=0x00)
-
-    return
-end
-
-function resetBattleCounters!(state::BattleState)
-    state.counters.turn = 0x00
-    state.counters.flee = 0x00
-
-    return
-end
-
-function resetBattleEnvironment!(state::BattleState)
-    state.env.weather = 0x00
-    state.env.weatherc = 0x00
-
-    state.env.mud = false
-    state.env.wet = false
-
-    state.env.enthaz1.spikes = 0x00
-    state.env.enthaz1.toxspikes = 0x00
-    state.env.enthaz1.rocks = false
-    state.env.enthaz1.sticky = false
-
-    state.env.enthaz2.spikes = 0x00
-    state.env.enthaz2.toxspikes = 0x00
-    state.env.enthaz2.rocks = false
-    state.env.enthaz2.sticky = false
-
-    state.env.room.trick = 0x00
-    state.env.room.magic = 0x00
-    state.env.room.wonder = 0x00
-
-    return
-end
-
-function resetBattleState!(game::GameState)
-    state = game.battle.state
-
-    resetBattleCounters!(state)
-    resetBattleEnvironment!(state)
-
-    empty!(state.animqueue)
-    empty!(state.actionqueue)
-
-    state.forceswitch .= false
-
-    state.caught1 = false
-    state.caught2 = false
-
-    return
-end

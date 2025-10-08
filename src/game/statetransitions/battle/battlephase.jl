@@ -1,7 +1,7 @@
 
 
 
-function stateEndBattlePhase!(game::GameState,state::BattleStateWild)
+function stateEndBattlePhase!(game::GameState,state::BattleState)
     if state.counters.flee == -1
             game.n[:animbattle].c = -3
     elseif state.forceswitch1

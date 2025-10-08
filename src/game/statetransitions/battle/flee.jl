@@ -13,7 +13,7 @@ function stateBattleFlee!(game::GameState)
     return
 end
 
-function flee!(game::GameState,state::BattleStateWild)
+function flee!(game::GameState,state::BattleState)
     if !checkFlee(state)
         stateSetDialogue!(game,game.str[1][20],stateBattleFleeBlocked!)
 
@@ -31,12 +31,6 @@ function flee!(game::GameState,state::BattleStateWild)
     game.n[:animbattle].c = -1
 
     queueSetupActions!(game,game.battle.state)
-
-    return
-end
-
-function flee!(game::GameState,state::BattleStateTrainerSolo)
-    stateSetDialogue!(game,game.str[1][21],stateBattleFleeBlocked!)
 
     return
 end

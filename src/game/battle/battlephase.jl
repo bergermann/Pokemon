@@ -10,9 +10,9 @@ function checkAttack!(game::GameState)
     return true
 end
 
-function getPriority(state::BattleStateWild)
-    p1 = state.pkmn1.attacks[state.pkmn1.command.n].priority
-    p2 = state.pkmn2.attacks[state.pkmn2.command.n].priority
+function getPriority(state::BattleState)
+    p1 = state[1].attacks[state[1].command.n].priority
+    p2 = state[2].attacks[state[2].command.n].priority
 
     if p1 != p2
         if !state.env.room.wonder

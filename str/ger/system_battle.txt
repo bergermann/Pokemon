@@ -4,10 +4,10 @@ Pokémon
 Flucht
 AP
 Typ:
-
-
-
-
+Trainer
+ fordert dich zum Kampf heraus.
+ schickt 
+ in den Kampf.
 Ein wildes 
  erscheint!
 Los! 

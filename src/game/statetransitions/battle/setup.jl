@@ -51,6 +51,8 @@ end
 
 
 function setBattleState!(game::GameState,weather::UInt8,pkmn::Pkmn)
+    resetBattleState!(game)
+
     state = game.battle.state
 
     game.battle.teamperm = collect(1:6); activePkmn!(game)
@@ -73,6 +75,8 @@ function setBattleState!(game::GameState,weather::UInt8,pkmn::Pkmn)
 end
 
 function setBattleState!(game::GameState,weather::UInt8,trainer::Trainer)
+    resetBattleState!(game)
+
     state = game.battle.state
 
     game.battle.teamperm = collect(1:6); activePkmn!(game)
@@ -95,6 +99,8 @@ function setBattleState!(game::GameState,weather::UInt8,trainer::Trainer)
 end
 
 function setBattleState!(game::GameState,weather::UInt8,trainer1::Trainer,trainer2::Trainer)
+    resetBattleState!(game)
+
     state = game.battle.state
 
     game.battle.teamperm = collect(1:6); activePkmn!(game,2)

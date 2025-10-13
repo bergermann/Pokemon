@@ -267,8 +267,6 @@ end
 function bfaint!(game::GameState,target::Int)
     createCC!(game,:faint,bfaint!,(target,); active=true,n=1)
 
-    # game.battle.state[target].forceswitch = true
-
     return
 end
 

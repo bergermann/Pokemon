@@ -5,12 +5,10 @@ include("damagefactors.jl")
 include("battlephase.jl")
 include("queue.jl")
 
-function initBattleTrainer!(game::GameState)
+function initBattleTrainer!(game::GameState)    
+    setBattleState!(game,0x00,loadTrainer!(game))
+    
     stateInitBattle!(game)
-
-    t = loadTrainer!(game)
-
-    setBattleState!(game,0x00,t)
 
     return
 end
@@ -35,14 +33,12 @@ end
 
 
 function initBattleWild!(game::GameState)
-    stateInitBattle!(game)
-
     data = findArea(game); idx = sample(fweights(data[:,4]))
     lvl = UInt8(clamp(randN(data[idx,2],data[idx,3])+5,2,100))
-
-    p = generatePkmn(game,data[idx,1],lvl)
-
-    setBattleState!(game,0x00,p)
+    
+    setBattleState!(game,0x00,generatePkmn(game,data[idx,1],lvl))
+    
+    stateInitBattle!(game)
 
     return
 end

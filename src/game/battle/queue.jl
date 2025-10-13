@@ -4,7 +4,7 @@
 function queueCheckStatus!(game::GameState,state::BattleState)::Bool
     F = false
 
-    if state[1].pkmn.stats.hp == 0 && !state.forceswitch1
+    if state[1].pkmn.stats.hp == 0 && !state.forceswitch[1]
         for i in Iterators.reverse(eachindex(state.actionqueue))
             if state.actionqueue[i].id == :p1; popat!(state.actionqueue,i); end
         end

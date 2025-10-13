@@ -450,3 +450,9 @@ end
 # function Base.getindex(state::BattleState,team::Integer,ind::Integer)::PkmnBattle
 #     return getfield(state,2*team+ind)
 # end
+
+function forceswitch(state::BattleState,ind::Integer)::Bool
+    return state.forceswitch[2+(1+!state.isdouble)*(ind-1)+1]
+end
+
+const fs = forceswitch

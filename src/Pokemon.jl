@@ -27,8 +27,6 @@ include("game/game.jl")
 #     @eval export $s
 # end
 
-deserialize("data/trainers/1.td")
-
 function main()
     fps = 60.
 

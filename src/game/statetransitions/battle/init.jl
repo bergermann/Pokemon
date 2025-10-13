@@ -6,10 +6,11 @@ function stateInitBattle!(game::GameState)
     game.ctrl.input.map = false
     game.ctrl.input.move = false
 
-    createCounter!(game,:introb)
-    createCallback!(game,:introb,true,animBattleIntro1!,())
-
-    resetBattleState!(game)
+    if game.battle.state.iswild
+        createCC!(game,:introb,animBattleIntroW!,(); active=true)
+    else
+        createCC!(game,:introb,animBattleIntroT!,(); active=true)
+    end
 
     return
 end
@@ -39,11 +40,16 @@ function stateOpenBattle!(game::GameState)
         :xp
     )
 
-    state = game.battle.state; fs1 = state.forceswitch1; fs2 = state.forceswitch2
+    state = game.battle.state; fs1 = fs(state,1); fs2 = fs(state,2)
 
-    p1 = state.pkmn1.pkmn; pb1 = state.pkmn1
+    if state.iswild
+        pathopp = "battle/trainers/$(state.trainer1.sprite).png"
+        loadSpriteSheet!(game,pathopp,:battlerop,64,64,1; maxsprites=1)
+    end
+
+    pb1 = state[1]; p1 = pb1.pkmn
     path1 = "battle/battlers/back/$(p1.shiny ? "shiny" : "normal")/$(p1.id).png"
-    p2 = state.pkmn2.pkmn; pb2 = state.pkmn2
+    p2 = state[2].pkmn; 
     path2 = "battle/battlers/front/$(p2.shiny ? "shiny" : "normal")/$(p2.id).png"
 
     loadSpriteSheet!(game,path1,:pkmn1,64,64,2; maxsprites=1)
@@ -119,17 +125,27 @@ end
 function stateOpenBattleIntro!(game::GameState)
     stateOpenBattle!(game)
 
-    loadSpriteSheets!(game,:fol)
-
     createBackground!(game,:s1,"backgrounds/black.png",-120,-80,6; sx=240,sy=80)
     createBackground!(game,:s2,"backgrounds/black.png",-120,  0,6; sx=240,sy=80)
-
-    createSprite!(game,:grass1,:fol,1,1,  0,-8,10,3; active=true)
-    createSprite!(game,:grass2,:fol,1,1,256,-8,10,3; active=true)
 
     createSprite!(game,:mc,:battlermc,1,1,120+80+3,0,10,3; active=true)
     bid = Int(game.battle.state.pkmn1.pkmn.ball)
     createSprite!(game,:ball,:ballsb,bid,1,-62, 11,10,2; active=false,rot=18.)
+
+    if game.battle.state.iswild
+        loadSpriteSheets!(game,:fol)
+
+        createSprite!(game,:grass1,:fol,1,1,  0,-8,10,3; active=true)
+        createSprite!(game,:grass2,:fol,1,1,256,-8,10,3; active=true)
+
+        moveSpriteW!(game,:pkmn2,-240)
+    else
+        createSprite!(game,:opp,:battleropp,1,1,56,-28-240,10,3; active=true)
+        bid = Int(game.battle.state[2].pkmn.ball)
+        createSprite!(game,:ballopp,:ballsb,bid,1,-62, 11,10,2; active=false,rot=0.)
+
+        scaleSprite!(game,:pkmn2,0.,0.,true)
+    end
 
     for i in 1:10
         createSprite!(game,Symbol(:spark,i),:particles,1,1,-48,24,10,4; active=false)
@@ -139,8 +155,6 @@ function stateOpenBattleIntro!(game::GameState)
 
     moveSpriteW!(game,:pad1, 240)
     moveSpriteW!(game,:pad2,-240)
-
-    moveSpriteW!(game,:pkmn2,-240)
 
     moveSpriteW!(game,:tag1, 128); moveSpriteW!(game,:tag2,-128)
 
@@ -156,13 +170,26 @@ end
 function stateThrowBattle!(game::GameState,args::Tuple{})
     lockInput!(game)
 
-    stateSetDialogue!(game,game.str[1][13]*pkmnName(game,game.battle.state.pkmn1.pkmn)*"!",
+    stateSetDialogue!(game,game.str[1][13]*pkmnName(game,game.battle.state[1].pkmn)*"!",
         F(stateInitBattleChoice!))
 
     game.callbacks[:introb].func = animThrowBall!
     game.callbacks[:introb].active = true
     game.n[:introb].c = 0
-    
+
+    return
+end
+
+function stateDropBattle!(game::GameState,args::Tuple{})
+    lockInput!(game)
+
+    stateSetDialogue!(game,game.str[1][7]*game.battle.state.trainer1.name*game.str[1][9]*
+        pkmnName(game,game.battle.state[2].pkmn)*game.str[1][10],
+        F(stateInitBattleChoice!))
+
+    game.callbacks[:introb].func = animDropBall!
+    game.callbacks[:introb].active = true
+    game.n[:introb].c = 0
 
     return
 end

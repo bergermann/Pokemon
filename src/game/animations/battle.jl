@@ -1,7 +1,7 @@
 
 
 
-function animBattleIntro1!(game::GameState,args::Tuple{})
+function animBattleIntroW!(game::GameState,args::Tuple{})
     if game.n[:introb].c < 48
         game.im.l.color[4] = 0.5+cospi((game.n[:introb].c+1)/8.0)/2
     elseif game.n[:introb].c < 64
@@ -83,6 +83,61 @@ function animBattleIntro1!(game::GameState,args::Tuple{})
     return
 end
 
+function animBattleIntroT!(game::GameState,args::Tuple{})
+    if game.n[:introb].c < 48
+        game.im.l.color[4] = 0.5+cospi((game.n[:introb].c+1)/8.0)/2
+    elseif game.n[:introb].c < 64
+        # replace this with proper trainer battle intro effect
+        game.im.l.color[4] = (59-game.n[:introb].c)/16.0
+    elseif game.n[:introb].c == 64
+        game.im.l.color[4] = 1.0
+        
+        stateCloseMap!(game)
+        stateOpenBattleIntro!(game)
+        
+        Base.GC.gc()
+    elseif game.n[:introb].c < 80
+
+    elseif game.n[:introb].c < 112
+        game.im.b.backgrounds[:s1].pos[2] -= 1
+        game.im.b.backgrounds[:s2].pos[2] += 1
+    elseif game.n[:introb].c < 140
+        game.im.b.backgrounds[:s1].pos[2] -= 2
+        game.im.b.backgrounds[:s2].pos[2] += 2
+    elseif game.n[:introb].c < 260
+        moveSpriteW!(game,:pad1,-2)
+        moveSpriteW!(game,:pad2, 2)
+        moveSpriteW!(game,:mc, -2)
+        moveSpriteW!(game,:opp, 2)
+    elseif game.n[:introb].c < 260+16
+        moveSpriteW!(game,:tag2, 8)
+        moveSpriteW!(game, :hp2, 8)
+        moveText!(game,:name2, 8, 0)
+        moveText!(game,:lvl2, 8, 0)
+    elseif game.n[:introb].c == 260+16
+        game.battle.active = true
+        unlockInput!(game)
+
+        killSprite!(game,:grass1); killSprite!(game,:grass2)
+        deleteBackground!(game,:s1); deleteBackground!(game,:s2)
+        deleteSpriteSheet!(game,:fol)
+
+        game.callbacks[:introb].active = false
+
+        stateSetDialogue!(game,
+            game.str[1][7]*game.battle.state.trainer1.name*game.str[1][8],
+            Callback(stateDropBattle!))
+
+        return
+    end
+
+    game.n[:introb].c += 1
+
+    return
+end
+
+
+
 function animThrowBall!(game::GameState,args::Tuple{})
     if game.n[:introb].c == 0
         setSpriteFrame!(game,:mc,2)
@@ -135,6 +190,36 @@ function animThrowBall!(game::GameState,args::Tuple{})
     moveSpriteW!(game,:mc,-3)
 
     if game.n[:introb].c <= 24; moveSpriteW!(game,:ball,-3); end
+
+    game.n[:introb].c += 1
+
+    return
+end
+
+function animDropBall!(game::GameState,args::Tuple{})
+    if game.n[:introb].c == 0
+        activateSprite!(game,:ballopp)
+    elseif game.n[:introb].c == 8
+        setSpriteFrame!(game,:ballop,2)
+    elseif game.n[:introb].c == 64
+        activateSprite!(game,:pkmn2)
+        for i in 1:10; activateSprite!(game,Symbol(:spark,i)); end
+    elseif 64 < game.n[:introb].c <= 96
+        t = game.n[:introb].c-64
+        scaleSprite!(game,:pkmn2,t/32,t/32,true)
+        for i in 1:10
+            moveSprite!(game,Symbol(:spark,i),
+                round(Int,1.5t*cospi(t/32+i/5))+56,round(Int,-1.5t*sinpi(t/32+i/5))-28,true)
+        end
+    elseif game.n[:introb].c == 96+1
+        for i in 1:10; deactivateSprite!(game,Symbol(:spark,i)); end
+    elseif game.n[:introb].c == 128
+        killSprite!(game,:opp); killSprite!(game,:ballopp)
+
+        stateThrowBattle!(game,())
+    end
+
+    moveSpriteW!(game,:mc,2)
 
     game.n[:introb].c += 1
 

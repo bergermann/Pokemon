@@ -27,10 +27,8 @@ include("game/game.jl")
 #     @eval export $s
 # end
 
-function main()
-    fps = 60.
-
-    inputs, keymap = setupInputs(km); global keymap; pause = false
+function init()
+    inputs, keymap = setupInputs(km); global keymap
 
     include("input/callbacks.jl")
     
@@ -55,9 +53,13 @@ function main()
     game.p.dex[1:15,1] .= true
     game.p.dex[19,1] = true
 
+    return game, inputs
+end
+
+function run!(game::GameState,inputs::Inputs)
     render(game)
 
-    t0 = time(); t1 = 0.
+    t0 = time(); t1 = 0.; pause = false; fps = 60.
 
     while !GLFW.WindowShouldClose(game.im.window)
         t2 = time()-t0
@@ -87,9 +89,18 @@ function main()
 
     GLFW.DestroyWindow(game.im.window)
 
-    return game, inputs
+    return
 end
 
 end
 
-game, inputs = Pokemon.main();
+using GLFW: DestroyWindow
+game, inputs = Pokemon.init()
+
+try
+    Pokemon.run!(game,inputs)
+catch e
+    DestroyWindow(game.im.window)
+
+    throw(e)
+end

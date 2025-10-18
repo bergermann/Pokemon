@@ -42,9 +42,9 @@ function stateOpenBattle!(game::GameState)
 
     state = game.battle.state; fs1 = fs(state,1); fs2 = fs(state,2)
 
-    if state.iswild
+    if !state.iswild
         pathopp = "battle/trainers/$(state.trainer1.sprite).png"
-        loadSpriteSheet!(game,pathopp,:battlerop,64,64,1; maxsprites=1)
+        loadSpriteSheet!(game,pathopp,:battleropp,64,64,1; maxsprites=1)
     end
 
     pb1 = state[1]; p1 = pb1.pkmn
@@ -140,9 +140,9 @@ function stateOpenBattleIntro!(game::GameState)
 
         moveSpriteW!(game,:pkmn2,-240)
     else
-        createSprite!(game,:opp,:battleropp,1,1,56,-28-240,10,3; active=true)
+        createSprite!(game,:opp,:battleropp,1,1,56-240,-28-16,10,3; active=true)
         bid = Int(game.battle.state[2].pkmn.ball)
-        createSprite!(game,:ballopp,:ballsb,bid,1,-62, 11,10,2; active=false,rot=0.)
+        createSprite!(game,:ballopp,:ballsb,bid,1,56,-28,10,2; active=false,rot=0.)
 
         scaleSprite!(game,:pkmn2,0.,0.,true)
     end

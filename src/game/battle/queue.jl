@@ -4,7 +4,7 @@
 function queueCheckStatus!(game::GameState,state::BattleState)::Bool
     F = false
 
-    if state[1].pkmn.stats.hp == 0 && !state.forceswitch[1]
+    if state[1].pkmn.stats.hp == 0 && !fs(state,1)
         for i in Iterators.reverse(eachindex(state.actionqueue))
             if state.actionqueue[i].id == :p1; popat!(state.actionqueue,i); end
         end
@@ -14,7 +14,7 @@ function queueCheckStatus!(game::GameState,state::BattleState)::Bool
         ))
 
         state[1].pkmn.status = 0x06
-        state.forceswitch1 = true
+        fs!(state,1,true)
 
         if !checkContinueFight(game)
             push!(state.animqueue,BattleAnimation(
@@ -103,7 +103,7 @@ function queueSetupActions!(game::GameState,state::BattleState)
         state[2].pkmn.stats.rv[6]*getBuffMultiplier(state[2].buffs[5]),2,1
     ))
 
-    sortPriority!(state.actionqueue,state.env.room.trick)
+    sortPriority!(state.actionqueue,state.env.room.trick>0x00)
 
     if state[1].command isa CommandAttack
         state[1].attack = state[1].command.n
@@ -124,7 +124,7 @@ function queueSetupAnimation!(game::GameState,state::BattleState)
     user = state.actionqueue[1].user
     target = state.actionqueue[1].target
     command  = state[user].command
-    
+
     if command isa CommandAttack
         state[user].attack = command.n
 

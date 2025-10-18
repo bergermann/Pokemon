@@ -125,10 +125,10 @@ function itemFactorDefense(defender::PkmnBattle)
 end
 
 function screenFactor(state::BattleState,attacker::PkmnBattle,defender::PkmnBattle)
-    if state.iswild
+    if !state.isdouble
         return 1-0.5*!attacker.crit*
             (attacker.attacks[attacker.attack].class==1 ? defender.reflect : defender.screen)
-    elseif state.isdouble
+    else
         return 1-1/3*!attacker.crit*
             (attacker.attacks[attacker.attack].class==1 ? defender.reflect : defender.screen)
     end

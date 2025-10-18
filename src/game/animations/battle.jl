@@ -96,7 +96,7 @@ function animBattleIntroT!(game::GameState,args::Tuple{})
         stateOpenBattleIntro!(game)
         
         Base.GC.gc()
-    elseif game.n[:introb].c < 80
+    # elseif game.n[:introb].c < 80
 
     elseif game.n[:introb].c < 112
         game.im.b.backgrounds[:s1].pos[2] -= 1
@@ -109,18 +109,11 @@ function animBattleIntroT!(game::GameState,args::Tuple{})
         moveSpriteW!(game,:pad2, 2)
         moveSpriteW!(game,:mc, -2)
         moveSpriteW!(game,:opp, 2)
-    elseif game.n[:introb].c < 260+16
-        moveSpriteW!(game,:tag2, 8)
-        moveSpriteW!(game, :hp2, 8)
-        moveText!(game,:name2, 8, 0)
-        moveText!(game,:lvl2, 8, 0)
     elseif game.n[:introb].c == 260+16
         game.battle.active = true
         unlockInput!(game)
 
-        killSprite!(game,:grass1); killSprite!(game,:grass2)
         deleteBackground!(game,:s1); deleteBackground!(game,:s2)
-        deleteSpriteSheet!(game,:fol)
 
         game.callbacks[:introb].active = false
 
@@ -155,7 +148,6 @@ function animThrowBall!(game::GameState,args::Tuple{})
         rotateSprite!(game,:ball,18.)
     elseif game.n[:introb].c == 64
         setSpriteFrame!(game,:ball,2)
-        # println(getSpritePos(game,:ball))
     elseif game.n[:introb].c == 72
         activateSprite!(game,:pkmn1)
         for i in 1:10; activateSprite!(game,Symbol(:spark,i)); end
@@ -199,8 +191,8 @@ end
 function animDropBall!(game::GameState,args::Tuple{})
     if game.n[:introb].c == 0
         activateSprite!(game,:ballopp)
-    elseif game.n[:introb].c == 8
-        setSpriteFrame!(game,:ballop,2)
+    elseif game.n[:introb].c == 32
+        setSpriteFrame!(game,:ballopp,2)
     elseif game.n[:introb].c == 64
         activateSprite!(game,:pkmn2)
         for i in 1:10; activateSprite!(game,Symbol(:spark,i)); end
@@ -213,13 +205,21 @@ function animDropBall!(game::GameState,args::Tuple{})
         end
     elseif game.n[:introb].c == 96+1
         for i in 1:10; deactivateSprite!(game,Symbol(:spark,i)); end
+    elseif 100 < game.n[:introb].c <= 100 + 16 # 16 frames
+        moveSpriteW!(game,:tag2, 8)
+        moveSpriteW!(game, :hp2, 8)
+        moveText!(game,:name2, 8, 0)
+        moveText!(game,:lvl2, 8, 0)
     elseif game.n[:introb].c == 128
         killSprite!(game,:opp); killSprite!(game,:ballopp)
 
         stateThrowBattle!(game,())
+
+
+        return
     end
 
-    moveSpriteW!(game,:mc,2)
+    moveSpriteW!(game,:opp,2)
 
     game.n[:introb].c += 1
 
@@ -268,6 +268,7 @@ function animBattlePhaseWild!(game::GameState,args::Tuple{})
 
     if game.n[:animbattle].c == -1      # set up animation queue
         queueSetupAnimation!(game,game.battle.state); game.n[:animbattle].c = 1
+        # display(game.battle.state.animqueue)
     elseif game.n[:animbattle].c == -2  # advance queue
         popfirst!(game.battle.state.animqueue)
 

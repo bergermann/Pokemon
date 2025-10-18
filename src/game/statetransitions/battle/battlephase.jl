@@ -4,7 +4,7 @@
 function stateEndBattlePhase!(game::GameState,state::BattleState)
     if state.counters.flee == -1
             game.n[:animbattle].c = -3
-    elseif state.forceswitch1
+    elseif fs(state,1)
         if checkContinueFight(game)
             deactivateCallback!(game,:animbattle)
 
@@ -46,12 +46,4 @@ end
 
 function checkContinueFight(game::GameState)
     return any(p->p.status!=0x06,game.p.pokemon)
-
-    # c = false
-
-    # for i in eachindex(game.p.pokemon)
-    #     if game.p.pokemon[i].status != 0x06; c = true; end
-    # end
-
-    # return c
 end

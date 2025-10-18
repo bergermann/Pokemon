@@ -21,8 +21,10 @@ function stateResumeBattleAnim!(game::GameState,args::Tuple{})
 end
 
 function stateBattleAttackSelected!(game::GameState)
-    game.battle.state.pkmn1.command = CommandAttack(game.ctrl.input.battle.s2+1)
-    game.battle.state.pkmn2.command = battleChoiceWild(game)
+    state = game.battle.state
+
+    state[1].command = CommandAttack(game.ctrl.input.battle.s2+1)
+    state[2].command = battleChoiceOpp(state,2)
     
     game.ctrl.input.battle.m1 = false
     game.ctrl.input.battle.m2 = false
@@ -39,8 +41,10 @@ function stateBattleAttackSelected!(game::GameState)
 end
 
 function stateBattleItemSelected!(game::GameState,target::UInt,item::ItemType)
-    game.battle.state.pkmn1.command = CommandItem(target,item)
-    game.battle.state.pkmn2.command = battleChoiceWild(game)
+    state = game.battle.state
+
+    state[1].command = CommandItem(target,item)
+    state[2].command = battleChoiceOpp(state,2)
     
     game.ctrl.input.battle.m1 = false
     game.ctrl.input.battle.m2 = false
@@ -49,8 +53,11 @@ function stateBattleItemSelected!(game::GameState,target::UInt,item::ItemType)
 end
 
 function stateBattlePkmnSelected!(game::GameState)
-    game.battle.state.pkmn1.command = CommandSwitch(Int(game.ctrl.input.menu.menupkmn.select))
-    game.battle.state.pkmn2.command = battleChoiceWild(game)
+    state = game.battle.state
+
+    state[1].command = CommandSwitch(Int(game.ctrl.input.menu.menupkmn.select))
+    state[2].command = battleChoiceOpp(state,2)
+    
     
     game.ctrl.input.battle.m1 = false
     game.ctrl.input.battle.m2 = false

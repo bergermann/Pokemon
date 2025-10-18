@@ -20,11 +20,11 @@ function flee!(game::GameState,state::BattleState)
         return
     end
     
-    state.pkmn1.command = CommandFlee(
+    state[1].command = CommandFlee(
         (state.pkmn1.pkmn.stats.rv[6]*128/max(state.pkmn2.pkmn.stats.rv[6],1)+
             30*state.counters.flee)%256 > 0*rand(UInt8)
     )
-    state.pkmn2.command = battleChoiceWild(game)
+    state[2].command = battleChoiceOpp(game,2)
 
     deactivateCallback!(game,:wiggle); resetWiggle!(game)
     activateCallback!(game,:animbattle)

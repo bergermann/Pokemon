@@ -452,7 +452,15 @@ end
 # end
 
 function forceswitch(state::BattleState,ind::Integer)::Bool
-    return state.forceswitch[2+(1+!state.isdouble)*(ind-1)+1]
+    return state.forceswitch[(1+!state.isdouble)*(ind-1)+1]
 end
 
 const fs = forceswitch
+
+function forceswitch!(state::BattleState,ind::Integer,val::Bool)
+    state.forceswitch[(1+!state.isdouble)*(ind-1)+1] = val
+
+    return
+end
+
+const fs! = forceswitch!

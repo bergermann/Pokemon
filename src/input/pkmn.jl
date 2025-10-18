@@ -78,7 +78,7 @@ function inputTeam!(game::GameState,inputs::Inputs)
     if inputs.A.press
         inputTeamAction!(game)
     elseif inputs.B.press
-        if game.battle.active && game.battle.state.forceswitch1; return; end
+        if game.battle.active && fs(game.battle.state,1); return; end
 
         lockInput!(game)
 
@@ -123,7 +123,7 @@ end
 
 function inputTeamAction!(game::GameState)
     if game.ctrl.input.menu.menupkmn.select == game.p.pokemon.idx+1
-        if game.battle.active && game.battle.state.forceswitch1; return; end
+        if game.battle.active && fs(game.battle.state,1); return; end
         
         lockInput!(game)
 
@@ -164,8 +164,8 @@ function pkmnAction!(game::GameState,args::Tuple{})
             if game.ctrl.input.choice.sel == 1
                 lockInput!(game)
                 
-                if game.battle.state.forceswitch1
-                    game.battle.state.forceswitch1 = false
+                if fs(game.battle.state,1)
+                    fs!(game.battle.state,1,false)
 
                     swap!(game.p.pokemon,1,n)
                     game.battle.teamperm[1], game.battle.teamperm[n] = 

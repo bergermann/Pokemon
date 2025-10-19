@@ -142,7 +142,8 @@ function stateOpenBattleIntro!(game::GameState)
     else
         createSprite!(game,:opp,:battleropp,1,1,56-240,-28-16,10,3; active=true)
         bid = Int(game.battle.state[2].pkmn.ball)
-        createSprite!(game,:ballopp,:ballsb,bid,1,56,-28,10,2; active=false,rot=0.)
+        createSprite!(game,:ballopp,:ballsb,bid,1,56,-28,10,2; wscale=0.5,hscale=0.5,
+            active=false)
 
         scaleSprite!(game,:pkmn2,0.,0.,true)
     end

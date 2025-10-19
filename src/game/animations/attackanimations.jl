@@ -298,7 +298,7 @@ end
 function bswitchOut!(game::GameState,user::Int)
     createCC!(game,:switchout,bswitchOut!,(); active=true,n=1)
 
-    bid = Int(game.battle.state.pkmn1.pkmn.ball)
+    bid = Int(game.battle.state[1].pkmn.ball)
     createSprite!(game,:ball,:ballsb,bid,2,-48,24,10,2; active=true,rot=0.)
     
     n = game.battle.state.pkmn1.command.n
@@ -345,43 +345,54 @@ end
 
 
 function bswitchIn!(game::GameState,user::Int)
-    createCC!(game,:switchin,bswitchIn!,(); active=true,n=1)
-
-    p1 = game.battle.state.pkmn1.pkmn
-    path1 = "battle/battlers/back/$(p1.shiny ? "shiny" : "normal")/$(p1.id).png"
-
-    loadSpriteSheet!(game,path1,:pkmn1,64,64,2; maxsprites=1)
-    createSprite!(game,:pkmn1,:pkmn1,1,1,-48,24,10,3; wscale=0.,hscale=0.,active=false)
-
-    bid = Int(game.battle.state.pkmn1.pkmn.ball)
-    createSprite!(game,:ball,:ballsb,bid,1,-48-80,24,10,2; active=true)
-
-    activateSprite!(game,:tag1); activateSprite!(game,:hp1); activateSprite!(game,:xp);
-    activateText!(game,:name1); activateText!(game,:lvl1)
-
-    moveSprite!(game,:tag1,60+128,12,true)
-    moveSprite!(game, :hp1,56+128,12,true); setHPBar!(game,:hp1,getHPBar(p1),56+128)
-    moveSprite!(game,  :xp,40+128,12,true); setXPBar!(game,:xp,getXPBar(p1,0),40+128)
-
-    moveText!(game,:name1,24+128,-4,true)
-    moveText!(game, :lvl1,93+128,-4,true)
-
-    setText!(game,:name1,pkmnName(game,p1)); # moveText!(game,:name1,24,-4)
-    setText!(game,:lvl1,string(p1.stats.level)); # moveText!(game,:lvl1,93,-4)
-
-    for i in eachindex(p1.attacks)
-        setText!(game,blabels[i].attack,p1.attacks[i].name)
-    end
+    b = user == 1
     
-    for i in length(p1.attacks)+1:4
-        setText!(game,blabels[i].attack,"---")
+    p = game.battle.state[user].pkmn; bid = Int(p.ball)
+    path = "battle/battlers/back/$(p.shiny ? "shiny" : "normal")/$(p.id).png"
+
+    createCC!(game,:switchin,b ? bswitchIn1! : bswitchIn2!,(); active=true,n=1)
+    loadSpriteSheet!(game,path,b ? :pkmn1 : :pkmn2,64,64,2; maxsprites=1)
+    
+    if user == 1
+        createSprite!(game,:pkmn1,:pkmn1,1,1,-48,24,10,3; wscale=0.,hscale=0.,active=false)
+        createSprite!(game,:ball,:ballsb,bid,1,-48-80,24,10,2; active=true)
+
+        activateSprite!(game,:tag1); activateSprite!(game,:hp1); activateSprite!(game,:xp);
+        activateText!(game,:name1); activateText!(game,:lvl1)
+
+        moveSprite!(game,:tag1,60+128,12,true)
+        moveSprite!(game, :hp1,56+128,12,true); setHPBar!(game,:hp1,getHPBar(p),56+128)
+        moveSprite!(game,  :xp,40+128,12,true); setXPBar!(game,:xp,getXPBar(p,0),40+128)
+
+        moveText!(game,:name1,24+128,-4,true)
+        moveText!(game, :lvl1,93+128,-4,true)
+
+        for i in eachindex(p.attacks); setText!(game,blabels[i].attack,p.attacks[i].name); end
+        for i in length(p.attacks)+1:4; setText!(game,blabels[i].attack,"---"); end
+
+        game.ctrl.input.battle.s2 = 0
+        a = p.attacks[1]
+        setText!(game,:info2,string(a.atk.ap)*"/"*string(a.atk.apmax)*"\\"*game.str[2][a.type+1])
+    else
+        createSprite!(game,:pkmn2,:pkmn2,1,1,56-128,28,10,3; wscale=0.,hscale=0.,active=false)
+        createSprite!(game,:ballopp,:ballsb,bid,1,56,28,10,2; active=false)
+    
+        activateSprite!(game,:tag2); activateSprite!(game,:hp2)
+        activateText!(game,:name2); activateText!(game,:lvl2)
+
+        moveSprite!(game,:tag2,-58-128,-50,true)
+        moveSprite!(game, :hp2,-69-128,-46,true); setHPBar!(game,:hp2,getHPBar(p),-69-128)
+
+        moveText!(game,:name2,-101-128,-62,true)
+        moveText!(game, :lvl2, -33-128,-62,true)
     end
 
-    a = p1.attacks[1]
-    setText!(game,:info2,string(a.atk.ap)*"/"*string(a.atk.apmax)*"\\"*game.str[2][a.type+1])
+    setText!(game,b ? :name1 : :name2,pkmnName(game,p))
+    setText!(game,b ? :lvl1 : :lvl2,string(p.stats.level))
 
+    sx = -48*b+56*!b; sy = 24*b+28*b!
     for i in 1:10
-        createSprite!(game,Symbol(:spark,i),:particles,1,1,-48,24,10,4; active=false)
+        createSprite!(game,Symbol(:spark,i),:particles,1,1,sx,sy,10,4; active=false)
     end
 
     return

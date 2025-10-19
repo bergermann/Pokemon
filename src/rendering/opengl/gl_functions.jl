@@ -37,7 +37,7 @@ function validateProgram(program::UInt32)
     glGetProgramiv(program,GL_VALIDATE_STATUS,status)
 
     if status[1] != GL_TRUE
-        println("Program $program failed to validate!\n")
+        println("Program $program failed to validate!")
     end
 
     return

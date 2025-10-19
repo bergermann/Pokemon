@@ -23,7 +23,7 @@ end
 
 function hitscanNPC(game::GameState,npc::NPC)
     if dirscanNPC(game,npc)
-        println("dir hit by npc ",npc.id)
+        # println("dir hit by npc ",npc.id)
         return linescanNPC(game,npc)
     end
 
@@ -90,7 +90,7 @@ function linescanNPC(game::GameState,npc::NPC)
         end
     end
 
-    println("line hit by npc ",npc.id)
+    # println("line hit by npc ",npc.id)
 
     return true
 end
@@ -145,7 +145,7 @@ function manageTrainerHit2!(game::GameState,()::Tuple{})
 
         if isequal(game.ctrl.mchunk,npc.mchunk) && isequal(game.ctrl.pos2,npc.mpos)
             popfirst!(game.m.npchits); game.n[:hit].c = 60
-            println("npc $(npc.id) finished moving")
+            # println("npc $(npc.id) finished moving")
         else
             @. npc.pos2 = npc.pos1+dirs[npc.dir]
 

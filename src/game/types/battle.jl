@@ -447,6 +447,10 @@ function Base.getindex(state::BattleState,ind::Integer)::PkmnBattle
     return getfield(state,2+(1+!state.isdouble)*(ind-1)+1)
 end
 
+function Base.setindex!(state::BattleState,pkmn::PkmnBattle,ind::Integer)
+    return setfield!(state,2+(1+!state.isdouble)*(ind-1)+1,pkmn)
+end
+
 # function Base.getindex(state::BattleState,team::Integer,ind::Integer)::PkmnBattle
 #     return getfield(state,2*team+ind)
 # end

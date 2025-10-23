@@ -37,17 +37,21 @@ function init()
     for i in eachindex(game.m.npcs)
         game.m.npcs[i].trainerid = 1; game.m.npcs[i].range = 3
     end
+
+    game.m.npchit[2] = true
     
     GC.enable(false)
     GC.@preserve game sceneTransition!
     
     setInventoryTest!(game.p.inventory)
     
-    push!(game.p.pokemon,generatePkmn(game,0x0001,0x0f))
+    push!(game.p.pokemon,generatePkmn(game,0x0001,0x1f))
     push!(game.p.pokemon,generatePkmn(game,0x0002,0x02))
     push!(game.p.pokemon,generatePkmn(game,0x0003,0x60))
     push!(game.p.pokemon,generatePkmn(game,0x0004,0x08))
     push!(game.p.pokemon,generatePkmn(game,0x0005,0x13))
+
+    sort!(game.p.pokemon[1].attacks; by=a->a.id)
 
     game.p.dex[1:5,2] .= true
     game.p.dex[1:15,1] .= true
@@ -96,6 +100,8 @@ end
 
 using GLFW: DestroyWindow
 game, inputs = Pokemon.init()
+
+Pokemon.initBattleTrainer!(game)
 
 try
     Pokemon.run!(game,inputs)

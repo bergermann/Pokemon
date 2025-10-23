@@ -390,7 +390,7 @@ function bswitchIn!(game::GameState,user::Int)
     setText!(game,b ? :name1 : :name2,pkmnName(game,p))
     setText!(game,b ? :lvl1 : :lvl2,string(p.stats.level))
 
-    sx = -48*b+56*!b; sy = 24*b+28*b!
+    sx = -48*b+56*!b; sy = 24*b+28*!b
     for i in 1:10
         createSprite!(game,Symbol(:spark,i),:particles,1,1,sx,sy,10,4; active=false)
     end
@@ -398,7 +398,7 @@ function bswitchIn!(game::GameState,user::Int)
     return
 end
 
-function bswitchIn!(game::GameState,args::Tuple{})
+function bswitchIn1!(game::GameState,args::Tuple{})
     if game.n[:switchin].c < 40
         moveSpriteW!(game,:ball,2)
         t = game.n[:switchin].c
@@ -430,17 +430,49 @@ function bswitchIn!(game::GameState,args::Tuple{})
         moveText!(game,:name1,-8,0)
         moveText!(game, :lvl1,-8,0)
     elseif game.n[:switchin].c == 96+32
-        killSprite!(game,:ball)
-
-        killCC!(game,:switchin)
+        killSprite!(game,:ball); killCC!(game,:switchin)
 
         return
     end
 
     game.n[:switchin].c += 1
+
+    return
 end
 
 
+function bswitchIn2!(game::GameState,args::Tuple{})
+    if game.n[:switchin].c == 0
+        activateSprite!(game,:ballopp)
+    elseif game.n[:switchin].c == 32
+        setSpriteFrame!(game,:ballopp,2)
+    elseif game.n[:switchin].c == 64
+        activateSprite!(game,:pkmn2)
+        for i in 1:10; activateSprite!(game,Symbol(:spark,i)); end
+    elseif 64 < game.n[:switchin].c <= 96
+        t = game.n[:switchin].c-64
+        scaleSprite!(game,:pkmn2,t/32,t/32,true)
+        for i in 1:10
+            moveSprite!(game,Symbol(:spark,i),
+                round(Int,1.5t*cospi(t/32+i/5))+56,round(Int,-1.5t*sinpi(t/32+i/5))-28,true)
+        end
+    elseif game.n[:switchin].c == 96+1
+        for i in 1:10; deactivateSprite!(game,Symbol(:spark,i)); end
+    elseif 100 < game.n[:switchin].c <= 100 + 16 # 16 frames
+        moveSpriteW!(game,:tag2, 8)
+        moveSpriteW!(game, :hp2, 8)
+        moveText!(game,:name2, 8, 0)
+        moveText!(game,:lvl2, 8, 0)
+    elseif game.n[:switchin].c == 128
+        killSprite!(game,:ballopp); killCC!(game,:switchin)
+
+        return
+    end
+
+    game.n[:switchin].c += 1
+
+    return
+end
 
 
 

@@ -31,6 +31,8 @@ function stateEndBattlePhase!(game::GameState,state::BattleState)
                         pkmnName(game,game.battle.state[2].pkmn)*game.str[1][10],
                     bswitchIn!,2
                 ))
+
+                game.n[:animbattle].c = 1
             else
                 game.n[:animbattle].c = -3
             end

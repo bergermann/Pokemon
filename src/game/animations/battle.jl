@@ -61,8 +61,7 @@ function animBattleIntroW!(game::GameState,args::Tuple{})
 
         game.callbacks[:introb].active = false
 
-        stateSetDialogue!(game,
-            game.str[1][11]*pkmnName(game,game.battle.state.pkmn2.pkmn)*game.str[1][12],
+        stateSetDialogue!(game,game.str[1][11]*state[2].name*game.str[1][12],
             Callback(stateThrowBattle!))
 
         return

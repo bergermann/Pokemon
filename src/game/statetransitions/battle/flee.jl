@@ -44,8 +44,7 @@ function stateBattleFleeBlocked!(game::GameState,args::Tuple)
     switchText!(game,:choice2)
     switchBackground!(game,:t1)
     switchText!(game,:dialogue)
-    setText!(game,:dialogue,game.str[1][14]*pkmnName(game,game.battle.state.pkmn1.pkmn)*
-        game.str[1][15])
+    setText!(game,:dialogue,game.str[1][14]*state[1].name*game.str[1][15])
 
     activateCallback!(game,:wiggle)
 

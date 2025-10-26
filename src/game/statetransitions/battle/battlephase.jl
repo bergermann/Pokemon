@@ -19,16 +19,16 @@ function stateEndBattlePhase!(game::GameState,state::BattleState)
         if state.iswild
             game.n[:animbattle].c = -3
         else
-            if any(p->p.status!=0x06,game.battle.state.trainer1.pokemon)
+            if any(p->p.status!=0x06,state.trainer1.pokemon)
                 idx = findfirst(p->p.status!=0x06,game.battle.state.trainer1.pokemon)
 
-                game.battle.state[2] = PkmnBattle(game.battle.state.trainer1.pokemon[idx])
+                state[2] = PkmnBattle(game,state.trainer1.pokemon[idx])
 
-                game.battle.state[2].command = CN0
+                state[2].command = CN0
 
-                push!(game.battle.state.animqueue,BattleAnimation(
-                    :p1,128,game.str[1][7]*game.battle.state.trainer1.name*game.str[1][9]*
-                        pkmnName(game,game.battle.state[2].pkmn)*game.str[1][10],
+                push!(state.animqueue,BattleAnimation(
+                    :p1,128,game.str[1][7]*state.trainer1.name*game.str[1][9]*
+                        state[2].name*game.str[1][10],
                     bswitchIn!,2
                 ))
 
@@ -40,8 +40,8 @@ function stateEndBattlePhase!(game::GameState,state::BattleState)
     else
         deactivateCallback!(game,:animbattle)
 
-        game.battle.state.pkmn1.command = CC0
-        game.battle.state.pkmn2.command = CC0
+        state.pkmn1.command = CC0
+        state.pkmn2.command = CC0
 
         stateInitBattleChoice!(game,())
     end

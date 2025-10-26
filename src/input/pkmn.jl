@@ -171,8 +171,7 @@ function pkmnAction!(game::GameState,args::Tuple{})
                     game.battle.teamperm[1], game.battle.teamperm[n] = 
                         game.battle.teamperm[n], game.battle.teamperm[1]
 
-                    game.battle.state[1] = PkmnBattle(game.p.pokemon[1],
-                        pkmnName(game,activePkmn(game)))
+                    game.battle.state[1] = PkmnBattle(game,game.p.pokemon[1])
 
                     game.battle.state[1].command = CN0
 

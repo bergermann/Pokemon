@@ -103,7 +103,7 @@ function setBattleState!(game::GameState,weather::UInt8,trainer1::Trainer,traine
 
     state = game.battle.state
 
-    game.battle.teamperm = collect(1:6); activePkmn!(game,2)
+    game.battle.teamperm = collect(1:6); activePkmn!(game)
 
     state.pkmn1 = PkmnBattle(game,game.p.pokemon[1])
     state.pkmn2 = PkmnBattle(game,game.p.pokemon[2])

@@ -181,7 +181,7 @@ function queueAttack!(game::GameState,state::BattleState,
     defender.dmgt = min(defender.pkmn.stats.hp,attacker.dmgd)
     
     push!(state.animqueue,BattleAnimation(
-        id,120,pkmnName(game,attacker.pkmn)*game.str[1][31]*
+        id,120,attacker.name*game.str[1][31]*
             game.data.attacknames[attacker.attacks[attacker.attack].atk.id]*game.str[1][33],
             banimEmpty!,0
     ))
@@ -318,7 +318,7 @@ function queueBall!(game::GameState,state::BattleState,target::PkmnBattle,
 
     if w == 4
         push!(state.animqueue,BattleAnimation(
-            id,60,game.str[1][41]*pkmnName(game,target.pkmn)*game.str[1][42],
+            id,60,game.str[1][41]*target.name*game.str[1][42],
             bcaughtBall!,w
         ))
     else
@@ -349,7 +349,7 @@ function queueSwitch!(game::GameState,state::BattleState,user::Int,
         target::Int,id::Symbol)
     
     push!(state.animqueue,BattleAnimation(
-        id,48,game.str[1][22]*pkmnName(game,state[1].pkmn)*game.str[1][23],
+        id,48,game.str[1][22]*state[1].name*game.str[1][23],
         bswitchOut!,user
     ))
     

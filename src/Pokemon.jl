@@ -96,17 +96,21 @@ function run!(game::GameState,inputs::Inputs)
     return
 end
 
+function main()::Tuple{GameState,Union{Nothing,<:Exception}}
+    global game, inputs = init()
+
+    initBattleTrainer!(game)
+
+    try
+        run!(game,inputs)
+    catch e
+        GLFW.DestroyWindow(game.im.window)
+
+        throw(e)
+    end
+
+    return
+end
 end
 
-using GLFW: DestroyWindow
-game, inputs = Pokemon.init()
-
-Pokemon.initBattleTrainer!(game)
-
-try
-    Pokemon.run!(game,inputs)
-catch e
-    DestroyWindow(game.im.window)
-
-    throw(e)
-end
+Pokemon.main()

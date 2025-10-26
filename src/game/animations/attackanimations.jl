@@ -276,7 +276,8 @@ function bfaint!(game::GameState,(target,)::Tuple{Int})
     end
 
     if game.n[:faint].c == 75
-        deactivateSprite!(game,blabels[target].pkmn)
+        killSprite!(game,blabels[target].pkmn)
+        # deactivateSprite!(game,blabels[target].pkmn)
         # deleteSpriteSheet!(game,blabels[target].pkmn)
     elseif game.n[:faint].c == 120
         deactivateSprite!(game,blabels[target].tag)
@@ -307,8 +308,7 @@ function bswitchOut!(game::GameState,user::Int)
     game.battle.teamperm[1], game.battle.teamperm[n] = 
         game.battle.teamperm[n], game.battle.teamperm[1]
 
-    game.battle.state.pkmn1 = PkmnBattle(game.p.pokemon[1],
-        pkmnName(game,activePkmn(game)))
+    game.battle.state.pkmn1 = PkmnBattle(game,game.p.pokemon[1])
 
     return
 end
@@ -348,13 +348,19 @@ function bswitchIn!(game::GameState,user::Int)
     b = user == 1
     
     p = game.battle.state[user].pkmn; bid = Int(p.ball)
-    path = "battle/battlers/back/$(p.shiny ? "shiny" : "normal")/$(p.id).png"
+    path = "battle/battlers/$(b ? "back" : "front")/$(p.shiny ? "shiny" : "normal")/$(p.id).png"
+
+    name = b ? :pkmn1 : :pkmn2
+
+    if haskey(game.im.s.sheets,name)
+        deleteSpriteSheet!(game,name)
+    end
 
     createCC!(game,:switchin,b ? bswitchIn1! : bswitchIn2!,(); active=true,n=1)
-    loadSpriteSheet!(game,path,b ? :pkmn1 : :pkmn2,64,64,2; maxsprites=1)
+    loadSpriteSheet!(game,path,name,64,64,2; maxsprites=1)
     
     if user == 1
-        createSprite!(game,:pkmn1,:pkmn1,1,1,-48,24,10,3; wscale=0.,hscale=0.,active=false)
+        createSprite!(game,name,name,1,1,-48,24,10,3; wscale=0.,hscale=0.,active=false)
         createSprite!(game,:ball,:ballsb,bid,1,-48-80,24,10,2; active=true)
 
         activateSprite!(game,:tag1); activateSprite!(game,:hp1); activateSprite!(game,:xp);
@@ -367,15 +373,18 @@ function bswitchIn!(game::GameState,user::Int)
         moveText!(game,:name1,24+128,-4,true)
         moveText!(game, :lvl1,93+128,-4,true)
 
-        for i in eachindex(p.attacks); setText!(game,blabels[i].attack,p.attacks[i].name); end
+        for i in eachindex(p.attacks)
+            setText!(game,blabels[i].attack,game.data.attacknames[p.attacks[i].atk.id])
+        end
+
         for i in length(p.attacks)+1:4; setText!(game,blabels[i].attack,"---"); end
 
         game.ctrl.input.battle.s2 = 0
         a = p.attacks[1]
         setText!(game,:info2,string(a.atk.ap)*"/"*string(a.atk.apmax)*"\\"*game.str[2][a.type+1])
     else
-        createSprite!(game,:pkmn2,:pkmn2,1,1,56-128,28,10,3; wscale=0.,hscale=0.,active=false)
-        createSprite!(game,:ballopp,:ballsb,bid,1,56,28,10,2; active=false)
+        createSprite!(game,name,name,1,1,56,-28,10,3; wscale=0.,hscale=0.,active=false)
+        createSprite!(game,:ballopp,:ballsb,bid,1,56,-28,10,2; active=false)
     
         activateSprite!(game,:tag2); activateSprite!(game,:hp2)
         activateText!(game,:name2); activateText!(game,:lvl2)
@@ -387,7 +396,7 @@ function bswitchIn!(game::GameState,user::Int)
         moveText!(game, :lvl2, -33-128,-62,true)
     end
 
-    setText!(game,b ? :name1 : :name2,pkmnName(game,p))
+    setText!(game,b ? :name1 : :name2,game.battle.state[user].name)
     setText!(game,b ? :lvl1 : :lvl2,string(p.stats.level))
 
     sx = -48*b+56*!b; sy = 24*b+28*!b

@@ -49,7 +49,7 @@ function stateOpenBattle!(game::GameState)
 
     pb1 = state[1]; p1 = pb1.pkmn
     path1 = "battle/battlers/back/$(p1.shiny ? "shiny" : "normal")/$(p1.id).png"
-    p2 = state[2].pkmn; 
+    pb2 = state[2]; p2 = state[2].pkmn; 
     path2 = "battle/battlers/front/$(p2.shiny ? "shiny" : "normal")/$(p2.id).png"
 
     loadSpriteSheet!(game,path1,:pkmn1,64,64,2; maxsprites=1)
@@ -82,12 +82,12 @@ function stateOpenBattle!(game::GameState)
     createText!(game,:dialogue,4,-103,41,5,"",
         [0xff,0xff,0xff,0xff],[0x6b,0x5a,0x73,0xff]; active=false,maxchar=128)
 
-    createText!(game,:name1,1,24,-4,4,pkmnName(game,p1),
+    createText!(game,:name1,1,24,-4,4,pb1.name,
         [0x42,0x42,0x42,0xff],[0xde,0xd6,0xb5,0xff]; maxchar=16,active=!fs1)
     createText!(game, :lvl1,1,93,-4,4,string(p1.stats.level),
         [0x42,0x42,0x42,0xff],[0xde,0xd6,0xb5,0xff]; maxchar=3,active=!fs1)
 
-    createText!(game,:name2,1,-101,-62,4,pkmnName(game,p2),
+    createText!(game,:name2,1,-101,-62,4,pb2.name,
         [0x42,0x42,0x42,0xff],[0xde,0xd6,0xb5,0xff]; maxchar=16,active=!fs2)
     createText!(game,:lvl2, 1, -33,-62,4,string(p2.stats.level),
         [0x42,0x42,0x42,0xff],[0xde,0xd6,0xb5,0xff]; maxchar=3,active=!fs2)
@@ -171,7 +171,7 @@ end
 function stateThrowBattle!(game::GameState,args::Tuple{})
     lockInput!(game)
 
-    stateSetDialogue!(game,game.str[1][13]*pkmnName(game,game.battle.state[1].pkmn)*"!",
+    stateSetDialogue!(game,game.str[1][13]*game.battle.state[1].name*"!",
         F(stateInitBattleChoice!))
 
     game.callbacks[:introb].func = animThrowBall!
@@ -185,8 +185,7 @@ function stateDropBattle!(game::GameState,args::Tuple{})
     lockInput!(game)
 
     stateSetDialogue!(game,game.str[1][7]*game.battle.state.trainer1.name*game.str[1][9]*
-        pkmnName(game,game.battle.state[2].pkmn)*game.str[1][10],
-        F(stateInitBattleChoice!))
+        game.battle.state[2].name*game.str[1][10],F(stateInitBattleChoice!))
 
     game.callbacks[:introb].func = animDropBall!
     game.callbacks[:introb].active = true
@@ -214,8 +213,7 @@ function stateInitBattleChoice!(game::GameState,args::Tuple{})
     activateText!(game,:choice2)
 
     activateText!(game,:dialogue)
-    setText!(game,:dialogue,game.str[1][14]*pkmnName(game,game.battle.state.pkmn1.pkmn)*
-        game.str[1][15])
+    setText!(game,:dialogue,game.str[1][14]*game.battle.state[1].name*game.str[1][15])
 
     return    
 end

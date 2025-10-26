@@ -127,15 +127,19 @@ function activePkmn(game::GameState)
 end
 
 function activePkmn!(game::GameState)
-    idx = findfirst(x->x.stats.hp>0x0000,game.p.pokemon.data)
+    if game.battle.state.isdouble
+        throw(ErrorException("NYI"))
+    else
+        idx = findfirst(x->x.stats.hp>0x0000,game.p.pokemon.data)
 
-    if idx == 1
-        return
+        if idx == 1
+            return
+        end
+
+        swap!(game.p.pokemon,1,idx)
+        game.battle.teamperm[1], game.battle.teamperm[idx] = 
+            game.battle.teamperm[idx], game.battle.teamperm[1]
     end
-
-    swap!(game.p.pokemon,1,idx)
-    game.battle.teamperm[1], game.battle.teamperm[idx] = 
-        game.battle.teamperm[idx], game.battle.teamperm[1]
 
     return
 end

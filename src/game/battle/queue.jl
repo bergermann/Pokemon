@@ -16,15 +16,15 @@ function queueCheckStatus!(game::GameState,state::BattleState)::Bool
         state[1].pkmn.status = 0x06
         fs!(state,1,true)
 
-        if !checkContinueFight(game)
-            push!(state.animqueue,BattleAnimation(
-                :p1,120,game.p.name*game.str[1][27],banimEmpty!,1,
-            ))
+        # if !checkContinueFight(game)
+        #     push!(state.animqueue,BattleAnimation(
+        #         :p1,120,game.p.name*game.str[1][27],banimEmpty!,1,
+        #     ))
 
-            push!(state.animqueue,BattleAnimation(
-                :p1,120,game.p.name*game.str[1][28],banimEmpty!,1,
-            ))
-        end
+        #     push!(state.animqueue,BattleAnimation(
+        #         :p1,120,game.p.name*game.str[1][28],banimEmpty!,1,
+        #     ))
+        # end
 
         F = true
     end

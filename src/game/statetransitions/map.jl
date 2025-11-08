@@ -43,9 +43,7 @@ function stateOpenMap!(game::GameState)
     createSprite!(game,:mc,:mc1,1,1+3*(game.ctrl.dir-1-2*(game.ctrl.dir==4)),0,-8,10,3;
         wreverse=game.ctrl.dir==4,active=true)
 
-    createNPCSprites!(game)
-    createObjectSprites!(game)
-    createItemSprites!(game)
+    createMapSprites!(game)
 
     return
 end
@@ -56,6 +54,8 @@ function createNPCSprites!(game::GameState)
     for npc in game.m.npcs
         createNPCSprite!(game,npc)
     end
+
+    return
 end
 
 function createNPCSprite!(game::GameState,npc::NPC)
@@ -97,11 +97,37 @@ function createItemSprites!(game::GameState)
     end
 end
 
-function createItemSprite!(game::GameState,item::Item)
+function createItemSprite!(game::GameState,item::MapItem)
     createSprite!(game,item.sprite,:objects,1,1,
         16*(16*(item.chunk[2]-game.ctrl.chunk[2])+(item.pos[2]-game.ctrl.pos1[2])),
         16*(16*(item.chunk[1]-game.ctrl.chunk[1])+(item.pos[1]-game.ctrl.pos1[1])),
         10,3; active=true)
+
+    return
+end
+
+
+
+function createMapSprites!(game::GameState)
+    createNPCSprites!(game)
+    createObjectSprites!(game)
+    createItemSprites!(game)
+
+    return
+end
+
+function createChunkSprites!(game::GameState,target::Int8)
+    for npc in game.m.chunkdata[target].npcs
+        createNPCSprite!(game,npc[])
+    end
+    
+    for object in game.m.chunkdata[target].objects
+        createObjectSprite!(game,object[])
+    end
+
+    for item in game.m.chunkdata[target].items
+        createItemSprite!(game,item[])
+    end
 
     return
 end

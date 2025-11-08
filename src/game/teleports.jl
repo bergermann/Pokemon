@@ -43,7 +43,7 @@ function teleport!(game::GameState,tx::Int,ty::Int,tcx::Int,tcy::Int,dir::Int)
     turn!(game,dir)
     
     setProjection!(game)
-    loadChunksAll!(game)
+    loadChunksAll!(game); createMapSprites!(game)
     setSpriteFrame!(game,:mc,1+3*(dir-1-2*(dir == 4)))
 
     game.flags.general[0xc8] = false

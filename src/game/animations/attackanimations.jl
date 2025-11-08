@@ -347,7 +347,7 @@ end
 function bswitchIn!(game::GameState,user::Int)
     b = user == 1
     
-    p = game.battle.state[user].pkmn; bid = Int(p.ball)
+    pb = game.battle.state[user]; p = pb.pkmn; bid = Int(p.ball)
     path = "battle/battlers/$(b ? "back" : "front")/$(p.shiny ? "shiny" : "normal")/$(p.id).png"
 
     name = b ? :pkmn1 : :pkmn2
@@ -373,14 +373,14 @@ function bswitchIn!(game::GameState,user::Int)
         moveText!(game,:name1,24+128,-4,true)
         moveText!(game, :lvl1,93+128,-4,true)
 
-        for i in eachindex(p.attacks)
-            setText!(game,blabels[i].attack,game.data.attacknames[p.attacks[i].atk.id])
+        for i in eachindex(pb.attacks)
+            setText!(game,blabels[i].attack,game.data.attacknames[pb.attacks[i].atk.id])
         end
 
-        for i in length(p.attacks)+1:4; setText!(game,blabels[i].attack,"---"); end
+        for i in length(pb.attacks)+1:4; setText!(game,blabels[i].attack,"---"); end
 
         game.ctrl.input.battle.s2 = 0
-        a = p.attacks[1]
+        a = pb.attacks[1]
         setText!(game,:info2,string(a.atk.ap)*"/"*string(a.atk.apmax)*"\\"*game.str[2][a.type+1])
     else
         createSprite!(game,name,name,1,1,56,-28,10,3; wscale=0.,hscale=0.,active=false)

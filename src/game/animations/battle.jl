@@ -214,7 +214,6 @@ function animDropBall!(game::GameState,args::Tuple{})
 
         stateThrowBattle!(game,())
 
-
         return
     end
 
@@ -260,7 +259,7 @@ function resetWiggle!(game)
     return
 end
 
-function animBattlePhaseWild!(game::GameState,args::Tuple{})
+function animBattlePhase!(game::GameState,args::Tuple{})
     # -1: set up
     # -2: advance queue
     # -3: exit queue
@@ -288,22 +287,9 @@ function animBattlePhaseWild!(game::GameState,args::Tuple{})
         lockInput!(game)
 
         if checkContinueFight(game)
-            evolve = checkEvolve(game)
-
-            if evolve == 0
-                createCC!(game,:scenet,sceneTransition!,
-                    (32,8,F(stateEndBattle!,(evolve,)),
-                          F(stateInitMapCtrls!)); active=true,n=1)
-            else
-                createCC!(game,:scenet,sceneTransition!,
-                    (32,8,F(stateEndBattle!,(evolve,)),
-                          F(stateStartEvolve!,(game.p.pokemon[evolve],))); active=true,n=1)
-            end
+            stateVictory!(game)
         else
-            game.ctrl.input.map = true; game.ctrl.input.move = true
-
-            createCC!(game,:scenet,sceneTransition!,
-                (32,8,F(stateEndBattle!),F(eventHealCenter!,(true,))); active=true,n=1)
+            stateDefeat!(game)
         end
 
         return
@@ -324,3 +310,83 @@ function animBattlePhaseWild!(game::GameState,args::Tuple{})
     return
 end
 
+function animVictory!(game::GameState,args::Tuple{})
+    if game.n[:victory].c <= 20
+        s = 1-game.n[:victory].c/20
+        scaleSprite!(game,:pkmn1,s,s,true)
+    elseif game.n[:victory].c == 28
+        setSpriteFrame!(game,:ball,1)
+        killSprite!(game,:pkmn1)
+    elseif game.n[:victory].c < 48
+        moveSpriteH!(game,:ball,3)
+    elseif game.n[:victory].c < 48
+        killSprite!(game,:tag1)
+        killSprite!(game,:hp1)
+        killSprite!(game,:xp)
+        killSprite!(game,:ball)
+
+        deleteText!(game,:name1); deleteText!(game,:lvl1)        
+    elseif game.n[:victory].c < 96
+        moveSpriteW!(game,:opp,-1)
+        moveSpriteW!(game,:mc,2)
+    elseif game.n[:victory].c == 96
+        killCC!(game,:victory)
+
+        unlockInput!(game)
+
+        return
+    end
+
+    game.n[:victory].c += 1
+
+    return
+end
+
+function animDefeat!(game::GameState,args::Tuple{})
+    if game.n[:defeat].c <= 48
+        moveSpriteW!(game,:opp,-1)
+        moveSpriteW!(game,:mc,2)
+    elseif game.n[:defeat].c <= 68
+        s = 1-(game.n[:defeat].c-48)/20
+        scaleSprite!(game,:pkmn2,s,s,true)
+    elseif game.n[:defeat].c == 76
+        setSpriteFrame!(game,:ballopp,1)
+
+        killSprite!(game,:pkmn2)
+        killSprite!(game,:tag2)
+        killSprite!(game,:hp2)
+
+        deleteText!(game,:name2); deleteText!(game,:lvl2)    
+    elseif game.n[:defeat].c < 96
+        a = 1-(game.n[:defeat].c-76)/20
+        setSpriteAlpha!(game,:ballopp,a)
+    elseif game.n[:defeat].c == 96
+        killSprite!(game,:ballopp)
+
+        killCC!(game,:defeat)
+
+        unlockInput!(game)
+
+        return
+    end
+
+    game.n[:defeat].c += 1
+
+    return
+end
+
+function animDefeatWild!(game::GameState,args::Tuple{})
+    if game.n[:defeat].c <= 48
+        moveSpriteW!(game,:mc,2)
+    else
+        killCC!(game,:defeat)
+
+        unlockInput!(game)
+
+        return
+    end
+
+    game.n[:defeat].c += 1    
+
+    return
+end

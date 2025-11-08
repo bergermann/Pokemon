@@ -383,15 +383,26 @@ function setSprite!(game::GameState,id::Symbol,idx::Int,frame::Int)
     return
 end
 
-function killSprite!(game::GameState,id::Symbol)
+function setSpriteAlpha!(game::GameState,id::Symbol,alpha::Float64)
     s = game.im.s.sprites[id]
-    sheet = game.im.s.sheets[s.sheet]
     
-    sheet.active[1,s.slot] = false
-    sheet.idx[:,s.slot] .= 0
-    sheet.slots[s.slot] = false
+    game.im.s.sheets[s.sheet].alpha[s.slot] = Float32(alpha)
 
-    pop!(game.im.s.sprites,id)
+    return
+end
+
+function killSprite!(game::GameState,id::Symbol)
+    if haskey(game.im.s.sprites,id)
+        s = pop!(game.im.s.sprites,id)
+
+        sheet = game.im.s.sheets[s.sheet]
+        
+        sheet.active[1,s.slot] = false
+        sheet.idx[:,s.slot] .= 0
+        sheet.slots[s.slot] = false
+    else
+        @warn "Sprite :$id not found, cannot kill."
+    end
 
     return
 end

@@ -4,7 +4,6 @@
 function animEvolve!(game::GameState,(pkmn,)::Tuple{Pkmn,})
     c = game.n[:evolve].c 
     # set color gradually to white
-    if c == 1; println("starting evolve anim"); end
     
     if c <= 60
         game.im.b.backgrounds[:b2].color[4] = Float32(c/60)

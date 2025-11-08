@@ -22,8 +22,6 @@ item effects
 attack effects
 safe latest pokecenter spot
 
-trainer battles, trainer linecheck
-
 event scripting
 - fix npc adding, layer param
 - remove pokemon

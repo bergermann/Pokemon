@@ -21,7 +21,7 @@ function stateOpenBattle!(game::GameState)
     loadStringsBattle!(game)
 
     createCallback!(game,:wiggle,animWiggleBattle!,())
-    createCC!(game,:animbattle,animBattlePhaseWild!,(); n=-1)
+    createCC!(game,:animbattle,animBattlePhase!,(); n=-1)
 
     createBackground!(game,:battle,"backgrounds/battle/grass1.png",-120,-80,1;)
     createBackground!(game,:text,"textboxes/battle.png",-120,32,5;)
@@ -41,7 +41,7 @@ function stateOpenBattle!(game::GameState)
     )
 
     state = game.battle.state; fs1 = fs(state,1); fs2 = fs(state,2)
-
+    
     if !state.iswild
         pathopp = "battle/trainers/$(state.trainer1.sprite).png"
         loadSpriteSheet!(game,pathopp,:battleropp,64,64,1; maxsprites=1)
@@ -129,7 +129,7 @@ function stateOpenBattleIntro!(game::GameState)
     createBackground!(game,:s2,"backgrounds/black.png",-120,  0,6; sx=240,sy=80)
 
     createSprite!(game,:mc,:battlermc,1,1,120+80+3,0,10,3; active=true)
-    bid = Int(game.battle.state.pkmn1.pkmn.ball)
+    bid = Int(game.battle.state[1].pkmn.ball)
     createSprite!(game,:ball,:ballsb,bid,1,-62, 11,10,2; active=false,rot=18.)
 
     if game.battle.state.iswild
@@ -223,8 +223,8 @@ end
 function stateCloseBattle!(game::GameState)
     deleteBackgrounds!(game,:battle,:text,:t1,:t2)
     deleteSpriteSheets!(game,
-        :battlermc,:pads,:ballsb,:ballicons,:tagown,:tagopp,:particles,:pkmn1,:pkmn2,
-        :health1,:xp,)
+        :battlermc,:battleropp,:pads,:ballsb,:ballicons,:tagown,:tagopp,:particles,
+        :pkmn1,:pkmn2,:health1,:xp,)
 
     killSprites!(game,:cursors)
 
@@ -264,5 +264,77 @@ function stateEndBattle!(game::GameState,(evolve,)::Tuple{Int,})
         stateOpenEvolve!(game,(game.p.pokemon[evolve],))
     end
 
+    return
+end
+
+
+
+function stateVictory!(game::GameState,)
+    evolve = checkEvolve(game)
+
+    if evolve == 0
+        createCC!(game,:scenet,sceneTransition!,
+            (32,8,F(stateEndBattle!,(evolve,)),
+                    F(stateInitMapCtrls!)); n=1)
+    else
+        createCC!(game,:scenet,sceneTransition!,
+            (32,8,F(stateEndBattle!,(evolve,)),
+                    F(stateStartEvolve!,(game.p.pokemon[evolve],))); n=1)
+    end
+
+    if game.battle.state.iswild
+        activateCallback!(game,:scenet)
+    else
+        createCC!(game,:victory,animVictory!,(); active=true,n=1)
+        
+        createSprite!(game,:mc,:battlermc,1,1,-80-96,0,10,3; active=true)
+        bid = Int(game.battle.state[1].pkmn.ball)
+        createSprite!(game,:ball,:ballsb,bid,2,-48,24,10,2; active=true,rot=0.)
+        
+        createSprite!(game,:opp,:battleropp,1,1,96+48,-44,10,3; active=true)
+
+        prize = UInt32(game.battle.state.trainer1.money); game.p.inventory.cash += prize
+
+        stateSetDialogue!(game,
+            ["Trainer xy wurde besiegt.",
+            game.battle.state.trainer1.outro,
+            game.p.name*" erhält $prize P."],
+            (game,())->(lockInput!(game); activateCallback!(game,:scenet)))
+    end
+    
+    return
+end
+
+function stateDefeat!(game::GameState,)
+    for i in eachindex(game.p.pokemon)
+        game.p.pokemon[i].evolve = 0x0000
+    end
+
+    createCC!(game,:scenet,sceneTransition!,
+        (32,8,F(stateEndBattle!,(0,)),F(eventHealCenter!,(true,))); n=1)
+
+    if game.battle.state.iswild
+        createCC!(game,:defeat,animDefeatWild!,(); active=true,n=1)
+    else
+        createCC!(game,:defeat,animDefeat!,(); active=true,n=1)
+
+        createSprite!(game,:opp,:battleropp,1,1,96+48,-44,10,3; active=true)
+        bid = Int(game.battle.state[2].pkmn.ball)
+        createSprite!(game,:ballopp,:ballsb,bid,1,56,-28,10,2;)
+    end
+
+    createSprite!(game,:mc,:battlermc,1,1,-80-96,0,10,3; active=true)
+
+    loss = div(game.p.inventory.cash,0x02); game.p.inventory.cash -= loss
+
+    stateSetDialogue!(game,
+        [game.p.name*" hat keine kampffähigen Pokémon\\mehr...",
+        game.battle.state.iswild ?
+            game.p.name*" verliert $loss P." : game.p.name*" gibt $loss P Preisgeld."],
+        (game,())->(lockInput!(game); activateCallback!(game,:scenet);
+            game.ctrl.input.map = true; game.ctrl.input.move = true))
+
+    println(game.callbacks,"\n")
+    
     return
 end

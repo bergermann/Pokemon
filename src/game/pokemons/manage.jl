@@ -22,14 +22,15 @@ function generatePkmn(game::GameState,id::UInt16,level::UInt8)
         game.p.name,                    # OTrainer
         game.p.id,                      # OTrainer id
         "",                             # location
-        0x01,                           # ball id
+        Bpoke,                          # ball id
 
-        Tuple{UInt8,UInt8}(data[2:3]),  # types
+        
+        (PType(data[2]),PType(data[3])),# types
         Stats(data[4:9],level),         # stats
-        0x00,                           # status
-        0,                              # item
+        HSnormal,                       # status
+        Inone,                          # item
         attacks,                        # attacks
-        0x00,                           # ability
+        Anone,                          # ability
         0x00,                           # evolve
     )
 
@@ -77,14 +78,20 @@ end
 
 
 function isfainted(pkmn::Pkmn)
-    return pkmn.status == 0x06
+    return pkmn.status == HSfainted
 end
 
 function isfainted(game::GameState,i::Int)
-    return game.p.pokemon[i].status == 0x06
+    return game.p.pokemon[i].status == HSfainted
 end
 
 
+
+function hastype(pkmn::Pkmn,type::PType)
+    return type in pkmn.type
+end
+
+hastype(pkmn::PkmnBattle,type::PType) = hastype(pkmn.pkmn,type)
 
 function hasattack(pkmn::Pkmn,attack::UInt16)
     for atk in pkmn.attacks
@@ -95,15 +102,15 @@ function hasattack(pkmn::Pkmn,attack::UInt16)
 end
 
 function hasitem(pkmn::Pkmn)
-    return pkmn.item > 0
+    return pkmn.item != Inone
 end
 
-function hasitem(pkmn::Pkmn,item::UInt16)
+function hasitem(pkmn::Pkmn,item::ItemID)
     return pkmn.item == item
 end
 
 function hasitem(game::GameState,i::Int)
-    return game.p.pokemon[i].item > 0
+    return game.p.pokemon[i].item != Inone
 end
 
 
@@ -122,15 +129,11 @@ end
 
 
 
-function activePkmn(game::GameState)
-    return game.p.pokemon[findfirst(p->p.stats.hp>0x0000,game.p.pokemon.data)]
-end
-
 function activePkmn!(game::GameState)
     if game.battle.state.isdouble
         throw(ErrorException("NYI"))
     else
-        idx = findfirst(x->x.stats.hp>0x0000,game.p.pokemon.data)
+        idx = findfirst(p->p.status!=HSfainted,game.p.pokemon.data)
 
         if idx == 1
             return

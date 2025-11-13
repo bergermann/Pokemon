@@ -13,18 +13,8 @@ function queueCheckStatus!(game::GameState,state::BattleState)::Bool
             :p1,120,state[1].name*game.str[1][16],bfaint!,1
         ))
 
-        state[1].pkmn.status = 0x06
+        state[1].pkmn.status = HSfainted
         fs!(state,1,true)
-
-        # if !checkContinueFight(game)
-        #     push!(state.animqueue,BattleAnimation(
-        #         :p1,120,game.p.name*game.str[1][27],banimEmpty!,1,
-        #     ))
-
-        #     push!(state.animqueue,BattleAnimation(
-        #         :p1,120,game.p.name*game.str[1][28],banimEmpty!,1,
-        #     ))
-        # end
 
         F = true
     end
@@ -45,7 +35,7 @@ function queueCheckStatus!(game::GameState,state::BattleState)::Bool
         ))
 
         state[2].pkmn.stats.hp = -1
-        state[2].pkmn.status = 0x06
+        state[2].pkmn.status = HSfainted
 
         if state[1].pkmn.stats.level < 0x64
             queueCheckXp!(game,state)
@@ -240,11 +230,11 @@ function queueWeather!(state::BattleState)
 end
 
 function queueStatusCond!(state::BattleState)
-    if state.pkmn1.pkmn.status != 0x00
+    if state.pkmn1.pkmn.status != HSnormal
         0
     end
 
-    if state.pkmn2.pkmn.status != 0x00
+    if state.pkmn2.pkmn.status != HSnormal
         0
     end
 
@@ -282,12 +272,13 @@ function queueBall!(game::GameState,state::BattleState,target::PkmnBattle,
         bthrowBall!,2
     ))
 
+    s = UInt8(target.pkmn.status)
+
     x = *(
         3*target.pkmn.stats.rv[1]-2*target.pkmn.stats.hp,
         100,    # catchrate FIX
         ball.catchrate,
-        1+0.5*in(target.pkmn.status,[0x01,0x02,0x03])
-            +1*in(target.pkmn.status,[0x04,0x05]),
+        1+0.5*(0x01<=s<=0x03)+1*(0x04<=s<=0x05),
         1/(3*target.pkmn.stats.rv[1])
     )
 
@@ -402,7 +393,7 @@ end
 
 
 function checkFlee(state::BattleState)::Bool
-    if !state.iswild! && state[1].secstatus.escapeblock
+    if !state.iswild || state[1].secstatus.escapeblock
         return false
     end
 

@@ -1,7 +1,7 @@
 # items to teach pokemons attacks
 
 
-machines = Dict{Int,Machine}(
-    201 => HM(),
-    202 => HM(),
+machines = Dict{ItemID,Machine}(
+    IM001 => HM(),
+    IM002 => HM(),
 )

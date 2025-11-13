@@ -16,7 +16,7 @@ function changeStat!(state::BattleState,target::Int,(stat,level,chance)::Tuple{I
 end
 
 function applyStatus!(state::BattleState,target::Int,(status,chance,overwrite)::Tuple{})
-    if (state[target].pkmn.status == 0x00 || overwrite) && rand() < chance
+    if (state[target].pkmn.status == HSnormal || overwrite) && rand() < chance
         state[target].pkmn.status = status
     end
     

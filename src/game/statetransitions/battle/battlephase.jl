@@ -19,8 +19,8 @@ function stateEndBattlePhase!(game::GameState,state::BattleState)
         if state.iswild
             game.n[:animbattle].c = -3
         else
-            if any(p->p.status!=0x06,state.trainer1.pokemon)
-                idx = findfirst(p->p.status!=0x06,game.battle.state.trainer1.pokemon)
+            if any(p->p.status!=HSfainted,state.trainer1.pokemon)
+                idx = findfirst(p->p.status!=HSfainted,game.battle.state.trainer1.pokemon)
 
                 state[2] = PkmnBattle(game,state.trainer1.pokemon[idx])
 
@@ -65,5 +65,5 @@ function stateForceSwitch!(game::GameState)
 end
 
 function checkContinueFight(game::GameState)
-    return any(p->p.status!=0x06,game.p.pokemon)
+    return any(p->p.status!=HSfainted,game.p.pokemon)
 end

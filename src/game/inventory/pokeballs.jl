@@ -1,16 +1,16 @@
 # poke balls
 
-pokeballs = Dict{Int,Pokeball}(
-     1 => Pokeball(1,0,1),    # poke ball
-     2 => Pokeball(1.5,0,2),  # great ball
-     3 => Pokeball(2,0,3),    # ultra ball
-     4 => Pokeball(1e6,0,4),  # master ball
-     5 => Pokeball(1,1,5),    # dive ball
-     6 => Pokeball(1,0,6),    # luxury ball
-     7 => Pokeball(1,2,7),    # nest ball
-     8 => Pokeball(1,3,8),    # net ball
-     9 => Pokeball(1,0,9),    # premier ball
-    10 => Pokeball(1,4,10),    # repeat ball
-    11 => Pokeball(1.5,0,11),  # safari ball
-    12 => Pokeball(1,5,12),    # timer ball
+pokeballs = Dict{ItemID,Pokeball}(
+    IBpoke      => Pokeball(1.0,0, 1),  # poke ball
+    IBgreat     => Pokeball(1.5,0, 2),  # great ball
+    IBultra     => Pokeball(2.0,0, 3),  # ultra ball
+    IBmaster    => Pokeball(1e9,0, 4),  # master ball
+    IBdive      => Pokeball(1.0,1, 5),  # dive ball
+    IBluxury    => Pokeball(1.0,0, 6),  # luxury ball
+    IBnest      => Pokeball(1.0,2, 7),  # nest ball
+    IBnet       => Pokeball(1.0,3, 8),  # net ball
+    IBpremier   => Pokeball(1.0,0, 9),  # premier ball
+    IBrepeat    => Pokeball(1.0,4,10),  # repeat ball
+    IBsafari    => Pokeball(1.5,0,11),  # safari ball
+    IBtimer     => Pokeball(1.0,5,12),  # timer ball
 )

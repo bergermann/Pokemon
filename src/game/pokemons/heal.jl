@@ -1,7 +1,7 @@
 
 function healPkmn!(pkmn::Pkmn)
     pkmn.stats.hp = pkmn.stats.rv[1]
-    pkmn.status = 0x00
+    pkmn.status = HSnormal
 
     for atk in pkmn.attacks
         atk.ap = atk.apmax

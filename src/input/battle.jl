@@ -68,6 +68,18 @@ function inputBattleMenuSelector!(game::GameState)
         switchText!(game,:info1); switchText!(game,:info2)
         for l in alabels; switchText!(game,l); end
     elseif game.ctrl.input.battle.s1 == 1
+        if !game.battle.state.iswild
+            switchFrame!(game,:choice)
+            switchSprite!(game,:cursor1)
+            switchText!(game,:choice1)
+            switchText!(game,:choice2)
+            switchBackground!(game,:t1)
+            
+            stateSetDialogue!(game,game.str[1][47],stateBattleFleeBlocked!)
+
+            return
+        end
+
         lockInput!(game)
 
         createCC!(game,:scenet,sceneTransition!,

@@ -1,35 +1,35 @@
 # items (battleitems, medicine n such)
 
-items = Dict{Int,Item}(
-    31 => MedicineHealth(20,false,0),   # trank
-    32 => MedicineHealth(50,false,0),   # supertrank
-    33 => MedicineHealth(200,false,0),  # hypertrank
-    34 => MedicineHealth(100,true,0),   # top trank
-    35 => MedicineHealth(100,true,6),   # top genesung
-    36 => MedicineHealth(50,false,0),   # tafelwasser
-    37 => MedicineHealth(60,false,0),   # sprudel
-    38 => MedicineHealth(80,false,0),   # limonade
-    39 => MedicineHealth(100,false,0),  # kuh-muh milch
-    40 => MedicineHealth(50,false,0),   # energiestaub
-    41 => MedicineHealth(200,false,0),  # kraftwurzel
+items = Dict{ItemID,Item}(
+    IIpotion    => MedicineHealth( 20,false,HSnormal),   # trank
+    IIsuper     => MedicineHealth( 50,false,HSnormal),   # supertrank
+    IIhyper     => MedicineHealth(200,false,HSnormal),   # hypertrank
+    IImaxp      => MedicineHealth(100, true,HSnormal),   # top trank
+    IIfull      => MedicineHealth(100, true,HSall),      # top genesung
+    IIwater     => MedicineHealth( 50,false,HSnormal),   # tafelwasser
+    IIsoda      => MedicineHealth( 60,false,HSnormal),   # sprudel
+    IIlimo      => MedicineHealth( 80,false,HSnormal),   # limonade
+    IImoo       => MedicineHealth(100,false,HSnormal),   # kuh-muh milch
+    IIenp       => MedicineHealth( 50,false,HSnormal),   # energiestaub
+    IIenr       => MedicineHealth(200,false,HSnormal),   # kraftwurzel
 
-    42 => MedicineHealth(0,false,1),    # gegengift
-    43 => MedicineHealth(0,false,2),    # feuerheiler
-    44 => MedicineHealth(0,false,3),    # paraheiler
-    45 => MedicineHealth(0,false,4),    # aufwecker
-    46 => MedicineHealth(0,false,5),    # eisheiler
-    47 => MedicineHealth(0,false,6),    # hyperheiler
-    48 => MedicineHealth(0,false,6),    # heilpuder
-    49 => MedicineHealth(0,false,6),    # lavakeks
+    IIpoison    => MedicineHealth(  0,false,HSpoison),   # gegengift
+    IIburn      => MedicineHealth(  0,false,HSburn),     # feuerheiler
+    IIpara      => MedicineHealth(  0,false,HSparalyse), # paraheiler
+    IIsleep     => MedicineHealth(  0,false,HSsleep),    # aufwecker
+    IIice       => MedicineHealth(  0,false,HSfrozen),   # eisheiler
+    IIall       => MedicineHealth(  0,false,HSall),      # hyperheiler
+    IIheal      => MedicineHealth(  0,false,HSall),      # heilpuder
+    IIlava      => MedicineHealth(  0,false,HSall),      # lavakeks
 
-    50 => MedicineHealth(50,true,7),    # beleber
-    51 => MedicineHealth(100,true,7),   # top beleber
-    52 => MedicineHealth(100,true,7),   # vitalkraut
+    IIrev       => MedicineHealth( 50, true,HSfainted),  # beleber
+    IImaxrev    => MedicineHealth(100, true,HSfainted),  # top beleber
+    IIvital     => MedicineHealth(100, true,HSfainted),  # vitalkraut
 
-    53 => MedicineAP(10,false),         # äther
-    54 => MedicineAP(100,false),        # top äther
-    55 => MedicineAP(10,true),          # elixier
-    56 => MedicineAP(100,true),         # top-elixier
+    IIether     => MedicineAP( 10,false), # äther
+    IIethtop    => MedicineAP(100,false), # top äther
+    IIelix      => MedicineAP( 10, true), # elixier
+    IIelixtop   => MedicineAP(100, true), # top-elixier
 )
 
 

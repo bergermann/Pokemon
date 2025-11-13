@@ -296,9 +296,9 @@ function stateVictory!(game::GameState,)
         prize = UInt32(game.battle.state.trainer1.money); game.p.inventory.cash += prize
 
         stateSetDialogue!(game,
-            ["Trainer xy wurde besiegt.",
+            [game.str[1][7]*game.battle.state.trainer1.name*game.str[1][16],
             game.battle.state.trainer1.outro,
-            game.p.name*" erhält $prize P."],
+            game.p.name*game.str[1][7]*"$prize P."],
             (game,())->(lockInput!(game); activateCallback!(game,:scenet)))
     end
     
@@ -320,7 +320,7 @@ function stateDefeat!(game::GameState,)
 
         createSprite!(game,:opp,:battleropp,1,1,96+48,-44,10,3; active=true)
         bid = Int(game.battle.state[2].pkmn.ball)
-        createSprite!(game,:ballopp,:ballsb,bid,1,56,-28,10,2;)
+        createSprite!(game,:ballopp,:ballsb,bid,2,56,-28,10,2; active=true)
     end
 
     createSprite!(game,:mc,:battlermc,1,1,-80-96,0,10,3; active=true)
@@ -328,13 +328,12 @@ function stateDefeat!(game::GameState,)
     loss = div(game.p.inventory.cash,0x02); game.p.inventory.cash -= loss
 
     stateSetDialogue!(game,
-        [game.p.name*" hat keine kampffähigen Pokémon\\mehr...",
+        [game.p.name*game.str[1][27],
         game.battle.state.iswild ?
-            game.p.name*" verliert $loss P." : game.p.name*" gibt $loss P Preisgeld."],
+            game.p.name*game.str[1][21]*"$loss P." : game.p.name*
+                game.str[1][29]*"$loss"*game.str[1][30]],
         (game,())->(lockInput!(game); activateCallback!(game,:scenet);
             game.ctrl.input.map = true; game.ctrl.input.move = true))
-
-    println(game.callbacks,"\n")
     
     return
 end

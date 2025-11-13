@@ -87,7 +87,7 @@ function main()
     
     setInventoryTest!(game.p.inventory)
     
-    push!(game.p.pokemon,generatePkmn(game,0x0001,0x01))
+    push!(game.p.pokemon,generatePkmn(game,0x0001,0x0f))
     # push!(game.p.pokemon,generatePkmn(game,0x0002,0x02))
     # push!(game.p.pokemon,generatePkmn(game,0x0003,0x60))
     # push!(game.p.pokemon,generatePkmn(game,0x0004,0x08))
@@ -99,9 +99,9 @@ function main()
     game.p.dex[1:15,1] .= true
     game.p.dex[19,1] = true
 
-    initBattleTrainer!(game)
+    # initBattleTrainer!(game)
 
-    levelup!(game.battle.state.trainer1.pokemon[1],10,game)
+    # levelup!(game.battle.state.trainer1.pokemon[1],10,game)
 
     try
         run!(game,inputs)

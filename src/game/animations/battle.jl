@@ -61,7 +61,7 @@ function animBattleIntroW!(game::GameState,args::Tuple{})
 
         game.callbacks[:introb].active = false
 
-        stateSetDialogue!(game,game.str[1][11]*state[2].name*game.str[1][12],
+        stateSetDialogue!(game,game.str[1][11]*game.battle.state[2].name*game.str[1][12],
             Callback(stateThrowBattle!))
 
         return
@@ -325,11 +325,12 @@ function animVictory!(game::GameState,args::Tuple{})
         killSprite!(game,:xp)
         killSprite!(game,:ball)
 
-        deleteText!(game,:name1); deleteText!(game,:lvl1)        
-    elseif game.n[:victory].c < 96
+        deleteText!(game,:name1); deleteText!(game,:lvl1)
+    
+    elseif 96+60 <= game.n[:victory].c < 96+60
         moveSpriteW!(game,:opp,-1)
         moveSpriteW!(game,:mc,2)
-    elseif game.n[:victory].c == 96
+    elseif game.n[:victory].c == 96+60
         killCC!(game,:victory)
 
         unlockInput!(game)
@@ -346,10 +347,10 @@ function animDefeat!(game::GameState,args::Tuple{})
     if game.n[:defeat].c <= 48
         moveSpriteW!(game,:opp,-1)
         moveSpriteW!(game,:mc,2)
-    elseif game.n[:defeat].c <= 68
-        s = 1-(game.n[:defeat].c-48)/20
+    elseif 48+60 < game.n[:defeat].c <= 68+60
+        s = 1-(game.n[:defeat].c-(48+60))/20
         scaleSprite!(game,:pkmn2,s,s,true)
-    elseif game.n[:defeat].c == 76
+    elseif game.n[:defeat].c == 76+60
         setSpriteFrame!(game,:ballopp,1)
 
         killSprite!(game,:pkmn2)
@@ -357,10 +358,10 @@ function animDefeat!(game::GameState,args::Tuple{})
         killSprite!(game,:hp2)
 
         deleteText!(game,:name2); deleteText!(game,:lvl2)    
-    elseif game.n[:defeat].c < 96
-        a = 1-(game.n[:defeat].c-76)/20
+    elseif 76+60 < game.n[:defeat].c <= 96+60
+        a = 1-(game.n[:defeat].c-76+60)/20
         setSpriteAlpha!(game,:ballopp,a)
-    elseif game.n[:defeat].c == 96
+    elseif game.n[:defeat].c == 96+60+1
         killSprite!(game,:ballopp)
 
         killCC!(game,:defeat)

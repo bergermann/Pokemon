@@ -223,6 +223,8 @@ function applyItem!(game::GameState)
     target = game.p.pokemon[game.ctrl.input.menu.menubags.subslot]
 
     applyItem!(target,item)
+
+    return
 end
 
 function applyItem!(target::Pkmn,item::MedicineHealth)
@@ -230,27 +232,28 @@ function applyItem!(target::Pkmn,item::MedicineHealth)
         return
     end
 
-    if target.status == 0x07
+    if target.status == HSfainted
         target.stats.rv[1] = floor(UInt16,target.stats.hp*item.amount/100)
-        target.status = 0x00
+        target.status = HSnormal
 
         return
     end
 
-    (target.status == target.item || item.status == 0x06) &&
-        (target.status = 0x00)
+    (target.status == target.item || item.status == HSall) && (target.status = HSnormal)
     
     target.stats.rv[1] = max(target.hp,target.stats.rv[1] + (item.fraction ? 
         floor(UInt16,target.stats.hp*item.amount/100) : item.amount))
+
+    return
 end
 
-function checkItemApplicable(target::Pkmn,item::MedicineHealth)
-    if target.status == 0x07
-        return item.status == 0x07
-    elseif item.status != 0 && item.amount == 0
-        return target.status == item.status || item.status == 0x06
-    elseif item.status != 0 && item.amount != 0
-        return target.status == item.status || item.status == 0x06 ||
+function checkItemApplicable(target::Pkmn,item::MedicineHealth)::Bool
+    if target.status == HSfainted
+        return item.status == HSstatus
+    elseif item.status != HSnormal && item.amount == 0
+        return target.status == item.status || item.status == HSall
+    elseif item.status != HSnormal && item.amount != 0
+        return target.status == item.status || item.status == HSall ||
             target.stats.hp != target.stats.rv[1]
     else
         return target.stats.hp != target.stats.rv[1]

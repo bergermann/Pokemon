@@ -70,7 +70,7 @@ struct MedicineHealth <: Item
     amount::Int
     fraction::Bool
 
-    status::UInt8
+    status::HealthStatus
 end
 
 struct MedicineAP <: Item
@@ -138,7 +138,7 @@ struct BerryHealth <: Berry
     amount::Int
     fraction::Bool
 
-    status::Int
+    status::HealthStatus
 end
 
 struct BerryAP <: Berry

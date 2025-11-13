@@ -23,34 +23,26 @@ const typetable = Rational{UInt8}[
     1   1   .5  1   2   1   .5  1   1   1   1   1   1   1   2   2   .5  1   # fee
 ]
 
-
-function printTypes(attacker)
-    println("Angreifer:     $(TypeNames[UInt8(attacker)])")
-    println("Stark gegen:   ",get.(Ref(TypeNames),findall(x->x==0x02//0x01,typetable[attacker,:]),0).*", "...)
-    println("Schwach gegen: ",get.(Ref(TypeNames),findall(x->x==0x01//0x02,typetable[attacker,:]),0).*", "...)
-    println("Kein Effekt:   ",get.(Ref(TypeNames),findall(x->x==0x00//0x01,typetable[attacker,:]),0).*", "...)
-end
-
 const TypeNames = Base.ImmutableDict(
-    0x00 => "Null",
-    0x01 => "Normal",
-    0x02 => "Pflanze",
-    0x03 => "Feuer",
-    0x04 => "Wasser",
-    0x05 => "Kampf",
-    0x06 => "Flug",
-    0x07 => "Gift",
-    0x08 => "Boden",
-    0x09 => "Gestein",
-    0x0a => "Käfer",
-    0x0b => "Geist",
-    0x0c => "Elektro",
-    0x0d => "Psycho",
-    0x0e => "Eis",
-    0x0f => "Drache",
-    0x10 => "Unlicht",
-    0x11 => "Stahl",
-    0x12 => "Fee",
+    Tnone     => "Null",
+    Tnormal   => "Normal",
+    Tgrass    => "Pflanze",
+    Tfire     => "Feuer",
+    Twater    => "Wasser",
+    Tfight    => "Kampf",
+    Tflying   => "Flug",
+    Tpoison   => "Gift",
+    Tground   => "Boden",
+    Trock     => "Gestein",
+    Tbug      => "Käfer",
+    Tghost    => "Geist",
+    Telectric => "Elektro",
+    Tpsycho   => "Psycho",
+    Tice      => "Eis",
+    Tdragon   => "Drache",
+    Tdark     => "Unlicht",
+    Tsteel    => "Stahl",
+    Tfairy    => "Fee",
 )
 
 mutable struct Stats
@@ -97,8 +89,8 @@ end
 mutable struct Attack
     atk::Atk
 
-    type::UInt8
-    class::UInt8
+    type::PType
+    class::AttackClass
     power::UInt8
     accuracy::UInt8
     priority::Int8
@@ -107,7 +99,7 @@ mutable struct Attack
     effect::Vector{AttackEffect}
 
     function Attack()
-        new(Atk(0,0,0),0,0,0,0,0,0,[])
+        new(Atk(0,0,0),Tnone,ACnone,0,0,0,0,[])
     end
 
     function Attack(atk,class,type,power,accuracy,priority,critrate,effect)
@@ -119,7 +111,7 @@ end
 mutable struct Pkmn
     id::UInt16
     name::String
-    gender::UInt8
+    gender::Gender
     shiny::Bool
     form::UInt8
     xptype::UInt8
@@ -127,15 +119,15 @@ mutable struct Pkmn
     otrainer::String
     otrainerid::UInt16
     location::String
-    ball::UInt8
+    ball::BallID
 
-    type::Tuple{UInt8,UInt8}
+    type::Tuple{PType,PType}
     stats::Stats
-    status::UInt8
-    item::Int
+    status::HealthStatus
+    item::ItemID
 
     attacks::Vector{Atk}
-    ability::UInt16
+    ability::Ability
 
     evolve::UInt16
 end

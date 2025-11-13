@@ -18,16 +18,16 @@ Was soll\
  E.-Punkte.
 Du bist entkommen!
 Flucht gescheitert.
-Aus Trainerkämpfen kannst du\nicht fliehen.
+ verliert
 Genug, 
 .\Komm zurück!
 Los, 
 Der Gegner ist geflohen.
  erreicht Lv. 
- hat kein kampffähiges Pokémon mehr.
+ hat kein kampffähiges\Pokémon mehr.
  wird ohnmächtig...
-
-
+ gibt 
+ P Preisgeld.
  setzt 
  (wild) setzt 
  ein.
@@ -42,3 +42,6 @@ Toll!
  wurde gefangen.
  wurde dem Team\hinzugefügt.
  wurde auf den PC\übertragen.
+ 
+Aus Trainerkämpfen kannst du\nicht fliehen.
+In Trainerkämpfen kannst du\keine Items einsetzen.

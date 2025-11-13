@@ -72,16 +72,16 @@ function loadBattleAttacks(game::GameState,pkmn::Pkmn)
         atk = pkmn.attacks[i]
 
         push!(attacks,Attack(
-            atk,            # atk
+            atk,                        # atk
 
-            ad[atk.id,1],   # type
-            ad[atk.id,2],   # class
-            ad[atk.id,3],   # power
-            ad[atk.id,4],   # accuracy
-            1,              # priority
-            1,              # critrate
+            PType(ad[atk.id,1]),        # type
+            AttackClass(ad[atk.id,2]),  # class
+            ad[atk.id,3],               # power
+            ad[atk.id,4],               # accuracy
+            1,                          # priority
+            1,                          # critrate
 
-            AttackEffect[]
+            AttackEffect[]              # effect
         ))
     end
 

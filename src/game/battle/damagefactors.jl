@@ -27,11 +27,11 @@ function setDmgFactors!(state::BattleState,attacker::PkmnBattle,defender::PkmnBa
     attacker.factors.AD = abilityFactorDefender(defender)
     attacker.factors.BD = calcBaseDamage(attacker.factors)
 
-    attacker.factors.ATK = attackFactor(attacker)
-    attacker.factors.DEF = defenseFactor(attacker,defender)
+    attacker.factors.ATK = attackFactor(state,attacker)
+    attacker.factors.DEF = defenseFactor(state,attacker,defender)
     attacker.factors.CRIT = 1+0.5*attacker.crit
     attacker.factors.EFF = attacker.eff
-    attacker.factors.STAB = 1+0.5*(attack.type in attacker.pkmn.type)
+    attacker.factors.STAB = 1+0.5*hastype(attacker,attack.type)
 
     attacker.factors.RAND = 100-rand(0:15)
 
@@ -78,7 +78,7 @@ function calcBaseDamage(f::DmgFactors)
     )
 end
 
-function attackFactor(attacker::PkmnBattle)
+function attackFactor(state::BattleState,attacker::PkmnBattle)
     if attacker.attacks[attacker.attack].class == ACphys
         return attacker.pkmn.stats.rv[2]*
             max(getBuffMultiplier(attacker.buffs[1]),attacker.crit)*
@@ -102,19 +102,19 @@ function itemFactorAttack(attacker::PkmnBattle)
     return 1
 end
 
-function defenseFactor(attacker::PkmnBattle,defender::PkmnBattle)
+function defenseFactor(state::BattleState,attacker::PkmnBattle,defender::PkmnBattle)
     if attacker.attacks[attacker.attack].class == ACphys
         return defender.pkmn.stats.rv[2]*
             getBuffMultiplier(defender.buffs[1])*
             abilityFactorDefense(defender)*
             itemFactorDefense(defender)*
-            (1+0.5*(state.env.weather==Wsnow)*hastype(defender,Pice))
+            (1+0.5*(state.env.weather==Wsnow)*hastype(defender,Tice))
     elseif attacker.attacks[attacker.attack].class == ACspec
         return defender.pkmn.stats.rv[4]*
             getBuffMultiplier(defender.buffs[3])*
             abilityFactorDefense(defender)*
             itemFactorDefense(defender)*
-            (1+0.5*(state.env.weather==Wsand)*hastype(defender,Prock))
+            (1+0.5*(state.env.weather==Wsand)*hastype(defender,Trock))
     else
         return 0
     end

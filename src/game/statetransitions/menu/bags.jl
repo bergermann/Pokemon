@@ -3,8 +3,8 @@ const mbslots = Base.ImmutableDict([i => Symbol(:slot,i) for i in 1:5]...)
 
 function correctBags!(game::GameState,m::MenuBags)
     for i in 1:5
-        m.select[i] = min(game.p.inventory[-i]+1,m.select[i])
-        m.cursor[i] = min(game.p.inventory[-i]+1,m.cursor[i])
+        m.select[i] = min(length(game.p.inventory[i])+1,m.select[i])
+        m.cursor[i] = min(length(game.p.inventory[i])+1,m.cursor[i])
     end
 
     return
@@ -23,8 +23,8 @@ function drawSlots!(game::GameState,m::MenuBags)
 end
 
 function getItemsStr(game::GameState,m::MenuBags)
-    if game.p.inventory[-m.bag] > 0
-        return *(game.str[2][game.p.inventory[m.bag][1:game.p.inventory[-m.bag],1]].*"\\"...)*
+    if length(game.p.inventory[m.bag]) > 0
+        return *([game.str[1+m.bag][item.id] for item in game.p.inventory[m.bag]].*"\\"...)*
             game.str[1][6]
     else
         return game.str[1][6]
@@ -32,8 +32,8 @@ function getItemsStr(game::GameState,m::MenuBags)
 end
 
 function getAmountsStr(game::GameState,m::MenuBags)
-    if game.p.inventory[-m.bag] > 0
-        return *("×".*string.(game.p.inventory[m.bag][1:game.p.inventory[-m.bag],2]).*"\\"...)
+    if length(game.p.inventory[m.bag]) > 0
+        return *((@. "×"*string([item.amount for item in game.p.inventory[m.bag]])*"\\")...)
     else
         return ""
     end
@@ -55,6 +55,8 @@ function stateBagsOpen!(game::GameState,(m,)::Tuple{MenuBags})
     createBackground!(game,:bag2,"backgrounds/bag02.png",-16,-80,2; active=true)
     createBackground!(game,:bag3,"backgrounds/bag1.png",-120,-80,3; active=true)
 
+    s = getSelectedItem(game,m)
+
     createSprite!(game,:marker,:markers,1,1,-84+8*m.bag,-51,0,3; active=true)
     createSprite!(game,:bag,:bags,1,m.bag,-50,-14,1,5; active=true)
     createSprite!(game,:left,:arrows,1,4,-90,-64,1,4; active=true)
@@ -63,7 +65,7 @@ function stateBagsOpen!(game::GameState,(m,)::Tuple{MenuBags})
     createSprite!(game,:up,:arrows,1,1,54,-66,1,3)
     createSprite!(game,:down,:arrows,1,3,54,66,1,3)
     createSprite!(game,:cursor,:cursors,1,1,-4,-71+16*m.cursor[m.bag],0,3; active=true)
-    createSprite!(game,:item,:items,getSelectedItem(game,m),1,-100,4,1,3; active=true)
+    createSprite!(game,:item,:items,itemIdx(s),1,-100,4,1,3; active=true)
 
     if m.select[m.bag]-m.cursor[m.bag] <= 0
         deactivateSprite!(game,:up)
@@ -71,7 +73,7 @@ function stateBagsOpen!(game::GameState,(m,)::Tuple{MenuBags})
         activateSprite!(game,:up)
     end
 
-    if (game.p.inventory[-m.bag]-(m.select[m.bag]-m.cursor[m.bag])) < 8
+    if (length(game.p.inventory[m.bag])-(m.select[m.bag]-m.cursor[m.bag])) < 8
         deactivateSprite!(game,:down)
     else
         activateSprite!(game,:down)
@@ -84,7 +86,8 @@ function stateBagsOpen!(game::GameState,(m,)::Tuple{MenuBags})
     createText!(game,:amounts,2,90,-63+16*(m.cursor[m.bag]-m.select[m.bag]),2,
         getAmountsStr(game,m),[0x00,0x00,0x00,0xff],[0xd6,0xd6,0xce,0xff];
         active=true,hpad=1,maxchar=4*150)
-    createText!(game,:info,2,-117,25,4,game.str[3][getSelectedItem(game,m)],
+    createText!(game,:info,2,-117,25,4,
+        game.str[1+5+m.bag][isnothing(s) ? lastindex(game.str[1+5+m.bag]) : s],
         [0x00,0x00,0x00,0xff],[0xd6,0xd6,0xce,0xff]; active=true)
 
     createCC!(game,:bagswitch,animBagSwitch!,(m,0); n=1)

@@ -43,31 +43,49 @@ function getInvChoiceStr(game::GameState,m::MenuBags)
     return String[]
 end
 
-function getBag(id::Int)
-    if 1 <= id <= 30            # 30
-        return 2
-    elseif 31 <= id <= 200      # 170
+function getBag(item::Items)
+    if item isa ItemID
         return 1
-    elseif 201 <= id <= 320     # 120
+    elseif item isa BallID
+        return 2
+    elseif item isa MachineID
         return 3
-    elseif 321 <= id <= 400     # 80
+    elseif item isa BerryID
         return 4
-    else                        # 100
-        return 5 
+    elseif item isa KeyID
+        return 5
+    end
+
+    return -1
+end
+
+function itemIdx(x::Items)::Int
+    if x isa ItemID
+        return Integer(x)+1
+    elseif x isa BallID
+        return Integer(x)+160
+    elseif x isa MachineID
+        return Integer(x)+200
+    elseif x isa BerryID
+        return Integer(x)+320
+    elseif x isa KeyID
+        return Integer(x)+400
+    else
+        return 1
     end
 end
 
-function getItem(id::Int)
-    if 1 <= id <= 30            # 30
-        return pokeballs[id]
-    elseif 31 <= id <= 200      # 170
-        return items[id]
-    elseif 201 <= id <= 320
-        return machines[id]     # 120
-    elseif 321 <= id <= 400
-        return berries[id]      # 80
-    else
-        return keyitems[id]         # 100
+function getItem(item::Items)::ItemType
+    if item isa ItemID
+        return items[item]
+    elseif item isa BallID
+        return pokeballs[item]
+    elseif item isa MachineIDID
+        return machines[item]
+    elseif item isa BerryID
+        return berries[item]
+    elseif item isa KeyID
+        return keys[item]
     end
 end
 
@@ -75,24 +93,43 @@ function getItem(game::GameState,m::MenuBags)
     return getItem(getSelectedItem(game,m))
 end
 
-function getSelectedItem(game::GameState,m::MenuBags)
-    if m.select[m.bag] >= game.p.inventory[-m.bag]+1
-        return 500
+function getSelectedItem(game::GameState,m::MenuBags)::Items
+    if m.select[m.bag] >= length(game.p.inventory[m.bag])+1
+        return
     else
-        return Int(game.p.inventory[m.bag][m.select[m.bag],1])
+        return game.p.inventory[m.bag][m.select[m.bag]].id
     end
 end
 
-function addItem!(game::GameState,id::Int,amount::Int)
-    b = getBag(id)
-    idx = findfirst(isequal(id),game.p.inventory[b][:,1])
-    if isnothing(idx); idx = game.p.inventory[-b]+1; game.p.inventory[-b][idx,1] = id; end
-    game.p.inventory[b][idx,2] += amount
+function hasitem(game::GameState,item::Items,amount::Int=1)
+    b = getBag(item); idx = findfirst(item_->item_.id==item,game.p.inventory[b])
+
+    return !isnothing(idx) && game.p.inventory[b][idx].amount >= amount
+end
+
+function addItem!(game::GameState,item::Items,amount::Int=1)
+    b = getBag(item); idx = findfirst(item_->item_.id==item,game.p.inventory[b])
+
+    if isnothing(idx)
+        push!(game.p.inventory[b],ItemP(item,amount))
+    else
+        game.p.inventory[b][idx].amount += amount
+    end
     
     return
 end
 
-function removeItem!(game::GameState,id::Int,amount::Int)
-    
+function removeItem!(game::GameState,item::Items,amount::Int=1)
+    b = getBag(item); idx = findfirst(item_->item_.id==item,game.p.inventory[b])
+
+    @assert !isnothing(idx) "Item to be removed not found."
+    @assert game.p.inventory[b].amount >= amount  "Not enough items to remove."
+
+    if game.p.inventory[b].amount > amount
+        game.p.inventory[b][idx].amount -= amount
+    else
+        popat!(game.p.inventory[b],idx)
+    end
+
     return
 end

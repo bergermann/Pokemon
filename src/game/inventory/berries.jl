@@ -1,7 +1,7 @@
 # berries, duh
 
 
-berries = Dict{ItemID,Berry}(
-    IBoran  => BerryHealth(20,false,HSnormal),
-    IBpecha => BerryHealth( 0,false,HSpoison),
+berries = Dict{BerryID,Berry}(
+    BERRY_ORAN  => BerryHealth(20,false,HSnormal),
+    BERRY_PECHA => BerryHealth( 0,false,HSpoison),
 )

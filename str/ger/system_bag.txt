@@ -16,3 +16,5 @@ Was möchtest du tun?
 Welches Pokémon?
 Es wird keine Wirkung haben.
 Die KP von 
+
+Beutel schließen

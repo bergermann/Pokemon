@@ -41,14 +41,14 @@ function setDmgFactors!(state::BattleState,attacker::PkmnBattle,defender::PkmnBa
     attacker.factors.WEATHER = factorWeather(state,attacker)
     attacker.factors.F1 = factorF1(attacker.factors)
 
-    attacker.factors.LO = 1+0.3*(attacker.pkmn.item==IIlifeorb)
+    attacker.factors.LO = 1+0.3*(attacker.pkmn.item==B_LIFEORB)
     attacker.factors.ME = 1+0.1*min(attacker.factors.MC,10)
     attacker.factors.ET = 1
     attacker.factors.F2 = factorF2(attacker.factors)
 
     attacker.factors.FF = 1-0.5*(attacker.eff>1)*
         (defender.pkmn.ability==Asolidrock || defender.pkmn.ability==Afilter)
-    attacker.factors.EB = 1+0.2*(attacker.eff>1)*(attacker.pkmn.item==IIexbelt)
+    attacker.factors.EB = 1+0.2*(attacker.eff>1)*(attacker.pkmn.item==B_EXBELT)
     attacker.factors.UP = 1+1*(attacker.eff<1)*(attacker.pkmn.ability==Atintedlens)
     attacker.factors.BF = 1
     attacker.factors.F3 = factorF3(attacker.factors)

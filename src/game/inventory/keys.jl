@@ -1,7 +1,7 @@
 # key items
 
 
-keyitems = Dict{ItemID,KeyItem}(
-    IKbike  => Bike(),
-    IKkey   => Key()
+keyitems = Dict{KeyID,KeyItem}(
+    KEY_BIKE  => Bike(),
+    KEY_KEYS  => Key()
 )

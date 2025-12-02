@@ -22,13 +22,13 @@ function generatePkmn(game::GameState,id::UInt16,level::UInt8)
         game.p.name,                    # OTrainer
         game.p.id,                      # OTrainer id
         "",                             # location
-        Bpoke,                          # ball id
+        BALL_POKE,                      # ball id
 
         
         (PType(data[2]),PType(data[3])),# types
         Stats(data[4:9],level),         # stats
         HSnormal,                       # status
-        Inone,                          # item
+        nothing,                        # item
         attacks,                        # attacks
         Anone,                          # ability
         0x00,                           # evolve
@@ -102,15 +102,15 @@ function hasattack(pkmn::Pkmn,attack::UInt16)
 end
 
 function hasitem(pkmn::Pkmn)
-    return pkmn.item != Inone
+    return isnothing(pkmn.item)
 end
 
-function hasitem(pkmn::Pkmn,item::ItemID)
+function hasitem(pkmn::Pkmn,item::Items)
     return pkmn.item == item
 end
 
 function hasitem(game::GameState,i::Int)
-    return game.p.pokemon[i].item != Inone
+    return isnothing(game.p.pokemon[i].item)
 end
 
 

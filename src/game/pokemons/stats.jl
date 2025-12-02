@@ -12,11 +12,11 @@ function getGender(genderweight::Vector{UInt16})
     r = rand()
 
     if r < genderweight[1]/s
-        return Gnone
+        return G_NONE
     elseif r < (genderweight[1]+genderweight[2])/s
-        return Gmale
+        return G_MALE
     else
-        return Gfemale
+        return G_FEMALE
     end
 end
 

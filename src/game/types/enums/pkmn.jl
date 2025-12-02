@@ -1,17 +1,6 @@
 
-# mutable struct Pkmn
-#     ball::BallID
 
-#     stats::Stats
-#     item::ItemID
-
-#     attacks::Vector{Atk}
-#     ability::Ability
-
-#     evolve::UInt16
-# end
-
-@enum Gender::UInt8 Gnone Gmale Gfemale
+@enum Gender::UInt8 G_NONE G_MALE G_FEMALE
 
 @enum PType::UInt8 begin
     Tnone
@@ -60,21 +49,6 @@ end
     EVfriendship
     EVhasattack
     EVarea
-end
-
-@enum BallID::UInt8 begin
-    Bpoke = 0x01
-    Bgreat
-    Bultra
-    Bmaster
-    Bdive
-    Bluxury
-    Bnest
-    Bnet
-    Bpremier
-    Brepeat
-    Bsafari
-    Btimer
 end
 
 @enum AttackClass::UInt8 begin

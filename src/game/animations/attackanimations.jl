@@ -218,6 +218,10 @@ function bbreakBall!(game::GameState,args::Tuple{})
         moveSpriteL!(game,:ball,1)
     elseif game.n[:breakball].c == 20
         activateSprite!(game,:pkmn2)
+        scaleSprite!(game,:pkmn2,1/10,1/10,true)
+    elseif 20 < game.n[:breakball].c < 30
+        s = (game.n[:breakball].c-20+1)/10
+        scaleSprite!(game,:pkmn2,s,s,true)
     elseif game.n[:breakball].c == 30
         killSprite!(game,:ball)
         killCC!(game,:breakball)
@@ -231,6 +235,7 @@ function bbreakBall!(game::GameState,args::Tuple{})
 end
 
 function bcaughtBall!(game::GameState,w::Int)
+    println("settign state.caught1")
     game.battle.state.caught1 = true
 
     createCC!(game,:caughtball,bcaughtBall!,(); active=true,n=1)

@@ -352,7 +352,7 @@ end
 
 mutable struct BattleCounters
     turn::UInt8
-    flee::UInt8
+    flee::Int8
     # c3::Int
 
     function BattleCounters()

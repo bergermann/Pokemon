@@ -1,0 +1,2 @@
+Item (Tragen) füllt\KP im Kampf um\10 Punkte auf.
+Item (Tragen) be-\wirkt Selbstheilung\bei Paralyse.

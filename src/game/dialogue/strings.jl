@@ -22,8 +22,21 @@ function loadStringsInventory!(game::GameState; reset::Bool=true)
     reset && empty!(game.str)
     
     push!(game.str,readlines("str/ger/system_bag.txt"))
-    push!(game.str,readlines("str/ger/item_names.txt"))
-    push!(game.str,readlines("str/ger/item_texts.txt"))
+
+    push!(game.str,readlines("str/ger/items/items.txt"))
+    push!(game.str,readlines("str/ger/items/balls.txt"))
+    push!(game.str,readlines("str/ger/items/machines.txt"))
+    push!(game.str,readlines("str/ger/items/berries.txt"))
+    push!(game.str,readlines("str/ger/items/keys.txt"))
+    
+    push!(game.str,readlines("str/ger/items/items_text.txt"))
+    push!(game.str,readlines("str/ger/items/balls_text.txt"))
+    push!(game.str,readlines("str/ger/items/machines_text.txt"))
+    push!(game.str,readlines("str/ger/items/berries_text.txt"))
+    push!(game.str,readlines("str/ger/items/keys_text.txt"))
+
+    # push!.(game.str[(1+1):(1+5)],game.str[1][6])
+    push!.(game.str[(1+5):end],game.str[1][7])
 
     return
 end
@@ -49,7 +62,12 @@ function loadStringsBattle!(game::GameState)
 
     push!(game.str,readlines("str/ger/system_battle.txt"))
     push!(game.str,readlines("str/ger/system_types.txt"))
-    push!(game.str,readlines("str/ger/item_names.txt"))
+
+    push!(game.str,readlines("str/ger/items/items.txt"))
+    push!(game.str,readlines("str/ger/items/balls.txt"))
+    push!(game.str,readlines("str/ger/items/berries.txt"))
+    push!(game.str,readlines("str/ger/items/machines.txt"))
+    push!(game.str,readlines("str/ger/items/keys.txt"))
 
     return
 end

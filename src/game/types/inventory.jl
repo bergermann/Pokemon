@@ -1,55 +1,62 @@
 # types for item and inventory stuff
 
-mutable struct Inventory
-    nkeyitems::Int
-    nberries::Int
-    nmachines::Int
-    nballs::Int
-    nitems::Int
+mutable struct ItemP{T<:Enum{UInt8}}
+    id::T
+    amount::UInt16
 
+    function ItemP(id::T,amount::Integer) where T<:Enum{UInt8}
+        new{T}(id,amount)
+    end
+end
+
+mutable struct Inventory
     cash::UInt32
 
-    items::MMatrix{170,2,UInt16}
-    balls::MMatrix{30,2,UInt16}
-    machines::MMatrix{120,2,UInt16}
-    berries::MMatrix{80,2,UInt16}
-    keyitems::MMatrix{100,2,UInt16}
+       items::Vector{ItemP{ItemID}}
+       balls::Vector{ItemP{BallID}}
+    machines::Vector{ItemP{MachineID}}
+     berries::Vector{ItemP{BerryID}}
+    keyitems::Vector{ItemP{KeyID}}
 
     function Inventory()
-        items   = zeros(UInt16,170,2)
-        balls   = zeros(UInt16, 30,2)
-        tms     = zeros(UInt16,120,2)
-        berries = zeros(UInt16, 80,2)
-        keyitems    = zeros(UInt16,100,2)
-
-        new(0,0,0,0,0,0,items,balls,tms,berries,keyitems)
+        new(0,[],[],[],[],[])
     end
 end
 
 function Base.getindex(inv::Inventory,ind::Integer)
-    @assert -5 <= ind <= 5 "Index needs to be within -5 and 5."
+    @assert 0 <= ind <= 5 "Index needs to be within -5 and 5."
 
-    return getfield(inv::Inventory,ind+6)
+    return getfield(inv::Inventory,ind+1)
 end
 
 function setInventoryTest!(inv::Inventory)
-    inv[1][1:20,1] = 31:50; inv[1][1:20,2] .= 1:20; inv[1][2,2] = 5
-    inv.nitems = 20
+    addItem!(game,POT_POTION,5)
+    addItem!(game,POT_SUPER,5)
+    addItem!(game,POT_SUPER,5)
+    addItem!(game,POT_POTION,1) 
+    addItem!(game,POT_SUPER,1)
+    addItem!(game,POT_HYPER,1)
+    addItem!(game,POT_MAX,1)
+    addItem!(game,POT_FULL,1)
+    addItem!(game,POT_WATER,1)
+    addItem!(game,POT_SODA,1)
+    addItem!(game,POT_LIMO,1)
+    addItem!(game,POT_MOO,1)
+    addItem!(game,POT_ROOT,1)
+    addItem!(game,POT_POWDER,1)
+    
+    addItem!(game,BALL_POKE,10)
+    addItem!(game,BALL_GREAT,20)
+    addItem!(game,BALL_ULTRA,100)
 
-    inv[2][1,1] = 1; inv[2][2,1] = 2; inv[2][3,1] = 3
-    inv[2][1,2] = 20; inv[2][2,2] = 15; inv[2][3,2] = 10
-    inv.nballs = 3
+    addItem!(game,TM_001,5)
+    addItem!(game,TM_002,5)
 
-    inv[3][1,1] = 201; inv[3][2,1] = 202
-    inv[3][1,2] = 10; inv[3][2,2] = 5
-    inv.nmachines = 2
+    addItem!(game,BERRY_ORAN,1)
+    addItem!(game,BERRY_PECHA,5)
 
-    inv[4][1,1] = 321
-    inv[4][1,2] = 5
-    inv.nberries = 1
-
-    # inv[5][1,2] = 1
-    inv.nkeyitems = 0
+    addItem!(game,KEY_BIKE)
+    addItem!(game,KEY_KEYS)
 
     inv.cash = 10000
 

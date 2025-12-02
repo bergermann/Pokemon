@@ -164,54 +164,52 @@ function queueAttack!(game::GameState,state::BattleState,
     attacker.eff = getEff(attacker,defender)
 
     attacker.lastattack = attacker.attack
-    attacker.attacks[attacker.attack].atk.ap -= 1
+    attack = attacker.attacks[attacker.attack]
+    attack.atk.ap -= 1
 
-    setDmgFactors!(state,attacker,defender)
-    attacker.dmgd = calcDamage(attacker.factors)
-    defender.dmgt = min(defender.pkmn.stats.hp,attacker.dmgd)
+    if attack.class == ACstat || attack.class == ACnone
+        attacker.dmgd = 0
+        defender.dmgt = 0
+    else
+        setDmgFactors!(state,attacker,defender)
+        attacker.dmgd = calcDamage(attacker.factors)
+        defender.dmgt = min(defender.pkmn.stats.hp,attacker.dmgd)
+    end
     
     push!(state.animqueue,BattleAnimation(
         id,120,attacker.name*game.str[1][31]*
             game.data.attacknames[attacker.attacks[attacker.attack].atk.id]*game.str[1][33],
-            banimEmpty!,0
-    ))
+            banimEmpty!,0))
 
     if !attacker.hit
         push!(state.animqueue,BattleAnimation(
-            id,120,game.str[1][37],banimEmpty!,0
-        ))
+            id,120,game.str[1][37],banimEmpty!,0))
 
         return
     elseif attacker.eff == 0
         push!(state.animqueue,BattleAnimation(
-            id,120,game.str[1][36],banimEmpty!,0
-        ))
+            id,120,game.str[1][36],banimEmpty!,0))
 
         return
     end
 
     push!(state.animqueue,BattleAnimation(
-        id,60,"",bnoAnim!,target
-    ))
+        id,60,"",bnoAnim!,target))
 
     push!(state.animqueue,BattleAnimation(
-        id,48,"",bhpAnim!,target
-    ))
+        id,48,"",bhpAnim!,target))
 
     if attacker.crit
         push!(state.animqueue,BattleAnimation(
-            id,120,game.str[1][39],banimEmpty!,0
-        ))
+            id,120,game.str[1][39],banimEmpty!,0))
     end
 
     if attacker.eff < 1
         push!(state.animqueue,BattleAnimation(
-            id,120,game.str[1][34],banimEmpty!,0
-        ))
+            id,120,game.str[1][34],banimEmpty!,0))
     elseif attacker.eff > 1
         push!(state.animqueue,BattleAnimation(
-            id,120,game.str[1][35],banimEmpty!,0
-        ))
+            id,120,game.str[1][35],banimEmpty!,0))
     end
 
     return
@@ -223,8 +221,7 @@ function queueWeather!(state::BattleState)
     end
 
     push!(state.animqueue,BattleAnimation(
-        :w,120,"Wetter",banimEmpty!,0
-    ))
+        :w,120,"Wetter",banimEmpty!,0))
 
     return
 end
@@ -247,12 +244,13 @@ end
 
 function queueItem!(game::GameState,state::BattleState,
         user::Int,target::PkmnBattle,item::ItemType,id::Symbol)
+
+    m = game.ctrl.input.menu.battlebags
     
     push!(state.animqueue,BattleAnimation(
         id,30,game.p.name*game.str[1][31]*
-            game.str[3][getSelectedItem(game,game.ctrl.input.menu.battlebags)]*game.str[1][33],
-        banimEmpty!,0
-    ))
+            game.str[2+m.bag][getSelectedItem(game,m)]*game.str[1][33],
+        banimEmpty!,0))
 
     if item isa MedicineHealth
         queueMedicine!(game,state,user,target,item,id)
@@ -266,11 +264,12 @@ end
 function queueBall!(game::GameState,state::BattleState,target::PkmnBattle,
         ball::ItemType,id::Symbol)
 
+    m = game.ctrl.input.menu.battlebags
+
     push!(state.animqueue,BattleAnimation(
         id,160,game.p.name*game.str[1][31]*
-            game.str[3][getSelectedItem(game,game.ctrl.input.menu.battlebags)]*game.str[1][33],
-        bthrowBall!,2
-    ))
+            game.str[2+m.bag][getSelectedItem(game,m)]*game.str[1][33],
+        bthrowBall!,2))
 
     s = UInt8(target.pkmn.status)
 

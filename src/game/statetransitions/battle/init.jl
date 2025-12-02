@@ -223,8 +223,12 @@ end
 function stateCloseBattle!(game::GameState)
     deleteBackgrounds!(game,:battle,:text,:t1,:t2)
     deleteSpriteSheets!(game,
-        :battlermc,:battleropp,:pads,:ballsb,:ballicons,:tagown,:tagopp,:particles,
+        :battlermc,:pads,:ballsb,:ballicons,:tagown,:tagopp,:particles,
         :pkmn1,:pkmn2,:health1,:xp,)
+
+    if !game.battle.state.iswild
+        deleteSpriteSheet!(game,:battleropp)
+    end
 
     killSprites!(game,:cursors)
 

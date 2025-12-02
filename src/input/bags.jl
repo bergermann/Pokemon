@@ -20,7 +20,11 @@ end
 
 function inputBags!(game::GameState,inputs::Inputs,m::MenuBags)
     if inputs.A.press
-        if getSelectedItem(game,m) == 500
+        s = getSelectedItem(game,m)
+
+        if isnothing(s)
+            s = getSelectedItem(game,m)
+
             lockInput!(game)
             game.ctrl.input.menu.bags = false
     
@@ -29,6 +33,8 @@ function inputBags!(game::GameState,inputs::Inputs,m::MenuBags)
     
             return
         end
+
+        setSpriteFrame!(game,:cursor,3)
 
         setChoice!(game,1,F(itemAction!,(m,)); exit=-1)    
         drawChoiceMenu!(game,6,getInvChoiceStr(game,m),7,48,8)
@@ -40,13 +46,13 @@ function inputBags!(game::GameState,inputs::Inputs,m::MenuBags)
             F(stateBagsClose!),F0); active=true,n=1)
         return
     elseif inputs.down.press
-        if m.select[m.bag] == game.p.inventory[-m.bag]+1
+        if m.select[m.bag] == length(game.p.inventory[m.bag])+1
             m.select[m.bag] = 1
             m.cursor[m.bag] = 1
         else
             m.select[m.bag] += 1
 
-            if m.cursor[m.bag] < 6 || (game.p.inventory[-m.bag]-m.select[m.bag]) < 1
+            if m.cursor[m.bag] < 6 || (length(game.p.inventory[m.bag])-m.select[m.bag]) < 1
                 m.cursor[m.bag] += 1
             end
         end
@@ -56,12 +62,14 @@ function inputBags!(game::GameState,inputs::Inputs,m::MenuBags)
         moveText!(game,:items,0,-63+16*(m.cursor[m.bag]-m.select[m.bag]),true)
         moveText!(game,:amounts,90,-63+16*(m.cursor[m.bag]-m.select[m.bag]),true)
 
-        setText!(game,:info,game.str[3][getSelectedItem(game,m)])
-        setSpriteIdx!(game,:item,getSelectedItem(game,m))
+        s = getSelectedItem(game,m)
+        setText!(game,:info,
+            game.str[1+5+m.bag][isnothing(s) ? lastindex(game.str[1+5+m.bag]) : s])
+        setSpriteIdx!(game,:item,itemIdx(s))
     elseif inputs.up.press
         if m.select[m.bag] == 1
-            m.select[m.bag] = game.p.inventory[-m.bag]+1
-            m.cursor[m.bag] = min(game.p.inventory[-m.bag]+1,8)
+            m.select[m.bag] = length(game.p.inventory[m.bag])+1
+            m.cursor[m.bag] = min(length(game.p.inventory[m.bag])+1,8)
         else
             m.select[m.bag] -= 1
 
@@ -75,8 +83,10 @@ function inputBags!(game::GameState,inputs::Inputs,m::MenuBags)
         moveText!(game,:items,0,-63+16*(m.cursor[m.bag]-m.select[m.bag]),true)
         moveText!(game,:amounts,90,-63+16*(m.cursor[m.bag]-m.select[m.bag]),true)
         
-        setText!(game,:info,game.str[3][getSelectedItem(game,m)])
-        setSpriteIdx!(game,:item,getSelectedItem(game,m))
+        s = getSelectedItem(game,m)
+        setText!(game,:info,
+            game.str[1+5+m.bag][isnothing(s) ? lastindex(game.str[1+5+m.bag]) : s])
+        setSpriteIdx!(game,:item,itemIdx(s))
     elseif inputs.left.press
         if m.bag == 1
             m.bag = 5
@@ -105,7 +115,7 @@ function inputBags!(game::GameState,inputs::Inputs,m::MenuBags)
         activateSprite!(game,:up)
     end
 
-    if (game.p.inventory[-m.bag]-(m.select[m.bag]-m.cursor[m.bag])) < 8
+    if (length(game.p.inventory[m.bag])-(m.select[m.bag]-m.cursor[m.bag])) < 8
         deactivateSprite!(game,:down)
     else
         activateSprite!(game,:down)
@@ -219,7 +229,7 @@ end
 
 
 function applyItem!(game::GameState)
-    item = getItem(getSelectedItem(game,game.ctrl.input.menu.menubags))
+    item = getItem(game,game.ctrl.input.menu.menubags)
     target = game.p.pokemon[game.ctrl.input.menu.menubags.subslot]
 
     applyItem!(target,item)
@@ -228,9 +238,7 @@ function applyItem!(game::GameState)
 end
 
 function applyItem!(target::Pkmn,item::MedicineHealth)
-    if !checkItemApplicable(target,item)
-        return
-    end
+    if !checkItemApplicable(target,item); return; end
 
     if target.status == HSfainted
         target.stats.rv[1] = floor(UInt16,target.stats.hp*item.amount/100)

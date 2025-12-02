@@ -124,7 +124,7 @@ mutable struct Pkmn
     type::Tuple{PType,PType}
     stats::Stats
     status::HealthStatus
-    item::ItemID
+    item::Items
 
     attacks::Vector{Atk}
     ability::Ability

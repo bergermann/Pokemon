@@ -135,11 +135,15 @@ function animBagSwitch!(game::GameState,(m,dir,)::Tuple{MenuBags,Int,})
         moveText!(game,:items,0,-63+16*(m.cursor[m.bag]-m.select[m.bag]),true)
         moveText!(game,:amounts,90,-63+16*(m.cursor[m.bag]-m.select[m.bag]),true)
 
+        s = getSelectedItem(game,m)
+
         setSpriteFrame!(game,:bag,6)
         setText!(game,:items,getItemsStr(game,m))
         setText!(game,:amounts,getAmountsStr(game,m))
-        setText!(game,:info,game.str[3][getSelectedItem(game,m)])
-        setSpriteIdx!(game,:item,getSelectedItem(game,m))
+        setText!(game,:info,game.str[6+m.bag][isnothing(s) ? lastindex(game.str[6+m.bag]) : s])
+
+        setSpriteIdx!(game,:item,itemIdx(s))
+
 
         switchSprite!(game,:left)
         switchSprite!(game,:right)

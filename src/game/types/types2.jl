@@ -9,7 +9,7 @@ include("game.jl")
 const P0 = Pkmn(
     0x0000,
     "",
-    Gnone,
+    G_NONE,
     false,
     0x00,
     0x00,
@@ -17,12 +17,12 @@ const P0 = Pkmn(
     "",
     0x0000,
     "",
-    Bpoke,
+    BALL_POKE,
 
     (Tnone,Tnone),
     Stats(zeros(0),zeros(6),0,0,0),
     HSnormal,
-    Inone,
+    nothing,
 
     Atk[],
     Anone,

@@ -14,10 +14,10 @@ out VS_OUT {
 
 void main() {
     uint anim = uint(texelFetch(animdata,int(tile))[0]);
-    uint ntiles =  anim & uint(0x000000ff);
-    uint nframes = anim & uint(0x0000ff00) >> 8;
-    uint xoffset = anim & uint(0x00ff0000) >> 16;
-    uint yoffset = anim & uint(0xff000000) >> 24;
+    uint ntiles  =  anim & uint(0x000000ff);
+    uint nframes = (anim & uint(0x0000ff00)) >> 8;
+    uint xoffset = (anim & uint(0x00ff0000)) >> 16;
+    uint yoffset = (anim & uint(0xff000000)) >> 24;
 
     uint tileoffset = (frame/nframes)%ntiles;
 

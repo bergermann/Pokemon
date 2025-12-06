@@ -24,6 +24,15 @@
     Tfairy
 end
 
+@enum XPtype::UInt8 begin
+    XP_ERRATIC = 0x01
+    XP_FAST
+    XP_SEMIFAST
+    XP_SEMISLOW
+    XP_SLOW
+    XP_FLUCTUATE
+end
+
 @enum HealthStatus::UInt8 begin
     HSnormal = 0x00
     HSpoison

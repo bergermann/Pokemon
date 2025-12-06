@@ -123,9 +123,9 @@ function removeItem!(game::GameState,item::Items,amount::Int=1)
     b = getBag(item); idx = findfirst(item_->item_.id==item,game.p.inventory[b])
 
     @assert !isnothing(idx) "Item to be removed not found."
-    @assert game.p.inventory[b].amount >= amount  "Not enough items to remove."
+    @assert game.p.inventory[b][idx].amount >= amount  "Not enough items to remove."
 
-    if game.p.inventory[b].amount > amount
+    if game.p.inventory[b][idx].amount > amount
         game.p.inventory[b][idx].amount -= amount
     else
         popat!(game.p.inventory[b],idx)

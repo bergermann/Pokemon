@@ -36,7 +36,7 @@ function initBattleWild!(game::GameState)
     data = findArea(game); idx = sample(fweights(data[:,4]))
     lvl = UInt8(clamp(randN(data[idx,2],data[idx,3])+5,2,100))
     
-    setBattleState!(game,0x00,generatePkmn(game,data[idx,1],lvl))
+    setBattleState!(game,0x00,Pkmn(game,data[idx,1],lvl))
     
     stateInitBattle!(game)
 

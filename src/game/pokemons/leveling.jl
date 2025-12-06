@@ -1,10 +1,10 @@
 
-function xpFormulas(level::UInt8,xptype::UInt8)
+function xpFormulas(xptype::XPtype,level::UInt8)
     n = UInt(level)
 
     if n == 1
-        return 0
-    elseif xptype == 1
+        return zero(UInt32)
+    elseif xptype == XP_ERRATIC
         if n <= 50
             return floor(UInt32,n^3*(100-n)/50)
         elseif n <= 68
@@ -14,15 +14,15 @@ function xpFormulas(level::UInt8,xptype::UInt8)
         else
             return floor(UInt32,n^3*(160-n)/100)
         end
-    elseif xptype == 0x02
+    elseif xptype == XP_FAST
         return floor(UInt32,4n^3/5)
-    elseif xptype == 0x03
+    elseif xptype == XP_SEMIFAST
         return UInt32(n^3)
-    elseif xptype == 0x04
+    elseif xptype == XP_SEMISLOW
         return floor(UInt32,6n^3/5-15n^2+100n-140)
-    elseif xptype == 0x05
+    elseif xptype == XP_SLOW
         return floor(UInt32,5n^3/4)
-    else
+    elseif xptype == XP_FLUCTUATE
         if n <= 15
             return floor(UInt32,n^3*(24+floor(UInt32,(n+1/3)))/50)
         elseif n <= 36
@@ -33,15 +33,12 @@ function xpFormulas(level::UInt8,xptype::UInt8)
     end
 end
 
-function xpFormulas(level,xptype)
-    return Int(xpFormulas(UInt8(level),UInt8(xptype)))
-end
+
 
 function getXPBar(pkmn::Pkmn,xpgain::Int)
-    x0 = xpFormulas(pkmn.stats.level,pkmn.xptype)
+    xp = pkmn.stats.xp
 
-    return floor(Int,min(64,64*(pkmn.stats.xp+xpgain-x0)/
-        (xpFormulas(pkmn.stats.level+1,pkmn.xptype)-x0)))
+    return floor(Int,clamp(64*(xp.current+xpgain-xp.last)/(xp.next-xp.last),0,64))
 end
 
 function setXPBar!(game::GameState,spriteid::Symbol,value::Int,w0::Int)
@@ -116,7 +113,7 @@ function checkEvolveLevelUp(pkmn::Pkmn)
             if pkmn.item == data[i,3]; return data[i,1]; end
         elseif data[i,2] == EVfriendship
             if pkmn.stats.affection >= data[i,3]; return data[i,1]; end
-        elseif data[i,2] == hasattack
+        elseif data[i,2] == EVhasattack
             if occursin(data[i,3],pkmn.attacks); return data[i,1]; end
         end
     end

@@ -45,6 +45,19 @@ const TypeNames = Base.ImmutableDict(
     Tfairy    => "Fee",
 )
 
+mutable struct XP
+    type::XPtype
+    current::UInt32
+    last::UInt32
+    next::UInt32
+
+    function XP(type,level)
+        last = xpFormulas(type,level); next = xpFormulas(type,level+0x01)
+
+        new(type,last,last,next)
+    end
+end
+
 mutable struct Stats
     bv::Vector{UInt8}
     dv::Vector{UInt8}   #HP, At, Def, SpAt, SpDef, Init
@@ -54,21 +67,24 @@ mutable struct Stats
     hp::Int
 
     level::UInt8
-    xp::Int
+    xp::XP
 
     nature::UInt8
     affection::UInt8
 
-    function Stats(bv,level)
-        new(bv,rand(0:31,6),zeros(UInt8,6),zeros(UInt16,6),0,level,0,rand(1:25),0)
+    function Stats(bv,level,xptype)
+        new(bv,rand(0:31,6),zeros(UInt8,6),zeros(UInt16,6),
+            0,level,XP(xptype,level),rand(1:25),0)
     end
 
-    function Stats(bv,dv,level)
-        new(bv,dv,          zeros(UInt8,6),zeros(UInt16,6),0,level,0,rand(1:25),0)
+    function Stats(bv,dv,level,xptype)
+        new(bv,dv,          zeros(UInt8,6),zeros(UInt16,6),
+            0,level,XP(xptype,level),rand(1:25),0)
     end
 
-    function Stats(bv,dv,level,nature,affection)
-        new(bv,dv,          zeros(UInt8,6),zeros(UInt16,6),0,level,0,nature,affection)
+    function Stats(bv,dv,level,xptype,nature,affection)
+        new(bv,dv,          zeros(UInt8,6),zeros(UInt16,6),
+            0,level,XP(xptype,level),nature,affection)
     end
 end
     
@@ -114,7 +130,6 @@ mutable struct Pkmn
     gender::Gender
     shiny::Bool
     form::UInt8
-    xptype::UInt8
 
     otrainer::String
     otrainerid::UInt16
@@ -130,4 +145,59 @@ mutable struct Pkmn
     ability::Ability
 
     evolve::UInt16
+
+    function Pkmn(id,name,gender,shiny,form,
+            otrainer,otrainerid,location,ball,
+            type,stats,status,item,
+            attacks,ability,
+            evolve)
+        
+        new(id,name,gender,shiny,form,
+            otrainer,otrainerid,location,ball,
+            type,stats,status,item,
+            attacks,ability,
+            evolve)
+    end
+    
+    function Pkmn(game,id::UInt16,level::UInt8)
+        data = game.data.base[id,:]
+        ad = deserialize("data/pkmn/$id/attacks.data")
+        idx0 = findfirst(!isequal(0),ad[:,1]); idx1 = findlast(<=(level),ad[:,1])
+        ab = ad[idx0:idx1,2]; shuffleAttacks!(ab)
+
+        attacks = Vector{Atk}(undef,length(ab))
+        for i in eachindex(ab)
+            apmax = game.data.attacks[ab[i],5]
+            attacks[i] = Atk(ab[i],apmax,apmax)
+        end
+        
+        p =  Pkmn(
+            id,                             # id
+            "",                             # name
+            getGender(data[14:end]),        # gender from weight
+            rand(UInt16) < 0x0010,          # shiny
+            0x00,                           # form
+
+            game.p.name,                    # OTrainer
+            game.p.id,                      # OTrainer id
+            "",                             # location
+            BALL_POKE,                      # ball id
+
+            
+            (PType(data[2]),PType(data[3])),# types
+            Stats(data[4:9],level,XPtype(data[13])),# stats
+            HSnormal,                       # status
+            nothing,                        # item
+            attacks,                        # attacks
+            Anone,                          # ability
+            0x00,                           # evolve
+        )
+
+        updateStats!(p)
+
+        p.stats.hp = p.stats.rv[1]
+
+        return p
+    end
+
 end

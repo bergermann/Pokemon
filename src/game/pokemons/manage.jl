@@ -1,47 +1,4 @@
 
-function generatePkmn(game::GameState,id::UInt16,level::UInt8)
-    data = game.data.base[id,:]
-    ad = deserialize("data/pkmn/$id/attacks.data")
-    idx0 = findfirst(!isequal(0),ad[:,1]); idx1 = findlast(<=(level),ad[:,1])
-    ab = ad[idx0:idx1,2]; shuffleAttacks!(ab)
-
-    attacks = Vector{Atk}(undef,length(ab))
-    for i in eachindex(ab)
-        apmax = game.data.attacks[ab[i],5]
-        attacks[i] = Atk(ab[i],apmax,apmax)
-    end
-    
-    p =  Pkmn(
-        id,                             # id
-        "",                             # name
-        getGender(data[14:end]),        # gender from weight
-        rand(UInt16) < 0x0010,          # shiny
-        0x00,                           # form
-        data[13],                       # xptype
-
-        game.p.name,                    # OTrainer
-        game.p.id,                      # OTrainer id
-        "",                             # location
-        BALL_POKE,                      # ball id
-
-        
-        (PType(data[2]),PType(data[3])),# types
-        Stats(data[4:9],level),         # stats
-        HSnormal,                       # status
-        nothing,                        # item
-        attacks,                        # attacks
-        Anone,                          # ability
-        0x00,                           # evolve
-    )
-
-    updateStats!(p)
-
-    p.stats.hp = p.stats.rv[1]
-    p.stats.xp = xpFormulas(level,p.xptype)
-
-    return p
-end
-
 function shuffleAttacks!(attacks::Vector{UInt16})
     for i in 5:length(attacks)
         if rand(Bool)

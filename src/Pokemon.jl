@@ -87,11 +87,11 @@ function main()
     
     setInventoryTest!(game.p.inventory)
     
-    addPokemon!(game,generatePkmn(game,0x0001,0x0f))
-    addPokemon!(game,generatePkmn(game,0x0002,0x02))
-    addPokemon!(game,generatePkmn(game,0x0003,0x60))
-    addPokemon!(game,generatePkmn(game,0x0004,0x08))
-    addPokemon!(game,generatePkmn(game,0x0005,0x13))
+    addPokemon!(game,Pkmn(game,0x0001,0x0f))
+    addPokemon!(game,Pkmn(game,0x0002,0x02))
+    addPokemon!(game,Pkmn(game,0x0003,0x60))
+    addPokemon!(game,Pkmn(game,0x0004,0x08))
+    addPokemon!(game,Pkmn(game,0x0005,0x13))
 
     sort!(game.p.pokemon[1].attacks; by=a->a.id)
 

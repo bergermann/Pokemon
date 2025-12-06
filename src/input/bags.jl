@@ -178,7 +178,10 @@ function itemActionBalls!(game::GameState)
         lockInput!(game)
 
         if game.ctrl.input.choice.sel == 1
-            stateBattleItemSelected!(game,UInt(2),getItem(game,game.ctrl.input.menu.battlebags))
+            item = getSelectedItem(game,game.ctrl.input.menu.battlebags)
+            removeItem!(game,item)
+
+            stateBattleItemSelected!(game,UInt(2),getItem(item))
 
             createCC!(game,:scenet,sceneTransition!,
                 (16,8,F(stateBagsClose!),F(stateStartBattleAnim!)); active=true,n=1)

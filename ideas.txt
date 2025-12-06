@@ -6,8 +6,6 @@ lapras counter
 
 
 to do:
-fix animated tiles
-
 trainer pass
 map/pokenav
 options

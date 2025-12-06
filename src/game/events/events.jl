@@ -321,8 +321,7 @@ function playEvent!(game::GameState)
     elseif c == 38  # removeitem
         removeItem!(game,e[3],e[4])
     elseif c == 39  # addpokemon
-        pkmn = generatePkmn(game,UInt16(e[3]),UInt8(e[4]))
-        addPokemon!(game,pkmn)
+        addPokemon!(game,Pkmn(game,UInt16(e[3]),UInt8(e[4])))
     elseif c == 40  # removepkmn
         removePokemon!(game,)
     elseif c == 50  # startbattle

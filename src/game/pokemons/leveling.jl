@@ -1,5 +1,5 @@
 
-function xpFormulas(xptype::XPtype,level::UInt8)
+function xpFormulas(xptype::XPtype,level::UInt8)::UInt32
     n = UInt(level)
 
     if n == 1
@@ -50,13 +50,13 @@ end
 
 
 
-function calcXpDrop1(state::BattleState,attacker::PkmnBattle,defender::PkmnBattle)
+function calcXpGain(game::GameState,attacker::PkmnBattle,defender::PkmnBattle)::UInt32
     return floor(UInt32,
         *(
-            1+0.5*!(state.iswild),
-            defender.xpdrop, #game.data.base[defender.pkmn.id], #xp base value
-            1.5,    #trainer != otrainer
-            1+0.5*(attacker.pkmn.item==0x00),   #glücksei
+            1+0.5*!(game.battle.state.iswild),
+            defender.xpdrop,                                #xp base value
+            1+0.5*(attacker.pkmn.otrainerid!=game.p.id),    #trainer != otrainer
+            1+0.5*(attacker.pkmn.item==B_LUCKYEGG),         #glücksei
             defender.pkmn.stats.level,
             10  # remove this
         )/7
@@ -70,9 +70,7 @@ function addEV!(pkmn::Pkmn,from::UInt16)
 
     data = deserialize("data/pkmn/$(from)/ev.data")
 
-    for i in eachindex(data)
-        ev[i] += UInt8(min(0xfc-ev[i],510-S,data[i]))
-    end
+    for i in eachindex(data); ev[i] += UInt8(min(0xfc-ev[i],510-S,data[i])); end
 
     return
 end

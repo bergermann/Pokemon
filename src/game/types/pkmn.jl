@@ -50,11 +50,13 @@ mutable struct XP
     current::UInt32
     last::UInt32
     next::UInt32
+    gain::UInt32
+    levelups::UInt8
 
     function XP(type,level)
         last = xpFormulas(type,level); next = xpFormulas(type,level+0x01)
 
-        new(type,last,last,next)
+        new(type,last,last,next,0,0)
     end
 end
 

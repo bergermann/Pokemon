@@ -400,39 +400,33 @@ function checkFlee(state::BattleState)::Bool
 end
 
 function queueCheckXp!(game::GameState,state::BattleState)
-    levelups = 0
+    xp.levelups = 0
 
-    xpdrop = Int(calcXpDrop1(state,state[1],state[2]))
+    xp = state[1].pkmn.stats.xp; level = state[1].pkmn.stats.level
+    xp.gain = calcXpGain(game,state[1],state[2])
 
-    while state[1].pkmn.stats.xp+xpdrop > 
-            xpFormulas(state[1].pkmn.stats.level+levelups+1,state[1].pkmn.xptype)
-        levelups += 1
+    while xp.current+xp.gain > xpFormulas(xp.type,level+xp.levelups+1)
+        xp.levelups += 1
     end
 
-    state[1].pkmn.stats.xp += xpdrop
+    xp.current += xpgain
     addEV!(state[1].pkmn,state[2].pkmn.id)
     
-    if levelups == 0
+    if xp.levelups == 0
         push!(state.animqueue,BattleAnimation(
-            :p1,60,"",bxpAnim!,Int(xpdrop)
+            :p1,60,"",bxpAnim!,1
         ))
     else
         push!(state.animqueue,BattleAnimation(
-            :p1,60,"",bxpAnimLvUp!,levelups
+            :p1,60,"",bxpAnimLvUp!,1
         ))
         
         push!(state.animqueue,BattleAnimation(
-            :p1,120,
-            state[1].name*game.str[1][26]*string(state[1].pkmn.stats.level+levelups)*"!",
-            banimEmpty!,1
+            :p1,120,state[1].name*game.str[1][26]*string(level+xp.levelups)*"!",banimEmpty!,1
         ))
 
         push!(state.animqueue,BattleAnimation(
-            :p1,60,"",
-            bxpAnim!,
-            state[1].pkmn.stats.xp-
-                Int(xpFormulas(state[1].pkmn.stats.level+levelups,state[1].pkmn.xptype))
-                
+            :p1,60,"",bxpAnim!,1,
         ))
     end
 

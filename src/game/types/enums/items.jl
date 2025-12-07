@@ -31,6 +31,7 @@
 
     B_LIFEORB
     B_EXBELT
+    B_LUCKYEGG
 end
 
 @enum BallID::UInt8 begin

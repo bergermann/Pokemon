@@ -64,13 +64,11 @@ function calcHP(pkmn::Pkmn,levelups::UInt8,evups::UInt8)
     )
 end
 
-function getHPBar(pkmn::Pkmn)
-    return clamp(ceil(Int,48*pkmn.stats.hp/pkmn.stats.rv[1]),0,48)
+function getHPBar(pkmn::Pkmn,hp::Int)
+    return clamp(hp/pkmn.stats.rv[1],0.,1.)
 end
 
-function getHPBar(pkmn::Pkmn,hp::Int)
-    return clamp(ceil(Int,48*hp/pkmn.stats.rv[1]),0,48)
-end
+getHPBar(pkmn::Pkmn) = getHPBar(pkmn,pkmn.stats.hp)
 
 function setHPBar!(game::GameState,spriteid::Symbol,value::Int,w0::Int)
     moveSpriteW!(game,spriteid,w0+div(value,2)+isodd(value),true)

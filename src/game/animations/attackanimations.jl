@@ -31,22 +31,28 @@ function btakeDamage!(game::GameState,(target,)::Tuple{Int})    #length: 30
     return
 end
 
-function bhpAnim!(game::GameState,target::Int)
-    p = game.battle.state[target]
+function bHP!(game::GameState,target::Int)
+    if game.battle.state.isdouble
+        bar = Symbol(:hp,target)
+        w = 56-125*(target==2)
+    else
+        bar = :hp
+        w = 56
+    end
 
-    b1 = getHPBar(p.pkmn,p.pkmn.stats.hp)
-    b2 = getHPBar(p.pkmn,p.pkmn.stats.hp-p.dmgt)
+    p = game.battle.state[target]; p_ = p.pkmn
 
-    p.pkmn.stats.hp -= p.dmgt; @assert p.pkmn.stats.hp >= 0 "HP got below 0? it fucked up."
+    v1 = getHPBar(p_,p_.stats.hp)
+    v2 = getHPBar(p_,p_.stats.hp-p.dmgt)
 
-    createCC!(game,:hp,bhpAnim!,(target,b1,b2); active=true,n=1)
+    createCC!(game,:hp,bHP!,(bar,w,v1,v2); active=true,n=1)
 
     return
 end
 
-function bhpAnim!(game::GameState,(target,b1,b2)::Tuple{Int,Int,Int})
-    setHPBar!(game,mplabels[target].h,round(Int,b1+(b2-b1)*game.n[:hp].c/48),
-        69*(1-target)+56*(2-target))
+function bHP!(game::GameState,(bar,w,v1,v2)::Tuple{Symbol,Int,Float64,Float64})
+    val = ceil(Int,48*(v1+(v2-v1)*game.n[:hp].c/48))
+    setHPBar!(game,bar,val,w)
 
     # if target == 1
     #     setText!(game,:health1,
@@ -61,66 +67,69 @@ function bhpAnim!(game::GameState,(target,b1,b2)::Tuple{Int,Int,Int})
     return
 end
 
-function bxpAnim!(game::GameState,dx::Int)
-    p = game.battle.state.pkmn1.pkmn
-    xl = xpFormulas(p.stats.level,p.xptype)
 
-    createCC!(game,:xp,bxpAnimXp!,(
-            dx,
-            p.stats.xp,
-            Int(xl),
-            xpFormulas(p.stats.level+1,p.xptype)-xl
-        ); active=true,n=1)
+
+function bXP!(game::GameState,target::Int)
+    if game.battle.state.isdouble
+        bar = Symbol(:xp,target)
+        w = 40+(16*target==2)
+    else
+        bar = :xp
+        w = 40
+    end
+
+    xp = game.battle.state[target].pkmn.stats.xp
+
+    v1 = clamp((xp.current-xp.gain)/(xp.next_-xp.last_),0.0,1.0)
+    v2 = clamp( xp.current         /(xp.next_-xp.last_),0.0,1.0)
+
+    createCC!(game,:xp,bxpAnimXp!,(bar,w,v1,v2); active=true,n=1)
 
     return
 end
 
-function bxpAnimXp!(game::GameState,(dx,x1,xl,xn)::Tuple{Int,Int,Int,Int})
-    val = floor(Int,64*(x1-xl-dx*(1-game.n[:xp].c/30))/xn)
-    setXPBar!(game,:xp,val,40)
+function bXP!(game::GameState,(bar,w,v1,v2)::Tuple{:Symbol,Int,Float64,Float64})
+    val = floor(Int,64*(v1+(v2-v1)*game.n[:xp].c/30))
+    setXPBar!(game,bar,val,w)
 
-    if game.n[:xp].c == 30
-        killCC!(game,:xp)
-
-        return
-    end
+    if game.n[:xp].c == 30; killCC!(game,:xp); return; end
 
     game.n[:xp].c += 1
 
     return
 end
 
-function bxpAnimLvUp!(game::GameState,levelups::Int)
-    p = game.battle.state.pkmn1.pkmn
+function bLvlUp!(game::GameState,target::Int)
+    if game.battle.state.isdouble
+        bar = Symbol(:xp,target)
+        lvl = Symbol(:lvl,target)
+        w = 40+(16*target==2)
+    else
+        bar = :xp
+        lvl = :lvl1
+        w = 40
+    end
 
-    createCC!(game,:xp,bxpAnimLevelUp!,(
-            levelups,
-            xpFormulas(p.stats.level+1,p.xptype)-
-            (p.stats.xp-
-                calcXpDrop1(game.battle.state,game.battle.state.pkmn1,
-                    game.battle.state.pkmn2)),
-            xpFormulas(p.stats.level+1,p.xptype)-
-            xpFormulas(p.stats.level,p.xptype)
-        ); active=true,n=1)
+    p = game.battle.state[target].pkmn; xp = p.stats.xp
+    l = p.stats.level
+
+    xp.last_ = xp.last; xp.next_ = xp.next
+
+    createCC!(game,:xp,bxpAnimLevelUp!,(bar,w,lvl,l); active=true,n=1)
 
     return
 end
 
-function bxpAnimLevelUp!(game::GameState,(levelups,xpnext,xplevel)::Tuple{Int,Int,Int})
-    if game.n[:xp].c <= 30
-        val = trunc(Int,64-64*xpnext/xplevel*(1-game.n[:xp].c/30))
-        setXPBar!(game,:xp,val,40)
-    elseif game.n[:xp].c <= 46
-        setSpriteFrame!(game,:xp,game.n[:xp].c-30)
+function bLvlUp!(game::GameState,(bar,w,level,l)::Tuple{Symbol,Int})
+    if game.n[:xp].c <= 16
+        setSpriteFrame!(game,bar,game.n[:xp].c)
     end
     
-    if game.n[:xp].c == 46
-        levelup!(game.battle.state.pkmn1.pkmn,levelups,game)
+    if game.n[:xp].c == 20
+        setXPBar!(game,bar,0,w)
+        setSpriteFrame!(game,bar,1)
 
-        setXPBar!(game,:xp,0,40)
-        setSpriteFrame!(game,:xp,1)
-
-        setText!(game,:lvl1,string(game.battle.state.pkmn1.pkmn.stats.level))
+        setText!(game,lvl,string(l))
 
         killCC!(game,:xp)
 

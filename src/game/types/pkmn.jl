@@ -48,15 +48,15 @@ const TypeNames = Base.ImmutableDict(
 mutable struct XP
     type::XPtype
     current::UInt32
-    last::UInt32
-    next::UInt32
+    last::UInt32; last_::UInt32
+    next::UInt32; next_::UInt32
     gain::UInt32
     levelups::UInt8
 
     function XP(type,level)
         last = xpFormulas(type,level); next = xpFormulas(type,level+0x01)
 
-        new(type,last,last,next,0,0)
+        new(type,last,last,last,next,next,0,0)
     end
 end
 

@@ -166,15 +166,6 @@ function queueAttack!(game::GameState,state::BattleState,
     attacker.lastattack = attacker.attack
     attack = attacker.attacks[attacker.attack]
     attack.atk.ap -= 1
-
-    if attack.class == ACstat || attack.class == ACnone
-        attacker.dmgd = 0
-        defender.dmgt = 0
-    else
-        setDmgFactors!(state,attacker,defender)
-        attacker.dmgd = calcDamage(attacker.factors)
-        defender.dmgt = min(defender.pkmn.stats.hp,attacker.dmgd)
-    end
     
     push!(state.animqueue,BattleAnimation(
         id,120,attacker.name*game.str[1][31]*
@@ -193,11 +184,23 @@ function queueAttack!(game::GameState,state::BattleState,
         return
     end
 
+    if attack.class == ACstat || attack.class == ACnone
+        attacker.dmgd = 0
+        defender.dmgt = 0
+    else
+        setDmgFactors!(state,attacker,defender)
+        attacker.dmgd = calcDamage(attacker.factors)
+        defender.dmgt = clamp(attacker.dmgd,0,defender.pkmn.stats.hp)
+    end
+
+    defender.pkmn.stats.hp -= defender.dmgt
+    @assert defender.pkmn.stats.hp >= 0 "HP got below 0? it fucked up."
+
     push!(state.animqueue,BattleAnimation(
         id,60,"",bnoAnim!,target))
 
     push!(state.animqueue,BattleAnimation(
-        id,48,"",bhpAnim!,target))
+        id,48,"",bHP!,target))
 
     if attacker.crit
         push!(state.animqueue,BattleAnimation(
@@ -400,34 +403,32 @@ function checkFlee(state::BattleState)::Bool
 end
 
 function queueCheckXp!(game::GameState,state::BattleState)
-    xp.levelups = 0
-
     xp = state[1].pkmn.stats.xp; level = state[1].pkmn.stats.level
     xp.gain = calcXpGain(game,state[1],state[2])
+    xp.current += xp.gain
+    
+    xp.levelups = 0; xp.last_ = xp.last; xp.next_ = xp.next
 
-    while xp.current+xp.gain > xpFormulas(xp.type,level+xp.levelups+1)
+    while xp.current >= xp.next 
         xp.levelups += 1
+        xp.last = xp.next; xp.next = xpFormulas(xp.type,level+xp.levelups+1)
     end
 
-    xp.current += xpgain
     addEV!(state[1].pkmn,state[2].pkmn.id)
+    if xp.levelups > 0; levelup!(state[1].pkmn,xp.levelups,game); end
+
+    xp.current += xpgain
     
-    if xp.levelups == 0
-        push!(state.animqueue,BattleAnimation(
-            :p1,60,"",bxpAnim!,1
-        ))
-    else
-        push!(state.animqueue,BattleAnimation(
-            :p1,60,"",bxpAnimLvUp!,1
-        ))
+    push!(state.animqueue,BattleAnimation(:p1,60,"",bXP!,1))
+
+    if xp.levelups > 0
+        push!(state.animqueue,BattleAnimation(:p1,30,"",bLvlUp!,1))
         
         push!(state.animqueue,BattleAnimation(
             :p1,120,state[1].name*game.str[1][26]*string(level+xp.levelups)*"!",banimEmpty!,1
         ))
 
-        push!(state.animqueue,BattleAnimation(
-            :p1,60,"",bxpAnim!,1,
-        ))
+        push!(state.animqueue,BattleAnimation(:p1,60,"",bXP!,1,))
     end
 
     return

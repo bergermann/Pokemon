@@ -2,15 +2,9 @@
 
 
 function stateEndBattlePhase!(game::GameState,state::BattleState)
-    println("got here 1")
-    println("state.caught1: ",state.caught1)
-    println("state.caught2: ",state.caught2)
-
     if state.counters.flee == -1
             game.n[:animbattle].c = -3
     elseif fs(state,1)
-        println("got here 2")
-
         if checkContinueFight(game)
             deactivateCallback!(game,:animbattle)
 
@@ -22,8 +16,6 @@ function stateEndBattlePhase!(game::GameState,state::BattleState)
             game.n[:animbattle].c = -3
         end
     elseif state[2].pkmn.stats.hp < 0 || state.caught2
-        println("got here 3")
-
         if state.iswild
             game.n[:animbattle].c = -3
         else

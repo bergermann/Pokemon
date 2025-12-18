@@ -28,12 +28,6 @@ function queueCheckStatus!(game::GameState,state::BattleState)::Bool
             :p2,120,state[2].name*game.str[1][16],bfaint!,2
         ))
 
-        push!(state.animqueue,BattleAnimation(
-            :p1,60,state[1].name*game.str[1][17]*
-            string(calcXpDrop1(state,state[1],state[2]))*game.str[1][18],
-            banimEmpty!,1
-        ))
-
         state[2].pkmn.stats.hp = -1
         state[2].pkmn.status = HSfainted
 
@@ -46,12 +40,6 @@ function queueCheckStatus!(game::GameState,state::BattleState)::Bool
 
     if state.caught1
         empty!(state.actionqueue)
-
-        push!(state.animqueue,BattleAnimation(
-            :p1,60,state[1].name*game.str[1][17]*
-                string(calcXpDrop1(state,state[1],state[2]))*game.str[1][18],
-            banimEmpty!,1
-        ))
 
         if state[1].pkmn.stats.level < 0x64
             queueCheckXp!(game,state)
@@ -410,15 +398,18 @@ function queueCheckXp!(game::GameState,state::BattleState)
     xp.levelups = 0; xp.last_ = xp.last; xp.next_ = xp.next
 
     while xp.current >= xp.next 
-        xp.levelups += 1
-        xp.last = xp.next; xp.next = xpFormulas(xp.type,level+xp.levelups+1)
+        xp.levelups += 0x01
+        xp.last = xp.next; xp.next = xpFormulas(xp.type,level+xp.levelups+0x01)
     end
 
     addEV!(state[1].pkmn,state[2].pkmn.id)
     if xp.levelups > 0; levelup!(state[1].pkmn,xp.levelups,game); end
-
-    xp.current += xpgain
     
+    push!(state.animqueue,BattleAnimation(
+        :p1,60,state[1].name*game.str[1][17]*string(xp.gain)*game.str[1][18],
+        banimEmpty!,1
+    ))
+
     push!(state.animqueue,BattleAnimation(:p1,60,"",bXP!,1))
 
     if xp.levelups > 0

@@ -33,17 +33,17 @@ end
 
 function bHP!(game::GameState,target::Int)
     if game.battle.state.isdouble
+        # bar = Symbol(:hp,target)
+        # w = 56-125*(target==2)
+    else
         bar = Symbol(:hp,target)
         w = 56-125*(target==2)
-    else
-        bar = :hp
-        w = 56
     end
 
     p = game.battle.state[target]; p_ = p.pkmn
 
-    v1 = getHPBar(p_,p_.stats.hp)
-    v2 = getHPBar(p_,p_.stats.hp-p.dmgt)
+    v1 = getHPBar(p_,p_.stats.hp+p.dmgt)
+    v2 = getHPBar(p_,p_.stats.hp)
 
     createCC!(game,:hp,bHP!,(bar,w,v1,v2); active=true,n=1)
 
@@ -80,15 +80,18 @@ function bXP!(game::GameState,target::Int)
 
     xp = game.battle.state[target].pkmn.stats.xp
 
-    v1 = clamp((xp.current-xp.gain)/(xp.next_-xp.last_),0.0,1.0)
-    v2 = clamp( xp.current         /(xp.next_-xp.last_),0.0,1.0)
+    v1 = clamp((xp.current-xp.gain-xp.last_)/(xp.next_-xp.last_),0.0,1.0)
+    v2 = clamp((xp.current        -xp.last_)/(xp.next_-xp.last_),0.0,1.0)
 
-    createCC!(game,:xp,bxpAnimXp!,(bar,w,v1,v2); active=true,n=1)
+    println(v1)
+    println(v2)
+
+    createCC!(game,:xp,bXP!,(bar,w,v1,v2); active=true,n=1)
 
     return
 end
 
-function bXP!(game::GameState,(bar,w,v1,v2)::Tuple{:Symbol,Int,Float64,Float64})
+function bXP!(game::GameState,(bar,w,v1,v2)::Tuple{Symbol,Int,Float64,Float64})
     val = floor(Int,64*(v1+(v2-v1)*game.n[:xp].c/30))
     setXPBar!(game,bar,val,w)
 
@@ -115,12 +118,12 @@ function bLvlUp!(game::GameState,target::Int)
 
     xp.last_ = xp.last; xp.next_ = xp.next
 
-    createCC!(game,:xp,bxpAnimLevelUp!,(bar,w,lvl,l); active=true,n=1)
+    createCC!(game,:xp,bLvlUp!,(bar,w,lvl,l); active=true,n=1)
 
     return
 end
 
-function bLvlUp!(game::GameState,(bar,w,level,l)::Tuple{Symbol,Int})
+function bLvlUp!(game::GameState,(bar,w,level,l)::Tuple{Symbol,Int,Symbol,UInt8})
     if game.n[:xp].c <= 16
         setSpriteFrame!(game,bar,game.n[:xp].c)
     end

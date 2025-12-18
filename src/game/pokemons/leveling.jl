@@ -1,38 +1,4 @@
 
-function xpFormulas(xptype::XPtype,level::UInt8)::UInt32
-    n = UInt(level)
-
-    if n == 1
-        return zero(UInt32)
-    elseif xptype == XP_ERRATIC
-        if n <= 50
-            return floor(UInt32,n^3*(100-n)/50)
-        elseif n <= 68
-            return floor(UInt32,n^3*(150-n)/100)
-        elseif n <= 98
-            return floor(UInt32,n^3*floor(UInt,(1911-10*n)/3)/500)
-        else
-            return floor(UInt32,n^3*(160-n)/100)
-        end
-    elseif xptype == XP_FAST
-        return floor(UInt32,4n^3/5)
-    elseif xptype == XP_SEMIFAST
-        return UInt32(n^3)
-    elseif xptype == XP_SEMISLOW
-        return floor(UInt32,6n^3/5-15n^2+100n-140)
-    elseif xptype == XP_SLOW
-        return floor(UInt32,5n^3/4)
-    elseif xptype == XP_FLUCTUATE
-        if n <= 15
-            return floor(UInt32,n^3*(24+floor(UInt32,(n+1/3)))/50)
-        elseif n <= 36
-            return floor(UInt32,n^3*(14+n)/50)
-        else
-            return floor(UInt32,n^3*(32+floor(UInt,n/2))/50)
-        end
-    end
-end
-
 
 
 function getXPBar(pkmn::Pkmn,xpgain::Int)
@@ -78,7 +44,7 @@ end
 
 
 
-function levelup!(pkmn::Pkmn,levelups::Int,game::GameState)
+function levelup!(pkmn::Pkmn,levelups::UInt8,game::GameState)
     learnLevelUp!(pkmn,levelups,game)
 
     hp = pkmn.stats.rv[1]; pkmn.stats.level += levelups
@@ -156,7 +122,7 @@ function learnLevelUp!(pkmn::Pkmn,game::GameState)
     return
 end
 
-function learnLevelUp!(pkmn::Pkmn,levelups::Int,game::GameState)
+function learnLevelUp!(pkmn::Pkmn,levelups::UInt8,game::GameState)
     data = deserialize("data/pkmn/$(pkmn.id)/attacks.data")
 
     l = pkmn.stats.level

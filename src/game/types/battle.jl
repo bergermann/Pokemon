@@ -289,7 +289,7 @@ mutable struct PkmnBattle
         new(
             pkmn,                       # pkmn
             pkmnName(game,pkmn),        # name
-            game.data.base[pkmn.id,x],  # xpdrop
+            100, # game.data.base[pkmn.id,x],  # xpdrop FIX
 
             zeros(Int8,8),  # buffs
 

@@ -19,7 +19,7 @@ const P0 = Pkmn(
     BALL_POKE,
 
     (Tnone,Tnone),
-    Stats(zeros(0),zeros(6),0,XPtype(0),0,0),
+    Stats(zeros(0),zeros(6),0x00,XPtype(1),0,0),
     HSnormal,
     nothing,
 

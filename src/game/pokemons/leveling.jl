@@ -43,7 +43,6 @@ end
 
 
 
-
 function levelup!(pkmn::Pkmn,levelups::UInt8,game::GameState)
     learnLevelUp!(pkmn,levelups,game)
 

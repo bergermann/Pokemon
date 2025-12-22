@@ -83,9 +83,6 @@ function bXP!(game::GameState,target::Int)
     v1 = clamp((xp.current-xp.gain-xp.last_)/(xp.next_-xp.last_),0.0,1.0)
     v2 = clamp((xp.current        -xp.last_)/(xp.next_-xp.last_),0.0,1.0)
 
-    println(v1)
-    println(v2)
-
     createCC!(game,:xp,bXP!,(bar,w,v1,v2); active=true,n=1)
 
     return
@@ -123,7 +120,7 @@ function bLvlUp!(game::GameState,target::Int)
     return
 end
 
-function bLvlUp!(game::GameState,(bar,w,level,l)::Tuple{Symbol,Int,Symbol,UInt8})
+function bLvlUp!(game::GameState,(bar,w,lvl,l)::Tuple{Symbol,Int,Symbol,UInt8})
     if game.n[:xp].c <= 16
         setSpriteFrame!(game,bar,game.n[:xp].c)
     end

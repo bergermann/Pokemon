@@ -18,6 +18,8 @@ item effects
 attack effects
 safe latest pokecenter spot
 
+xp drop data
+
 event scripting
 - fix npc adding, layer param
 - remove pokemon

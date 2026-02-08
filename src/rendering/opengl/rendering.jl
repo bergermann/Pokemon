@@ -190,6 +190,7 @@ function drawPostProcess(game::GameState)
 
     glUniform4f(game.im.l.uloccolor,game.im.l.color[1],game.im.l.color[2],
         game.im.l.color[3],game.im.l.color[4]); checkError("PP.1")
+    # glUniform4fv(game.im.l.uloccolor,4,pointer(game.im.l.color)); checkError("PP.1")
     glUniform2f(game.im.l.ulocslider,game.im.l.slider[1],game.im.l.slider[2]); checkError("PP.2")
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER,0)

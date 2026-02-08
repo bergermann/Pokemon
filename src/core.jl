@@ -254,7 +254,7 @@ lang = Base.ImmutableDict(
 )
 
 function loadStrings!(game::GameState,paths::String...; reset::Bool=false)
-    reset && empty!(game,str)
+    reset && empty!(game.str)
 
     for p in paths
         push!(game.str,readlines(joinpath("str",lang[game.options.lang],p*".txt")))

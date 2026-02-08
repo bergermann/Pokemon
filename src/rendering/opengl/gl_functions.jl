@@ -8,7 +8,9 @@ function checkError(p)
         println("Error marker ",p)
     end
 
-    while err != GL_NO_ERROR
+    n_err = 0
+    while err != GL_NO_ERROR && n_err < 10
+        n_err += 1
         display(GLENUM(err).name)
         err = glGetError()
     end
@@ -88,7 +90,7 @@ function showArrayTexture(tex::UInt32,imsize::Tuple{Int,Int,Int})
 
     # glGetTexImage(GL_TEXTURE_2D_ARRAY,0,GL_RGBA,GL_UNSIGNED_BYTE,
     #     pointer(img)); checkError("T.2")
-    glGetTextureSubImage(tex,0,0,0,0,240,160,imsize[3],GL_RGBA,GL_UNSIGNED_BYTE,
+    glGetTextureSubImage(tex,0,0,0,0,imsize[1],imsize[2],imsize[3],GL_RGBA,GL_UNSIGNED_BYTE,
         sizeof(img),pointer(img)); checkError("T.2")
 
     img_ = [RGBA(img[i:3+i]...) for i in 1:4:length(img)]

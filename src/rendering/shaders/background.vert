@@ -1,4 +1,4 @@
-#version 330 core
+#version 460 core
 
 uniform vec2 pos;
 uniform vec2 scale;

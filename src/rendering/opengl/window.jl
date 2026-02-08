@@ -6,7 +6,7 @@ function genWindow(scale=1;)
     GLFW.WindowHint(GLFW.DEPTH_BITS,16)
     GLFW.WindowHint(GLFW.CLIENT_API,GLFW.OPENGL_API)
     window = GLFW.Window(name="Pokemon",resolution=(240*scale,160*scale),
-        visible=true,focus=true)
+        visible=true,focus=true,major=4,minor=6)
 
     GLFW.MakeContextCurrent(window)
     # GLA.set_context!(window)
@@ -16,6 +16,8 @@ function genWindow(scale=1;)
     glEnable(GL_BLEND)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
+    glClearColor(0.0, 0.0, 0.0, 0.0)
+    
     # GLFW.SwapInterval(1)
     GLFW.SwapInterval(0)
 

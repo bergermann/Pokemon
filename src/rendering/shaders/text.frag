@@ -1,4 +1,4 @@
-#version 330 core
+#version 460 core
 
 uniform mat3x4 colors;
 

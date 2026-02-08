@@ -32,10 +32,10 @@ struct Options
     diabox::UInt8
     battleanim::Bool
 
-    lang::UInt8
+    lang::Language
 
     function Options()
-        new(0x01,0x01,false,0x01)
+        new(0x01,0x01,false,LANG_GER)
     end
 end
 

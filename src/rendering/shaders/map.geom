@@ -1,4 +1,4 @@
-#version 460 core
+#version 330 core
 
 uniform mat4 projection1;
 uniform mat4 projection2;

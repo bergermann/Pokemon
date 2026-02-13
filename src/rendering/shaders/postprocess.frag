@@ -1,7 +1,8 @@
-#version 460 core
+#version 330 core
 
 uniform sampler2DArray layers;
-uniform vec4 color;
+uniform vec4 colorw;
+uniform vec4 colors;
 uniform vec2 slider;
 
 in vec2 texCoord;
@@ -34,7 +35,10 @@ void main() {
     alpha = max(0.0000000000001,c2.a + c1.a*(1.0-c2.a));
     c1.rgb = (c2.rgb*c2.a+c1.rgb*c1.a*(1.0-c2.a))/alpha; c1.a = alpha;
 
-    
-    FragColor = vec4(color.a*(color.rgb*c1.rgb),c1.a);
-    // FragColor = texture(layers,vec3(texCoord,0.0));
+    // FragColor = vec4(colors.a*(colors.rgb*c1.rgb),c1.a);
+    alpha = max(0.0000000000001,colorw.a + c1.a*(1.0-colorw.a));
+    FragColor = vec4(
+        colors.a*colors.rgb*(colorw.rgb*colorw.a+c1.rgb*c1.a*(1.0-colorw.a))/alpha,
+        alpha
+    );
 }

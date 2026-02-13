@@ -31,10 +31,13 @@ include("input/callbacks.jl")
 function init()
     inputs, keymap = setupInputs(km); global keymap
 
-    @time game = setupGame(1); @time Base.GC.gc()
+    @time game = setupGame(4); @time Base.GC.gc()
     
     GC.enable(false)
     GC.@preserve game sceneTransition!
+
+    game.im.l.colorw = [1.0,1.0,1.0,0.0]
+    game.im.l.colors = [1.0,1.0,1.0,9.0]
 
     return game, inputs
 end

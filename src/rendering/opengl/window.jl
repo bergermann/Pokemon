@@ -6,7 +6,7 @@ function genWindow(scale=1;)
     GLFW.WindowHint(GLFW.DEPTH_BITS,16)
     GLFW.WindowHint(GLFW.CLIENT_API,GLFW.OPENGL_API)
     window = GLFW.Window(name="Pokemon",resolution=(240*scale,160*scale),
-        visible=true,focus=true,major=4,minor=6)
+        visible=true,focus=true,major=3,minor=3)
 
     GLFW.MakeContextCurrent(window)
     # GLA.set_context!(window)

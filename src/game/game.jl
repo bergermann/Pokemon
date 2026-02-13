@@ -45,7 +45,8 @@ function setupGame(windowscale::Int=4,renderdistance::Int=2,maxtextures::Int=64;
     setupFonts(game)
     setupSprites(game)
 
-    game.im.l.uloccolor = glGetUniformLocation(game.im.programs[15],"color")
+    game.im.l.uloccolorw = glGetUniformLocation(game.im.programs[15],"colorw")
+    game.im.l.uloccolors = glGetUniformLocation(game.im.programs[15],"colors")
     game.im.l.ulocslider = glGetUniformLocation(game.im.programs[15],"slider")
 
     loadSpriteSheet!(game,"cursors.png",:cursors,6,10,3; maxsprites=8)

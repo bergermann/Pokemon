@@ -3,12 +3,12 @@
 
 function animBattleIntroW!(game::GameState,args::Tuple{})
     if game.n[:introb].c < 48
-        game.im.l.color[4] = 0.5+cospi((game.n[:introb].c+1)/8.0)/2
+        game.im.l.colors[4] = 0.5+cospi((game.n[:introb].c+1)/8.0)/2
     elseif game.n[:introb].c < 64
         # replace this with horizontal slider effect
-        game.im.l.color[4] = (59-game.n[:introb].c)/16.0
+        game.im.l.colors[4] = (59-game.n[:introb].c)/16.0
     elseif game.n[:introb].c == 64
-        game.im.l.color[4] = 1.0
+        game.im.l.colors[4] = 1.0
         
         stateCloseMap!(game)
         stateOpenBattleIntro!(game)
@@ -84,12 +84,12 @@ end
 
 function animBattleIntroT!(game::GameState,args::Tuple{})
     if game.n[:introb].c < 48
-        game.im.l.color[4] = 0.5+cospi((game.n[:introb].c+1)/8.0)/2
+        game.im.l.colors[4] = 0.5+cospi((game.n[:introb].c+1)/8.0)/2
     elseif game.n[:introb].c < 64
         # replace this with proper trainer battle intro effect
-        game.im.l.color[4] = (59-game.n[:introb].c)/16.0
+        game.im.l.colors[4] = (59-game.n[:introb].c)/16.0
     elseif game.n[:introb].c == 64
-        game.im.l.color[4] = 1.0
+        game.im.l.colors[4] = 1.0
         
         stateCloseMap!(game)
         stateOpenBattleIntro!(game)

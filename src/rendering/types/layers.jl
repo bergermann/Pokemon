@@ -8,10 +8,12 @@ mutable struct Layers
     vao::UInt32
     vbo::UInt32
 
-    color::MVector{4,Float32}
+    colorw::MVector{4,Float32}
+    colors::MVector{4,Float32}
     slider::MVector{2,Float32}
 
-    uloccolor::Int32
+    uloccolorw::Int32
+    uloccolors::Int32
     ulocslider::Int32
 
     function Layers()
@@ -66,6 +68,7 @@ mutable struct Layers
         checkError("L 11")    
 
         new(fbo[1],tex[1],vao[1],vbo[1],
+            MVector{4,Float32}(0,0,0,0),
             MVector{4,Float32}(1,1,1,1),
             MVector{2,Float32}(0,0),
             0,0

@@ -1,4 +1,4 @@
-#version 330 core
+#version 460 core
 
 uniform uvec2 size;
 
@@ -8,7 +8,7 @@ layout (location = 2) in vec2 scale; // wscale, hscale
 layout (location = 3) in float rot; 
 layout (location = 4) in float alpha;
 layout (location = 5) in uvec2 rev; // wrev, hrev
-layout (location = 6) in uint active;
+layout (location = 6) in uint is_active;
 
 out VS_OUT {
     uint texlayer;
@@ -20,7 +20,7 @@ out VS_OUT {
 
 void main()
 {
-    vs_out.texlayer = active*(idx.x+idx.y-uint(1));
+    vs_out.texlayer = is_active*(idx.x+idx.y-uint(1));
     vs_out.scale = scale;
     vs_out.rev = rev;
     vs_out.rot = rot;

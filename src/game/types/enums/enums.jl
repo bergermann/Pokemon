@@ -1,10 +1,12 @@
 
+include("lang.jl")
 include("pkmn.jl")
 include("stateflags.jl")
 include("pkmn.jl")
 include("items.jl")
 include("abilities.jl")
 include("weather.jl")
+
 
 import Base.==, Base.getindex, Base.setindex!
 ==(x::Integer,y::T) where T <: Enum = T(x) == y

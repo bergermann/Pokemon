@@ -37,17 +37,13 @@ function init()
     GC.@preserve game sceneTransition!
 
     game.im.l.colorw = [1.0,1.0,1.0,0.0]
-    game.im.l.colors = [1.0,1.0,1.0,9.0]
+    game.im.l.colors = [1.0,1.0,1.0,1.0]
 
     return game, inputs
 end
 
 function run!(game::GameState,inputs::Inputs)
     render(game)
-
-    # showArrayTexture(game.im.l.tex,(240,160,6))
-    # showArrayTextureBuffer(game.im.l.fbo,(240,160,6))
-    # GLFW.DestroyWindow(game.im.window); return
 
     t0 = time(); t1 = 0.; pause = false; fps = 60.
 

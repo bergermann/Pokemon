@@ -1,3 +1,8 @@
+name = "Pokemon"
+uuid = "4cc37383-425e-42ec-b74d-d61b24dd8df1"
+version = "0.1.0"
+authors = ["bergermann <dominik.bergermann@gmx.de>"]
+
 [deps]
 DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 GLFW = "f7f18e0c-5ee9-5ccd-a5bf-e8befd85ed98"

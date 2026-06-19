@@ -188,6 +188,8 @@ end
 function drawPostProcess(game::GameState)
     glUseProgram(game.im.programs[15])
 
+    # HERE???
+
     glUniform4f(game.im.l.uloccolorw,game.im.l.colorw[1],game.im.l.colorw[2],
         game.im.l.colorw[3],game.im.l.colorw[4]); checkError("PP.1.1")
     glUniform4f(game.im.l.uloccolors,game.im.l.colors[1],game.im.l.colors[2],

@@ -2,7 +2,6 @@
 include("lang.jl")
 include("pkmn.jl")
 include("stateflags.jl")
-include("pkmn.jl")
 include("items.jl")
 include("abilities.jl")
 include("weather.jl")

@@ -117,4 +117,4 @@ function main()
 end
 end
 
-Pokemon.main()
+# Pokemon.main()

@@ -1,4 +1,5 @@
 
-include("src/Pokemon.jl")
+# include("src/Pokemon.jl")
+using Pokemon
 
-g = main();
+g = Pokemon.main();

@@ -29,7 +29,7 @@ include("input/callbacks.jl")
 # end
 
 function init()
-    push!(ENV["PATH"],@__DIR__)
+    # push!(ENV["PATH"],@__DIR__)
 
     inputs, keymap = setupInputs(km); global keymap
 

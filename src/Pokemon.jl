@@ -28,7 +28,10 @@ include("input/callbacks.jl")
 #     @eval export $s
 # end
 
+# const PATH = pkgdir(Pokemon)
+
 function init()
+    
     inputs, keymap = setupInputs(km); global keymap
 
     @time game = setupGame(4); @time Base.GC.gc()

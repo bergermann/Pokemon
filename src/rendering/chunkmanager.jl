@@ -22,7 +22,7 @@ function setupChunks(game::GameState)
     glBindTexture(GL_TEXTURE_BUFFER,game.im.c.tidxs)
     glTexBuffer(GL_TEXTURE_BUFFER,GL_R8I,game.im.c.bidxs)
 
-    ad = deserialize(joinpath("textures","tilesets","tileanim.data"))
+    ad = deserialize(joinpath(PATH,"textures","tilesets","tileanim.data"))
     glBindBuffer(GL_TEXTURE_BUFFER,game.im.c.banimdata)
     glBufferData(GL_TEXTURE_BUFFER,sizeof(ad),pointer(ad),GL_DYNAMIC_DRAW)
     glBindTexture(GL_TEXTURE_BUFFER,game.im.c.tanimdata)

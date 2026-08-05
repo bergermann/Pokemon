@@ -73,7 +73,7 @@ end
 function loadIcons!(game::GameState)
     icons = [string(p.id,".png") for p in game.p.pokemon]
 
-    loadSpriteSheet!(game,joinpath("menupkmn","icons"),icons,:icons,32,32,2; maxsprites=6)
+    loadSpriteSheet!(game,joinpath(PATH,"menupkmn","icons"),icons,:icons,32,32,2; maxsprites=6)
 
     return
 end

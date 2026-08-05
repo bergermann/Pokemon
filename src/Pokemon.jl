@@ -28,10 +28,10 @@ include("input/callbacks.jl")
 #     @eval export $s
 # end
 
+const PATH = @__DIR__
+println(PATH)
 
 function init()
-    const PATH = @__DIR__
-    println(PATH)
     
     inputs, keymap = setupInputs(km); global keymap
 

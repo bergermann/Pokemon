@@ -28,9 +28,11 @@ include("input/callbacks.jl")
 #     @eval export $s
 # end
 
-function init()
-    # push!(ENV["PATH"],@__DIR__)
 
+function init()
+    const PATH = @__DIR__
+    println(PATH)
+    
     inputs, keymap = setupInputs(km); global keymap
 
     @time game = setupGame(4); @time Base.GC.gc()

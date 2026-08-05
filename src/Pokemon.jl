@@ -29,6 +29,8 @@ include("input/callbacks.jl")
 # end
 
 function init()
+    push!(ENV["PATH"],@__DIR__)
+
     inputs, keymap = setupInputs(km); global keymap
 
     @time game = setupGame(4); @time Base.GC.gc()

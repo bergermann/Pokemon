@@ -29,6 +29,7 @@ include("input/callbacks.jl")
 # end
 
 const PATH = pkgdir(Pokemon)
+cd(PATH)
 
 function init()
     

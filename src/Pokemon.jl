@@ -28,7 +28,7 @@ include("input/callbacks.jl")
 #     @eval export $s
 # end
 
-const PATH = dirname(pathof(Pokemon))
+const PATH = pkgdir(Pokemon)
 println(PATH)
 
 function init()

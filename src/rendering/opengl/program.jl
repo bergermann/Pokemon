@@ -14,6 +14,8 @@ function getProgram(paths::AbstractString...)
 
     ids = UInt32[]
 
+    println("check")
+
     for (i,file) in enumerate(paths)
         type = shadertype(file)
         id = glCreateShader(type); checkError("P.1.$i.1")

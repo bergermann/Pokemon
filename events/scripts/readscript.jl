@@ -65,11 +65,11 @@ flagtypes = Dict{String,Int}(
 function readEvent(file::String)
     if occursin("commands",file) || occursin(".jl",file); return; end
 
-    f = open(joinpath(PATH,"events","scripts",file)); lines = readlines(f); close(f)
+    f = open(joinpath("events","scripts",file)); lines = readlines(f); close(f)
     name = file[1:end-4]
     print("reading event $name... ")
 
-    strf = open(joinpath(PATH,"str","ger","events",file),"w+")
+    strf = open(joinpath("str","ger","events",file),"w+")
 
     queue = zeros(Int,10,0); command = zeros(Int,10)
 
@@ -222,7 +222,7 @@ function readEvent(file::String)
     F = Pokemon.FlagSet(; flags=flags,counters=counters,hasseen=seen,hascaught=caught,inteam=has)
     event = Pokemon.EventQueue(sheets,npcs,sprites,F,queue)
 
-    serialize(joinpath(PATH,"events",name*".eq"),event)
+    serialize(joinpath("events",name*".eq"),event)
 
     println("done")
 

@@ -8,7 +8,7 @@ end
 function loadSpriteSheet!(game::GameState,dir::String,textures::Vector{String},name::Symbol,
         width::Int,height::Int,nframes::Int; maxsprites::Int=128)
 
-    loadArrayTexture!(game,joinpath(PATH,"sprites",dir),textures,name,width,height; addempty=true)
+    loadArrayTexture!(game,joinpath("sprites",dir),textures,name,width,height; addempty=true)
     loadSpriteSheet!(game,name,width,height,nframes; maxsprites=maxsprites)
 
     return
@@ -17,7 +17,7 @@ end
 function loadSpriteSheet!(game::GameState,file::String,name::Symbol,
         width::Int,height::Int,nframes::Int; maxsprites::Int=128)
 
-    loadArrayTexture!(game,joinpath(PATH,"sprites",file),name,width,height; addempty=true)
+    loadArrayTexture!(game,joinpath("sprites",file),name,width,height; addempty=true)
     loadSpriteSheet!(game,name,width,height,nframes; maxsprites=maxsprites)
 
     return

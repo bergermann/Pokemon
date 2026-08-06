@@ -19,7 +19,7 @@ const E0 = Event()
 )
 
 function loadEvent!(game::GameState,name::Symbol)
-    eq = deserialize(joinpath(PATH,"events","$name.eq"))
+    eq = deserialize(joinpath("events","$name.eq"))
     events[name] = (eq.flags,eq)
 
     return
@@ -36,7 +36,7 @@ function setupEvent!(game::GameState,name::Symbol)
     game.events.c = 0
     game.events.idx = 1
     game.events.branch = 0
-    # game.events.queue = deserialize(joinpath(PATH,"events","$name.eq"))
+    # game.events.queue = deserialize(joinpath("events","$name.eq"))
     game.events.queue = events[name][2]
     loadStrings!(game,"events/$name")
 

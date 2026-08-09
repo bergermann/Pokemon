@@ -122,6 +122,7 @@ function showTextureBuffer(buffer::UInt32,imsize::Tuple{Int,Int})
     img_ = [RGBA(img[i:3+i]...) for i in 1:4:length(img)]
     img_ = reshape(img_,imsize)
     img_ = img_'
+    
     if !all(isequal(RGBA{N0f8}(0.0,0.0,0.0,0.0)),img_)
         println("buffer filled")
         # display(img_)

@@ -197,6 +197,9 @@ function drawPostProcess(game::GameState)
     # glUniform4fv(game.im.l.uloccolor,4,pointer(game.im.l.colors)); checkError("PP.1")
     glUniform2f(game.im.l.ulocslider,game.im.l.slider[1],game.im.l.slider[2]); checkError("PP.2")
 
+    showArrayTexture(game.im.l.tex,(160,240,6))
+    # showArrayTextureBuffer(buffer,(160,240,6))
+
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER,0)
     glViewport(0,0,game.im.windowsize.width,game.im.windowsize.height)
 

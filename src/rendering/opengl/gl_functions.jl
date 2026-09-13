@@ -83,18 +83,18 @@ function showTexture(tex::UInt32,imsize::Tuple{Int,Int})
     return img_
 end
 
-function showArrayTexture(tex::UInt32,imsize::Tuple{Int,Int,Int})
-    img = zeros(N0f8,imsize[1]*imsize[2]*imsize[3]*4)
+function showArrayTexture(tex::UInt32,(sx,sy,sz)::Tuple{Int,Int,Int})
+    img = zeros(N0f8,sx*sy*sz*4)
 
     glBindTexture(GL_TEXTURE_2D_ARRAY,tex); checkError("T.1")
 
     # glGetTexImage(GL_TEXTURE_2D_ARRAY,0,GL_RGBA,GL_UNSIGNED_BYTE,
     #     pointer(img)); checkError("T.2")
-    glGetTextureSubImage(tex,0,0,0,0,imsize[1],imsize[2],imsize[3],GL_RGBA,GL_UNSIGNED_BYTE,
-        sizeof(img),pointer(img)); checkError("T.2")
+    glGetTextureSubImage(tex,0,0,0,0,sx,sy,sz,GL_RGBA,GL_UNSIGNED_BYTE,sizeof(img),pointer(img))
+    checkError("T.2")
 
     img_ = [RGBA(img[i:3+i]...) for i in 1:4:length(img)]
-    img_ = reshape(img_,(imsize[1],imsize[2]*imsize[3]))
+    img_ = reshape(img_,(sx,sy*sz))
     img_ = img_'
     reverse!(img_; dims=1)
     if !all(isequal(RGBA{N0f8}(0.0,0.0,0.0,0.0)),img_)
@@ -160,6 +160,36 @@ function showArrayTextureBuffer(buffer::UInt32,imsize::Tuple{Int,Int,Int})
     return img_
 end
 
+# function showArrayTextureBuffer_(buffer::UInt32,(sx,sy,sz)::Tuple{Int,Int,Int})
+#     img  = zeros(N0f8,sx*sy*4)
+#     img_ = zeros(N0f8,sx*sy*sz*4)
+
+#     for i in 1:sz
+#         glBindFramebuffer(GL_READ_FRAMEBUFFER,buffer); checkError("B.1.$i")
+        
+#         glReadPixels(0,0,sx,sy,GL_RGBA,GL_UNSIGNED_BYTE,pointer(img))
+#         copyto!(img_[(i-1)*sx*sy*4+1:i*sx*sy*4],img)
+
+#         checkError("B.2.$i")
+#     end
+
+#     img__ = [RGBA(img_[i:3+i]...) for i in 1:4:length(img_)]
+#     img__ = reshape(img__,(sx*sz,sy))
+#     # img__ = img__'
+
+#     if !all(isequal(RGBA{N0f8}(0.0,0.0,0.0,0.0)),img__)
+#         println("buffer filled")
+#         # display(img_)
+#     else
+#         println("buffer not filled")
+#     end
+
+#     glBindFramebuffer(GL_FRAMEBUFFER,0); checkError("B.3")
+
+#     save("out/buffer.png",img__)
+
+#     return img_
+# end
 
 
 

@@ -21,7 +21,7 @@ mutable struct Layers
         vbo = UInt32[0]; glGenBuffers(1,pointer(vbo))
         fbo = UInt32[0]; glGenFramebuffers(1,pointer(fbo))
     
-        glBindFramebuffer(GL_FRAMEBUFFER, fbo[1])
+        glBindFramebuffer(GL_FRAMEBUFFER,fbo[1])
     
         tex = UInt32[0]; glGenTextures(1,pointer(tex))
     
@@ -71,7 +71,7 @@ mutable struct Layers
             MVector{4,Float32}(0,0,0,0),
             MVector{4,Float32}(1,1,1,1),
             MVector{2,Float32}(0,0),
-            0,0
+            0,0,0
         )
     end
 end

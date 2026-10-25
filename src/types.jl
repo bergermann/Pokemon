@@ -347,6 +347,8 @@ function Base.iterate(a::ArrayList,t::Tuple{Any,Any})
     return @views iterate(a.data[1:a.idx],t)
 end
 
+Base.iterate(a::ArrayList,idx::Int) = @views iterate(a.data[1:a.idx],idx)
+
 function Base.length(a::ArrayList)
     return a.idx
 end

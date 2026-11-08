@@ -1,6 +1,56 @@
 
 using ModernGL, GLFW
 
+
+
+
+
+function validateLink(program::UInt32)
+    status = UInt32[0]
+
+    glGetProgramiv(program,GL_VALIDATE_STATUS,status)
+
+    if status[1] != GL_TRUE
+        println("Program $program failed to link!")
+        getProgramInfoLog(program)
+    end
+
+    return
+end
+
+function validateProgram(program::UInt32)
+    glValidateProgram(program)
+
+    status = UInt32[0]
+
+    glGetProgramiv(program,GL_VALIDATE_STATUS,status)
+
+    if status[1] != GL_TRUE
+        println("Program $program failed to validate!")
+    end
+
+    return
+end
+
+function getProgramInfoLog(program::UInt32)
+    l = UInt32[0]
+    glGetProgramiv(program,GL_INFO_LOG_LENGTH,l)
+
+    log = zeros(UInt8,l[1])
+
+    glGetProgramInfoLog(program,l[1],C_NULL,log)
+
+    println(String(log[1:l[1]-2]),"\n")
+
+    return
+end
+
+
+
+
+
+
+
 scale = 1
 GLFW.WindowHint(GLFW.DEPTH_BITS,16)
 GLFW.WindowHint(GLFW.CLIENT_API,GLFW.OPENGL_API)
@@ -33,19 +83,22 @@ source = Vector{UInt8}(read(open("test/basic.vert"),String))
 sourceptrs = Ptr{UInt8}[pointer(source)]
 glShaderSource(vert, 1, sourceptrs, Ref{GLint}(length(source)))
 glCompileShader(vert)
-glAttachShader(program,vert)
+glAttachShader(program_basic,vert)
 
 frag = glCreateShader(GL_FRAGMENT_SHADER)
 source = Vector{UInt8}(read(open("test/basic.frag"),String))
 sourceptrs = Ptr{UInt8}[pointer(source)]
 glShaderSource(frag, 1, sourceptrs, Ref{GLint}(length(source)))
 glCompileShader(frag)
-glAttachShader(program,frag)
+glAttachShader(program_basic,frag)
 
-glLinkProgram(program)
+glLinkProgram(program_basic)
 
-glDetachShader(program,vert)
-glDetachShader(program,frag)
+validateLink(program_basic)
+validateProgram(program_basic)
+
+glDetachShader(program_basic,vert)
+glDetachShader(program_basic,frag)
 glDeleteShader(vert)
 glDeleteShader(frag)
 
@@ -55,13 +108,32 @@ programs[1] = program_basic
 
 
 vertices = Float32[
-    -1, -1, 0,
-     1, -1, 0,
-     0,  1, 0,
+    -1, -1,
+     1, -1,
+     0,  1,
 ]
 
 vbo = UInt32[0]; glGenBuffers(1,pointer(vbo))
-glBindBuffer(GL_ARRAY_BUFFER, vbo)
+vao = UInt32[0]; glGenVertexArrays(1,pointer(vao))
+
+glBindVertexArray(vao[1])
+
+glBindBuffer(GL_ARRAY_BUFFER, vbo[1])
 glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), pointer(vertices), GL_STATIC_DRAW)
 
-GLFW.SwapBuffers(game.im.window); checkError("swap")
+glVertexAttribPointer(0,2,GL_FLOAT,false,8,Ptr{Nothing}(0))
+glEnableVertexAttribArray(0)
+
+
+
+while !GLFW.WindowShouldClose(window)
+    glUseProgram(program_basic)
+    glBindVertexArray(vao[1])
+    glDrawArrays(GL_TRIANGLES,0,3)
+
+    GLFW.SwapBuffers(window)
+
+    GLFW.PollEvents()
+
+    sleep(1.0/60.0)
+end; GLFW.DestroyWindow(window)

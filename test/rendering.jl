@@ -1,5 +1,5 @@
 
-using ModernGL, GLFW
+using ModernGL, GLFW, FixedPointNumbers
 
 
 
@@ -45,9 +45,35 @@ function getProgramInfoLog(program::UInt32)
     return
 end
 
+function render(program,vao)
+    glUseProgram(program)
+    glBindVertexArray(vao[1])
+    glDrawArrays(GL_TRIANGLES,0,3)
 
+end
 
+function showScreen(imsize::Tuple{Int,Int})
+    img = zeros(N0f8,imsize[1]*imsize[2]*4)
 
+    glBindFramebuffer(GL_READ_FRAMEBUFFER,0)
+    
+    glReadPixels(0,0,imsize[1],imsize[2],GL_RGBA,GL_UNSIGNED_BYTE,pointer(img))
+
+    img_ = [RGBA(img[i:3+i]...) for i in 1:4:length(img)]
+    img_ = reshape(img_,imsize)
+    img_ = collect(reverse!(img_'; dims=1))
+    
+    if !all(isequal(RGBA{N0f8}(0.0,0.0,0.0,0.0)),img_)
+        println("buffer filled")
+        display(img_)
+    end
+
+    glBindFramebuffer(GL_FRAMEBUFFER,0)
+
+    # save("out/buffer.png",img_)
+
+    return img_
+end
 
 
 
@@ -109,7 +135,7 @@ programs[1] = program_basic
 
 vertices = Float32[
     -1, -1,
-     1, -1,
+    0.5, -1,
      0,  1,
 ]
 
@@ -126,14 +152,14 @@ glEnableVertexAttribArray(0)
 
 
 
+render(program_basic,vao)
+showScreen((240,160))
+
+
 while !GLFW.WindowShouldClose(window)
-    glUseProgram(program_basic)
-    glBindVertexArray(vao[1])
-    glDrawArrays(GL_TRIANGLES,0,3)
+    render(program_basic,vao)
 
-    GLFW.SwapBuffers(window)
-
-    GLFW.PollEvents()
-
-    sleep(1.0/60.0)
+    GLFW.SwapBuffers(window); GLFW.PollEvents(); sleep(1.0/60.0)
 end; GLFW.DestroyWindow(window)
+
+

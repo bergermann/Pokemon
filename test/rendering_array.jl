@@ -43,10 +43,16 @@ function getProgramInfoLog(program::UInt32)
     return
 end
 
-function renderTex(program,vao,fbo)
+function renderTex(program,vaos,fbo,tex)
     glBindFramebuffer(GL_FRAMEBUFFER,fbo)
     glUseProgram(program)
-    glBindVertexArray(vao)
+    
+    glFramebufferTextureLayer(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,tex,0,0)
+    glBindVertexArray(vaos[1])
+    glDrawArrays(GL_TRIANGLES,0,3)
+    
+    glFramebufferTextureLayer(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,tex,0,1);
+    glBindVertexArray(vaos[2])
     glDrawArrays(GL_TRIANGLES,0,3)
 
     return
@@ -54,7 +60,7 @@ end
 
 function renderScreen(program,vao,texture)
     glBindFramebuffer(GL_FRAMEBUFFER,0)
-    glBindTexture(GL_TEXTURE_2D, texture)
+    glBindTexture(GL_TEXTURE_2D_ARRAY, texture)
 
     glUseProgram(program)
     glBindVertexArray(vao)
@@ -70,16 +76,18 @@ function showScreen(imsize::Tuple{Int,Int})
     
     glReadPixels(0,0,imsize[1],imsize[2],GL_RGBA,GL_UNSIGNED_BYTE,pointer(img))
 
-    img_ = [RGBA(img[i:3+i]...) for i in 1:4:length(img)]
+    img_ = [RGBA(img[i:i+3]...) for i in 1:4:length(img)]
     img_ = reshape(img_,imsize)
     img_ = collect(reverse!(img_'; dims=1))
     
     if !all(isequal(RGBA{N0f8}(0.0,0.0,0.0,0.0)),img_)
         println("buffer filled")
-        display(img_)
+        # display(img_)
     end
 
     glBindFramebuffer(GL_FRAMEBUFFER,0)
+
+    save("test/out/screen.png",img_)
 
     return img_
 end
@@ -91,20 +99,71 @@ function showBuffer(buffer,imsize::Tuple{Int,Int})
     
     glReadPixels(0,0,imsize[1],imsize[2],GL_RGBA,GL_UNSIGNED_BYTE,pointer(img))
 
-    img_ = [RGBA(img[i:3+i]...) for i in 1:4:length(img)]
+    img_ = [RGBA(img[i:i+3]...) for i in 1:4:length(img)]
     img_ = reshape(img_,imsize)
     img_ = collect(reverse!(img_'; dims=1))
     
     if !all(isequal(RGBA{N0f8}(0.0,0.0,0.0,0.0)),img_)
         println("buffer filled")
-        display(img_)
+        # display(img_)
     end
 
     glBindFramebuffer(GL_FRAMEBUFFER,0)
 
+    save("test/out/buffer.png",img_)
+
+
     return img_
 end
 
+# function showBufferArray(buffer,tex,imsize::Tuple{Int,Int,Int})
+#     img = zeros(RGBA{N0f8},imsize[2]*imsize[3],imsize[1])
+
+#     for i in 0:imsize[3]-1
+#         img_ = zeros(N0f8,imsize[1]*imsize[2]*4)
+
+#         glBindFramebuffer(GL_READ_FRAMEBUFFER,buffer)
+
+#         glFramebufferTextureLayer(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,tex,0,imsize[3]-1-i)
+#         glReadPixels(0,0,imsize[1],imsize[2],GL_RGBA,GL_UNSIGNED_BYTE,pointer(img_))
+
+#         img_ = [RGBA(img_[i:i+3]...) for i in 1:4:length(img_)]
+#         img_ = reshape(img_,(imsize[1],imsize[2]))
+#         img[1+imsize[2]*(i):imsize[2]*(i+1),:] = collect(reverse!(img_'; dims=1))
+#     end
+    
+#     if !all(isequal(RGBA{N0f8}(0.0,0.0,0.0,0.0)),img)
+#         println("buffer filled")
+#         display(img)
+#     end
+
+#     glBindFramebuffer(GL_FRAMEBUFFER,0)
+
+#     return img
+# end
+
+function showArrayTexture(tex,imsize::Tuple{Int,Int,Int})
+    img = zeros(N0f8,imsize[1]*imsize[2]*imsize[3]*4)
+
+    glBindTexture(GL_TEXTURE_2D_ARRAY, tex)
+    
+    glGetTexImage(GL_TEXTURE_2D_ARRAY,0,GL_RGBA,GL_UNSIGNED_BYTE,pointer(img))
+
+    img_ = [RGBA(img[i:i+3]...) for i in 1:4:length(img)]
+    img_ = reshape(img_,(imsize[1],imsize[2]*imsize[3]))
+    img_ = collect(reverse!(img_'; dims=1))
+    
+    if !all(isequal(RGBA{N0f8}(0.0,0.0,0.0,0.0)),img_)
+        println("buffer filled")
+        # display(img_)
+    end
+
+    glBindFramebuffer(GL_FRAMEBUFFER,0)
+
+    save("test/out/buffer.png",img_)
+
+    return img_
+end
 
 
 
@@ -171,7 +230,7 @@ glCompileShader(vert)
 glAttachShader(program_tex,vert)
 
 frag = glCreateShader(GL_FRAGMENT_SHADER)
-source = Vector{UInt8}(read(open("test/tex.frag"),String))
+source = Vector{UInt8}(read(open("test/basic_array.frag"),String))
 sourceptrs = Ptr{UInt8}[pointer(source)]
 glShaderSource(frag, 1, sourceptrs, Ref{GLint}(length(source)))
 glCompileShader(frag)
@@ -190,12 +249,12 @@ glDeleteShader(frag)
 
 
 programs = zeros(UInt32,2)
-programs[1] = program_basic; programs[2] = program_tex
+programs[1] = program_basic;# programs[2] = program_tex
 
 
 
 vertices1 = Float32[
-    -1.0, -1.0,
+    -0.5, -1.0,
      0.5, -1.0,
      0.0,  1.0,
 ]
@@ -241,31 +300,36 @@ glVertexAttribPointer(0,2,GL_FLOAT,false,16,Ptr{Nothing}(0))
 glEnableVertexAttribArray(1)
 glVertexAttribPointer(1,2,GL_FLOAT,false,16,Ptr{Nothing}(8))
 
-glBindTexture(GL_TEXTURE_2D, texture[1])
-glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,240,160,0,GL_RGB,GL_UNSIGNED_BYTE,Ptr{Nothing}(0))
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+glBindTexture(GL_TEXTURE_2D_ARRAY, texture[1])
+glTexImage3D(GL_TEXTURE_2D_ARRAY,0,GL_RGB,240,160,2,0,GL_RGB,GL_UNSIGNED_BYTE,Ptr{Nothing}(0))
+glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
 
 glBindFramebuffer(GL_FRAMEBUFFER,fbo[1])
-glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,texture[1],0)
+glFramebufferTexture(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,texture[1],0)
 glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE
 
 
 
-renderTex(program_basic,vao[1],fbo[1])
-tex = showBuffer(fbo[1],(240,160))
+renderTex(program_basic,vao,fbo[1],texture[1])
+# tex = showBuffer(fbo[1],(240,160));
+# tex = showBufferArray(fbo[1],texture[1],(240,160,2));
+tex = showArrayTexture(texture[1],(240,160,2));
+
+
 
 renderScreen(program_tex,vao[3],texture[1])
 s = showScreen((240,160))
 
+GLFW.DestroyWindow(window);
 
 
-while !GLFW.WindowShouldClose(window)
-    renderTex(program_basic,vao[1],fbo[1])
+# while !GLFW.WindowShouldClose(window)
+#     renderTex(program_basic,vao[1],fbo[1])
 
-    renderScreen(program_tex,vao[3],texture[1])
+#     renderScreen(program_tex,vao[3],texture[1])
 
-    GLFW.SwapBuffers(window); GLFW.PollEvents(); sleep(1.0/60.0)
-end; GLFW.DestroyWindow(window)
+#     GLFW.SwapBuffers(window); GLFW.PollEvents(); sleep(1.0/60.0)
+# end; GLFW.DestroyWindow(window)
 
 

@@ -60,9 +60,9 @@ end
 
 function renderScreen(program,vao,texture)
     glBindFramebuffer(GL_FRAMEBUFFER,0)
-    glBindTexture(GL_TEXTURE_2D_ARRAY, texture)
-
     glUseProgram(program)
+    
+    # glBindTexture(GL_TEXTURE_2D_ARRAY, texture)
     glBindVertexArray(vao)
     glDrawArrays(GL_TRIANGLES,0,6)
 
@@ -296,14 +296,14 @@ glBindVertexArray(vao[3])
 glBindBuffer(GL_ARRAY_BUFFER, vbo[3])
 glBufferData(GL_ARRAY_BUFFER, sizeof(vertices3), pointer(vertices3), GL_STATIC_DRAW)
 glEnableVertexAttribArray(0)
-glVertexAttribPointer(0,2,GL_FLOAT,false,16,Ptr{Nothing}(0))
 glEnableVertexAttribArray(1)
+glVertexAttribPointer(0,2,GL_FLOAT,false,16,Ptr{Nothing}(0))
 glVertexAttribPointer(1,2,GL_FLOAT,false,16,Ptr{Nothing}(8))
 
 glBindTexture(GL_TEXTURE_2D_ARRAY, texture[1])
 glTexImage3D(GL_TEXTURE_2D_ARRAY,0,GL_RGB,240,160,2,0,GL_RGB,GL_UNSIGNED_BYTE,Ptr{Nothing}(0))
-glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
 
 glBindFramebuffer(GL_FRAMEBUFFER,fbo[1])
 glFramebufferTexture(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,texture[1],0)
@@ -312,8 +312,6 @@ glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE
 
 
 renderTex(program_basic,vao,fbo[1],texture[1])
-# tex = showBuffer(fbo[1],(240,160));
-# tex = showBufferArray(fbo[1],texture[1],(240,160,2));
 tex = showArrayTexture(texture[1],(240,160,2));
 
 
@@ -321,15 +319,15 @@ tex = showArrayTexture(texture[1],(240,160,2));
 renderScreen(program_tex,vao[3],texture[1])
 s = showScreen((240,160))
 
-GLFW.DestroyWindow(window);
+# GLFW.DestroyWindow(window);
 
 
-# while !GLFW.WindowShouldClose(window)
-#     renderTex(program_basic,vao[1],fbo[1])
+while !GLFW.WindowShouldClose(window)
+    renderTex(program_basic,vao,fbo[1],texture[1])
 
-#     renderScreen(program_tex,vao[3],texture[1])
+    renderScreen(program_tex,vao[3],texture[1])
 
-#     GLFW.SwapBuffers(window); GLFW.PollEvents(); sleep(1.0/60.0)
-# end; GLFW.DestroyWindow(window)
+    GLFW.SwapBuffers(window); GLFW.PollEvents(); sleep(1.0/60.0)
+end; GLFW.DestroyWindow(window)
 
 

@@ -1,6 +1,4 @@
 
-# include("pokemons.jl")
-
 
 function Base.getindex(a::MMatrix,idx::MVector{2,<:Integer})
     return a[idx[1],idx[2]]

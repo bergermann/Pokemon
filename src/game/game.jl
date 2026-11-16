@@ -9,8 +9,6 @@ include("npcs/npcs.jl")
 include("objects.jl")
 include("teleports.jl")
 include("events/events.jl")
-# include("maps.jl")
-# include("controls.jl")
 include("animations/animations.jl")
 
 

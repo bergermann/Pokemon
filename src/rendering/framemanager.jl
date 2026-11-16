@@ -51,8 +51,8 @@ function setupFrames(game::GameState)
     glVertexAttribPointer(0,2,GL_FLOAT,false,16,ptr(0)); glEnableVertexAttribArray(0)
     glVertexAttribPointer(1,2,GL_FLOAT,false,16,ptr(8)); glEnableVertexAttribArray(1)
     
-    glBufferData(GL_ARRAY_BUFFER,sizeof(vbo),pointer(vbo),GL_STATIC_DRAW)
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(ebo),pointer(ebo),GL_STATIC_DRAW)
+    glBufferData(GL_ARRAY_BUFFER,sizeof(vbo),vbo,GL_STATIC_DRAW)
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(ebo),ebo,GL_STATIC_DRAW)
     
     glBindVertexArray(0)
     glBindBuffer(GL_ARRAY_BUFFER,0)

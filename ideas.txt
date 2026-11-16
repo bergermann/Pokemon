@@ -6,6 +6,7 @@ lapras counter
 
 
 to do:
+double check pointer() usage everywhere
 trainer pass
 map/pokenav
 options

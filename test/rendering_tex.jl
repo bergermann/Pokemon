@@ -6,7 +6,7 @@ using ModernGL, GLFW, Images #FixedPointNumbers, ColorTypes
 function validateLink(program::UInt32)
     status = UInt32[0]
 
-    glGetProgramiv(program,GL_VALIDATE_STATUS,status)
+    glGetProgramiv(program,GL_LINK_STATUS,status)
 
     if status[1] != GL_TRUE
         println("Program $program failed to link!")
@@ -75,11 +75,13 @@ function showScreen(imsize::Tuple{Int,Int})
     img_ = collect(reverse!(img_'; dims=1))
     
     if !all(isequal(RGBA{N0f8}(0.0,0.0,0.0,0.0)),img_)
-        println("buffer filled")
-        display(img_)
+        println("screen filled")
+        # display(img_)
     end
 
     glBindFramebuffer(GL_FRAMEBUFFER,0)
+
+    save("test/out/screen.png",img_)
 
     return img_
 end
@@ -107,7 +109,7 @@ end
 
 
 
-
+function main()
 scale = 1
 GLFW.WindowHint(GLFW.DEPTH_BITS,16)
 GLFW.WindowHint(GLFW.CLIENT_API,GLFW.OPENGL_API)
@@ -123,13 +125,6 @@ glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 glClearColor(0.0, 0.0, 0.0, 0.0)
 
 GLFW.SwapInterval(0)
-
-windowsize = GLFW.GetWindowSize(window)    
-projection = Float32[1 0 0 0
-                     0 1 0 0
-                     0 0 1 0
-                     0 0 0 1]
-backbuffersize = (h=Int32(160),w=Int32(240))
 
 
 
@@ -223,19 +218,19 @@ texture = UInt32[0]; glGenTextures(1, pointer(texture));
 
 glBindVertexArray(vao[1])
 glBindBuffer(GL_ARRAY_BUFFER, vbo[1])
-glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), pointer(vertices1), GL_STATIC_DRAW)
+glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), vertices1, GL_STATIC_DRAW)
 glEnableVertexAttribArray(0)
 glVertexAttribPointer(0,2,GL_FLOAT,false,8,Ptr{Nothing}(0))
 
 glBindVertexArray(vao[2])
 glBindBuffer(GL_ARRAY_BUFFER, vbo[2])
-glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), pointer(vertices2), GL_STATIC_DRAW)
+glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW)
 glEnableVertexAttribArray(0)
 glVertexAttribPointer(0,2,GL_FLOAT,false,8,Ptr{Nothing}(0))
 
 glBindVertexArray(vao[3])
 glBindBuffer(GL_ARRAY_BUFFER, vbo[3])
-glBufferData(GL_ARRAY_BUFFER, sizeof(vertices3), pointer(vertices3), GL_STATIC_DRAW)
+glBufferData(GL_ARRAY_BUFFER, sizeof(vertices3), vertices3, GL_STATIC_DRAW)
 glEnableVertexAttribArray(0)
 glVertexAttribPointer(0,2,GL_FLOAT,false,16,Ptr{Nothing}(0))
 glEnableVertexAttribArray(1)
@@ -253,7 +248,7 @@ glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE
 
 
 renderTex(program_basic,vao[1],fbo[1])
-tex = showBuffer(fbo[1],(240,160))
+# tex = showBuffer(fbo[1],(240,160))
 
 renderScreen(program_tex,vao[3],texture[1])
 s = showScreen((240,160))
@@ -267,5 +262,6 @@ while !GLFW.WindowShouldClose(window)
 
     GLFW.SwapBuffers(window); GLFW.PollEvents(); sleep(1.0/60.0)
 end; GLFW.DestroyWindow(window)
+end
 
-
+main()

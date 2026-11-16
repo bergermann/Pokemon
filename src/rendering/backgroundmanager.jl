@@ -34,7 +34,7 @@ function createBackground!(game::GameState,name::Symbol,path::String,x::Int,y::I
     glEnableVertexAttribArray(0)
     glEnableVertexAttribArray(1)
 
-    glBufferData(GL_ARRAY_BUFFER,sizeof(buffer),pointer(buffer),GL_STATIC_DRAW)
+    glBufferData(GL_ARRAY_BUFFER,sizeof(buffer),buffer,GL_STATIC_DRAW)
     checkError("create bg 2")
 
     glBindVertexArray(0)

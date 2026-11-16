@@ -9,36 +9,34 @@ function shadertype(path::AbstractString)
 end
 
 function getProgram(paths::AbstractString...)
-    program = glCreateProgram()
-    checkError("P.1")
+    program = glCreateProgram(); checkError("P.1")
 
-    ids = UInt32[]
+    shaders = UInt32[]
 
     for (i,file) in enumerate(paths)
         type = shadertype(file)
-        id = glCreateShader(type); checkError("P.1.$i.1")
-        
+        shader = glCreateShader(type); checkError("P.1.$i.1")
+
         source = Vector{UInt8}(read(open(joinpath("src","rendering","shaders",file)),String))
         sourceptrs = Ptr{UInt8}[pointer(source)]
-        glShaderSource(id, 1, sourceptrs, Ref{GLint}(length(source)))
+        glShaderSource(shader, 1, sourceptrs, Ref{GLint}(length(source)))
         checkError("P.1.$i.2")
 
-        glCompileShader(id); checkError("P.1.$i.3")
+        glCompileShader(shader); checkError("P.1.$i.3")
 
-        glAttachShader(program,id); checkError("P.1.$i.4")
-        push!(ids,id)
+        glAttachShader(program,shader); checkError("P.1.$i.4")
+        push!(shaders,shader)
     end
 
-    glLinkProgram(program); checkError("P.2")
-    
-    validateLink(program)
+    glLinkProgram(program); checkError("P.2.1")
 
-    for id in ids
-        glDetachShader(program,id); checkError("P.3.$id.1")
-        glDeleteShader(id); checkError("P.3.$id.2")
+    validateLink(program); checkError("P.2.2")
+    validateProgram(program); checkError("P.2.3")
+
+    for shader in shaders
+        glDetachShader(program,shader); checkError("P.3.$shader.1")
+        glDeleteShader(shader); checkError("P.3.$shader.2")
     end
-
-    validateProgram(program)
 
     return program
 end

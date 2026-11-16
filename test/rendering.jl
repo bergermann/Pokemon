@@ -1,7 +1,5 @@
 
-using ModernGL, GLFW, FixedPointNumbers
-
-
+using ModernGL, GLFW, Images #FixedPointNumbers, ColorTypes
 
 
 
@@ -64,18 +62,46 @@ function showScreen(imsize::Tuple{Int,Int})
     img_ = collect(reverse!(img_'; dims=1))
     
     if !all(isequal(RGBA{N0f8}(0.0,0.0,0.0,0.0)),img_)
-        println("buffer filled")
-        display(img_)
+        println("screen filled")
+        # display(img_)
     end
 
     glBindFramebuffer(GL_FRAMEBUFFER,0)
 
-    # save("out/buffer.png",img_)
+    save("test/out/screen.png",img_)
 
     return img_
 end
 
 
+# vertices = Float32[
+    # -1, -1,
+    # 0.5, -1,
+    #  0,  1,
+# ]
+
+mutable struct UIContext
+    vertices::Vector{Float32}
+
+    UIContext() = new(
+        Float32[-1,-1,0.5,-1,0,1,],
+    )
+end
+
+function main()
+
+ctx = UIContext()
+# p = pointer(ctx.vertices)
+p = Ref(ctx.vertices)
+
+@GC.preserve p begin
+# push!(ctx.vertices,
+#     -1, -1,
+#     0.5, -1,
+#      0,  1,)
+# append!(ctx.vertices,[-1,-1,0.5,-1,0,1,])
+# display(ctx.vertices)
+# println(ctx.vertices)
 
 scale = 1
 GLFW.WindowHint(GLFW.DEPTH_BITS,16)
@@ -92,14 +118,6 @@ glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 glClearColor(0.0, 0.0, 0.0, 0.0)
 
 GLFW.SwapInterval(0)
-
-windowsize = GLFW.GetWindowSize(window)    
-projection = Float32[1 0 0 0
-                     0 1 0 0
-                     0 0 1 0
-                     0 0 0 1]
-backbuffersize = (h=Int32(160),w=Int32(240))
-
 
 
 program_basic = glCreateProgram()
@@ -128,28 +146,18 @@ glDetachShader(program_basic,frag)
 glDeleteShader(vert)
 glDeleteShader(frag)
 
-programs = zeros(UInt32,2)
-programs[1] = program_basic
 
 
+vbo_ref = Ref(UInt32(0)); glGenBuffers(1,vbo_ref); vbo = vbo_ref[]
+vao_ref = Ref(UInt32(0)); glGenVertexArrays(1,vao_ref); vao = vao_ref[]
 
-vertices = Float32[
-    -1, -1,
-    0.5, -1,
-     0,  1,
-]
+glBindVertexArray(vao)
 
-vbo = UInt32[0]; glGenBuffers(1,pointer(vbo))
-vao = UInt32[0]; glGenVertexArrays(1,pointer(vao))
-
-glBindVertexArray(vao[1])
-
-glBindBuffer(GL_ARRAY_BUFFER, vbo[1])
-glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), pointer(vertices), GL_STATIC_DRAW)
+glBindBuffer(GL_ARRAY_BUFFER, vbo)
+glBufferData(GL_ARRAY_BUFFER, sizeof(ctx.vertices), ctx.vertices, GL_DYNAMIC_DRAW)
 
 glVertexAttribPointer(0,2,GL_FLOAT,false,8,Ptr{Nothing}(0))
 glEnableVertexAttribArray(0)
-
 
 
 render(program_basic,vao)
@@ -162,4 +170,9 @@ while !GLFW.WindowShouldClose(window)
     GLFW.SwapBuffers(window); GLFW.PollEvents(); sleep(1.0/60.0)
 end; GLFW.DestroyWindow(window)
 
+# println(ctx.vertices)
 
+end
+end
+
+main()

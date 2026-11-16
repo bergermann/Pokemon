@@ -1,5 +1,4 @@
 
-
 function drawBackgrounds(game::GameState)
     glUseProgram(game.im.programs[5]); checkError("B.0")
     
@@ -186,98 +185,24 @@ end
 
 
 function drawPostProcess(game::GameState)
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER,0)
     glUseProgram(game.im.programs[15])
 
-    # HERE???
-
     glUniform4f(game.im.l.uloccolorw,game.im.l.colorw[1],game.im.l.colorw[2],
-        game.im.l.colorw[3],game.im.l.colorw[4]); checkError("PP.1.1")
+        game.im.l.colorw[3],game.im.l.colorw[4]) #; checkError("PP.1.1")
     glUniform4f(game.im.l.uloccolors,game.im.l.colors[1],game.im.l.colors[2],
-        game.im.l.colors[3],game.im.l.colors[4]); checkError("PP.1.2w")
-    # glUniform4fv(game.im.l.uloccolor,4,pointer(game.im.l.colors)); checkError("PP.1")
-    glUniform2f(game.im.l.ulocslider,game.im.l.slider[1],game.im.l.slider[2]); checkError("PP.2")
-
-    # showArrayTextureBuffer(game.im.l.fbo,(160,240,6))
-    # showArrayTextureBuffer_(game.im.l.fbo,(160,240,6))
-    # showTextureBuffer(game.im.l.fbo,(240,160))
+        game.im.l.colors[3],game.im.l.colors[4]) #; checkError("PP.1.2")
+    # glUniform4fv(game.im.l.uloccolor,4,pointer(game.im.l.colors)); checkError("PP.2")
+    # glUniform2f(game.im.l.ulocslider,game.im.l.slider[1],game.im.l.slider[2]); checkError("PP.3")
     
-    # println("check")
-    # error("stop")
-    
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER,0)
-    glViewport(0,0,game.im.windowsize.width,game.im.windowsize.height)
-
     glClear(GL_COLOR_BUFFER_BIT)
 
     glBindTexture(GL_TEXTURE_2D_ARRAY,game.im.l.tex)
     glBindVertexArray(game.im.l.vao)
-    glBindBuffer(GL_ARRAY_BUFFER,game.im.l.vbo)
 
-    glDrawArrays(GL_TRIANGLE_STRIP,0,4)
+    glDrawArrays(GL_TRIANGLES,0,6)
     
     checkError("PP")
 
     return
 end
-
-# function drawMap(game::GameState)
-#     r = 2*game.im.c.renderdistance+1
-
-#     glUseProgram(game.im.programs[2]); checkError("M.0")
-
-#     glBindFramebuffer(GL_DRAW_FRAMEBUFFER,game.im.l.layers[1]); checkError("M.1")
-    
-#     glActiveTexture(GL_TEXTURE0); checkError("M.2")
-#     glBindTexture(GL_TEXTURE_2D,game.im.c.textures[1]); checkError("M.3")
-
-#     glUniform2f(glGetUniformLocation(game.im.programs[2],"chunkconfig"),
-#         Float32(r),Float32(r^2))
-#     checkError("M.4.1")
-#     layer_ = glGetUniformLocation(game.im.programs[2],"layer")
-#     checkError("M.4.2")
-
-#     glUniformMatrix4fv(glGetUniformLocation(game.im.programs[2],"projection"),1,
-#         false,pointer(game.im.l.projection))
-#     checkError("M.4.3")
-
-#     glBindVertexArray(game.im.l.vao[2]); checkError("M.5")
-    
-#     for i in 1:5
-#         glViewport(0,160*(i-1),240,160); # checkError("M.6.$i.0")
-#         glUniform1f(layer_,Float32(i-1)); # checkError("M.6.$i.1")
-
-#         glDrawArrays(GL_POINTS,0,r^2); # checkError("M.6.$i.2")
-#     end
-
-#     glBindTexture(GL_TEXTURE_2D,0); checkError("M.7")
-#     glBindVertexArray(0); checkError("M.8")
-#     glBindFramebuffer(GL_FRAMEBUFFER,0); checkError("M.9")
-
-#     return
-# end
-
-# function drawLayers(game::GameState)
-#     glUseProgram(game.im.programs[3]); checkError("L.0")
-
-#     glBindFramebuffer(GL_DRAW_FRAMEBUFFER,0); checkError("L.1")
-#     glViewport(0,0,game.im.windowsize.width,game.im.windowsize.height); checkError("L.2")
-    
-#     glActiveTexture(GL_TEXTURE0); checkError("L.3")
-#     glBindTexture(GL_TEXTURE_2D,game.im.l.textures[1]); checkError("L.4")
-
-#     glUniformMatrix4fv(glGetUniformLocation(game.im.programs[3],"projection"),1,
-#         false,pointer(game.im.screenprojection))
-#     checkError("L.5")
-
-#     glBindVertexArray(game.im.l.vao[1]); checkError("L.5.1")
-#     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,game.im.l.ebo[1]); checkError("L.5")
-
-#     glDrawElements(GL_TRIANGLES,6*6,GL_UNSIGNED_BYTE,C_NULL); checkError("L.6")
-
-#     glBindTexture(GL_TEXTURE_2D,0); checkError("L.7")
-#     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0)
-#     glBindVertexArray(0); checkError("L.8")
-#     glBindFramebuffer(GL_FRAMEBUFFER,0); checkError("L.9")
-
-#     return
-# end

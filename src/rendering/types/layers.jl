@@ -47,20 +47,23 @@ mutable struct Layers
         glBindVertexArray(vao[1])
         glBindBuffer(GL_ARRAY_BUFFER,vbo[1])
         
-        glVertexAttribPointer(0,2,GL_FLOAT,GL_TRUE,16,C_NULL)
+        glVertexAttribPointer(0,2,GL_FLOAT,GL_TRUE,16,ptr(0))
         glEnableVertexAttribArray(0)
         
         glVertexAttribPointer(1,2,GL_FLOAT,GL_TRUE,16,ptr(8))
         glEnableVertexAttribArray(1)
     
         buffer = Float32[
-            -1,-1,0,0,
-            -1, 1,0,1,
-             1,-1,1,0,
-             1, 1,1,1,
+            -1.0,  1.0,  0.0, 1.0,
+            -1.0, -1.0,  0.0, 0.0,
+             1.0, -1.0,  1.0, 0.0,
+
+            -1.0,  1.0,  0.0, 1.0,
+             1.0, -1.0,  1.0, 0.0,
+             1.0,  1.0,  1.0, 1.0,
         ]
     
-        glBufferData(GL_ARRAY_BUFFER,sizeof(buffer),pointer(buffer),GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER,sizeof(buffer),buffer,GL_STATIC_DRAW)
     
         glBindBuffer(GL_ARRAY_BUFFER,0)
         glBindVertexArray(0)

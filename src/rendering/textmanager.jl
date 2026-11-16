@@ -175,7 +175,7 @@ function createText!(game::GameState,name::Symbol,font::Int,x::Int,y::Int,layer:
     glEnableVertexAttribArray(0)
     glEnableVertexAttribArray(1)
 
-    glBufferData(GL_ARRAY_BUFFER,sizeof(buffer),pointer(buffer),GL_DYNAMIC_DRAW)    
+    glBufferData(GL_ARRAY_BUFFER,sizeof(buffer),buffer,GL_DYNAMIC_DRAW)    
 
     glBindVertexArray(0)
     glBindBuffer(GL_ARRAY_BUFFER,0)

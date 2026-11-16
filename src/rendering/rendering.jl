@@ -38,8 +38,6 @@ const tilesets = [
 
 
 function render(game::GameState)
-    glViewport(0,0,240,160)
-
     drawBackgrounds(game)
     
     if game.overworld
@@ -58,3 +56,4 @@ function render(game::GameState)
 
     return
 end
+

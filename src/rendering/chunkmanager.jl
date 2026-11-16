@@ -18,13 +18,13 @@ function setupChunks(game::GameState)
     glBindVertexArray(0)
 
     glBindBuffer(GL_TEXTURE_BUFFER,game.im.c.bidxs)
-    glBufferData(GL_TEXTURE_BUFFER,r^2,pointer(game.m.didxs),GL_DYNAMIC_DRAW)
+    glBufferData(GL_TEXTURE_BUFFER,r^2,game.m.didxs,GL_DYNAMIC_DRAW)
     glBindTexture(GL_TEXTURE_BUFFER,game.im.c.tidxs)
     glTexBuffer(GL_TEXTURE_BUFFER,GL_R8I,game.im.c.bidxs)
 
     ad = deserialize(joinpath("textures","tilesets","tileanim.data"))
     glBindBuffer(GL_TEXTURE_BUFFER,game.im.c.banimdata)
-    glBufferData(GL_TEXTURE_BUFFER,sizeof(ad),pointer(ad),GL_DYNAMIC_DRAW)
+    glBufferData(GL_TEXTURE_BUFFER,sizeof(ad),ad,GL_DYNAMIC_DRAW)
     glBindTexture(GL_TEXTURE_BUFFER,game.im.c.tanimdata)
     glTexBuffer(GL_TEXTURE_BUFFER,GL_R32I,game.im.c.banimdata)
 
@@ -40,7 +40,7 @@ function setupChunks(game::GameState)
     glUniformMatrix4fv(game.im.c.ulocp1,1,true,pointer(game.im.c.projection1))
     glUniformMatrix4fv(game.im.c.ulocp2,1,true,pointer(game.im.c.projection2))
 
-    checkError("Gen chunks")
+    checkError("gen chunks")
 
     return
 end
@@ -49,7 +49,7 @@ function updateChunkIdxs(game::GameState)
     r = 2*game.im.c.renderdistance+1
 
     glBindBuffer(GL_TEXTURE_BUFFER,game.im.c.bidxs)
-    glBufferData(GL_TEXTURE_BUFFER,Int(game.im.c.r2)^2,pointer(game.m.didxs),GL_DYNAMIC_DRAW)
+    glBufferData(GL_TEXTURE_BUFFER,Int(game.im.c.r2)^2,game.m.didxs,GL_DYNAMIC_DRAW)
     glBindBuffer(GL_TEXTURE_BUFFER,0)
 
     return

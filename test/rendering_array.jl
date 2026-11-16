@@ -112,7 +112,6 @@ function showBuffer(buffer,imsize::Tuple{Int,Int})
 
     save("test/out/buffer.png",img_)
 
-
     return img_
 end
 
@@ -282,19 +281,19 @@ texture = UInt32[0]; glGenTextures(1, pointer(texture));
 
 glBindVertexArray(vao[1])
 glBindBuffer(GL_ARRAY_BUFFER, vbo[1])
-glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), pointer(vertices1), GL_STATIC_DRAW)
+glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), vertices1, GL_STATIC_DRAW)
 glEnableVertexAttribArray(0)
 glVertexAttribPointer(0,2,GL_FLOAT,false,8,Ptr{Nothing}(0))
 
 glBindVertexArray(vao[2])
 glBindBuffer(GL_ARRAY_BUFFER, vbo[2])
-glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), pointer(vertices2), GL_STATIC_DRAW)
+glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW)
 glEnableVertexAttribArray(0)
 glVertexAttribPointer(0,2,GL_FLOAT,false,8,Ptr{Nothing}(0))
 
 glBindVertexArray(vao[3])
 glBindBuffer(GL_ARRAY_BUFFER, vbo[3])
-glBufferData(GL_ARRAY_BUFFER, sizeof(vertices3), pointer(vertices3), GL_STATIC_DRAW)
+glBufferData(GL_ARRAY_BUFFER, sizeof(vertices3), vertices3, GL_STATIC_DRAW)
 glEnableVertexAttribArray(0)
 glEnableVertexAttribArray(1)
 glVertexAttribPointer(0,2,GL_FLOAT,false,16,Ptr{Nothing}(0))

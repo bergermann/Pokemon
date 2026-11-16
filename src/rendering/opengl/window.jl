@@ -9,12 +9,11 @@ function genWindow(scale=1;)
         visible=true,focus=true,major=3,minor=3)
 
     GLFW.MakeContextCurrent(window)
-    # GLA.set_context!(window)
 
     println("OpenGL version:\n",unsafe_string(glGetString(GL_VERSION)),"\n")
 
     glEnable(GL_BLEND)
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
 
     glClearColor(0.0, 0.0, 0.0, 0.0)
     
@@ -22,7 +21,7 @@ function genWindow(scale=1;)
     GLFW.SwapInterval(0)
 
     GLFW.SetKeyCallback(window,keyCallback)
-    # GLFW.SetWindowSizeCallback(window,resizeCallback)
+    GLFW.SetWindowSizeCallback(window,resizeCallback)
 
     return window
 end

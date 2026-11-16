@@ -21,7 +21,7 @@ end
 function validateLink(program::UInt32)
     status = UInt32[0]
 
-    glGetProgramiv(program,GL_VALIDATE_STATUS,status)
+    glGetProgramiv(program,GL_LINK_STATUS,status)
 
     if status[1] != GL_TRUE
         println("Program $program failed to link!")
@@ -60,8 +60,32 @@ end
 
 
 
-function showTexture(tex::UInt32,imsize::Tuple{Int,Int})
-    img = zeros(N0f8,imsize[1]*imsize[2]*4)
+function showScreen((sx,sy)::Tuple{Int,Int})
+    img = zeros(N0f8,sx*sy*4)
+
+    glBindFramebuffer(GL_READ_FRAMEBUFFER,0); checkError("T.1")
+    
+    glReadPixels(0,0,sx,sy,GL_RGBA,GL_UNSIGNED_BYTE,pointer(img))
+    checkError("T.2")
+
+    img_ = [RGBA(img[i:i+3]...) for i in 1:4:length(img)]
+    img_ = reshape(img_,(sx,sy))
+    img_ = collect(reverse!(img_'; dims=1))
+    
+    if !all(isequal(RGBA{N0f8}(0.0,0.0,0.0,0.0)),img_)
+        println("screen filled")
+        # display(img_)
+    end
+
+    glBindFramebuffer(GL_FRAMEBUFFER,0); checkError("T.3")
+
+    save("out/screen.png",img_)
+
+    return img_
+end
+
+function showTexture(tex::UInt32,(sx,sy)::Tuple{Int,Int})
+    img = zeros(N0f8,sx*sy*4)
 
     glBindTexture(GL_TEXTURE_2D,tex); checkError("T.1")
 
@@ -69,10 +93,10 @@ function showTexture(tex::UInt32,imsize::Tuple{Int,Int})
         pointer(img)); checkError("T.2")
 
     img_ = [RGBA(img[i:3+i]...) for i in 1:4:length(img)]
-    img_ = reshape(img_,imsize)
-    img_ = img_'
+    img_ = reshape(img_,(sx,sy))
+    img_ = collect(reverse!(img_'; dims=1))
     if !all(isequal(RGBA{N0f8}(0.0,0.0,0.0,0.0)),img_)
-        println("image filled")
+        println("texture filled")
         # display(img_)
     end
 
@@ -88,40 +112,38 @@ function showArrayTexture(tex::UInt32,(sx,sy,sz)::Tuple{Int,Int,Int})
 
     glBindTexture(GL_TEXTURE_2D_ARRAY,tex); checkError("T.1")
 
-    # glGetTexImage(GL_TEXTURE_2D_ARRAY,0,GL_RGBA,GL_UNSIGNED_BYTE,
-    #     pointer(img)); checkError("T.2")
-    glGetTextureSubImage(tex,0,0,0,0,sx,sy,sz,GL_RGBA,GL_UNSIGNED_BYTE,sizeof(img),pointer(img))
+    glGetTexImage(GL_TEXTURE_2D_ARRAY,0,GL_RGBA,GL_UNSIGNED_BYTE,pointer(img))
     checkError("T.2")
 
     img_ = [RGBA(img[i:3+i]...) for i in 1:4:length(img)]
     img_ = reshape(img_,(sx,sy*sz))
-    img_ = img_'
-    reverse!(img_; dims=1)
+    img_ = collect(reverse!(img_'; dims=1))
+
     if !all(isequal(RGBA{N0f8}(0.0,0.0,0.0,0.0)),img_)
-        println("image filled")
+        println("array texture filled")
         # display(img_)
     end
 
     checkError("show array texture")
 
-    glBindTexture(GL_TEXTURE_2D,0); checkError("T.3")
+    glBindTexture(GL_TEXTURE_2D_ARRAY,0); checkError("T.3")
 
-    save("out/tex.png",img_)
+    save("out/atex.png",img_)
 
     return img_
 end
 
-function showTextureBuffer(buffer::UInt32,imsize::Tuple{Int,Int})
-    img = zeros(N0f8,imsize[1]*imsize[2]*4)
+function showTextureBuffer(buffer::UInt32,(sx,sy)::Tuple{Int,Int})
+    img = zeros(N0f8,sx*sy*4)
 
     glBindFramebuffer(GL_READ_FRAMEBUFFER,buffer); checkError("B.1")
     
-    glReadPixels(0,0,imsize[1],imsize[2],GL_RGBA,GL_UNSIGNED_BYTE,pointer(img))
+    glReadPixels(0,0,sx,sy,GL_RGBA,GL_UNSIGNED_BYTE,pointer(img))
     checkError("B.2")
 
     img_ = [RGBA(img[i:3+i]...) for i in 1:4:length(img)]
-    img_ = reshape(img_,imsize)
-    img_ = img_'
+    img_ = reshape(img_,(sx,sy))
+    img_ = collect(reverse!(img_'; dims=1))
     
     if !all(isequal(RGBA{N0f8}(0.0,0.0,0.0,0.0)),img_)
         println("buffer filled")
@@ -135,30 +157,30 @@ function showTextureBuffer(buffer::UInt32,imsize::Tuple{Int,Int})
     return img_
 end
 
-function showArrayTextureBuffer(buffer::UInt32,imsize::Tuple{Int,Int,Int})
-    img = zeros(N0f8,imsize[1]*imsize[2]*4)
+# function showArrayTextureBuffer(buffer::UInt32,imsize::Tuple{Int,Int,Int})
+#     img = zeros(N0f8,imsize[1]*imsize[2]*4)
 
-    for i in 1:imsize[3]
-        glBindFramebuffer(GL_READ_FRAMEBUFFER,buffer); checkError("B.1.$i")
+#     for i in 1:imsize[3]
+#         glBindFramebuffer(GL_READ_FRAMEBUFFER,buffer); checkError("B.1.$i")
         
-        glReadPixels(0,0,imsize[1],imsize[2],GL_RGBA,GL_UNSIGNED_BYTE,pointer(img))
-        checkError("B.2.$i")
-    end
+#         glReadPixels(0,0,imsize[1],imsize[2],GL_RGBA,GL_UNSIGNED_BYTE,pointer(img))
+#         checkError("B.2.$i")
+#     end
 
-    img_ = [RGBA(img[i:3+i]...) for i in 1:4:length(img)]
-    img_ = reshape(img_,imsize)
-    img_ = img_'
-    if !all(isequal(RGBA{N0f8}(0.0,0.0,0.0,0.0)),img_)
-        println("buffer filled")
-        # display(img_)
-    end
+#     img_ = [RGBA(img[i:3+i]...) for i in 1:4:length(img)]
+#     img_ = reshape(img_,imsize)
+#     img_ = img_'
+#     if !all(isequal(RGBA{N0f8}(0.0,0.0,0.0,0.0)),img_)
+#         println("buffer filled")
+#         # display(img_)
+#     end
 
-    glBindFramebuffer(GL_FRAMEBUFFER,0); checkError("B.3")
+#     glBindFramebuffer(GL_FRAMEBUFFER,0); checkError("B.3")
 
-    save("out/buffer.png",img_)
+#     save("out/buffer.png",img_)
 
-    return img_
-end
+#     return img_
+# end
 
 # function showArrayTextureBuffer_(buffer::UInt32,(sx,sy,sz)::Tuple{Int,Int,Int})
 #     img  = zeros(N0f8,sx*sy*4)

@@ -1,9 +1,9 @@
 #version 330 core
 
-uniform sampler2DArray layers;
 uniform vec4 colorw;
 uniform vec4 colors;
-uniform vec2 slider;
+// uniform vec2 slider;
+uniform sampler2DArray layers;
 
 in vec2 texCoord;
 out vec4 FragColor;
@@ -41,4 +41,6 @@ void main() {
         colors.a*colors.rgb*(colorw.rgb*colorw.a+c1.rgb*c1.a*(1.0-colorw.a))/alpha,
         alpha
     );
+
+    // FragColor = vec4(texCoord.x,texCoord.y,0.0,1.0);
 }

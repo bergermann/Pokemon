@@ -35,14 +35,9 @@ mutable struct Im
         windowsize = GLFW.GetWindowSize(window)
     
         projection = Matn(Float32,1.,1.,1.,1.)
-        projection *= trans(Float32,-1,-1,0)
-        projection *= scale(Float32,240,160,1)
-        projection *= scale(Float32,2/240,2/160,1)
-
-        projection = Float32[1 0 0 0
-                             0 1 0 0
-                             0 0 1 0
-                             0 0 0 1]
+        # projection *= trans(Float32,-1,-1,0)
+        # projection *= scale(Float32,240,160,1)
+        # projection *= scale(Float32,2/240,2/160,1)
     
         programs = zeros(UInt32,16)
     

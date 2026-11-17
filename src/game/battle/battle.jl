@@ -26,7 +26,7 @@ end
 function loadTrainer!(game::GameState)
     id = game.m.npcs[getTrainer(game)].trainerid
 
-    return deserialize("data/trainers/$id.td")
+    return deserialize("data/trainers/compiled/$id.td")
 end
 
 

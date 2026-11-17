@@ -25,7 +25,8 @@
 end
 
 @enum XPtype::UInt8 begin
-    XP_ERRATIC = 0x01
+    XP_NONE = 0x00
+    XP_ERRATIC
     XP_FAST
     XP_SEMIFAST
     XP_SEMISLOW

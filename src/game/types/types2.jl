@@ -24,7 +24,7 @@ const P0 = Pkmn(
     nothing,
 
     Atk[],
-    Anone,
+    A_NONE,
 
     0x00,
 )

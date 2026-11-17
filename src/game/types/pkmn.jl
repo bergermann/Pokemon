@@ -48,7 +48,7 @@ const TypeNames = Base.ImmutableDict(
 function xpFormulas(xptype::XPtype,level::UInt8)::UInt32
     n = UInt(level)
 
-    if n == 1
+    if n == 1 || xptype == XP_NONE
         return zero(UInt32)
     elseif xptype == XP_ERRATIC
         if n <= 50
@@ -225,7 +225,7 @@ mutable struct Pkmn
             HSnormal,                       # status
             nothing,                        # item
             attacks,                        # attacks
-            Anone,                          # ability
+            A_NONE,                          # ability
             0x00,                           # evolve
         )
 

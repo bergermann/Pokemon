@@ -29,7 +29,7 @@ include("game/game.jl")
 function init()
     inputs, keymap = setupInputs(km); global keymap
 
-    @time game = setupGame(1); @time Base.GC.gc()
+    @time game = setupGame(4); @time Base.GC.gc()
 
     GC.enable(false)
     GC.@preserve game sceneTransition!
@@ -97,7 +97,7 @@ function main()
     game.p.dex[1:15,1] .= true
     game.p.dex[19,1] = true
 
-    # initBattleTrainer!(game)
+    initBattleTrainer!(game)
     # levelup!(game.battle.state.trainer1.pokemon[1],10,game)
 
     render(game)
@@ -116,4 +116,4 @@ end
 
 
 
-Pokemon.main()
+# Pokemon.main()

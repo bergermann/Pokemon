@@ -12,11 +12,11 @@
   "extrotext": "Test extro.",
   "pokemon": [{
     "id": "Bisasam",
-    "ball": "Pokéball",
+    "ball": "BALL_GREAT",
     "level": 5,
-    "gender": "male",
+    "gender": "G_MALE",
     "ability": 1,
-    "item": "Sinelbeere",
+    "item": "BERRY_ORAN",
     "nature": 1,
     "affection": 255,
     "shiny": false,
@@ -25,7 +25,7 @@
     "EV": [0,0,0,0,0,0]
   },{
     "id": "Rattfratz",
-    "ball": "Superball",
+    "ball": "BALL_GREAT",
     "level": 10,
     "shiny": false,
     "attacks": ["Tackle","Ruckzuckhieb"]

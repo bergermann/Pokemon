@@ -101,12 +101,12 @@ function main()
     # levelup!(game.battle.state.trainer1.pokemon[1],10,game)
 
     render(game)
-    showArrayTexture(game.im.l.tex,(240,160,6))
 
     try
         run!(game,inputs)
     catch e
-        throw(e)
+        # throw(e)
+        display(e)
     finally
         GLFW.DestroyWindow(game.im.window)
     end

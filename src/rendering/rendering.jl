@@ -38,6 +38,8 @@ const tilesets = [
 
 
 function render(game::GameState)
+    glViewport(0,0,240,160)
+
     drawBackgrounds(game)
     
     if game.overworld
@@ -48,6 +50,7 @@ function render(game::GameState)
     drawTexts(game)
     drawSprites(game)
 
+    glViewport(0,0,game.im.windowsize.width,game.im.windowsize.height)
     drawPostProcess(game)
 
     GLFW.SwapBuffers(game.im.window); checkError("swap")

@@ -1,5 +1,5 @@
 
 @enum StateFlags::UInt16 begin
-    SFhealed = 0x0001
+    SF_HEALED = 0x0001
 end
 

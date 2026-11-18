@@ -98,7 +98,7 @@ function parsePkmn(p::JSON.Object{String,Any},ailevel::Int)
         haskey(p,"ball") ? getEnum(p["ball"]) : Pokemon.BALL_POKE,              # ball
         Tuple{PType,PType}(PType.(data[2:3])),                                  # type
         stats,                                                                  # stats
-        Pokemon.HSnormal,                                                       # status
+        Pokemon.HS_NORMAL,                                                       # status
         haskey(p,"item") ? getEnum(p["item"]) : nothing,                        # item
 
         attacks,                                                                # attacks

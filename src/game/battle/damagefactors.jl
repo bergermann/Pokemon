@@ -21,8 +21,8 @@ function setDmgFactors!(state::BattleState,attacker::PkmnBattle,defender::PkmnBa
     attacker.factors.CH = 1+1*attacker.secstatus.charge
     attacker.factors.IF = itemFactorAttacker(attacker)
     attacker.factors.MW = 1
-        -0.5*state.env.wet*(attack.type==Tfire)
-        -0.5*state.env.mud*(attack.type==Telectric)
+        -0.5*state.env.wet*(attack.type==T_FIRE)
+        -0.5*state.env.mud*(attack.type==T_ELECTRIC)
     attacker.factors.AA = abilityFactorAttacker(attacker)
     attacker.factors.AD = abilityFactorDefender(defender)
     attacker.factors.BD = calcBaseDamage(attacker.factors)
@@ -35,7 +35,7 @@ function setDmgFactors!(state::BattleState,attacker::PkmnBattle,defender::PkmnBa
 
     attacker.factors.RAND = 100-rand(0:15)
 
-    attacker.factors.BRT = 1-0.5*(attacker.pkmn.status==HSburn)* (attack.class==ACphys)
+    attacker.factors.BRT = 1-0.5*(attacker.pkmn.status==HS_BURN)* (attack.class==AC_PHYS)
     attacker.factors.RFSC = screenFactor(state,attacker,defender)
     attacker.factors.MULT = 1
     attacker.factors.WEATHER = factorWeather(state,attacker)
@@ -47,9 +47,9 @@ function setDmgFactors!(state::BattleState,attacker::PkmnBattle,defender::PkmnBa
     attacker.factors.F2 = factorF2(attacker.factors)
 
     attacker.factors.FF = 1-0.5*(attacker.eff>1)*
-        (defender.pkmn.ability==Asolidrock || defender.pkmn.ability==Afilter)
+        (defender.pkmn.ability==A_SOLIDROCK || defender.pkmn.ability==A_FILTER)
     attacker.factors.EB = 1+0.2*(attacker.eff>1)*(attacker.pkmn.item==B_EXBELT)
-    attacker.factors.UP = 1+1*(attacker.eff<1)*(attacker.pkmn.ability==Atintedlens)
+    attacker.factors.UP = 1+1*(attacker.eff<1)*(attacker.pkmn.ability==A_TINTEDLENS)
     attacker.factors.BF = 1
     attacker.factors.F3 = factorF3(attacker.factors)
 end
@@ -79,12 +79,12 @@ function calcBaseDamage(f::DmgFactors)
 end
 
 function attackFactor(state::BattleState,attacker::PkmnBattle)
-    if attacker.attacks[attacker.attack].class == ACphys
+    if attacker.attacks[attacker.attack].class == AC_PHYS
         return attacker.pkmn.stats.rv[2]*
             max(getBuffMultiplier(attacker.buffs[1]),attacker.crit)*
             abilityFactorAttack(attacker)*
             itemFactorAttack(attacker)
-    elseif attacker.attacks[attacker.attack].class == ACspec
+    elseif attacker.attacks[attacker.attack].class == AC_SPEC
         return attacker.pkmn.stats.rv[4]*
             getBuffMultiplier(attacker.buffs[3])*
             abilityFactorAttack(attacker)*
@@ -103,18 +103,18 @@ function itemFactorAttack(attacker::PkmnBattle)
 end
 
 function defenseFactor(state::BattleState,attacker::PkmnBattle,defender::PkmnBattle)
-    if attacker.attacks[attacker.attack].class == ACphys
+    if attacker.attacks[attacker.attack].class == AC_PHYS
         return defender.pkmn.stats.rv[2]*
             getBuffMultiplier(defender.buffs[1])*
             abilityFactorDefense(defender)*
             itemFactorDefense(defender)*
-            (1+0.5*(state.env.weather==Wsnow)*hastype(defender,Tice))
-    elseif attacker.attacks[attacker.attack].class == ACspec
+            (1+0.5*(state.env.weather==W_SNOW)*hastype(defender,T_ICE))
+    elseif attacker.attacks[attacker.attack].class == AC_SPEC
         return defender.pkmn.stats.rv[4]*
             getBuffMultiplier(defender.buffs[3])*
             abilityFactorDefense(defender)*
             itemFactorDefense(defender)*
-            (1+0.5*(state.env.weather==Wsand)*hastype(defender,Trock))
+            (1+0.5*(state.env.weather==W_SAND)*hastype(defender,T_ROCK))
     else
         return 0
     end
@@ -130,10 +130,10 @@ end
 
 function screenFactor(state::BattleState,attacker::PkmnBattle,defender::PkmnBattle)
     if !state.isdouble
-        return 1-0.5*!attacker.crit*(attacker.attacks[attacker.attack].class==ACphys ?
+        return 1-0.5*!attacker.crit*(attacker.attacks[attacker.attack].class==AC_PHYS ?
             defender.reflect : defender.screen)
     else
-        return 1-1/3*!attacker.crit*(attacker.attacks[attacker.attack].class==ACphys ?
+        return 1-1/3*!attacker.crit*(attacker.attacks[attacker.attack].class==AC_PHYS ?
             defender.reflect : defender.screen)
     end
 end
@@ -142,10 +142,10 @@ function factorWeather(state::BattleState,attacker::PkmnBattle)
     attack = attacker.attacks[attacker.attack]
 
     return 1 - 
-        0.5*(attack.type==Tfire  && state.env.weather==Wrain)  -
-        0.5*(attack.type==Twater && state.env.weather==Wsunny) +
-        0.5*(attack.type==Tfire  && state.env.weather==Wsunny) +
-        0.5*(attack.type==Twater && state.env.weather==Wrain)
+        0.5*(attack.type==T_FIRE  && state.env.weather==W_RAIN)  -
+        0.5*(attack.type==T_WATER && state.env.weather==W_SUNNY) +
+        0.5*(attack.type==T_FIRE  && state.env.weather==W_SUNNY) +
+        0.5*(attack.type==T_WATER && state.env.weather==W_RAIN)
 end
 
 function factorF1(f::DmgFactors)

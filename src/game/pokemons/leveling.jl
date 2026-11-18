@@ -66,17 +66,17 @@ function checkEvolveLevelUp(pkmn::Pkmn)
     data = deserialize("data/pkmn/$(pkmn.id)/evolve.data")
     
     for i in axes(data,1)
-        if data[i,2] == EVnone
+        if data[i,2] == EV_NONE
             return 0x0000
         elseif data[i,4] != 0x0000 && data[i,4] != pkmn.gender
             continue
-        elseif data[i,2] == EVlevelup
+        elseif data[i,2] == EV_LEVEL
             if pkmn.stats.level >= data[i,3]; return data[i,1]; end
-        elseif data[i,2] == EVitemheld
+        elseif data[i,2] == EV_ITEMHELD
             if pkmn.item == data[i,3]; return data[i,1]; end
-        elseif data[i,2] == EVfriendship
+        elseif data[i,2] == EV_LOVE
             if pkmn.stats.affection >= data[i,3]; return data[i,1]; end
-        elseif data[i,2] == EVhasattack
+        elseif data[i,2] == EV_ATTACK
             if occursin(data[i,3],pkmn.attacks); return data[i,1]; end
         end
     end
@@ -88,11 +88,11 @@ function checkEvolveItem(pkmn::Pkmn,item::UInt16)
     data = deserialize("data/pkmn/$(pkmn.id)/evolve.data")
     
     for i in axes(data,1)
-        if data[i,2] == EVnone
+        if data[i,2] == EV_NONE
             return 0x0000
         elseif data[i,4] != 0x0000 && data[i,4] != pkmn.gender
             continue
-        elseif data[i,2] == EVitem || data[i,2] == EVitemtrade
+        elseif data[i,2] == EV_ITEM || data[i,2] == EV_ITEMTRADE
             if data[i,3] == item; return data[i,1]; end
         end
     end

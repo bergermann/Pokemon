@@ -35,11 +35,11 @@ end
 
 
 function isfainted(pkmn::Pkmn)
-    return pkmn.status == HSfainted
+    return pkmn.status == HS_FAINTED
 end
 
 function isfainted(game::GameState,i::Int)
-    return game.p.pokemon[i].status == HSfainted
+    return game.p.pokemon[i].status == HS_FAINTED
 end
 
 
@@ -90,7 +90,7 @@ function activePkmn!(game::GameState)
     if game.battle.state.isdouble
         throw(ErrorException("NYI"))
     else
-        idx = findfirst(p->p.status!=HSfainted,game.p.pokemon.data)
+        idx = findfirst(p->p.status!=HS_FAINTED,game.p.pokemon.data)
 
         if idx == 1
             return

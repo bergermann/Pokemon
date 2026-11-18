@@ -18,9 +18,9 @@ const P0 = Pkmn(
     "",
     BALL_POKE,
 
-    (Tnone,Tnone),
+    (T_NONE,T_NONE),
     Stats(zeros(0),zeros(6),0x00,XPtype(1),0,0),
-    HSnormal,
+    HS_NORMAL,
     nothing,
 
     Atk[],

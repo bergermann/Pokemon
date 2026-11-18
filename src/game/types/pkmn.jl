@@ -24,25 +24,25 @@ const typetable = Rational{UInt8}[
 ]
 
 const TypeNames = Base.ImmutableDict(
-    Tnone     => "Null",
-    Tnormal   => "Normal",
-    Tgrass    => "Pflanze",
-    Tfire     => "Feuer",
-    Twater    => "Wasser",
-    Tfight    => "Kampf",
-    Tflying   => "Flug",
-    Tpoison   => "Gift",
-    Tground   => "Boden",
-    Trock     => "Gestein",
-    Tbug      => "Käfer",
-    Tghost    => "Geist",
-    Telectric => "Elektro",
-    Tpsycho   => "Psycho",
-    Tice      => "Eis",
-    Tdragon   => "Drache",
-    Tdark     => "Unlicht",
-    Tsteel    => "Stahl",
-    Tfairy    => "Fee",
+    T_NONE     => "Null",
+    T_NORMAL   => "Normal",
+    T_GRASS    => "Pflanze",
+    T_FIRE     => "Feuer",
+    T_WATER    => "Wasser",
+    T_FIGHT    => "Kampf",
+    T_FLYING   => "Flug",
+    T_POISON   => "Gift",
+    T_GROUND   => "Boden",
+    T_ROCK     => "Gestein",
+    T_BUG      => "Käfer",
+    T_GHOST    => "Geist",
+    T_ELECTRIC => "Elektro",
+    T_PSYCHO   => "Psycho",
+    T_ICE      => "Eis",
+    T_DRAGON   => "Drache",
+    T_DARK     => "Unlicht",
+    T_STEEL    => "Stahl",
+    T_FAIRY    => "Fee",
 )
 
 function xpFormulas(xptype::XPtype,level::UInt8)::UInt32
@@ -151,7 +151,7 @@ mutable struct Attack
     effect::Vector{AttackEffect}
 
     function Attack()
-        new(Atk(0,0,0),Tnone,ACnone,0,0,0,0,[])
+        new(Atk(0,0,0),T_NONE,AC_NONE,0,0,0,0,[])
     end
 
     function Attack(atk,class,type,power,accuracy,priority,critrate,effect)
@@ -222,7 +222,7 @@ mutable struct Pkmn
             
             (PType(data[2]),PType(data[3])),# types
             Stats(data[4:9],level,XPtype(data[13]+1)),# stats
-            HSnormal,                       # status
+            HS_NORMAL,                       # status
             nothing,                        # item
             attacks,                        # attacks
             A_NONE,                          # ability

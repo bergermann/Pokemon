@@ -3,25 +3,25 @@
 @enum Gender::UInt8 G_NONE G_MALE G_FEMALE
 
 @enum PType::UInt8 begin
-    Tnone
-    Tnormal
-    Tgrass
-    Tfire
-    Twater
-    Tfight
-    Tflying
-    Tpoison
-    Tground
-    Trock
-    Tbug
-    Tghost
-    Telectric
-    Tpsycho
-    Tice
-    Tdragon
-    Tdark
-    Tsteel
-    Tfairy
+    T_NONE = 0x00
+    T_NORMAL
+    T_GRASS
+    T_FIRE
+    T_WATER
+    T_FIGHT
+    T_FLYING
+    T_POISON
+    T_GROUND
+    T_ROCK
+    T_BUG
+    T_GHOST
+    T_ELECTRIC
+    T_PSYCHO
+    T_ICE
+    T_DRAGON
+    T_DARK
+    T_STEEL
+    T_FAIRY
 end
 
 @enum XPtype::UInt8 begin
@@ -35,14 +35,14 @@ end
 end
 
 @enum HealthStatus::UInt8 begin
-    HSnormal = 0x00
-    HSpoison
-    HSburn
-    HSparalyse
-    HSsleep
-    HSfrozen
-    HSfainted
-    HSall
+    HS_NORMAL = 0x00
+    HS_POISON
+    HS_BURN
+    HS_PARALYSE
+    HS_SLEEP
+    HS_FROZEN
+    HS_FAINTED
+    HS_ALL
 end
 
 # @enum Nature::UInt8 begin
@@ -50,20 +50,20 @@ end
 # end
 
 @enum EvolType::UInt16 begin
-    EVnone = 0x0001
-    EVlevelup
-    EVitem
-    EVitemheld
-    EVitemtrade
-    EVtrade
-    EVfriendship
-    EVhasattack
-    EVarea
+    EV_NONE = 0x0001
+    EV_LEVEL
+    EV_ITEM
+    EV_ITEMHELD
+    EV_ITEMTRADE
+    EV_TRADE
+    EV_LOVE
+    EV_ATTACK
+    EV_AREA
 end
 
 @enum AttackClass::UInt8 begin
-    ACnone = 0x00
-    ACphys
-    ACspec
-    ACstat
+    AC_NONE = 0x00
+    AC_PHYS
+    AC_SPEC
+    AC_STAT
 end

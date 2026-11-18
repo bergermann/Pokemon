@@ -13,7 +13,7 @@ function queueCheckStatus!(game::GameState,state::BattleState)::Bool
             :p1,120,state[1].name*game.str[1][16],bfaint!,1
         ))
 
-        state[1].pkmn.status = HSfainted
+        state[1].pkmn.status = HS_FAINTED
         fs!(state,1,true)
 
         F = true
@@ -29,7 +29,7 @@ function queueCheckStatus!(game::GameState,state::BattleState)::Bool
         ))
 
         state[2].pkmn.stats.hp = -1
-        state[2].pkmn.status = HSfainted
+        state[2].pkmn.status = HS_FAINTED
 
         if state[1].pkmn.stats.level < 0x64
             queueCheckXp!(game,state)
@@ -172,7 +172,7 @@ function queueAttack!(game::GameState,state::BattleState,
         return
     end
 
-    if attack.class == ACstat || attack.class == ACnone
+    if attack.class == AC_STAT || attack.class == AC_NONE
         attacker.dmgd = 0
         defender.dmgt = 0
     else
@@ -218,11 +218,11 @@ function queueWeather!(state::BattleState)
 end
 
 function queueStatusCond!(state::BattleState)
-    if state.pkmn1.pkmn.status != HSnormal
+    if state.pkmn1.pkmn.status != HS_NORMAL
         0
     end
 
-    if state.pkmn2.pkmn.status != HSnormal
+    if state.pkmn2.pkmn.status != HS_NORMAL
         0
     end
 

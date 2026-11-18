@@ -243,14 +243,14 @@ end
 function applyItem!(target::Pkmn,item::MedicineHealth)
     if !checkItemApplicable(target,item); return; end
 
-    if target.status == HSfainted
+    if target.status == HS_FAINTED
         target.stats.rv[1] = floor(UInt16,target.stats.hp*item.amount/100)
-        target.status = HSnormal
+        target.status = HS_NORMAL
 
         return
     end
 
-    (target.status == target.item || item.status == HSall) && (target.status = HSnormal)
+    (target.status == target.item || item.status == HS_ALL) && (target.status = HS_NORMAL)
     
     target.stats.rv[1] = max(target.hp,target.stats.rv[1] + (item.fraction ? 
         floor(UInt16,target.stats.hp*item.amount/100) : item.amount))
@@ -259,12 +259,12 @@ function applyItem!(target::Pkmn,item::MedicineHealth)
 end
 
 function checkItemApplicable(target::Pkmn,item::MedicineHealth)::Bool
-    if target.status == HSfainted
+    if target.status == HS_FAINTED
         return item.status == HSstatus
-    elseif item.status != HSnormal && item.amount == 0
-        return target.status == item.status || item.status == HSall
-    elseif item.status != HSnormal && item.amount != 0
-        return target.status == item.status || item.status == HSall ||
+    elseif item.status != HS_NORMAL && item.amount == 0
+        return target.status == item.status || item.status == HS_ALL
+    elseif item.status != HS_NORMAL && item.amount != 0
+        return target.status == item.status || item.status == HS_ALL ||
             target.stats.hp != target.stats.rv[1]
     else
         return target.stats.hp != target.stats.rv[1]

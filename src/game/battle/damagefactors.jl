@@ -183,12 +183,12 @@ function calcDamage(f::DmgFactors)
             f.ATK,
             1/(50*f.DEF),
             f.F1)+2,
-        f.CRIT,
-        f.F2,
-        f.RAND/100,
-        f.STAB,
-        f.EFF,
-        f.F3
-    )
+            f.CRIT,
+            f.F2,
+            f.RAND/100,
+            f.STAB,
+            f.EFF,
+            f.F3
+        )
 end
 

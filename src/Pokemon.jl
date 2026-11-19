@@ -76,12 +76,6 @@ end
 
 function main()
     global game, inputs = init()
-
-    for i in eachindex(game.m.npcs)
-        game.m.npcs[i].trainerid = 1; game.m.npcs[i].range = 3
-    end
-
-    game.m.npchit[2] = true
     
     setInventoryTest!(game.p.inventory)
     
@@ -97,7 +91,7 @@ function main()
     game.p.dex[1:15,1] .= true
     game.p.dex[19,1] = true
 
-    initBattleTrainer!(game)
+    # initBattleTrainer!(game)
     # levelup!(game.battle.state.trainer1.pokemon[1],10,game)
 
     render(game)

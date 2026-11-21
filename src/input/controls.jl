@@ -23,7 +23,7 @@ function findEvent(game::GameState)
     p = game.ctrl.mpos
     c = game.ctrl.chunk
     m = game.ctrl.mchunk
-    r = Int(game.im.c.renderdistance)+1
+    r = Int(game.im.c.r1)+1
 
     for ev in game.m.events[1:game.m.events.idx]
         if ev.fg==game.ctrl.fg &&
@@ -43,7 +43,7 @@ end
 
 function mapAction!(game::GameState)
     @. game.ctrl.mpos = game.ctrl.pos1+dirs[game.ctrl.dir]
-    @. game.ctrl.mchunk = modc(game.ctrl.mpos)+(game.im.c.renderdistance+1)
+    @. game.ctrl.mchunk = modc(game.ctrl.mpos)+(game.im.c.r1+1)
     @. game.ctrl.mpos = (game.ctrl.mpos+15)%16+1
 
     b, npc = findNPC(game,game.ctrl.mchunk,game.ctrl.mpos,game.ctrl.fg)

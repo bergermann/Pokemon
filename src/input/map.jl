@@ -113,7 +113,7 @@ end
 function inputMove!(game::GameState,inputs::Inputs)
     dir = getDirection(inputs)
     @. game.ctrl.mpos = game.ctrl.pos1+dirs[dir]
-    @. game.ctrl.mchunk = modc(game.ctrl.mpos)+(game.im.c.renderdistance+1)
+    @. game.ctrl.mchunk = modc(game.ctrl.mpos)+(game.im.c.r1+1)
     @. game.ctrl.mpos = (game.ctrl.mpos+15)%16+1
 
     col = getCollision(game,game.ctrl.mpos,game.ctrl.mchunk,1+game.ctrl.fg)

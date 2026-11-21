@@ -53,7 +53,7 @@ function linescanNPC(game::GameState,npc::NPC)
     l = 1+npc.fg
 
     @. npc.mpos = p2+dirs[npc.dir]
-    @. npc.mchunk = modc(npc.mpos)+(game.im.c.renderdistance+1)+c1-c2
+    @. npc.mchunk = modc(npc.mpos)+(game.im.c.r1+1)+c1-c2
     @. npc.mpos = (npc.mpos+15)%16+1
 
     if npc.dir == 1
@@ -140,7 +140,7 @@ function manageTrainerHit2!(game::GameState,()::Tuple{})
 
     if npc.c2 == 0
         @. npc.mpos = npc.pos1+dirs[npc.dir]
-        @. npc.mchunk = modc(npc.mpos)+(game.im.c.renderdistance+1)+game.ctrl.chunk-npc.chunk
+        @. npc.mchunk = modc(npc.mpos)+(game.im.c.r1+1)+game.ctrl.chunk-npc.chunk
         @. npc.mpos = (npc.mpos+15)%16+1
 
         if isequal(game.ctrl.mchunk,npc.mchunk) && isequal(game.ctrl.pos2,npc.mpos)

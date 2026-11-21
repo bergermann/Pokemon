@@ -1,6 +1,6 @@
 
 function setupChunks(game::GameState)
-    r = 2*game.im.c.renderdistance+1
+    r = 2*game.im.c.r1+1
 
     game.im.c.ulocp1 = glGetUniformLocation(game.im.programs[1],"projection1")
     game.im.c.ulocp2 = glGetUniformLocation(game.im.programs[1],"projection2")
@@ -46,7 +46,7 @@ function setupChunks(game::GameState)
 end
 
 function updateChunkIdxs(game::GameState)
-    r = 2*game.im.c.renderdistance+1
+    r = 2*game.im.c.r1+1
 
     glBindBuffer(GL_TEXTURE_BUFFER,game.im.c.bidxs)
     glBufferData(GL_TEXTURE_BUFFER,Int(game.im.c.r2)^2,game.m.didxs,GL_DYNAMIC_DRAW)
@@ -84,7 +84,7 @@ loadChunk!(game::GameState,target::Int,chunk::Position) =
     loadChunk!(game,target,chunk[1],chunk[2])
 
 function loadChunksAll!(game::GameState; reset::Bool=true)
-    rd = Int(game.im.c.renderdistance)
+    rd = Int(game.im.c.r1)
 
     c = game.ctrl.chunk
 
@@ -488,8 +488,8 @@ end
 
 function unloadTeleports!(game::GameState)
     for (i,tp) in Iterators.reverse(enumerate(game.m.teleports[1:game.m.teleports.idx]))
-        if abs(tp.cx-game.ctrl.mchunk.x) > game.im.c.renderdistance ||
-                abs(tp.cy-game.ctrl.mchunk.y) > game.im.c.renderdistance
+        if abs(tp.cx-game.ctrl.mchunk.x) > game.im.c.r1 ||
+                abs(tp.cy-game.ctrl.mchunk.y) > game.im.c.r1
 
             popat!(game.m.teleports,i)
             popat!(game.m.teleportids,i)
@@ -501,8 +501,8 @@ end
 
 function unloadEvents!(game::GameState)
     for (i,ev) in Iterators.reverse(enumerate(game.m.events[1:game.m.events.idx]))
-        if abs(ev.cx-game.ctrl.mchunk.x) > game.im.c.renderdistance ||
-                abs(ev.cy-game.ctrl.mchunk.y) > game.im.c.renderdistance
+        if abs(ev.cx-game.ctrl.mchunk.x) > game.im.c.r1 ||
+                abs(ev.cy-game.ctrl.mchunk.y) > game.im.c.r1
 
             popat!(game.m.events,i)
             popat!(game.m.eventids,i)
@@ -514,8 +514,8 @@ end
 
 function unloadAreas!(game::GameState)
     for (i,ar) in Iterators.reverse(enumerate(game.m.areas[1:game.m.areas.idx]))
-        if abs(ar.cx-game.ctrl.mchunk.x) > game.im.c.renderdistance ||
-                abs(ar.cy-game.ctrl.mchunk.y) > game.im.c.renderdistance
+        if abs(ar.cx-game.ctrl.mchunk.x) > game.im.c.r1 ||
+                abs(ar.cy-game.ctrl.mchunk.y) > game.im.c.r1
 
             popat!(game.m.areas,i)
             popat!(game.m.areaids,i)

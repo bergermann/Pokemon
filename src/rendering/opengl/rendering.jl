@@ -35,7 +35,7 @@ end
 
 
 function drawMap(game::GameState)
-    r2 = (2*game.im.c.renderdistance+1)^2
+    r2 = (2*game.im.c.r1+1)^2
 
     glUseProgram(game.im.programs[1]); checkError("C.0")
 

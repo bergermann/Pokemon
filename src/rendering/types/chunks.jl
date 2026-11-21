@@ -91,8 +91,8 @@ mutable struct MapData{R,R2}
 end
 
 mutable struct Chunks
-    renderdistance::UInt8
-    r2::UInt8
+    r1::UInt8   # renderdistance in chunks
+    r2::UInt8   # render edgelength
 
     vao::UInt32
     vbo::UInt32

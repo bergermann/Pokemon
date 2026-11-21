@@ -83,11 +83,20 @@ function manageDynamicNPC!(game::GameState,npc::NPC)
         end
 
         @. npc.mpos = npc.pos1+dirs[npc.dir]
-        @. npc.mchunk = modc(npc.mpos)+(game.im.c.renderdistance+1)+game.ctrl.chunk-npc.chunk
+        @. npc.mchunk = modc(npc.mpos)+(game.im.c.r1+1)+npc.chunk-game.ctrl.chunk
         @. npc.mpos = (npc.mpos+15)%16+1
 
         w = isequal(game.ctrl.mchunk,npc.mchunk) &&
             (isequal(game.ctrl.pos1,npc.mpos) || isequal(game.ctrl.pos2,npc.mpos))
+
+        if npc.id == 0x00200201
+            println(game.ctrl.chunk,", ",game.ctrl.pos1)
+            println(npc.chunk)
+            println(npc.mpos)
+            println(npc.mchunk)
+            println(checkWalkable(game,npc.mpos,npc.mchunk,npc.fg+1))
+            println()
+        end
 
         if m && !w && checkWalkable(game,npc.mpos,npc.mchunk,npc.fg+1)
             @. npc.pos2 = npc.pos1+dirs[npc.dir]
@@ -121,7 +130,7 @@ function manageDynamicNPC!(game::GameState,npc::NPC)
 end
 
 function checkChunks!(game::GameState,npc::NPC)
-    mchunk = game.ctrl.chunk-npc.chunk .+ (game.im.c.renderdistance+1)
+    mchunk = game.ctrl.chunk-npc.chunk .+ (game.im.c.r1+1)
 
     if !isequal(mchunk,npc.mchunk)
         @. npc.chunk += modc(npc.mpos)

@@ -120,7 +120,7 @@ function playEvent!(game::GameState)
             createCC!(game,sid,jump!,(:mc,sid); active=true)
         end
     elseif c == 10  # npcadd 1
-        rd = Int(game.im.c.renderdistance)+1
+        rd = Int(game.im.c.r1)+1
 
         px = game.ctrl.pos1.x - e[5]
         py = game.ctrl.pos1.y - e[6]
@@ -179,7 +179,7 @@ function playEvent!(game::GameState)
 
         createNPCSprite!(game,npc_)
     elseif c == 11  # npcadd 2
-        rd = Int(game.im.c.renderdistance)+1
+        rd = Int(game.im.c.r1)+1
         
         cy = game.ctrl.chunk.x+e[6]
         cx = game.ctrl.chunk.y+e[5]
@@ -228,7 +228,7 @@ function playEvent!(game::GameState)
         
         createNPCSprite!(game,npc_)
     elseif c == 12  # npc del
-        rd = Int(game.im.c.renderdistance)+1
+        rd = Int(game.im.c.r1)+1
 
         id = game.events.queue.npcs[e[3]]
 
@@ -249,7 +249,7 @@ function playEvent!(game::GameState)
         println("walking npc $(npc.id) for $(e[5]) tiles in dir $(e[4])")
         npc.dir = e[4]; npc.c2 = 1; reverseSpriteW!(game,npc.sprite,npc.dir==4)
         @. npc.mpos = npc.pos1+dirs[npc.dir]
-        @. npc.mchunk = modc(npc.mpos)+(game.im.c.renderdistance+1)+game.ctrl.chunk-npc.chunk
+        @. npc.mchunk = modc(npc.mpos)+(game.im.c.r1+1)+game.ctrl.chunk-npc.chunk
         @. npc.mpos = (npc.mpos+15)%16+1 
         cid = Symbol("move",id)
         createCallback!(game,cid,walkNPC!,(Ref(npc),e[5],cid); active=true)

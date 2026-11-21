@@ -36,7 +36,7 @@ end
 function checkChunks!(game::GameState,dir::Int)
     # @assert 1 <= dir <= 4 "Direction index out of bounds."
 
-    rd = Int(game.im.c.renderdistance)
+    rd = Int(game.im.c.r1)
     r = 2*rd+1
     c = game.ctrl.chunk
 

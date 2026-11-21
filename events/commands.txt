@@ -40,7 +40,7 @@ delay dframes
 setflag flagnumber type value
 setcounter counternumber value
 
-gainitem id amount
+additem id amount
 gainpkmn id level
 
 startbattle id

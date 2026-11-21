@@ -12,14 +12,14 @@ function evalEvent(game::GameState,event::Event)
     return
 end
 
-
 const E0 = Event()
-    events = Base.Dict{Symbol,Tuple{FlagSet,Union{Callback,EventQueue}}}(
-        :healcenter => (FlagSet(; flags=[(0xc8,false,1)]),F(eventHealCenter!)),
+
+events = Base.Dict{Symbol,Tuple{FlagSet,Union{Callback,EventQueue}}}(
+    :healcenter => (FlagSet(; flags=[(0xc8,false,1)]),F(eventHealCenter!)),
 )
 
 function loadEvent!(game::GameState,name::Symbol)
-    eq = deserialize(joinpath("events","$name.eq"))
+    eq = deserialize(joinpath("events","compiled","$name.eq"))
     events[name] = (eq.flags,eq)
 
     return
@@ -316,8 +316,8 @@ function playEvent!(game::GameState)
         getfield(game.flags,e[4])[e[3]] = Bool(e[5])
     elseif c == 35  # setcounter
         game.flags.counters[e[3]] = UInt32(e[4])
-    elseif c == 37  # gainitem
-        addItem!(game,e[3],e[4])
+    elseif c == 37  # additem
+        addItem!(game,getItem(e[3],e[4]),e[5])
     elseif c == 38  # removeitem
         removeItem!(game,e[3],e[4])
     elseif c == 39  # addpokemon

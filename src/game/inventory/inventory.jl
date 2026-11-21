@@ -89,6 +89,20 @@ function getItem(item::Items)::ItemType
     end
 end
 
+function getItem(item::Int,bag::Int)::Items
+    if bag == 1
+        return ItemID(item)
+    elseif bag == 2
+        return BallID(item)
+    elseif bag == 3
+        return MachineID(item)
+    elseif bag == 4
+        return BerryID(item)
+    elseif bag == 5
+        return KeyID(item)
+    end
+end
+
 function getItem(game::GameState,m::MenuBags)
     return getItem(getSelectedItem(game,m))
 end

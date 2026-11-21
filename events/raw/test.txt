@@ -61,7 +61,7 @@ mcturn up
 delay 40
 
 dialogue "Hier, 5 Hyperbälle."
-gainitem 3 5
+additem BALL_ULTRA 5
 
 delay 40
 npcdel eventtest1

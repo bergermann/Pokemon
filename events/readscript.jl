@@ -1,4 +1,6 @@
-using Serialization
+using Pokemon, Serialization
+
+getEnum(enum) = getproperty(Pokemon,Symbol(enum))
 
 commands = Dict{String,Int}(
     "endevent"      => 0,
@@ -32,7 +34,7 @@ commands = Dict{String,Int}(
     "setflag"       => 34,
     "setcounter"    => 35,
 
-    "gainitem"      => 37,
+    "additem"       => 37,
     "removeitem"    => 38,
     "gainpkmn"      => 39,
     "removepkmn"    => 40,
@@ -63,9 +65,7 @@ flagtypes = Dict{String,Int}(
 # command: [branch, command, data...]
 
 function readEvent(file::String)
-    if occursin("commands",file) || occursin(".jl",file); return; end
-
-    f = open(joinpath("events","scripts",file)); lines = readlines(f); close(f)
+    f = open(joinpath("events","raw",file)); lines = readlines(f); close(f)
     name = file[1:end-4]
     print("reading event $name... ")
 
@@ -202,8 +202,11 @@ function readEvent(file::String)
             command[3:5] .= parse.(Int,l[2:4])
         elseif c == "setcounter"
             command[3:4] .= parse.(Int,l[2:3])
-        elseif c == "gainitem"
-            command[3:4] .= parse.(Int,l[2:3])
+        elseif c == "additem"
+            item = getEnum(l[2])
+            command[3] = Int(item)
+            command[4] = Pokemon.getBag(item)
+            command[5] = parse(Int,l[3])
         elseif c == "removeitem"
             command[3:4] .= parse.(Int,l[2:3])
         elseif c == "gainpkmn"
@@ -222,7 +225,7 @@ function readEvent(file::String)
     F = Pokemon.FlagSet(; flags=flags,counters=counters,hasseen=seen,hascaught=caught,inteam=has)
     event = Pokemon.EventQueue(sheets,npcs,sprites,F,queue)
 
-    serialize(joinpath("events",name*".eq"),event)
+    serialize(joinpath("events","compiled",name*".eq"),event)
 
     println("done")
 
@@ -244,7 +247,7 @@ function getStrings(str::String)
 end
 
 function readEvents()
-    for file in readdir("events/scripts")
+    for file in readdir("events/raw")
         readEvent(file)
     end
 

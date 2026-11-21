@@ -4,7 +4,7 @@ function inputInventory!(game::GameState,inputs::Inputs)
     if game.ctrl.input.choice.sel == -1
         game.ctrl.input.choice.sel = 0
 
-        setSpriteFrame!(game,:cursor,3)
+        setSpriteFrame!(game,:cursor,1)
 
         return
     end
@@ -34,7 +34,7 @@ function inputBags!(game::GameState,inputs::Inputs,m::MenuBags)
             return
         end
 
-        setSpriteFrame!(game,:cursor,3)
+        setSpriteFrame!(game,:cursor,2)
 
         setChoice!(game,1,F(itemAction!,(m,)); exit=-1)    
         drawChoiceMenu!(game,6,getInvChoiceStr(game,m),7,48,8)

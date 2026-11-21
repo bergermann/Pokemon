@@ -8,6 +8,10 @@ function getNames(lang::String)
 end
 
 function getGender(genderweight::Vector{UInt16})
+    # FIX
+
+    genderweight = [0,50,50]
+
     s = sum(genderweight)
     r = rand()
 

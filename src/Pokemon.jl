@@ -99,13 +99,12 @@ function main()
     try
         run!(game,inputs)
     catch e
-        # throw(e)
-        display(e)
+        throw(e)
     finally
         GLFW.DestroyWindow(game.im.window)
     end
 
-    return
+    return game
 end
 end
 

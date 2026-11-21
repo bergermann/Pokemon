@@ -70,7 +70,8 @@ end
 
 getHPBar(pkmn::Pkmn) = getHPBar(pkmn,pkmn.stats.hp)
 
-function setHPBar!(game::GameState,spriteid::Symbol,value::Int,w0::Int)
+function setHPBar!(game::GameState,spriteid::Symbol,value::Float64,wmax::Int,w0::Int)
+    value = clamp(floor(Int,value*wmax),Int(value>0.0),wmax)
     moveSpriteW!(game,spriteid,w0+div(value,2)+isodd(value),true)
     scaleSpriteW!(game,spriteid,Float64(value),true)
     setSpriteFrame!(game,spriteid,1+(value>12)+(value>24))

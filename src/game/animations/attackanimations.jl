@@ -51,8 +51,8 @@ function bHP!(game::GameState,target::Int)
 end
 
 function bHP!(game::GameState,(bar,w,v1,v2)::Tuple{Symbol,Int,Float64,Float64})
-    val = ceil(Int,48*(v1+(v2-v1)*game.n[:hp].c/48))
-    setHPBar!(game,bar,val,w)
+    val = v1+(v2-v1)*game.n[:hp].c/48
+    setHPBar!(game,bar,val,48,w)
 
     # if target == 1
     #     setText!(game,:health1,
@@ -89,8 +89,8 @@ function bXP!(game::GameState,target::Int)
 end
 
 function bXP!(game::GameState,(bar,w,v1,v2)::Tuple{Symbol,Int,Float64,Float64})
-    val = floor(Int,64*(v1+(v2-v1)*game.n[:xp].c/30))
-    setXPBar!(game,bar,val,w)
+    val = v1+(v2-v1)*game.n[:xp].c/30
+    setXPBar!(game,bar,val,64,w)
 
     if game.n[:xp].c == 30; killCC!(game,:xp); return; end
 
@@ -126,7 +126,7 @@ function bLvlUp!(game::GameState,(bar,w,lvl,l)::Tuple{Symbol,Int,Symbol,UInt8})
     end
     
     if game.n[:xp].c == 20
-        setXPBar!(game,bar,0,w)
+        setXPBar!(game,bar,0.,64,w)
         setSpriteFrame!(game,bar,1)
 
         setText!(game,lvl,string(l))
@@ -381,8 +381,8 @@ function bswitchIn!(game::GameState,user::Int)
         activateText!(game,:name1); activateText!(game,:lvl1)
 
         moveSprite!(game,:tag1,60+128,12,true)
-        moveSprite!(game, :hp1,56+128,12,true); setHPBar!(game,:hp1,getHPBar(p),56+128)
-        moveSprite!(game,  :xp,40+128,12,true); setXPBar!(game,:xp,getXPBar(p,0),40+128)
+        moveSprite!(game, :hp1,56+128,12,true); setHPBar!(game,:hp1,getHPBar(p),48,56+128)
+        moveSprite!(game,  :xp,40+128,12,true); setXPBar!(game,:xp,getXPBar(p,0),64,40+128)
 
         moveText!(game,:name1,24+128,-4,true)
         moveText!(game, :lvl1,93+128,-4,true)
@@ -395,7 +395,8 @@ function bswitchIn!(game::GameState,user::Int)
 
         game.ctrl.input.battle.s2 = 0
         a = pb.attacks[1]
-        setText!(game,:info2,string(a.atk.ap)*"/"*string(a.atk.apmax)*"\\"*game.str[2][a.type+1])
+        setText!(game,:info2,string(a.atk.ap)*"/"*string(a.atk.apmax)*"\\"*
+            game.str[2][a.type])
     else
         createSprite!(game,name,name,1,1,56,-28,10,3; wscale=0.,hscale=0.,active=false)
         createSprite!(game,:ballopp,:ballsb,bid,1,56,-28,10,2; active=false)
@@ -404,7 +405,7 @@ function bswitchIn!(game::GameState,user::Int)
         activateText!(game,:name2); activateText!(game,:lvl2)
 
         moveSprite!(game,:tag2,-58-128,-50,true)
-        moveSprite!(game, :hp2,-69-128,-46,true); setHPBar!(game,:hp2,getHPBar(p),-69-128)
+        moveSprite!(game, :hp2,-69-128,-46,true); setHPBar!(game,:hp2,getHPBar(p),48,-69-128)
 
         moveText!(game,:name2,-101-128,-62,true)
         moveText!(game, :lvl2, -33-128,-62,true)

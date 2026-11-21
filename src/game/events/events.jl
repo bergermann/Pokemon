@@ -38,7 +38,7 @@ function setupEvent!(game::GameState,name::Symbol)
     game.events.branch = 0
     # game.events.queue = deserialize(joinpath("events","$name.eq"))
     game.events.queue = events[name][2]
-    loadStrings!(game,"events/$name")
+    loadStrings!(game,"events/$name"; reset=false)
 
     lockInput!(game)
 

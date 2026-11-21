@@ -74,14 +74,14 @@ end
 
 function pkmnName(game::GameState,pkmn::Pkmn)
     if pkmn.name == ""
-        return game.data.name[pkmn.id]
+        return game.data.names[pkmn.id]
     end
     
     return pkmn.name
 end
 
 function pkmnName(game::GameState,id::UInt16)
-    return game.data.name[id]
+    return game.data.names[id]
 end
 
 

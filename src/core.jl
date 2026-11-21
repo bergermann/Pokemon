@@ -245,13 +245,11 @@ function resetChoice!(game::GameState)
 end
 
 lang = Base.ImmutableDict(
-    0x01 => "ger",
-    0x02 => "eng",
-    0x03 => "fre",
-    0x04 => "esp",
+    LANG_GER => "ger",
+    LANG_ENG => "eng",
 )
 
-function loadStrings!(game::GameState,paths::String...; reset::Bool=false)
+function loadStrings!(game::GameState,paths::String...; reset::Bool=true)
     reset && empty!(game.str)
 
     for p in paths
@@ -259,7 +257,21 @@ function loadStrings!(game::GameState,paths::String...; reset::Bool=false)
     end
 end
 
+function loadStringsMap!(game::GameState; reset::Bool=true)
+    if reset
+        empty!(game.str)
 
+        push!(game.str,[])
+        
+        str = readlines(joinpath("str",lang[game.options.lang],"system_main.txt"))
+        str_ = split(str[1],' '); str[1] = str_[1]*game.p.name*str_[2]
+        push!(game.str,str)
+    else
+        game.str[1] = []
+    end
+
+    return
+end
 
 
 

@@ -18,7 +18,17 @@ end
 
 
 function stateOpenBattle!(game::GameState)
-    loadStringsBattle!(game)
+    # loadStringsBattle!(game)
+
+    loadStrings!(game,
+        "system_battle",
+        "system_types",
+        "items/items",
+        "items/balls",
+        "items/berries",
+        "items/machines",
+        "items/keys",
+    )
 
     createCallback!(game,:wiggle,animWiggleBattle!,())
     createCC!(game,:animbattle,animBattlePhase!,(); n=-1)
@@ -67,13 +77,12 @@ function stateOpenBattle!(game::GameState)
     createSprite!(game,:tag1, :tagown,1,1, 60, 12,10,3; active=!fs1)
     createSprite!(game,:tag2, :tagopp,1,1,-58,-50,10,3; active=!fs2)
 
-    b1 = ceil(Int,48*getHPBar(p1)); b2 = ceil(Int,48*getHPBar(p2))
     createSprite!(game, :hp1,:health1,1,3, 56, 12,10,4; wscale=0.,active=!fs1)
     createSprite!(game, :hp2,:health1,1,3,-69,-46,10,4; wscale=0.,active=!fs2)
-    setHPBar!(game,:hp1,b1,56); setHPBar!(game,:hp2,b2,-69)
+    setHPBar!(game,:hp1,getHPBar(p1),48,56); setHPBar!(game,:hp2,getHPBar(p2),48,-69)
 
     createSprite!(game,  :xp,     :xp,1,1, 40, 28,10,4; wscale=0.,hscale=2.,active=!fs1)
-    setXPBar!(game,:xp,getXPBar(p1,0),40)
+    setXPBar!(game,:xp,getXPBar(p1,0),64,40)
     
     createFrame!(game, :choice,13,4,   0,32,5; active=false)
     createFrame!(game,   :info, 8,4,  40,32,6; active=false)

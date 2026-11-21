@@ -3,7 +3,9 @@
 function stateOpenEvolve!(game::GameState,(pkmn,)::Tuple{Pkmn,})
     game.evolving = true
 
-    loadStringsEvolve!(game)
+    # loadStringsEvolve!(game)
+
+    loadStrings!(game,"system_evolve")
 
     createCC!(game,:evolve,animEvolve!,(pkmn,); n=1)
 

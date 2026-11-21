@@ -5,7 +5,9 @@ mdlabels = Base.ImmutableDict([i => Symbol(:p,i) for i in 1:5]...)
 function stateMenuDexOpen!(game::GameState,args::Tuple{})
     stateCloseMap!(game)
 
-    loadStringsDex!(game)
+    # loadStringsDex!(game)
+
+    loadStrings!(game,"system_dex")
 
     loadSpriteSheets!(game,
         :dexwheel,:dexslider,:dexarrow,:dexball,:footprints,#:pokemons
@@ -209,7 +211,7 @@ function animDexInfo!(game::GameState,args::Tuple{})
 
             cat,h,w,info = split(readline("str/ger/dex/$s.txt"),'|')
             setText!(game,:info1,
-                game.str[1][3]*string(s,pad=3)*" "*game.str[2][s]*"\\ "*cat*"-Pokémon")
+                game.str[1][3]*string(s,pad=3)*" "*game.data.names[s]*"\\ "*cat*"-Pokémon")
             setText!(game,:info2,game.str[1][4])
             setText!(game,:info3,h*game.str[1][5]*w*game.str[1][6],align=1)
             setText!(game,:info4,info)
@@ -221,7 +223,7 @@ function animDexInfo!(game::GameState,args::Tuple{})
             deactivateSprite!(game,:foot)
 
             setText!(game,:info1,
-                game.str[1][3]*string(s,pad=3)*" "*game.str[2][s]*"\\ "*game.str[1][8])
+                game.str[1][3]*string(s,pad=3)*" "*game.data.names[s]*"\\ "*game.str[1][8])
             setText!(game,:info2,game.str[1][4])
             setText!(game,:info3,game.str[1][7]*game.str[1][7],align=1)
             setText!(game,:info4,"")
@@ -281,7 +283,7 @@ function stateDexInfoSwitch!(game::GameState,args::Tuple{})
         
         cat,h,w,info = split(readline("str/ger/dex/$s.txt"),'|')
         setText!(game,:info1,
-            game.str[1][3]*string(s,pad=3)*" "*game.str[2][s]*"\\ "*cat*"-Pokémon")
+            game.str[1][3]*string(s,pad=3)*" "*game.data.names[s]*"\\ "*cat*"-Pokémon")
         setText!(game,:info2,game.str[1][4])
         setText!(game,:info3,h*game.str[1][5]*w*game.str[1][6],align=1)
         setText!(game,:info4,info)
@@ -292,7 +294,7 @@ function stateDexInfoSwitch!(game::GameState,args::Tuple{})
         deactivateSprite!(game,:foot)
         
         setText!(game,:info1,
-            game.str[1][3]*string(s,pad=3)*" "*game.str[2][s]*"\\ "*game.str[1][8])
+            game.str[1][3]*string(s,pad=3)*" "*game.data.names[s]*"\\ "*game.str[1][8])
         setText!(game,:info2,game.str[1][4])
         setText!(game,:info3,game.str[1][7]*game.str[1][7],align=1)
         setText!(game,:info4,"")

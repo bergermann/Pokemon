@@ -47,7 +47,23 @@ function stateBagsOpen!(game::GameState,(m,)::Tuple{MenuBags})
 
     correctBags!(game,m)
 
-    loadStringsInventory!(game)
+    loadStrings!(game,
+        "system_bag",
+
+        "items/items",
+        "items/balls",
+        "items/machines",
+        "items/berries",
+        "items/keys",
+
+        "items/items_text",
+        "items/balls_text",
+        "items/machines_text",
+        "items/berries_text",
+        "items/keys_text",
+    ); push!.(game.str[(1+5):end],game.str[1][7])
+
+    # loadStringsInventory!(game)
     
     loadSpriteSheets!(game,:arrows,:bags,:items,:markers)
 

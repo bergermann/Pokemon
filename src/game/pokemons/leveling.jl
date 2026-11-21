@@ -4,10 +4,11 @@
 function getXPBar(pkmn::Pkmn,xpgain::Int)
     xp = pkmn.stats.xp
 
-    return floor(Int,clamp(64*(xp.current+xpgain-xp.last)/(xp.next-xp.last),0,64))
+    return (xp.current+xpgain-xp.last)/(xp.next-xp.last)
 end
 
-function setXPBar!(game::GameState,spriteid::Symbol,value::Int,w0::Int)
+function setXPBar!(game::GameState,spriteid::Symbol,value::Float64,wmax::Int,w0::Int)
+    value = floor(Int,value*wmax)
     moveSpriteW!(game,spriteid,w0+div(value,2)+isodd(value),true)
     scaleSpriteW!(game,spriteid,Float64(value),true)
 

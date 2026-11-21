@@ -2,14 +2,18 @@
 
 mutable struct PkmnData
     base::Matrix{UInt16}
-    name::Vector{String}
+    names::Vector{String}
 
     attacks::Matrix{UInt8}
     attacknames::Vector{String}
 
     function PkmnData()
-        new(getStatsBase(),getNames("ger"),
-            deserialize(joinpath("data/attacks.data")),readlines("str/ger/attack_names.txt"))
+        new(
+            getStatsBase(),
+            getNames("ger"),
+            deserialize(joinpath("data/attacks.data")),
+            readlines("str/ger/attack_names.txt")
+        )
     end
 end
 

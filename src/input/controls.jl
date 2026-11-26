@@ -2,7 +2,7 @@
 function findNPC(game::GameState,chunk::Pos,pos::Position,fg::Bool)
     for npc in game.m.chunkdata[game.m.idxs[chunk]].npcs
         if npc[].fg==fg && isequal(npc[].pos1,pos)
-            return true,npc
+            return true, npc
         end
     end
 
